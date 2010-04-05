@@ -1,4 +1,4 @@
-=== Calendar ===
+=== My Calendar ===
 Contributors: Joseph Dolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling
