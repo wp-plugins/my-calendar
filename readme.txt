@@ -1,10 +1,10 @@
 === My Calendar ===
-Contributors: Joseph Dolson
+Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling
 Requires at least: 2.7
 Tested up to: 2.9.2
-Stable tag: 1.0.0
+Stable tag: trunk
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
