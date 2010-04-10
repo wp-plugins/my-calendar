@@ -35,7 +35,7 @@ function my_calendar_time_cmp($a, $b) {
 }
 
 // Function to compare datetime in event objects
-function my_calendar_datemy_calendar_time_cmp($a, $b) {
+function my_calendar_datetime_cmp($a, $b) {
 	$event_dt_a = strtotime($a->event_begin .' '. $a->event_time);
 	$event_dt_b = strtotime($b->event_begin .' '. $b->event_time);
   if ($event_dt_a == $event_dt_b ) {
