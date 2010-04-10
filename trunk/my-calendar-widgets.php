@@ -9,7 +9,7 @@ function init_my_calendar_today() {
   extract($args);
     $the_title = get_option('my_calendar_today_title');
     $widget_title = empty($the_title) ? __('Today\'s Events','my-calendar') : $the_title;
-    $the_events = todays_events();
+    $the_events = my_calendar_todays_events();
     if ($the_events != '') {
       echo $before_widget;
       echo $before_title . $widget_title . $after_title;
@@ -54,7 +54,7 @@ function init_my_calendar_upcoming() {
     extract($args);
     $the_title = get_option('my_calendar_upcoming_title');
     $widget_title = empty($the_title) ? __('Upcoming Events','my-calendar') : $the_title;
-    $the_events = upcoming_events();
+    $the_events = my_calendar_upcoming_events();
     if ($the_events != '') {
       echo $before_widget;
       echo $before_title . $widget_title . $after_title;
@@ -138,11 +138,11 @@ function init_my_calendar_upcoming() {
 
 
 // Widget upcoming events
-function upcoming_events() {
+function my_calendar_upcoming_events() {
   global $wpdb;
 
   // This function cannot be called unless calendar is up to date
-  check_calendar();
+  check_my_calendar();
   $template = get_option('my_calendar_upcoming_template');
   $display_upcoming_type = get_option('display_upcoming_type');
   
@@ -160,18 +160,18 @@ function upcoming_events() {
 	if ($display_upcoming_type == "date") {
       while ($day_count < $future_days+1) {
           list($y,$m,$d) = split("-",date("Y-m-d",mktime($day_count*24,0,0,date("m"),date("d"),date("Y"))));
-          $events = grab_events( $y,$m,$d );
+          $events = my_calendar_grab_events( $y,$m,$d );
 
-          usort($events, "time_cmp");
+          usort($events, "my_calendar_time_cmp");
           foreach($events as $event) {
 		    $event_details = event_as_array($event);
-			$output .= "<li>".draw_widget_event($event_details,$template)."</li>";
+			$output .= "<li>".jd_draw_widget_event($event_details,$template)."</li>";
           }
           $day_count = $day_count+1;
         }
 	} else {
-         $events = get_all_events( ); // grab all events WITHIN reasonable proximity
-          usort($events, "timediff_cmp");// sort all events by proximity to current date
+         $events = mc_get_all_events( ); // grab all events WITHIN reasonable proximity
+          usort($events, "my_calendar_timediff_cmp");// sort all events by proximity to current date
 			  for ($i=0;$i<=($past_events+$future_events);$i++) {
 				if ($events[$i]) {
 				$near_events[] = $events[$i]; // split off a number of events equal to the past + future settings
@@ -179,21 +179,21 @@ function upcoming_events() {
 			  }
 		  
 		  $events = $near_events;
-		  usort($events, "datetime_cmp"); // sort split events by date
+		  usort($events, "my_calendar_datetime_cmp"); // sort split events by date
 	  
           foreach($events as $event) {
 		    $event_details = event_as_array($event);
 				$today = date('Y').'-'.date('m').'-'.date('d');
 				$date = date('Y-m-d',strtotime($event_details['date']));
-				if (date_comp($date,$today)===true) {
+				if (my_calendar_date_comp($date,$today)===true) {
 					$class = "past-event";
 				} else {
 					$class = "future-event";
 				}
-				if (date_equal($date,$today)) {
+				if (my_calendar_date_equal($date,$today)) {
 					$class = "today";
 				}				
-			$output .= "<li class=\"$class\">".draw_widget_event($event_details,$template)."</li>\n";
+			$output .= "<li class=\"$class\">".jd_draw_widget_event($event_details,$template)."</li>\n";
           }
           $day_count = $day_count+1;
 	}
@@ -205,19 +205,19 @@ function upcoming_events() {
 }
 
 // Widget todays events
-function todays_events() {
+function my_calendar_todays_events() {
   global $wpdb;
 
   // This function cannot be called unless calendar is up to date
-  check_calendar();
+  check_my_calendar();
 
   $template = get_option('my_calendar_today_template');
   
-    $events = grab_events(date("Y"),date("m"),date("d"));
+    $events = my_calendar_grab_events(date("Y"),date("m"),date("d"));
 	if (count($events) != 0) {
 		$output = "<ul>";
 	}
-    usort($events, "time_cmp");
+    usort($events, "my_calendar_time_cmp");
         foreach($events as $event) {
 		    $event_details = event_as_array($event);
 
@@ -228,7 +228,7 @@ function todays_events() {
 				}			
 			// correct displayed time to today
 			$event_details['date'] = $date;
-			$output .= "<li>".draw_widget_event($event_details,$template)."</li>";
+			$output .= "<li>".jd_draw_widget_event($event_details,$template)."</li>";
         }
     if (count($events) != 0) {
 		$output .= "</ul>";
@@ -236,7 +236,7 @@ function todays_events() {
     }
 }
 
-function draw_widget_event($array,$template) {
+function jd_draw_widget_event($array,$template) {
 	//1st argument: array of details
 	//2nd argument: template to print details into
 	foreach ($array as $key=>$value) {
@@ -250,7 +250,7 @@ function draw_widget_event($array,$template) {
 function event_as_array($event) {
   global $wpdb;
   // My Calendar must be updated to run this function
-  check_calendar();
+  check_my_calendar();
 
 $sql = "SELECT category_name FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".$event->event_category;
 $category_name = $wpdb->get_row($sql);
@@ -296,9 +296,12 @@ if (strlen($map_string) > 10) {
 
 if (get_option('my_calendar_date_format') != '') {
 $date = date(get_option('my_calendar_date_format'),strtotime($event->event_begin));
+$date_end = date(get_option('my_calendar_date_format'),strtotime($event->event_end));
 } else {
 $date = date(get_option('date_format'),strtotime($event->event_begin));
+$date_end = date(get_option('date_format'),strtotime($event->event_end));
 }
+
 
     $details = array();
 	$details['category'] = $category_name->category_name;
@@ -313,6 +316,7 @@ $date = date(get_option('date_format'),strtotime($event->event_begin));
 	$details['link_title'] = $event->event_title;	
 	}
 	$details['date'] = $date;
+	$details['enddate'] = $date_end;
 	$details['location'] = $event->event_label;
 	$details['street'] = $event->event_street;
 	$details['street2'] = $event->event_street2;

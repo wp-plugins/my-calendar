@@ -1,7 +1,7 @@
 <?php
 // The actual function called to render the manage events page and 
 // to deal with posts
-function edit_calendar() {
+function edit_my_calendar() {
     global $current_user, $wpdb, $users_entries;
   ?>
 
@@ -18,7 +18,7 @@ if ($_GET['action'] == 'edit') {
 }
 
 // Lets see if this is first run and create us a table if it is!
-check_calendar();
+check_my_calendar();
 
 if ($_GET['action'] == 'delete') {
 	    $sql = "SELECT event_title FROM " . MY_CALENDAR_TABLE . " WHERE event_id=" . (int) $_GET['event_id'];
@@ -26,7 +26,7 @@ if ($_GET['action'] == 'delete') {
 ?>
 	<div class="error">
 	<p><strong><?php _e('Delete Event','my-calendar'); ?>:</strong> <?php _e('Are you sure you want to delete this event?','my-calendar'); ?></p>
-	<form action="<?php echo $_SERVER['PHP_SELF']; ?>?page=my-calendar" method="post">
+	<form action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar" method="post">
 	<div>
 	<input type="hidden" value="delete" name="action" />
 	<input type="hidden" value="<?php echo (int) $_GET['event_id']; ?>" name="event_id" />
@@ -402,23 +402,23 @@ if ( $action == 'add' ) {
 	if ( $action == 'edit' || ($action == 'edit_save' && $error_with_saving == 1)) {
 		?>
 		<h2><?php _e('Edit Event','my-calendar'); ?></h2>
-		<?php show_support_box(); ?>
+		<?php jd_show_support_box(); ?>
 		<?php
 		if ( empty($event_id) ) {
 			echo "<div class=\"error\"><p>".__("You must provide an event id in order to edit it",'my-calendar')."</p></div>";
 		} else {
-			wp_events_edit_form('edit_save', $event_id);
+			jd_events_edit_form('edit_save', $event_id);
 		}	
 	} else {
 		?>
 		<h2><?php _e('Add Event','my-calendar'); ?></h2>
-		<?php show_support_box(); ?>
+		<?php jd_show_support_box(); ?>
 		
-		<?php wp_events_edit_form(); ?>
+		<?php jd_events_edit_form(); ?>
 	
 		<h2><?php _e('Manage Events','my-calendar'); ?></h2>
 		
-		<?php wp_events_display_list();
+		<?php jd_events_display_list();
 	}
 	?>
 </div>
@@ -427,7 +427,7 @@ if ( $action == 'add' ) {
 }
 
 // The event edit form for the manage events admin page
-function wp_events_edit_form($mode='add', $event_id=false) {
+function jd_events_edit_form($mode='add', $event_id=false) {
 	global $wpdb,$users_entries;
 	$data = false;
 	
@@ -457,7 +457,7 @@ function wp_events_edit_form($mode='add', $event_id=false) {
 <div class="postbox">
 	<h3><?php if ($mode == "add") { _e('Add an Event','my-calendar'); } else { _e('Edit Event'); } ?></h3>
 	<div class="inside">	
-	<form name="my-calendar" id="my-calendar" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>?page=my-calendar">
+	<form name="my-calendar" id="my-calendar" method="post" action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar">
 		<div>
 		<input type="hidden" name="action" value="<?php echo $mode; ?>" />
 		<input type="hidden" name="event_id" value="<?php echo $event_id; ?>" />
@@ -579,7 +579,7 @@ function wp_events_edit_form($mode='add', $event_id=false) {
 	<?php
 }
 // Used on the manage events admin page to display a list of events
-function wp_events_display_list() {
+function jd_events_display_list() {
 	global $wpdb;
 	
 	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " ORDER BY event_begin DESC");

@@ -1,7 +1,7 @@
 <?php
 // Function to handle the management of categories
 
-function dirList() {
+function my_dirlist() {
 $directory = dirname(__FILE__).'/icons/';
     // create an array to hold directory list
     $results = array();
@@ -22,11 +22,11 @@ $directory = dirname(__FILE__).'/icons/';
 }
 
 
-function manage_categories() {
+function my_calendar_manage_categories() {
   global $wpdb;
 
   // My Calendar must be installed and upgraded before this will work
-  check_calendar();
+  check_my_calendar();
 
 ?>
 <div class="wrap">
@@ -47,12 +47,12 @@ function manage_categories() {
       $cur_cat = $wpdb->get_row($sql);
       ?>
    <h2><?php _e('Edit Category','my-calendar'); ?></h2>
-<?php show_support_box(); ?>   
+<?php jd_show_support_box(); ?>   
 <div id="poststuff" class="jd-my-calendar">
 <div class="postbox">
 <h3><?php _e('Category Editor','my-calendar'); ?></h3>
 	<div class="inside">	   
-    <form name="my-calendar"  id="my-calendar" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>?page=my-calendar-categories">
+    <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar-categories">
 			<div>
 			<input type="hidden" name="mode" value="edit" />
             <input type="hidden" name="category_id" value="<?php echo $cur_cat->category_id ?>" />
@@ -63,7 +63,7 @@ function manage_categories() {
 				<label for="category_color"><?php _e('Category Color (Hex format)','my-calendar'); ?>:</label> <input type="text" id="category_color" name="category_color" class="input" size="10" maxlength="7" value="<?php echo $cur_cat->category_color ?>" /><br />
 				<label for="category_icon"><?php _e('Category Icon','my-calendar'); ?>:</label> <select name="category_icon" id="category_icon">
 <?php
-$files = dirList();
+$files = my_dirlist();
 foreach ($files as $value) {
 if ($cur_cat->category_icon == $value) {
 	$selected = " selected='selected'";
@@ -93,12 +93,12 @@ if ($cur_cat->category_icon == $value) {
 ?>
 
     <h2><?php _e('Add Category','my-calendar'); ?></h2>
-	<?php show_support_box(); ?>   
+	<?php jd_show_support_box(); ?>   
 <div id="poststuff" class="jd-my-calendar">
 <div class="postbox">
 <h3><?php _e('Add New Category','my-calendar'); ?></h3>
 	<div class="inside">		
-    <form name="my-calendar"  id="my-calendar" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>?page=my-calendar-categories">
+    <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar-categories">
 			<div>
 			<input type="hidden" name="mode" value="add" />
             <input type="hidden" name="category_id" value="" />
@@ -109,7 +109,7 @@ if ($cur_cat->category_icon == $value) {
 				<label for="category_color"><?php _e('Category Color (Hex format)','my-calendar'); ?>:</label> <input type="text" id="category_color" name="category_color" class="input" size="10" maxlength="7" value="#" /><br />
 				<label for="category_icon"><?php _e('Category Icon','my-calendar'); ?>:</label> <select name="category_icon" id="category_icon">
 <?php
-$files = dirList();
+$files = my_dirlist();
 foreach ($files as $value) {
 	echo "<option value='$value' style='background: url(".WP_PLUGIN_URL."/my-calendar/icons/$value) no-repeat;'>$value</option>";
 }
