@@ -1,12 +1,12 @@
 <?php 
 
 
-function add_date($givendate,$day=0,$mth=0,$yr=0) {
+function my_calendar_add_date($givendate,$day=0,$mth=0,$yr=0) {
 	$cd = strtotime($givendate);
 	$newdate = date('Y-m-d', mktime(date('h',$cd),date('i',$cd), date('s',$cd), date('m',$cd)+$mth,date('d',$cd)+$day, date('Y',$cd)+$yr));
 	return $newdate;
 }
-function date_comp($early,$late) {
+function my_calendar_date_comp($early,$late) {
 	$firstdate = strtotime($early);
 	$lastdate = strtotime($late);
 	if ($firstdate <= $lastdate) {
@@ -16,7 +16,7 @@ function date_comp($early,$late) {
 	}
 }
 
-function date_equal($early,$late) {
+function my_calendar_date_equal($early,$late) {
 	$firstdate = strtotime($early);
 	$lastdate = strtotime($late);
 	if ($early == $late) {
@@ -27,7 +27,7 @@ function date_equal($early,$late) {
 }
 
 // Function to compare time in event objects
-function time_cmp($a, $b) {
+function my_calendar_time_cmp($a, $b) {
   if ($a->event_time == $b->event_time) {
     return 0;
   }
@@ -35,7 +35,7 @@ function time_cmp($a, $b) {
 }
 
 // Function to compare datetime in event objects
-function datetime_cmp($a, $b) {
+function my_calendar_datemy_calendar_time_cmp($a, $b) {
 	$event_dt_a = strtotime($a->event_begin .' '. $a->event_time);
 	$event_dt_b = strtotime($b->event_begin .' '. $b->event_time);
   if ($event_dt_a == $event_dt_b ) {
@@ -44,7 +44,7 @@ function datetime_cmp($a, $b) {
   return ( $event_dt_a < $event_dt_b ) ? -1 : 1;
 }
 
-function timediff_cmp($a, $b) {
+function my_calendar_timediff_cmp($a, $b) {
 	$event_dt_a = strtotime($a->event_begin .' '. $a->event_time);
 	$event_dt_b = strtotime($b->event_begin .' '. $b->event_time);
 	$diff_a = jd_date_diff_precise($event_dt_a);

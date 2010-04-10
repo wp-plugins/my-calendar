@@ -4,7 +4,7 @@ function my_calendar_help() {
 ?>
 <div class="wrap">
 <h2><?php _e('How to use My Calendar','my-calendar'); ?></h2>
-<?php show_support_box(); ?>
+<?php jd_show_support_box(); ?>
 
 <div id="poststuff" class="jd-my-calendar">
 <div class="postbox">
@@ -55,6 +55,9 @@ function my_calendar_help() {
 
 <dt><code>{date}</code></dt>
 <dd><?php _e('Displays the date on which the event begins.','my-calendar'); ?></dd>
+
+<dt><code>{enddate}</code></dt>
+<dd><?php _e('Displays the date on which the event ends.','my-calendar'); ?></dd>
 
 <dt><code>{author}</code></dt>
 <dd><?php _e('Displays the WordPress author who posted the event.','my-calendar'); ?></dd>

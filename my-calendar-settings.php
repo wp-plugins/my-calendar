@@ -4,7 +4,7 @@ function edit_my_calendar_config() {
   global $wpdb, $initial_style;
 
   // We can't use this page unless My Calendar is installed/upgraded
-  check_calendar();
+  check_my_calendar();
 
   if (isset($_POST['permissions']) && isset($_POST['style'])) {
       if ($_POST['permissions'] == 'subscriber') { $new_perms = 'read'; }
@@ -92,12 +92,12 @@ function edit_my_calendar_config() {
     <div class="wrap">
 	
     <h2><?php _e('My Calendar Options','my-calendar'); ?></h2>
-    <?php show_support_box(); ?>
+    <?php jd_show_support_box(); ?>
 <div id="poststuff" class="jd-my-calendar">
 <div class="postbox">
 	<h3><?php _e('Calendar Settings','my-calendar'); ?></h3>
 	<div class="inside">	
-    <form name="my-calendar"  id="my-calendar" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>?page=my-calendar-config">
+    <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar-config">
     <fieldset>
     <legend><?php _e('Primary Calendar Options','my-calendar'); ?></legend>
     <p>

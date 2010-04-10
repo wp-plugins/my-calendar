@@ -36,7 +36,7 @@ add_action('admin_menu', 'my_calendar_menu');
 // Add the function that puts style information in the header
 add_action('wp_head', 'my_calendar_wp_head');
 // Add the function that deals with deleted users
-add_action('delete_user', 'wp_deal_with_deleted_user');
+add_action('delete_user', 'mc_deal_with_deleted_user');
 // Add the widgets if we are using version 2.8
 add_action('widgets_init', 'init_my_calendar_today');
 add_action('widgets_init', 'init_my_calendar_upcoming');
@@ -58,7 +58,7 @@ include(dirname(__FILE__).'/date-utilities.php' );
 
 // Before we get on with the functions, we need to define the initial style used for My Calendar
 
-function show_support_box() {
+function jd_show_support_box() {
 ?>
 <div class="resources">
 <ul>
@@ -79,10 +79,10 @@ function show_support_box() {
 }
 
 // Function to deal with events posted by a user when that user is deleted
-function deal_with_deleted_user($id) {
+function mc_deal_with_deleted_user($id) {
   global $wpdb;
   // This wouldn't work unless the database was up to date. Lets check.
-  check_calendar();
+  check_my_calendar();
   // Do the query
   $wpdb->get_results( "UPDATE ".MY_CALENDAR_TABLE." SET event_author=".$wpdb->get_var("SELECT MIN(ID) FROM ".$wpdb->prefix."users",0,0)." WHERE event_author=".$id );
 }
@@ -91,7 +91,7 @@ function deal_with_deleted_user($id) {
 function my_calendar_wp_head() {
   global $wpdb;
   // If the calendar isn't installed or upgraded this won't work
-  check_calendar();
+  check_my_calendar();
   $styles = stripcslashes(get_option('my_calendar_style'));
 	if ( get_option('my_calendar_use_styles') != 'true' ) {
 echo "
@@ -108,7 +108,7 @@ $styles
 function my_calendar_menu() {
   global $wpdb;
   // We make use of the My Calendar tables so we must have installed My Calendar
-  check_calendar();
+  check_my_calendar();
   // Set admin as the only one who can use My Calendar for security
   $allowed_group = 'manage_options';
   // Use the database to *potentially* override the above if allowed
@@ -117,14 +117,14 @@ function my_calendar_menu() {
 
   // Add the admin panel pages for My Calendar. Use permissions pulled from above
 	if (function_exists('add_menu_page')) {
-		add_menu_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), $allowed_group, 'my-calendar', 'edit_calendar');
+		add_menu_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), $allowed_group, 'my-calendar', 'edit_my_calendar');
 	}
 	if (function_exists('add_submenu_page')) {
-		add_submenu_page('my-calendar', __('Add/Edit Events','my-calendar'), __('Add/Edit Events','my-calendar'), $allowed_group, 'my-calendar', 'edit_calendar');
+		add_submenu_page('my-calendar', __('Add/Edit Events','my-calendar'), __('Add/Edit Events','my-calendar'), $allowed_group, 'my-calendar', 'edit_my_calendar');
 		add_action( "admin_head", 'my_calendar_write_js' );		
 		add_action( "admin_head", 'my_calendar_add_styles' );
 		// Note only admin can change calendar options
-		add_submenu_page('my-calendar', __('Manage Categories','my-calendar'), __('Manage Categories','my-calendar'), 'manage_options', 'my-calendar-categories', 'manage_categories');
+		add_submenu_page('my-calendar', __('Manage Categories','my-calendar'), __('Manage Categories','my-calendar'), 'manage_options', 'my-calendar-categories', 'my_calendar_manage_categories');
 		add_submenu_page('my-calendar', __('Settings','my-calendar'), __('Settings','my-calendar'), 'manage_options', 'my-calendar-config', 'edit_my_calendar_config');
 		add_submenu_page('my-calendar', __('My Calendar Help','my-calendar'), __('Help','my-calendar'), 'manage_options', 'my-calendar-help', 'my_calendar_help');
 	}
@@ -287,7 +287,7 @@ function my_calendar_insert($atts) {
 add_shortcode('my_calendar','my_calendar_insert');
 
 // Function to check what version of My Calendar is installed and install if needed
-function check_calendar() {
+function check_my_calendar() {
   // Checks to make sure My Calendar is installed, if not it adds the default
   // database tables and populates them with test data. If it is, then the 
   // version is checked through various means and if it is not up to date 
@@ -564,10 +564,10 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
       add_option('display_upcoming_days',7);
       add_option('my_calendar_version','1.0');
       add_option('display_upcoming_type','false');
-      add_option('display_upcoming_events',3);
+      add_option('display_my_calendar_upcoming_events',3);
       add_option('display_past_days',0);
       add_option('display_past_events',2);
-	  add_option('my_calendar_use_styles','true');
+	  add_option('my_calendar_use_styles','false');
 	  add_option('my_calendar_show_months',1);
 	  add_option('my_calendar_show_map','true');
 	  add_option('my_calendar_show_address','false');
@@ -575,8 +575,8 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
 	  add_option('my_calendar_upcoming_template',$default_template);
 	  add_option('my_calendar_today_title','Today\'s Events');
 	  add_option('my_calendar_upcoming_title','Upcoming Events');
-	  add_option('calendar_javascript',1);
-	  add_option('list_javascript',1);
+	  add_option('calendar_javascript',0);
+	  add_option('list_javascript',0);
       $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_category=1";
       $wpdb->get_results($sql);
 	  
@@ -615,7 +615,7 @@ function jd_cal_checkSelect( $theFieldname,$theValue ) {
 
 // Function to return a prefix which will allow the correct 
 // placement of arguments into the query string.
-function permalink_prefix() {
+function my_calendar_permalink_prefix() {
   // Get the permalink structure from WordPress
   $p_link = get_permalink();
 
@@ -652,18 +652,18 @@ function permalink_prefix() {
 }
 
 // Configure the "Next" link in the calendar
-function next_link($cur_year,$cur_month) {
+function my_calendar_next_link($cur_year,$cur_month) {
   $mod_rewrite_months = array(1=>'jan','feb','mar','apr','may','jun','jul','aug','sept','oct','nov','dec');
   $next_year = $cur_year + 1;
 
 $num_months = get_option('my_calendar_show_months');
   if ($num_months <= 1) {  
 	  if ($cur_month == 12) {
-	      return '<a href="' . permalink_prefix() . 'month=jan&amp;yr=' . $next_year . '" rel="nofollow">'.__('Next Events','my-calendar').' &raquo;</a>';
+	      return '<a href="' . my_calendar_permalink_prefix() . 'month=jan&amp;yr=' . $next_year . '" rel="nofollow">'.__('Next Events','my-calendar').' &raquo;</a>';
 	    } else {
 	      $next_month = $cur_month + 1;
 	      $month = $mod_rewrite_months[$next_month];
-	      return '<a href="' . permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '" rel="nofollow">'.__('Next Events','my-calendar').' &raquo;</a>';
+	      return '<a href="' . my_calendar_permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '" rel="nofollow">'.__('Next Events','my-calendar').' &raquo;</a>';
 	    }
 	} else {
 		if (($cur_month + $num_months) > 12) {
@@ -673,26 +673,26 @@ $num_months = get_option('my_calendar_show_months');
 		}
 		$month = $mod_rewrite_months[$next_month];	
 		if ($cur_month >= (12-$num_months)) {	  
-		  return '<a href="' . permalink_prefix() . 'month='.$month.'&amp;yr=' . $next_year . '" rel="nofollow">'.__('Next Events','my-calendar').' &raquo;</a>';
+		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$month.'&amp;yr=' . $next_year . '" rel="nofollow">'.__('Next Events','my-calendar').' &raquo;</a>';
 		} else {
-		  return '<a href="' . permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '" rel="nofollow">'.__('Next Events','my-calendar').' &raquo;</a>';
+		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '" rel="nofollow">'.__('Next Events','my-calendar').' &raquo;</a>';
 		}	
 	}
 }
 
 // Configure the "Previous" link in the calendar
-function prev_link($cur_year,$cur_month) {
+function my_calendar_prev_link($cur_year,$cur_month) {
   $mod_rewrite_months = array(1=>'jan','feb','mar','apr','may','jun','jul','aug','sept','oct','nov','dec');
   $last_year = $cur_year - 1;
   
 $num_months = get_option('my_calendar_show_months');
   if ($num_months <= 1) {  
 		if ($cur_month == 1) {
-	      return '<a href="' . permalink_prefix() . 'month=dec&amp;yr='. $last_year .'" rel="nofollow">&laquo; '.__('Previous Events','my-calendar').'</a>';
+	      return '<a href="' . my_calendar_permalink_prefix() . 'month=dec&amp;yr='. $last_year .'" rel="nofollow">&laquo; '.__('Previous Events','my-calendar').'</a>';
 	    } else {
 	      $next_month = $cur_month - 1;
 	      $month = $mod_rewrite_months[$next_month];
-	      return '<a href="' . permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '" rel="nofollow">&laquo; '.__('Previous Events','my-calendar').'</a>';
+	      return '<a href="' . my_calendar_permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '" rel="nofollow">&laquo; '.__('Previous Events','my-calendar').'</a>';
 	    }
 	} else {
 		if ($cur_month > $num_months) {
@@ -702,29 +702,29 @@ $num_months = get_option('my_calendar_show_months');
 		}
 		$month = $mod_rewrite_months[$next_month];	
 		if ($cur_month <= $num_months) {	  
-		  return '<a href="' . permalink_prefix() . 'month='.$month.'&amp;yr=' . $last_year . '" rel="nofollow">&laquo; '.__('Previous Events','my-calendar').'</a>';
+		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$month.'&amp;yr=' . $last_year . '" rel="nofollow">&laquo; '.__('Previous Events','my-calendar').'</a>';
 		} else {
-		  return '<a href="' . permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '" rel="nofollow">&laquo; '.__('Previous Events','my-calendar').'</a>';
+		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '" rel="nofollow">&laquo; '.__('Previous Events','my-calendar').'</a>';
 		}	
 	}	
 }
 
 // Used to draw multiple events
-function draw_events($events, $type) {
+function my_calendar_draw_events($events, $type) {
   // We need to sort arrays of objects by time
-  usort($events, "time_cmp");
+  usort($events, "my_calendar_time_cmp");
 	foreach($events as $event) {
-		$output .= draw_event($event, $type);
+		$output .= my_calendar_draw_event($event, $type);
 	}
   return $output;
 }
 
 // Used to draw an event to the screen
-function draw_event($event, $type="calendar") {
+function my_calendar_draw_event($event, $type="calendar") {
   global $wpdb;
 
   // My Calendar must be updated to run this function
-  check_calendar();
+  check_my_calendar();
                                      
   $display_author = get_option('display_author');
   $display_map = get_option('my_calendar_show_map');
@@ -816,10 +816,11 @@ $my_calendar_directory = get_bloginfo( 'wpurl' ) . '/' . PLUGINDIR . '/' . dirna
   return $details;
 }
 // used to generate upcoming events lists
-function get_all_events() {
+function mc_get_all_events() {
 global $wpdb;
     $events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE);
-	$date = date('Y').'-'.date('m').'-'.date('d');	 
+	$offset = get_option('gmt_offset');
+	$date = date('Y', time()+(60*60*$offset)).'-'.date('m', time()+(60*60*$offset)).'-'.date('d', time()+(60*60*$offset));
     if (!empty($events)) {
         foreach($events as $event) {
 			if ($event->event_recur != "S") {
@@ -831,8 +832,8 @@ global $wpdb;
 					switch ($event->event_recur) {
 						case "D":
 							for ($i=$numback;$i<=$numforward;$i++) {
-								$begin = add_date($orig_begin,$i,0,0);
-								$end = add_date($orig_end,$i,0,0);		
+								$begin = my_calendar_add_date($orig_begin,$i,0,0);
+								$end = my_calendar_add_date($orig_end,$i,0,0);		
 								${$i} = clone $event;
 								${$i}->event_begin = $begin;
 								${$i}->event_end = $end;							
@@ -841,8 +842,8 @@ global $wpdb;
 							break;
 						case "W":
 							for ($i=$numback;$i<=$numforward;$i++) {
-								$begin = add_date($orig_begin,($i*7),0,0);
-								$end = add_date($orig_end,($i*7),0,0);
+								$begin = my_calendar_add_date($orig_begin,($i*7),0,0);
+								$end = my_calendar_add_date($orig_end,($i*7),0,0);
 								${$i} = clone $event;
 								${$i}->event_begin = $begin;
 								${$i}->event_end = $end;							
@@ -851,8 +852,8 @@ global $wpdb;
 							break;
 						case "M":
 							for ($i=$numback;$i<=$numforward;$i++) {
-								$begin = add_date($orig_begin,0,$i,0);
-								$end = add_date($orig_end,0,$i,0);
+								$begin = my_calendar_add_date($orig_begin,0,$i,0);
+								$end = my_calendar_add_date($orig_end,0,$i,0);
 								${$i} = clone $event;
 								${$i}->event_begin = $begin;
 								${$i}->event_end = $end;							
@@ -861,8 +862,8 @@ global $wpdb;
 							break;
 						case "Y":
 							for ($i=$numback;$i<=$numforward;$i++) {
-								$begin = add_date($orig_begin,0,0,$i);
-								$end = add_date($orig_end,0,0,$i);
+								$begin = my_calendar_add_date($orig_begin,0,0,$i);
+								$end = my_calendar_add_date($orig_end,0,0,$i);
 								${$i} = clone $event;
 								${$i}->event_begin = $begin;
 								${$i}->event_end = $end;							
@@ -874,11 +875,11 @@ global $wpdb;
 					switch ($event->event_recur) {
 						case "D":
 							$event_begin = $event->event_begin;
-							$today = date('Y').'-'.date('m').'-'.date('d');
+							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
 							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_upcoming_events');
-							if ( date_comp($event_begin, $today) ) { // compare first date against today's date 	
-								if (date_comp( $event_begin, add_date($this_date,-($nDays),0,0) )) {
+							$fDays = get_option('display_my_calendar_upcoming_events');
+							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 	
+								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($this_date,-($nDays),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_days = $diff/(86400);
 									$days = explode(".",$diff_days);
@@ -886,8 +887,8 @@ global $wpdb;
 									$realFinish = $days[0] + $fDays;
 
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
-									$this_date = add_date($event_begin,($realStart),0,0);
-										if ( date_comp( $event->event_begin,$this_date ) ) {
+									$this_date = my_calendar_add_date($event_begin,($realStart),0,0);
+										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
 											${$realStart} = clone $event;
 											${$realStart}->event_begin = $this_date;
 											$arr_events[] = ${$realStart};
@@ -897,8 +898,8 @@ global $wpdb;
 								} else {							
 							$realDays = -($nDays);
 								for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
-								$this_date = add_date($event_begin,$realDays,0,0);
-									if ( date_comp( $event->event_begin,$this_date ) == true ) {
+								$this_date = my_calendar_add_date($event_begin,$realDays,0,0);
+									if ( my_calendar_date_comp( $event->event_begin,$this_date ) == true ) {
 										${$realDays} = clone $event;
 										${$realDays}->event_begin = $this_date;
 										$arr_events[] = ${$realDays};
@@ -912,12 +913,12 @@ global $wpdb;
 						
 						case "W":
 							$event_begin = $event->event_begin;
-							$today = date('Y').'-'.date('m').'-'.date('d');
+							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
 							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_upcoming_events');
+							$fDays = get_option('display_my_calendar_upcoming_events');
 							
-							if ( date_comp($event_begin, $today) ) { // compare first date against today's date 
-								if (date_comp( $event_begin, add_date($this_date,-($nDays*7),0,0) )) {
+							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 
+								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($this_date,-($nDays*7),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_weeks = $diff/(86400*7);
 									$weeks = explode(".",$diff_weeks);
@@ -925,8 +926,8 @@ global $wpdb;
 									$realFinish = $weeks[0] + $fDays;
 
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
-									$this_date = add_date($event_begin,($realStart*7),0,0);
-										if ( date_comp( $event->event_begin,$this_date ) ) {
+									$this_date = my_calendar_add_date($event_begin,($realStart*7),0,0);
+										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
 											${$realStart} = clone $event;
 											${$realStart}->event_begin = $this_date;
 											$arr_events[] = ${$realStart};
@@ -936,8 +937,8 @@ global $wpdb;
 								} else {
 								$realDays = -($nDays);
 								for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
-								$this_date = add_date($event_begin,($realDays*7),0,0);
-									if ( date_comp( $event->event_begin,$this_date ) ) {
+								$this_date = my_calendar_add_date($event_begin,($realDays*7),0,0);
+									if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
 										${$realDays} = clone $event;
 										${$realDays}->event_begin = $this_date;
 										$arr_events[] = ${$realDays};
@@ -951,12 +952,12 @@ global $wpdb;
 						
 						case "M":
 							$event_begin = $event->event_begin;
-							$today = date('Y').'-'.date('m').'-'.date('d');
+							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
 							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_upcoming_events');
+							$fDays = get_option('display_my_calendar_upcoming_events');
 							
-							if ( date_comp($event_begin, $today) ) { // compare first date against today's date 	
-								if (date_comp( $event_begin, add_date($this_date,-($nDays),0,0) )) {
+							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 	
+								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($this_date,-($nDays),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_days = $diff/(86400*30);
 									$days = explode(".",$diff_days);
@@ -964,8 +965,8 @@ global $wpdb;
 									$realFinish = $days[0] + $fDays;
 
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
-									$this_date = add_date($event_begin,0,$realStart,0);
-										if ( date_comp( $event->event_begin,$this_date ) ) {
+									$this_date = my_calendar_add_date($event_begin,0,$realStart,0);
+										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
 											${$realStart} = clone $event;
 											${$realStart}->event_begin = $this_date;
 											$arr_events[] = ${$realStart};
@@ -975,8 +976,8 @@ global $wpdb;
 								} else {							
 								$realDays = -($nDays);
 								for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
-								$this_date = add_date($event_begin,0,$realDays,0);
-									if ( date_comp( $event->event_begin,$this_date ) == true ) {
+								$this_date = my_calendar_add_date($event_begin,0,$realDays,0);
+									if ( my_calendar_date_comp( $event->event_begin,$this_date ) == true ) {
 										${$realDays} = clone $event;
 										${$realDays}->event_begin = $this_date;
 										$arr_events[] = ${$realDays};
@@ -990,12 +991,12 @@ global $wpdb;
 						
 						case "Y":
 							$event_begin = $event->event_begin;
-							$today = date('Y').'-'.date('m').'-'.date('d');
+							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
 							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_upcoming_events');
+							$fDays = get_option('display_my_calendar_upcoming_events');
 								
-							if ( date_comp($event_begin, $today) ) { // compare first date against today's date 		
-								if (date_comp( $event_begin, add_date($this_date,-($nDays),0,0) )) {
+							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 		
+								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($this_date,-($nDays),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_days = $diff/(86400*365);
 									$days = explode(".",$diff_days);
@@ -1003,8 +1004,8 @@ global $wpdb;
 									$realFinish = $days[0] + $fDays;
 
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
-									$this_date = add_date($event_begin,0,0,$realStart);
-										if ( date_comp( $event->event_begin,$this_date ) ) {
+									$this_date = my_calendar_add_date($event_begin,0,0,$realStart);
+										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
 											${$realStart} = clone $event;
 											${$realStart}->event_begin = $this_date;
 											$arr_events[] = ${$realStart};
@@ -1014,8 +1015,8 @@ global $wpdb;
 								} else {							
 								$realDays = -($nDays);
 								for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
-								$this_date = add_date($event_begin,0,0,$realDays);
-									if ( date_comp( $event->event_begin,$this_date ) == true ) {
+								$this_date = my_calendar_add_date($event_begin,0,0,$realDays);
+									if ( my_calendar_date_comp( $event->event_begin,$this_date ) == true ) {
 										${$realDays} = clone $event;
 										${$realDays}->event_begin = $this_date;
 										$arr_events[] = ${$realDays};
@@ -1036,7 +1037,7 @@ global $wpdb;
 	return $arr_events;
 }
 // Grab all events for the requested date from calendar
-function grab_events($y,$m,$d,$category=null) {
+function my_calendar_grab_events($y,$m,$d,$category=null) {
      global $wpdb;
 
 	 if ( $category!=null ) {
@@ -1248,8 +1249,9 @@ function grab_events($y,$m,$d,$category=null) {
     return $arr_events;
 }
 
-function month_comparison($month) {
-	$current_month = strtolower(date("M", time()));
+function mc_month_comparison($month) {
+	$offset = get_option('gmt_offset');
+	$current_month = strtolower(date("M", time()+(60*60*$offset)));
 	if (isset($_GET['yr']) && isset($_GET['month'])) {
 		if ($month == $_GET['month']) {
 			return ' selected="selected"';
@@ -1258,8 +1260,10 @@ function month_comparison($month) {
 		return ' selected="selected"'; 
 	}
 }
-function year_comparison($year) {
-		$current_year = strtolower(date("Y", time()));
+
+function mc_year_comparison($year) {
+	$offset = get_option('gmt_offset');
+		$current_year = strtolower(date("Y", time()+(60*60*$offset)));
 		if (isset($_GET['yr']) && isset($_GET['month'])) {
 			if ($year == $_GET['yr']) {
 				return ' selected="selected"';
@@ -1268,7 +1272,7 @@ function year_comparison($year) {
 			return ' selected="selected"';
 		}
 }
-function build_date_switcher() {
+function mc_build_date_switcher() {
 	$my_calendar_body = "";
 	$my_calendar_body .= '<div class="my-calendar-date-switcher">
             <form method="get" action=""><div>';
@@ -1282,41 +1286,43 @@ function build_date_switcher() {
 	// We build the months in the switcher
 	$my_calendar_body .= '
             <label for="my-calendar-month">'.__('Month','my-calendar').':</label> <select id="my-calendar-month" name="month" style="width:100px;">
-            <option value="jan"'.month_comparison('jan').'>'.__('January','my-calendar').'</option>
-            <option value="feb"'.month_comparison('feb').'>'.__('February','my-calendar').'</option>
-            <option value="mar"'.month_comparison('mar').'>'.__('March','my-calendar').'</option>
-            <option value="apr"'.month_comparison('apr').'>'.__('April','my-calendar').'</option>
-            <option value="may"'.month_comparison('may').'>'.__('May','my-calendar').'</option>
-            <option value="jun"'.month_comparison('jun').'>'.__('June','my-calendar').'</option>
-            <option value="jul"'.month_comparison('jul').'>'.__('July','my-calendar').'</option> 
-            <option value="aug"'.month_comparison('aug').'>'.__('August','my-calendar').'</option> 
-            <option value="sept"'.month_comparison('sept').'>'.__('September','my-calendar').'</option> 
-            <option value="oct"'.month_comparison('oct').'>'.__('October','my-calendar').'</option> 
-            <option value="nov"'.month_comparison('nov').'>'.__('November','my-calendar').'</option> 
-            <option value="dec"'.month_comparison('dec').'>'.__('December','my-calendar').'</option> 
+            <option value="jan"'.mc_month_comparison('jan').'>'.__('January','my-calendar').'</option>
+            <option value="feb"'.mc_month_comparison('feb').'>'.__('February','my-calendar').'</option>
+            <option value="mar"'.mc_month_comparison('mar').'>'.__('March','my-calendar').'</option>
+            <option value="apr"'.mc_month_comparison('apr').'>'.__('April','my-calendar').'</option>
+            <option value="may"'.mc_month_comparison('may').'>'.__('May','my-calendar').'</option>
+            <option value="jun"'.mc_month_comparison('jun').'>'.__('June','my-calendar').'</option>
+            <option value="jul"'.mc_month_comparison('jul').'>'.__('July','my-calendar').'</option> 
+            <option value="aug"'.mc_month_comparison('aug').'>'.__('August','my-calendar').'</option> 
+            <option value="sept"'.mc_month_comparison('sept').'>'.__('September','my-calendar').'</option> 
+            <option value="oct"'.mc_month_comparison('oct').'>'.__('October','my-calendar').'</option> 
+            <option value="nov"'.mc_month_comparison('nov').'>'.__('November','my-calendar').'</option> 
+            <option value="dec"'.mc_month_comparison('dec').'>'.__('December','my-calendar').'</option> 
             </select>
             <label for="my-calendar-year">'.__('Year','my-calendar').':</label> <select id="my-calendar-year" name="yr">
 ';
 	// The year builder is string mania. If you can make sense of this, you know your PHP!
-	$past = 2;
-	$future = 2;
+	$past = 5;
+	$future = 5;
 	$fut = 1;
+	$offset = get_option('gmt_offset');
+	
 		while ($past > 0) {
 		    $p .= '            <option value="';
-		    $p .= date("Y",time())-$past;
-		    $p .= '"'.year_comparison(date("Y",time())-$past).'>';
-		    $p .= date("Y",time())-$past."</option>\n";
+		    $p .= date("Y",time()+(60*60*$offset))-$past;
+		    $p .= '"'.mc_year_comparison(date("Y",time()+(60*60*$offset))-$past).'>';
+		    $p .= date("Y",time()+(60*60*$offset))-$past."</option>\n";
 		    $past = $past - 1;
 		}
 		while ($fut < $future) {
 		    $f .= '            <option value="';
-		    $f .= date("Y",time())+$fut;
-		    $f .= '"'.year_comparison(date("Y",time())+$fut).'>';
-		    $f .= date("Y",time())+$fut."</option>\n";
+		    $f .= date("Y",time()+(60*60*$offset))+$fut;
+		    $f .= '"'.mc_year_comparison(date("Y",time()+(60*60*$offset))+$fut).'>';
+		    $f .= date("Y",time()+(60*60*$offset))+$fut."</option>\n";
 		    $fut = $fut + 1;
 		} 
 	$my_calendar_body .= $p;
-	$my_calendar_body .= '<option value="'.date("Y",time()).'"'.year_comparison(date("Y",time())).'>'.date("Y",time())."</option>\n";
+	$my_calendar_body .= '<option value="'.date("Y",time()+(60*60*$offset)).'"'.mc_year_comparison(date("Y",time()+(60*60*$offset))).'>'.date("Y",time()+(60*60*$offset))."</option>\n";
 	$my_calendar_body .= $f;
     $my_calendar_body .= '</select> <input type="submit" value="'.__('Go','my-calendar').'" /></div>
 	</form></div>';
@@ -1332,7 +1338,7 @@ function my_calendar($name,$format,$category,$showkey) {
 	$category=null;
 	}
     // First things first, make sure calendar is up to date
-    check_calendar();
+    check_my_calendar();
 
     // Deal with the week not starting on a monday
     if (get_option('start_of_week') == 0) {
@@ -1344,12 +1350,13 @@ function my_calendar($name,$format,$category,$showkey) {
 
     // Carry on with the script
     $name_months = array(1=>__('January','my-calendar'),__('February','my-calendar'),__('March','my-calendar'),__('April','my-calendar'),__('May','my-calendar'),__('June','my-calendar'),__('July','my-calendar'),__('August','my-calendar'),__('September','my-calendar'),__('October','my-calendar'),__('November','my-calendar'),__('December','my-calendar'));
+	$offset = get_option('gmt_offset');
 
     // If we don't pass arguments we want a calendar that is relevant to today
     if (empty($_GET['month']) || empty($_GET['yr'])) {
-        $c_year = date("Y");
-        $c_month = date("m");
-        $c_day = date("d");
+        $c_year = date("Y",time()+(60*60*$offset));
+        $c_month = date("m",time()+(60*60*$offset));
+        $c_day = date("d",time()+(60*60*$offset));
     }
 
     // Years get funny if we exceed 3000, so we use this check
@@ -1373,18 +1380,18 @@ function my_calendar($name,$format,$category,$showkey) {
                else if ($_GET['month'] == 'nov') { $t_month = 11; }
                else if ($_GET['month'] == 'dec') { $t_month = 12; }
                $c_month = $t_month;
-               $c_day = date("d");
+               $c_day = date("d",time()+(60*60*$offset));
         } else {
 		// No valid month causes the calendar to default to today			
-               $c_year = date("Y");
-               $c_month = date("m");
-               $c_day = date("d");
+               $c_year = date("Y",time()+(60*60*$offset));
+               $c_month = date("m",time()+(60*60*$offset));
+               $c_day = date("d",time()+(60*60*$offset));
         }
     } else {
 		// No valid year causes the calendar to default to today	
-        $c_year = date("Y");
-        $c_month = date("m");
-        $c_day = date("d");
+        $c_year = date("Y",time()+(60*60*$offset));
+        $c_month = date("m",time()+(60*60*$offset));
+        $c_day = date("d",time()+(60*60*$offset));
     }
 
     // Fix the days of the week if week start is not on a monday
@@ -1412,15 +1419,15 @@ function my_calendar($name,$format,$category,$showkey) {
 	    $date_switcher = get_option('display_jump');
 
 	    if ($date_switcher == 'true') {
-			$my_calendar_body .= build_date_switcher();
+			$my_calendar_body .= mc_build_date_switcher();
 		}
 
 	    // The header of the calendar table and the links. Note calls to link functions
 	    $my_calendar_body .= '
 						<div class="my-calendar-nav">
 						<ul>
-						<li class="my-calendar-prev">' . prev_link($c_year,$c_month) . '</li>
-	                    <li class="my-calendar-next">' . next_link($c_year,$c_month) . '</li>
+						<li class="my-calendar-prev">' . my_calendar_prev_link($c_year,$c_month) . '</li>
+	                    <li class="my-calendar-next">' . my_calendar_next_link($c_year,$c_month) . '</li>
 						</ul>
 	                    </div>
 					</div>';		
@@ -1441,15 +1448,15 @@ function my_calendar($name,$format,$category,$showkey) {
 	    $date_switcher = get_option('display_jump');
 
 	    if ($date_switcher == 'true') {
-			$my_calendar_body .= build_date_switcher();
+			$my_calendar_body .= mc_build_date_switcher();
 		}
 
 	    // The header of the calendar table and the links. Note calls to link functions
 	    $my_calendar_body .= '
 						<div class="my-calendar-nav">
 						<ul>
-						<li class="my-calendar-prev">' . prev_link($c_year,$c_month) . '</li>
-	                    <li class="my-calendar-next">' . next_link($c_year,$c_month) . '</li>
+						<li class="my-calendar-prev">' . my_calendar_prev_link($c_year,$c_month) . '</li>
+	                    <li class="my-calendar-next">' . my_calendar_next_link($c_year,$c_month) . '</li>
 						</ul>
 	                    </div>
 					</div>';	
@@ -1482,20 +1489,20 @@ if ($format == "calendar") {
 		// Colors again, this time for the day numbers
 				if (get_option('start_of_week') == 0) {
 				    // This bit of code is for styles believe it or not.
-				    $grabbed_events = grab_events($c_year,$c_month,$i,$category);
+				    $grabbed_events = my_calendar_grab_events($c_year,$c_month,$i,$category);
 				    $no_events_class = '';
 					    if (!count($grabbed_events)) {
 							$no_events_class = ' no-events';
 					    }
-				    $my_calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd")?'current-day':'day-with-date').$no_events_class.'">'."\n	".'<span'.($ii<7&&$ii>1?'':' class="weekend"').'>'.$i++.'</span>'."\n		". draw_events($grabbed_events, $format) . "\n</td>\n";
+				    $my_calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd",time()+(60*60*$offset))?'current-day':'day-with-date').$no_events_class.'">'."\n	".'<span'.($ii<7&&$ii>1?'':' class="weekend"').'>'.$i++.'</span>'."\n		". my_calendar_draw_events($grabbed_events, $format) . "\n</td>\n";
 				} else {
-				    $grabbed_events = grab_events($c_year,$c_month,$i,$category);
+				    $grabbed_events = my_calendar_grab_events($c_year,$c_month,$i,$category);
 				    $no_events_class = '';
 			            if (!count($grabbed_events))
 				      {
 					$no_events_class = ' no-events';
 				      }
-				    $my_calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd")?'current-day':'day-with-date').$no_events_class.'">'."\n	".'<span'.($ii<6?'':' class="weekend"').'>'.$i++.'</span>'."\n		". draw_events($grabbed_events, $format) . "\n</td>\n";
+				    $my_calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd",time()+(60*60*$offset))?'current-day':'day-with-date').$no_events_class.'">'."\n	".'<span'.($ii<6?'':' class="weekend"').'>'.$i++.'</span>'."\n		". my_calendar_draw_events($grabbed_events, $format) . "\n</td>\n";
 				}
 	      } else {
 			$my_calendar_body .= "<td class='day-without-date'>&nbsp;</td>\n";
@@ -1521,7 +1528,7 @@ if ($date_format == "") {
 		}
 		$c_month = (int) $c_month + $add_month;
 	    for ($i=1; $i<=$days_in_month; $i++) {
-			$grabbed_events = grab_events($c_year,$c_month,$i,$category);
+			$grabbed_events = my_calendar_grab_events($c_year,$c_month,$i,$category);
 			if (count($grabbed_events)) {
 				if ( get_option('list_javascript') != 1) {
 					$is_anchor = "<a href='#'>";
@@ -1529,10 +1536,10 @@ if ($date_format == "") {
 				} else {
 					$is_anchor = $is_close_anchor = "";
 				}
-				$my_calendar_body .= "<li$class><strong class=\"event-date\">$is_anchor".date($date_format,mktime(0,0,0,$c_month,$i,$c_year))."$is_close_anchor</strong>".draw_events($grabbed_events, $format)."</li>";
+				$my_calendar_body .= "<li$class><strong class=\"event-date\">$is_anchor".date($date_format,mktime(0,0,0,$c_month,$i,$c_year))."$is_close_anchor</strong>".my_calendar_draw_events($grabbed_events, $format)."</li>";
 				$num_events++;
 			} 	
-			if (is_odd($num_events)) {
+			if (my_calendar_is_odd($num_events)) {
 				$class = " class='odd'";
 			} else {
 				$class = "";
@@ -1565,7 +1572,7 @@ if ($date_format == "") {
     return $my_calendar_body;
 }
 
-function is_odd( $int ) {
+function my_calendar_is_odd( $int ) {
   return( $int & 1 );
 }
 
