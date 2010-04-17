@@ -38,6 +38,7 @@ Features:
 *	Events can be placed into categories
 *	A calendar of events can be displayed including a single category or all categories
 *	Events can be links pointing to a location of your choice
+*   Import method from Kieran's Calendar plugin
 
 == Installation ==
 
@@ -47,17 +48,22 @@ Features:
 
 3. Configure My Calendar using the following pages in the admin panel:
 
-   My Calendar -> Manage Events
-
+   My Calendar -> Add/Edit Events
    My Calendar -> Manage Categories
+   My Calendar -> Settings
 
-   My Calendar -> Calendar Options
-
-5. Edit or create a page on your blog which includes the shortcode [my_calendar] and visit
+4. Edit or create a page on your blog which includes the shortcode [my_calendar] and visit
    the page you have edited or created. You should see your calendar. Visit My Calendar -> Help for assistance
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.0.2 =
+
+* Fixed problems with editing and deleting events or categories in multiblog installation
+* Fixed escaping/character set issue
+* Fixed issue when blog address and wp address did not match (introduced in 1.0.1)
+* Added import method to transfer events and categories from Kieran O'Shea's Calendar plugin
 
 = 1.0.1 =
 
@@ -77,6 +83,7 @@ Features:
 = This looks terrible with my template! You suck! =
 
 Hey, give me a break. I'm only going to release this with one default CSS - it works pretty well with Kubrick or Twenty Ten, and should be usable in many other themes. However, I'm not about to make any guarantees that it'll work with your theme. If you want it to look a particular way, you'll need to do some customization.
+
 
 == Screenshots ==
 

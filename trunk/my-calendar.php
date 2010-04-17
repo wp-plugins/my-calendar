@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.0.1
+Version: 1.0.2
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -27,10 +27,10 @@ Version: 1.0.1
 // Enable internationalisation
 $plugin_dir = basename(dirname(__FILE__));
 load_plugin_textdomain( 'my-calendar','wp-content/plugins/'.$plugin_dir, $plugin_dir);
-
+global $wpdb;
 // Define the tables used in My Calendar
-define('MY_CALENDAR_TABLE', $table_prefix . 'my_calendar');
-define('MY_CALENDAR_CATEGORIES_TABLE', $table_prefix . 'my_calendar_categories');
+define('MY_CALENDAR_TABLE', $wpdb->prefix . 'my_calendar');
+define('MY_CALENDAR_CATEGORIES_TABLE', $wpdb->prefix . 'my_calendar_categories');
 // Create a master category for My Calendar and its sub-pages
 add_action('admin_menu', 'my_calendar_menu');
 // Add the function that puts style information in the header
@@ -264,6 +264,15 @@ text-decoration: none;
 #my-calendar-admin-table .delete:hover, #my-calendar-admin-table .delete:focus {
 border: 1px solid #999;
 background: #b11;
+}
+.import {
+background: #ffa;
+padding: 5px 10px;
+border: 1px solid #aaa;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+border-radius: 5px;
+margin: 15px 0;
 }
 .n4 {width: 16px;}
 .n5 {width: 32px;}
@@ -1366,7 +1375,7 @@ function my_calendar($name,$format,$category,$showkey) {
         if ($_GET['month'] == 'jan' || $_GET['month'] == 'feb' || $_GET['month'] == 'mar' || $_GET['month'] == 'apr' || $_GET['month'] == 'may' || $_GET['month'] == 'jun' || $_GET['month'] == 'jul' || $_GET['month'] == 'aug' || $_GET['month'] == 'sept' || $_GET['month'] == 'oct' || $_GET['month'] == 'nov' || $_GET['month'] == 'dec') {
 	       // Again nasty code to map permalinks into something
 	       // databases can understand. This will be cleaned up
-               $c_year = mysql_escape_string($_GET['yr']);
+               $c_year = mysql_real_escape_string($_GET['yr']);
                if ($_GET['month'] == 'jan') { $t_month = 1; }
                else if ($_GET['month'] == 'feb') { $t_month = 2; }
                else if ($_GET['month'] == 'mar') { $t_month = 3; }

@@ -33,17 +33,17 @@ function my_calendar_manage_categories() {
 <?php
   // We do some checking to see what we're doing
   if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
-      $sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_name='".mysql_escape_string($_POST['category_name'])."', category_color='".mysql_escape_string($_POST['category_color'])."', category_icon='".mysql_escape_string($_POST['category_icon'])."'";
+      $sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_name='".mysql_real_escape_string($_POST['category_name'])."', category_color='".mysql_real_escape_string($_POST['category_color'])."', category_icon='".mysql_real_escape_string($_POST['category_icon'])."'";
       $wpdb->get_results($sql);
       echo "<div class=\"updated\"><p><strong>".__('Category added successfully','my-calendar')."</strong></p></div>";
     } else if (isset($_GET['mode']) && isset($_GET['category_id']) && $_GET['mode'] == 'delete') {
-      $sql = "DELETE FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".mysql_escape_string($_GET['category_id']);
+      $sql = "DELETE FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".mysql_real_escape_string($_GET['category_id']);
       $wpdb->get_results($sql);
-      $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_category=1 WHERE event_category=".mysql_escape_string($_GET['category_id']);
+      $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_category=1 WHERE event_category=".mysql_real_escape_string($_GET['category_id']);
       $wpdb->get_results($sql);
       echo "<div class=\"updated\"><p><strong>".__('Category deleted successfully','my-calendar')."</strong></p></div>";
     } else if (isset($_GET['mode']) && isset($_GET['category_id']) && $_GET['mode'] == 'edit' && !isset($_POST['mode'])) {
-      $sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".mysql_escape_string($_GET['category_id']);
+      $sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".mysql_real_escape_string($_GET['category_id']);
       $cur_cat = $wpdb->get_row($sql);
       ?>
    <h2><?php _e('Edit Category','my-calendar'); ?></h2>
@@ -52,7 +52,7 @@ function my_calendar_manage_categories() {
 <div class="postbox">
 <h3><?php _e('Category Editor','my-calendar'); ?></h3>
 	<div class="inside">	   
-    <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar-categories">
+    <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories">
 			<div>
 			<input type="hidden" name="mode" value="edit" />
             <input type="hidden" name="category_id" value="<?php echo $cur_cat->category_id ?>" />
@@ -84,7 +84,7 @@ if ($cur_cat->category_icon == $value) {
 </div>
       <?php
     } else if (isset($_POST['mode']) && isset($_POST['category_id']) && isset($_POST['category_name']) && isset($_POST['category_color']) && $_POST['mode'] == 'edit') {
-      $sql = "UPDATE " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_name='".mysql_escape_string($_POST['category_name'])."', category_color='".mysql_escape_string($_POST['category_color'])."', category_icon='".mysql_escape_string($_POST['category_icon'])."' WHERE category_id=".mysql_escape_string($_POST['category_id']);
+      $sql = "UPDATE " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_name='".mysql_real_escape_string($_POST['category_name'])."', category_color='".mysql_real_escape_string($_POST['category_color'])."', category_icon='".mysql_real_escape_string($_POST['category_icon'])."' WHERE category_id=".mysql_real_escape_string($_POST['category_id']);
       $wpdb->get_results($sql);
       echo "<div class=\"updated\"><p><strong>".__('Category edited successfully','my-calendar')."</strong></p></div>";
     }
@@ -98,7 +98,7 @@ if ($cur_cat->category_icon == $value) {
 <div class="postbox">
 <h3><?php _e('Add New Category','my-calendar'); ?></h3>
 	<div class="inside">		
-    <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar-categories">
+    <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories">
 			<div>
 			<input type="hidden" name="mode" value="add" />
             <input type="hidden" name="category_id" value="" />
@@ -153,13 +153,13 @@ foreach ($files as $value) {
 	     <td><?php echo $category->category_name; ?></td>
 	     <td style="background-color:<?php echo $category->category_color; ?>;">&nbsp;</td>
 	     <td style="background-color:<?php echo $category->category_color; ?>;"><img src="<?php echo WP_PLUGIN_URL; ?>/my-calendar/icons/<?php echo $category->category_icon; ?>" alt="" /></td>		 
-	     <td><a href="<?php echo $_SERVER['PHP_SELF']  ?>?page=my-calendar-categories&amp;mode=edit&amp;category_id=<?php echo $category->category_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a></td>
+	     <td><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories&amp;mode=edit&amp;category_id=<?php echo $category->category_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a></td>
 	     <?php
 		       if ($category->category_id == 1) {
 					echo '<td>'.__('N/A','my-calendar').'</td>';
 		       } else {
 	               ?>
-	               <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=my-calendar-categories&amp;mode=delete&amp;category_id=<?php echo $category->category_id;?>" class="delete" onclick="return confirm('<?php echo __('Are you sure you want to delete this category?','my-calendar'); ?>')"><?php echo __('Delete','my-calendar'); ?></a></td>
+	               <td><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories&amp;mode=delete&amp;category_id=<?php echo $category->category_id;?>" class="delete" onclick="return confirm('<?php echo __('Are you sure you want to delete this category?','my-calendar'); ?>')"><?php echo __('Delete','my-calendar'); ?></a></td>
 	               <?php
 		       }
                 ?>

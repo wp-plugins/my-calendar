@@ -1,5 +1,73 @@
 <?php
 // Display the admin configuration page
+
+	if ($_POST['import'] == 'true') {
+		my_calendar_import();
+	}
+
+function my_calendar_import() {
+if ( get_option('ko_calendar_imported') != 'true' ) {
+global $wpdb;
+		define('KO_CALENDAR_TABLE', $wpdb->prefix . 'calendar');
+		define('KO_CALENDAR_CATS', $wpdb->prefix . 'calendar_categories');
+		$events = $wpdb->get_results("SELECT * FROM " . KO_CALENDAR_TABLE, 'ARRAY_A');
+		$sql = "";
+		foreach ($events as $key) {
+			$title = mysql_real_escape_string($key['event_title']);
+			$desc = mysql_real_escape_string($key['event_desc']);
+			$begin = mysql_real_escape_string($key['event_begin']);
+			$end = mysql_real_escape_string($key['event_end']);
+			$time = mysql_real_escape_string($key['event_time']);
+			$recur = mysql_real_escape_string($key['event_recur']);
+			$repeats = mysql_real_escape_string($key['event_repeats']);
+			$author = mysql_real_escape_string($key['event_author']);
+			$category = mysql_real_escape_string($key['event_category']);
+			$linky = mysql_real_escape_string($key['event_link']);
+			
+		    $sql .= "INSERT INTO " . MY_CALENDAR_TABLE . " SET 
+			event_title='" . ($title) . "', 
+			event_desc='" . ($desc) . "', 
+			event_begin='" . ($begin) . "', 
+			event_end='" . ($end) . "', 
+			event_time='" . ($time) . "', 
+			event_recur='" . ($recur) . "', 
+			event_repeats='" . ($repeats) . "', 
+			event_author=".($author).", 
+			event_category=".($category).", 
+			event_link='".($linky)."';";
+		}	
+		$cats = $wpdb->get_results("SELECT * FROM " . KO_CALENDAR_CATS, 'ARRAY_A');
+		$catsql = "";
+		foreach ($cats as $key) {
+			$name = mysql_real_escape_string($key['category_name']);
+			$color = mysql_real_escape_string($key['category_colour']);
+			$id = mysql_real_escape_string($key['category_id']);
+			
+			if ($id != '1') {
+				$catsql .= "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET 
+					category_id='".$id."',
+					category_name='".$name."', 
+					category_color='".$color."';";
+				}
+			}
+	    $cats_results = $wpdb->query($catsql);
+		$events_results = $wpdb->query($sql);
+		if ($cats_results !== false) {
+			$message = __('Categories imported successfully.','my-calendar');
+		} else {
+			$message = __('Categories not imported.','my-calendar');
+		}
+		if ($events_results !== false) {
+			$e_message = __('Events imported successfully.','my-calendar');
+		} else {
+			$e_message = __('Events not imported.','my-calendar');
+		}
+		$return_value = "<div id='message' class='updated fade'><p><strong>$message</strong><br /><strong>$e_message</strong></p></div>";
+		echo $return_value;
+		add_option( 'ko_calendar_imported','true' );
+	} 
+}
+
 function edit_my_calendar_config() {
   global $wpdb, $initial_style;
 
@@ -7,10 +75,11 @@ function edit_my_calendar_config() {
   check_my_calendar();
 
   if (isset($_POST['permissions']) && isset($_POST['style'])) {
-      if ($_POST['permissions'] == 'subscriber') { $new_perms = 'read'; }
-      else if ($_POST['permissions'] == 'contributor') { $new_perms = 'edit_posts'; }
-      else if ($_POST['permissions'] == 'author') { $new_perms = 'publish_posts'; }
-      else if ($_POST['permissions'] == 'editor') { $new_perms = 'moderate_comments'; }
+  
+	if ($_POST['permissions'] == 'subscriber') { $new_perms = 'read'; }
+	else if ($_POST['permissions'] == 'contributor') { $new_perms = 'edit_posts'; }
+	else if ($_POST['permissions'] == 'author') { $new_perms = 'publish_posts'; }
+	else if ($_POST['permissions'] == 'editor') { $new_perms = 'moderate_comments'; }
 	else if ($_POST['permissions'] == 'admin') { $new_perms = 'manage_options'; }
 	else { $new_perms = 'manage_options'; }
 
@@ -18,35 +87,11 @@ function edit_my_calendar_config() {
 	$my_calendar_show_months = (int) $_POST['my_calendar_show_months'];
 	$my_calendar_date_format = $_POST['my_calendar_date_format'];
 
-	if (mysql_escape_string($_POST['display_author']) == 'on') { 
-	$disp_author = 'true';
-	} else {
-	$disp_author = 'false';
-	}
-
-	if (mysql_escape_string($_POST['display_jump']) == 'on') {
-	$disp_jump = 'true';
-	} else {
-	$disp_jump = 'false';
-	}
-	
-	if (mysql_escape_string($_POST['use_styles']) == 'on') {
-	$use_styles = 'true';			
-	} else {
-	$use_styles = 'false';
-	}
-	
-	if (mysql_escape_string($_POST['my_calendar_show_map']) == 'on') {
-	$my_calendar_show_map = 'true';			
-	} else {
-	$my_calendar_show_map = 'false';
-	}
-	
-	if (mysql_escape_string($_POST['my_calendar_show_address']) == 'on') {
-	$my_calendar_show_address = 'true';			
-	} else {
-	$my_calendar_show_address = 'false';
-	}
+	$disp_author = ($_POST['display_author']=='on')?'true':'false';
+	$disp_jump = ($_POST['display_jump']=='on')?'true':'false';
+	$use_styles = ($_POST['use_styles']=='on')?'true':'false';
+	$my_calendar_show_map = ($_POST['my_calendar_show_map']=='on')?'true':'false';
+	$my_calendar_show_address = ($_POST['my_calendar_show_address']=='on')?'true':'false';
 	
 	  update_option('can_manage_events',$new_perms);
 	  update_option('my_calendar_style',$my_calendar_style);
@@ -61,7 +106,7 @@ function edit_my_calendar_config() {
 	  update_option('list_javascript', (int) $_POST['list_javascript']);
 	  // Check to see if we are replacing the original style
 	  
-      if (mysql_escape_string($_POST['reset_styles']) == 'on') {
+      if ( $_POST['reset_styles'] == 'on') {
           update_option('my_calendar_style',$initial_style);
         }
       echo "<div class=\"updated\"><p><strong>".__('Settings saved','my-calendar').".</strong></p></div>";
@@ -153,7 +198,27 @@ function edit_my_calendar_config() {
 		<input type="submit" name="save" class="button-primary" value="<?php _e('Save','my-calendar'); ?> &raquo;" />
 	</p>
   </form>
+  <?php
+if ( get_option('ko_calendar_imported') != 'true' ) {
+  	if (function_exists('check_calendar')) {
+	echo "<div class='import'>";
+	echo "<p>";
+	_e('My Calendar has identified that you have the Calendar plugin by Kieran O\'Shea installed. You can import those events and categories into the My Calendar database. Would you like to import these events?','my-calendar');
+	echo "</p>";
+	?>
+		<form method="post" action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar-config">
+		<div>
+		<input type="hidden" name="import" value="true" />
+		<input type="submit" value="Import from Calendar" name="import-calendar" class="button-primary" />
+		</div>
+		</form>
+	<?php
+	echo "</div>";
+	}
+}
+	?>
   </div>
+
  </div>
  </div>
  </div>
@@ -161,4 +226,5 @@ function edit_my_calendar_config() {
 
 
 }
+
 ?>
