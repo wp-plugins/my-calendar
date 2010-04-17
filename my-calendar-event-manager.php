@@ -5,6 +5,30 @@ function edit_my_calendar() {
     global $current_user, $wpdb, $users_entries;
   ?>
 
+  <?php
+  update_option('ko_calendar_imported','false');
+if ( get_option('ko_calendar_imported') != 'true' ) {  
+	if (function_exists('check_calendar')) {
+	echo "<div id='message' class='updated'>";
+	echo "<p>";
+	_e('My Calendar has identified that you have the Calendar plugin by Kieran O\'Shea installed. You can import those events and categories into the My Calendar database. Would you like to import these events?','my-calendar');
+	echo "</p>";
+	?>
+		<form method="post" action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar-config">
+		<div>
+		<input type="hidden" name="import" value="true" />
+		<input type="submit" value="Import from Calendar" name="import-calendar" class="button-primary" />
+		</div>
+		</form>
+	<?php
+	echo "<p>";
+	_e('Calendar Import has received limited testing. Although it is possible that it could fail to import your events correctly, it should not have any impact on your existing Calendar database. If you encounter any problems, <a href="http://www.joedolson.com/contact.php">please contact me</a>!','my-calendar');
+	echo "</p>";
+	echo "</div>";
+	}
+}
+	?>  
+  
 <?php
 // First some quick cleaning up 
 $edit = $create = $save = $delete = false;
@@ -26,7 +50,7 @@ if ($_GET['action'] == 'delete') {
 ?>
 	<div class="error">
 	<p><strong><?php _e('Delete Event','my-calendar'); ?>:</strong> <?php _e('Are you sure you want to delete this event?','my-calendar'); ?></p>
-	<form action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar" method="post">
+	<form action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar" method="post">
 	<div>
 	<input type="hidden" value="delete" name="action" />
 	<input type="hidden" value="<?php echo (int) $_GET['event_id']; ?>" name="event_id" />
@@ -145,28 +169,28 @@ if ( $action == 'add' ) {
 	  }
 	if ($start_date_ok == 1 && $end_date_ok == 1 && $time_ok == 1 && $url_ok == 1 && $title_ok == 1 && $recurring_ok == 1) {
 	    $sql = "INSERT INTO " . MY_CALENDAR_TABLE . " SET 
-		event_title='" . mysql_escape_string($title) . "', 
-		event_desc='" . mysql_escape_string($desc) . "', 
-		event_begin='" . mysql_escape_string($begin) . "', 
-		event_end='" . mysql_escape_string($end) . "', 
-		event_time='" . mysql_escape_string($time) . "', 
-		event_recur='" . mysql_escape_string($recur) . "', 
-		event_repeats='" . mysql_escape_string($repeats) . "', 
+		event_title='" . mysql_real_escape_string($title) . "', 
+		event_desc='" . mysql_real_escape_string($desc) . "', 
+		event_begin='" . mysql_real_escape_string($begin) . "', 
+		event_end='" . mysql_real_escape_string($end) . "', 
+		event_time='" . mysql_real_escape_string($time) . "', 
+		event_recur='" . mysql_real_escape_string($recur) . "', 
+		event_repeats='" . mysql_real_escape_string($repeats) . "', 
 		event_author=".$current_user->ID.", 
-		event_category=".mysql_escape_string($category).", 
-		event_link='".mysql_escape_string($linky)."',
-		event_label='".mysql_escape_string($event_label)."', 
-		event_street='".mysql_escape_string($event_street)."', 
-		event_street2='".mysql_escape_string($event_street2)."', 
-		event_city='".mysql_escape_string($event_city)."', 
-		event_state='".mysql_escape_string($event_state)."', 
-		event_postcode='".mysql_escape_string($event_postcode)."',
-		event_country='".mysql_escape_string($event_country)."'";
+		event_category=".mysql_real_escape_string($category).", 
+		event_link='".mysql_real_escape_string($linky)."',
+		event_label='".mysql_real_escape_string($event_label)."', 
+		event_street='".mysql_real_escape_string($event_street)."', 
+		event_street2='".mysql_real_escape_string($event_street2)."', 
+		event_city='".mysql_real_escape_string($event_city)."', 
+		event_state='".mysql_real_escape_string($event_state)."', 
+		event_postcode='".mysql_real_escape_string($event_postcode)."',
+		event_country='".mysql_real_escape_string($event_country)."'";
 	     
 	    $wpdb->get_results($sql);
 	
-	    $sql = "SELECT event_id FROM " . MY_CALENDAR_TABLE . " WHERE event_title='" . mysql_escape_string($title) . "'"
-		. " AND event_desc='" . mysql_escape_string($desc) . "' AND event_begin='" . mysql_escape_string($begin) . "' AND event_end='" . mysql_escape_string($end) . "' AND event_recur='" . mysql_escape_string($recur) . "' AND event_repeats='" . mysql_escape_string($repeats) . "' LIMIT 1";
+	    $sql = "SELECT event_id FROM " . MY_CALENDAR_TABLE . " WHERE event_title='" . mysql_real_escape_string($title) . "'"
+		. " AND event_desc='" . mysql_real_escape_string($desc) . "' AND event_begin='" . mysql_real_escape_string($begin) . "' AND event_end='" . mysql_real_escape_string($end) . "' AND event_recur='" . mysql_real_escape_string($recur) . "' AND event_repeats='" . mysql_real_escape_string($repeats) . "' LIMIT 1";
 	    $result = $wpdb->get_results($sql);
 	
 	    if ( empty($result) || empty($result[0]->event_id) ) {
@@ -311,29 +335,29 @@ if ( $action == 'add' ) {
 	    }
 	  if ($start_date_ok == 1 && $end_date_ok == 1 && $time_ok == 1 && $url_ok == 1 && $title_ok && $recurring_ok == 1) {
 		$sql = "UPDATE " . MY_CALENDAR_TABLE . " SET 
-				event_title='" . mysql_escape_string($title) . "', 
-				event_desc='" . mysql_escape_string($desc) . "', 
-				event_begin='" . mysql_escape_string($begin) . "', 
-				event_end='" . mysql_escape_string($end) . "', 
-				event_time='" . mysql_escape_string($time) . "', 
-				event_recur='" . mysql_escape_string($recur) . "', 
-				event_repeats='" . mysql_escape_string($repeats) . "', 
+				event_title='" . mysql_real_escape_string($title) . "', 
+				event_desc='" . mysql_real_escape_string($desc) . "', 
+				event_begin='" . mysql_real_escape_string($begin) . "', 
+				event_end='" . mysql_real_escape_string($end) . "', 
+				event_time='" . mysql_real_escape_string($time) . "', 
+				event_recur='" . mysql_real_escape_string($recur) . "', 
+				event_repeats='" . mysql_real_escape_string($repeats) . "', 
 				event_author=".$current_user->ID . ", 
-				event_category=".mysql_escape_string($category).", 
-				event_link='".mysql_escape_string($linky)."', 
-				event_label='".mysql_escape_string($event_label)."', 
-				event_street='".mysql_escape_string($event_street)."', 
-				event_street2='".mysql_escape_string($event_street2)."', 
-				event_city='".mysql_escape_string($event_city)."', 
-				event_state='".mysql_escape_string($event_state)."', 
-				event_postcode='".mysql_escape_string($event_postcode)."', 
-				event_country='".mysql_escape_string($event_country)."' 
-				WHERE event_id='" . mysql_escape_string($event_id) . "'";
+				event_category=".mysql_real_escape_string($category).", 
+				event_link='".mysql_real_escape_string($linky)."', 
+				event_label='".mysql_real_escape_string($event_label)."', 
+				event_street='".mysql_real_escape_string($event_street)."', 
+				event_street2='".mysql_real_escape_string($event_street2)."', 
+				event_city='".mysql_real_escape_string($event_city)."', 
+				event_state='".mysql_real_escape_string($event_state)."', 
+				event_postcode='".mysql_real_escape_string($event_postcode)."', 
+				event_country='".mysql_real_escape_string($event_country)."' 
+				WHERE event_id='" . mysql_real_escape_string($event_id) . "'";
 		     
 		$wpdb->get_results($sql);
 		
-		$sql = "SELECT event_id FROM " . MY_CALENDAR_TABLE . " WHERE event_title='" . mysql_escape_string($title) . "'"
-		     . " AND event_desc='" . mysql_escape_string($desc) . "' AND event_begin='" . mysql_escape_string($begin) . "' AND event_end='" . mysql_escape_string($end) . "' AND event_recur='" . mysql_escape_string($recur) . "' AND event_repeats='" . mysql_escape_string($repeats) . "' LIMIT 1";
+		$sql = "SELECT event_id FROM " . MY_CALENDAR_TABLE . " WHERE event_title='" . mysql_real_escape_string($title) . "'"
+		     . " AND event_desc='" . mysql_real_escape_string($desc) . "' AND event_begin='" . mysql_real_escape_string($begin) . "' AND event_end='" . mysql_real_escape_string($end) . "' AND event_recur='" . mysql_real_escape_string($recur) . "' AND event_repeats='" . mysql_real_escape_string($repeats) . "' LIMIT 1";
 		$result = $wpdb->get_results($sql);
 		
 			if ( empty($result) || empty($result[0]->event_id) ) {
@@ -374,10 +398,10 @@ if ( $action == 'add' ) {
 		<div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e("You can't delete an event if you haven't submitted an event id",'my-calendar'); ?></p></div>
 		<?php			
 	} else {
-		$sql = "DELETE FROM " . MY_CALENDAR_TABLE . " WHERE event_id='" . mysql_escape_string($event_id) . "'";
+		$sql = "DELETE FROM " . MY_CALENDAR_TABLE . " WHERE event_id='" . mysql_real_escape_string($event_id) . "'";
 		$wpdb->get_results($sql);
 		
-		$sql = "SELECT event_id FROM " . MY_CALENDAR_TABLE . " WHERE event_id='" . mysql_escape_string($event_id) . "'";
+		$sql = "SELECT event_id FROM " . MY_CALENDAR_TABLE . " WHERE event_id='" . mysql_real_escape_string($event_id) . "'";
 		$result = $wpdb->get_results($sql);
 		
 		if ( empty($result) || empty($result[0]->event_id) ) {
@@ -436,7 +460,7 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 			echo "<div class=\"error\"><p>".__('Sorry! That\'s an invalid event key.','my-calendar')."</p></div>";
 			return;
 		} else {
-			$data = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE event_id='" . mysql_escape_string($event_id) . "' LIMIT 1");
+			$data = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE event_id='" . mysql_real_escape_string($event_id) . "' LIMIT 1");
 			if ( empty($data) ) {
 				echo "<div class=\"error\"><p>".__("Sorry! We couldn't find an event with that ID.",'my-calendar')."</p></div>";
 				return;
@@ -457,7 +481,7 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 <div class="postbox">
 	<h3><?php if ($mode == "add") { _e('Add an Event','my-calendar'); } else { _e('Edit Event'); } ?></h3>
 	<div class="inside">	
-	<form name="my-calendar" id="my-calendar" method="post" action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar">
+	<form name="my-calendar" id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar">
 		<div>
 		<input type="hidden" name="action" value="<?php echo $mode; ?>" />
 		<input type="hidden" name="event_id" value="<?php echo $event_id; ?>" />
@@ -637,7 +661,7 @@ function jd_events_display_list() {
                                 ?>
 				<td style="background-color:<?php echo $this_cat->category_color;?>;"><?php echo $this_cat->category_name; ?></td>
 				<?php unset($this_cat); ?>
-				<td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=my-calendar&amp;action=edit&amp;event_id=<?php echo $event->event_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a> &middot; <a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=my-calendar&amp;action=delete&amp;event_id=<?php echo $event->event_id;?>" class="delete"><?php echo __('Delete','my-calendar'); ?></a></td>			</tr>
+				<td><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;action=edit&amp;event_id=<?php echo $event->event_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a> &middot; <a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;action=delete&amp;event_id=<?php echo $event->event_id;?>" class="delete"><?php echo __('Delete','my-calendar'); ?></a></td>			</tr>
 			<?php
 		}
 		?>

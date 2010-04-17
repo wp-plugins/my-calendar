@@ -32,6 +32,7 @@ delete_option('display_upcoming_days');
 delete_option('display_upcoming_events');
 delete_option('display_past_events');
 delete_option('display_past_days');
+delete_option('ko_calendar_imported');
 
 }
 ?>
