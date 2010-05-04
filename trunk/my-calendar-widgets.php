@@ -106,11 +106,11 @@ function init_my_calendar_upcoming() {
     ?>
 <p>
    <label for="my_calendar_upcoming_title"><?php _e('Title','my-calendar'); ?>:</label><br />
-   <input class="widefat" type="text" id="my_calendar_upcoming_title" name="my_calendar_upcoming_title" value="<?php echo $widget_title; ?>"/>
+   <input class="widefat" type="text" id="my_calendar_upcoming_title" name="my_calendar_upcoming_title" value="<?php if(isset($_POST['my_calendar_upcoming_title'])){echo strip_tags($_POST['my_calendar_upcoming_title']); } else { echo $widget_title; } ?>"/>
 </p>
 <p>
 	<label for="my_calendar_upcoming_template"><?php _e('Template','my-calendar'); ?></label><br />
-	<textarea class="widefat" rows="8" cols="20" id="my_calendar_upcoming_template" name="my_calendar_upcoming_template"><?php echo stripcslashes($widget_template); ?></textarea>
+	<textarea class="widefat" rows="8" cols="20" id="my_calendar_upcoming_template" name="my_calendar_upcoming_template"><?php  if(isset($_POST['my_calendar_upcoming_template'])){echo stripcslashes($_POST['my_calendar_upcoming_template']); } else { echo stripcslashes($widget_template); } ?></textarea>
 </p>
 	<fieldset>
 	<legend><?php _e('Widget Options','my-calendar'); ?></legend>
@@ -121,12 +121,12 @@ function init_my_calendar_upcoming() {
                                     </select>
 	</p>
 	<p>
-	<input type="text" id="display_upcoming_events" name="display_upcoming_events" value="<?php echo $upcoming_events ?>" size="1" maxlength="2" /> <label for="display_upcoming_events"><?php _e('events into the future;','my-calendar'); ?></label><br />
-	<input type="text" id="display_past_events" name="display_past_events" value="<?php echo $past_events ?>" size="1" maxlength="2" /> <label for="display_past_events"><?php _e('events from the past','my-calendar'); ?></label>
+	<input type="text" id="display_upcoming_events" name="display_upcoming_events" value="<?php  if(isset($_POST['display_upcoming_events'])){echo $_POST['display_upcoming_events']; } else { echo $upcoming_events; } ?>" size="1" maxlength="2" /> <label for="display_upcoming_events"><?php _e('events into the future;','my-calendar'); ?></label><br />
+	<input type="text" id="display_past_events" name="display_past_events" value="<?php if(isset($_POST['display_past_events'])){echo $_POST['display_past_events']; } else { echo $past_events; } ?>" size="1" maxlength="2" /> <label for="display_past_events"><?php _e('events from the past','my-calendar'); ?></label>
 	</p>
 	<p>
-	<input type="text" id="display_upcoming_days" name="display_upcoming_days" value="<?php echo $upcoming_days ?>" size="1" maxlength="2" /> <label for="display_upcoming_days"><?php _e('days into the future;','my-calendar'); ?></label><br />
-	<input type="text" id="display_past_days" name="display_past_days" value="<?php echo $past_days ?>" size="1" maxlength="2" /> <label for="display_past_days"><?php _e('days from the past','my-calendar'); ?></label>
+	<input type="text" id="display_upcoming_days" name="display_upcoming_days" value="<?php if(isset($_POST['display_upcoming_days'])){echo $_POST['display_upcoming_days']; } else { echo $upcoming_days; } ?>" size="1" maxlength="2" /> <label for="display_upcoming_days"><?php _e('days into the future;','my-calendar'); ?></label><br />
+	<input type="text" id="display_past_days" name="display_past_days" value="<?php if(isset($_POST['display_past_days'])){echo $_POST['display_past_days']; } else { echo $past_days; } ?>" size="1" maxlength="2" /> <label for="display_past_days"><?php _e('days from the past','my-calendar'); ?></label>
 	</p>
 	</fieldset>
     <?php
@@ -145,7 +145,7 @@ function my_calendar_upcoming_events() {
   check_my_calendar();
   $template = get_option('my_calendar_upcoming_template');
   $display_upcoming_type = get_option('display_upcoming_type');
-  
+  $today = date('Y').'-'.date('m').'-'.date('d');
   
       // Get number of days we should go into the future
       $future_days = get_option('display_upcoming_days');
@@ -162,7 +162,7 @@ function my_calendar_upcoming_events() {
           list($y,$m,$d) = split("-",date("Y-m-d",mktime($day_count*24,0,0,date("m"),date("d"),date("Y"))));
           $events = my_calendar_grab_events( $y,$m,$d );
 
-          usort($events, "my_calendar_time_cmp");
+          @usort($events, "my_calendar_time_cmp");
           foreach($events as $event) {
 		    $event_details = event_as_array($event);
 			$output .= "<li>".jd_draw_widget_event($event_details,$template)."</li>";
@@ -170,32 +170,50 @@ function my_calendar_upcoming_events() {
           $day_count = $day_count+1;
         }
 	} else {
-         $events = mc_get_all_events( ); // grab all events WITHIN reasonable proximity
-          usort($events, "my_calendar_timediff_cmp");// sort all events by proximity to current date
-			  for ($i=0;$i<=($past_events+$future_events);$i++) {
+         $events = mc_get_all_events();		 // grab all events WITHIN reasonable proximity		 
+		 $past = 1;
+		 $future = 1;
+         @usort( $events, "my_calendar_timediff_cmp" );// sort all events by proximity to current date
+	     $count = count($events);
+			for ( $i=0;$i<=$count;$i++ ) {
 				if ($events[$i]) {
-				$near_events[] = $events[$i]; // split off a number of events equal to the past + future settings
+					if ( ( $past<=$past_events && $future<=$future_events ) ) {
+						$near_events[] = $events[$i]; // if neither limit is reached, split off freely
+					} else if ( $past <= $past_events && ( my_calendar_date_comp( $events[$i]->event_begin,$today ) ) ) {
+						$near_events[] = $events[$i]; // split off another past event
+					} else if ( $future <= $future_events && ( !my_calendar_date_comp( $events[$i]->event_begin,$today ) ) ) {
+						$near_events[] = $events[$i]; // split off another future event
+					}				
+					if ( my_calendar_date_comp( $events[$i]->event_begin,$today ) ) {
+						$past++;
+					} elseif  ( my_calendar_date_equal( $events[$i]->event_begin,$today ) ) {
+						$present = 1;
+					} else {
+						$future++;
+					} 
 				}
-			  }
+			}
 		  
 		  $events = $near_events;
-		  usort($events, "my_calendar_datetime_cmp"); // sort split events by date
-	  
-          foreach($events as $event) {
-		    $event_details = event_as_array($event);
-				$today = date('Y').'-'.date('m').'-'.date('d');
+		  @usort( $events, "my_calendar_datetime_cmp" ); // sort split events by date	  
+		  if ( is_array( $events ) ) {
+          foreach( $events as $event ) {
+		    $event_details = event_as_array( $event );
 				$date = date('Y-m-d',strtotime($event_details['date']));
-				if (my_calendar_date_comp($date,$today)===true) {
+				if (my_calendar_date_comp( $date,$today )===true) {
 					$class = "past-event";
 				} else {
 					$class = "future-event";
 				}
-				if (my_calendar_date_equal($date,$today)) {
+				if ( my_calendar_date_equal( $date,$today ) ) {
 					$class = "today";
-				}				
+				}	
 			$output .= "<li class=\"$class\">".jd_draw_widget_event($event_details,$template)."</li>\n";
           }
           $day_count = $day_count+1;
+		  } else {
+			$output .= "<li class=\"no-events\">".__('There are no events currently scheduled.','my-calendar')."</li>\n";
+		  }
 	}
 
       if ($output != '') {
@@ -217,7 +235,7 @@ function my_calendar_todays_events() {
 	if (count($events) != 0) {
 		$output = "<ul>";
 	}
-    usort($events, "my_calendar_time_cmp");
+    @usort($events, "my_calendar_time_cmp");
         foreach($events as $event) {
 		    $event_details = event_as_array($event);
 

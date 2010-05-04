@@ -58,6 +58,15 @@ Features:
 
 == Changelog ==
 
+= 1.1.0 =
+
+* Fixed some problems with Upcoming Events past events not scrolling off; hopefully all!
+* Fixed some problems with fuzzy interpretations of the numbers of past/future events displayed in Upcoming Events.
+* Added Bi-weekly events
+* Added restrictions so that admin level users can edit any events but other users can only edit their own events
+* Removed character restrictions on event titles
+* Revised default stylesheet 
+
 = 1.0.2 =
 
 * Fixed problems with editing and deleting events or categories in multiblog installation
