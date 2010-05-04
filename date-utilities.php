@@ -1,6 +1,5 @@
 <?php 
 
-
 function my_calendar_add_date($givendate,$day=0,$mth=0,$yr=0) {
 	$cd = strtotime($givendate);
 	$newdate = date('Y-m-d', mktime(date('h',$cd),date('i',$cd), date('s',$cd), date('m',$cd)+$mth,date('d',$cd)+$day, date('Y',$cd)+$yr));
@@ -36,6 +35,16 @@ function my_calendar_time_cmp($a, $b) {
 
 // Function to compare datetime in event objects
 function my_calendar_datetime_cmp($a, $b) {
+	$event_dt_a = strtotime($a->event_begin .' '. $a->event_time);
+	$event_dt_b = strtotime($b->event_begin .' '. $b->event_time);
+  if ($event_dt_a == $event_dt_b ) {
+    return 0;
+  }
+  return ( $event_dt_a < $event_dt_b ) ? -1 : 1;
+}
+
+// reverse Function to compare datetime in event objects
+function my_calendar_reverse_datetime_cmp($b, $a) {
 	$event_dt_a = strtotime($a->event_begin .' '. $a->event_time);
 	$event_dt_b = strtotime($b->event_begin .' '. $b->event_time);
   if ($event_dt_a == $event_dt_b ) {

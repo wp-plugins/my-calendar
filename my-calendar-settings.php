@@ -142,7 +142,7 @@ function edit_my_calendar_config() {
 <div class="postbox">
 	<h3><?php _e('Calendar Settings','my-calendar'); ?></h3>
 	<div class="inside">	
-    <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar-config">
+    <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
     <fieldset>
     <legend><?php _e('Primary Calendar Options','my-calendar'); ?></legend>
     <p>
@@ -206,7 +206,7 @@ if ( get_option('ko_calendar_imported') != 'true' ) {
 	_e('My Calendar has identified that you have the Calendar plugin by Kieran O\'Shea installed. You can import those events and categories into the My Calendar database. Would you like to import these events?','my-calendar');
 	echo "</p>";
 	?>
-		<form method="post" action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar-config">
+		<form method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
 		<div>
 		<input type="hidden" name="import" value="true" />
 		<input type="submit" value="Import from Calendar" name="import-calendar" class="button-primary" />

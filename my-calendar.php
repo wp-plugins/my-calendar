@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.0.2
+Version: 1.1.0
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -160,14 +160,13 @@ jQuery(document).ready(function($) {
 ';
 }
 if ($_GET['page']=='my-calendar-categories') {
-?>
-<script type=\"text/javascript\">
-//<![CDATA[
-//jQuery(document).ready(function($) {
-//$('#category_color').colorpicker({ flat: true });
-//]]>	 
-</script>
-<?php
+	/*
+	<script type=\"text/javascript\">
+	//<![CDATA[
+	//jQuery(document).ready(function($) {
+	//$('#category_color').colorpicker({ flat: true });
+	//]]>	 
+	*/
 }
 }
 function my_calendar_add_display_javascript() {
@@ -307,10 +306,17 @@ function check_my_calendar() {
 
   // default styles will go into the options table on a new install
 $initial_style = "
-#jd-calendar caption {
-margin-top:-8px;
-background:#f6f6f6;
-border:1px solid #ddd;
+#jd-calendar * {
+margin: 0;
+padding: 0;
+line-height: 1.5;
+color: #000;
+background: #fff;
+}
+#jd-calendar caption, #jd-calendar .my-calendar-date-switcher  {
+background: #edf7ff;
+border: 1px solid #a9e3ff;
+margin: 0;
 font-weight:700;
 padding:2px 0;
 }
@@ -329,12 +335,21 @@ width:60px;
 height:70px;
 padding:2px!important;
 }
-
+#jd-calendar th {
+text-align: center;
+padding: 5px 0!important;
+letter-spacing: 1px;
+}
+#jd-calendar th abbr {
+border-bottom: none;
+}
 #jd-calendar h3 {
-font-size:1em;
+font-size:.9em;
+font-family: Arial, Verdana, sans-serif;
 font-weight:700;
 margin:3px 0;
 padding:0;
+width: 100%;
 }
 #jd-calendar h3 img {
 vertical-align: bottom;
@@ -348,17 +363,16 @@ vertical-align: middle;
 font-size:1.2em;
 margin:0;
 }
-
 #jd-calendar .calendar-event .details {
 position:absolute;
-width:300px;
-background:#cae0f5;
+width:50%;
+background: #edf7ff;
 color:#000;
-border:1px solid;
+border:1px solid #9b5;
 -moz-border-radius:10px;
--moz-box-shadow:4px 4px 12px #777;
--webkit-box-shadow:4px 4px 12px #777;
-box-shadow:4px 4px 12px #777;
+-moz-box-shadow:3px 3px 6px #777;
+-webkit-box-shadow:3px 3px 6px #777;
+box-shadow:3px 3px 6px #777;
 padding:5px;
 z-index: 3;
 }
@@ -390,7 +404,11 @@ border:1px solid #c3d3d3;
 }
 
 #jd-calendar .current-day {
-background:#ffd;
+background:#ffb;
+}
+#jd-calendar .current-day span {
+color: #000;
+background: #eee;
 }
 
 #jd-calendar td span {
@@ -408,8 +426,8 @@ padding:0;
 }
 
 #jd-calendar .weekend {
-font-weight:700;
-background:#fdd;
+background:#bd7;
+color: #000;
 }
 
 #jd-calendar th {
@@ -417,8 +435,21 @@ font-size:.8em;
 text-transform:uppercase;
 padding:2px 4px 2px 0;
 }
-
-.category-icon {
+#jd-calendar .category-key {
+background: #edf7ff;
+border: 1px solid #a9e3ff;
+padding: 5px;
+margin: 5px 0;
+}
+#jd-calendar .category-key ul {
+list-style-type: none;
+margin: 0;
+padding: 0;
+}
+#jd-calendar .category-key li {
+margin: 2px 10px;
+}
+#jd-calendar .category-icon {
 margin-right:5px;
 margin-bottom:5px;
 vertical-align:middle;
@@ -464,10 +495,10 @@ clear:left;
 background: #fff;
 }
 #jd-calendar {
-padding: 5px;
 -moz-border-radius: 5px;
 -webkit-border-radius: 5px;
 border-radius: 5px;
+position: relative;
 }
 #jd-calendar img {
 border: none;
@@ -477,13 +508,12 @@ margin-right: 5px;
 vertical-align: top;
 }
 .my-calendar-nav {
-height:1em;
+height: 2.25em;
+border-bottom: 1px solid #ac6;
 }
 
 #jd-calendar .my-calendar-nav ul {
 list-style-type:none;
-height:2.2em;
-border-bottom:1px solid #ccc;
 margin:0;
 padding:0;
 }
@@ -501,20 +531,39 @@ my-calendar-nav .my-calendar-next {
 text-align:right;
 }
 
-.my-calendar-nav li a {
+#jd-calendar .my-calendar-nav li a {
 display:block;
-background:#eee;
-border:1px solid #ddd;
+background:#fff;
+border:1px solid #9b5;
 -moz-border-radius:5px 5px 0 0;
 -webkit-border-radius:5px 5px 0 0;
 border-radius:5px 5px 0 0;
 border-bottom:none;
 text-align:center;
 padding:1px 20px;
+color: #243f82;
 }
 
-.my-calendar-nav li a:hover {
-background:#fff;
+#jd-calendar .my-calendar-nav li a:hover {
+background:#a9e3ff;
+color:#000;
+border: 1px solid #243f82;
+border-bottom: none;
+}
+#jd-calendar .my-calendar-next {
+margin-left: 1px;
+}
+#jd-calendar .day-without-date {
+background: #fafafa;
+}
+#upcoming-events .past-event {
+color: #777;
+}
+#upcoming-events .today {
+color: #111;
+}
+#upcoming-events .future-event {
+color: #555;
 }";
 
 $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{time}, {category}</span>";
@@ -573,7 +622,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
       add_option('display_upcoming_days',7);
       add_option('my_calendar_version','1.0');
       add_option('display_upcoming_type','false');
-      add_option('display_my_calendar_upcoming_events',3);
+      add_option('display_upcoming_events',3);
       add_option('display_past_days',0);
       add_option('display_past_events',2);
 	  add_option('my_calendar_use_styles','false');
@@ -859,6 +908,16 @@ global $wpdb;
 								$arr_events[]=${$i};
 							}
 							break;
+						case "B":
+							for ($i=$numback;$i<=$numforward;$i++) {
+								$begin = my_calendar_add_date($orig_begin,($i*14),0,0);
+								$end = my_calendar_add_date($orig_end,($i*14),0,0);
+								${$i} = clone $event;
+								${$i}->event_begin = $begin;
+								${$i}->event_end = $end;							
+								$arr_events[]=${$i};
+							}
+							break;							
 						case "M":
 							for ($i=$numback;$i<=$numforward;$i++) {
 								$begin = my_calendar_add_date($orig_begin,0,$i,0);
@@ -886,9 +945,9 @@ global $wpdb;
 							$event_begin = $event->event_begin;
 							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
 							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_my_calendar_upcoming_events');
+							$fDays = get_option('display_upcoming_events');
 							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 	
-								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($this_date,-($nDays),0,0) )) {
+								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_days = $diff/(86400);
 									$days = explode(".",$diff_days);
@@ -924,10 +983,10 @@ global $wpdb;
 							$event_begin = $event->event_begin;
 							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
 							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_my_calendar_upcoming_events');
+							$fDays = get_option('display_upcoming_events');
 							
 							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 
-								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($this_date,-($nDays*7),0,0) )) {
+								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays*7),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_weeks = $diff/(86400*7);
 									$weeks = explode(".",$diff_weeks);
@@ -941,7 +1000,7 @@ global $wpdb;
 											${$realStart}->event_begin = $this_date;
 											$arr_events[] = ${$realStart};
 										}
-									}								
+									}
 								
 								} else {
 								$realDays = -($nDays);
@@ -959,14 +1018,53 @@ global $wpdb;
 							}						
 						break;
 						
+						case "B":
+							$event_begin = $event->event_begin;
+							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
+							$nDays = get_option('display_past_events');
+							$fDays = get_option('display_upcoming_events');
+							
+							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 
+								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays*14),0,0) )) {
+									$diff = jd_date_diff_precise(strtotime($event_begin));
+									$diff_weeks = $diff/(86400*14);
+									$weeks = explode(".",$diff_weeks);
+									$realStart = $weeks[0] - $nDays;
+									$realFinish = $weeks[0] + $fDays;
+
+									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
+									$this_date = my_calendar_add_date($event_begin,($realStart*14),0,0);
+										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
+											${$realStart} = clone $event;
+											${$realStart}->event_begin = $this_date;
+											$arr_events[] = ${$realStart};
+										}
+									}
+								
+								} else {
+								$realDays = -($nDays);
+								for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
+								$this_date = my_calendar_add_date($event_begin,($realDays*14),0,0);
+									if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
+										${$realDays} = clone $event;
+										${$realDays}->event_begin = $this_date;
+										$arr_events[] = ${$realDays};
+									}
+								}
+								}
+							} else {
+								break;
+							}						
+						break;
+						
 						case "M":
 							$event_begin = $event->event_begin;
 							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
 							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_my_calendar_upcoming_events');
+							$fDays = get_option('display_upcoming_events');
 							
 							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 	
-								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($this_date,-($nDays),0,0) )) {
+								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_days = $diff/(86400*30);
 									$days = explode(".",$diff_days);
@@ -1002,10 +1100,10 @@ global $wpdb;
 							$event_begin = $event->event_begin;
 							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
 							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_my_calendar_upcoming_events');
+							$fDays = get_option('display_upcoming_events');
 								
 							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 		
-								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($this_date,-($nDays),0,0) )) {
+								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_days = $diff/(86400*365);
 									$days = explode(".",$diff_days);
@@ -1171,7 +1269,73 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
           }
      	}
 
-	/* 
+//bi-weekly events
+$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'B' AND '$date' >= event_begin AND event_repeats = 0 ORDER BY event_id");
+	if ( !empty( $events ) ) {
+       	  foreach( $events as $event ) {
+	    // This is going to get complex so lets setup what we would place in for 
+	    // an event so we can drop it in with ease
+
+	    // Now we are going to check to see what day the original event
+	    // fell on and see if the current date is both after it and on 
+	    // the correct day. If it is, display the event!
+	    $day_start_event = date('D',strtotime($event->event_begin));
+	    $day_end_event = date('D',strtotime($event->event_end));
+	    $current_day = date('D',strtotime($date));
+		$current_date = date('Y-m-d',strtotime($date));
+		$start_date = $event->event_begin;
+		
+		$plan = array("Mon"=>1,"Tue"=>2,"Wed"=>3,"Thu"=>4,"Fri"=>5,"Sat"=>6,"Sun"=>7);
+
+			for ($n=0;$n<=$event->event_repeats;$n++) {
+				if ( $current_date == my_calendar_add_date($start_date,(14*$n)) ) {
+				    if ($plan[$day_start_event] > $plan[$day_end_event]) {
+						if (($plan[$day_start_event] <= $plan[$current_day]) || ($plan[$current_day] <= $plan[$day_end_event]))	{
+						$arr_events[]=$event;
+				    	}
+				    } else if (($plan[$day_start_event] < $plan[$day_end_event]) || ($plan[$day_start_event]== $plan[$day_end_event])) {
+						if (($plan[$day_start_event] <= $plan[$current_day]) && ($plan[$current_day] <= $plan[$day_end_event]))	{
+						$arr_events[]=$event;
+				    	}		
+				    }
+				}
+			}
+	    
+          }
+     	}
+
+	// The bi-weekly events that have a limit on how many times they occur
+	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'B' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*14) >= (TO_DAYS('$date') - TO_DAYS(event_end)) ORDER BY event_id");
+	if (!empty($events)) {
+		
+		foreach($events as $event) {
+		// Now we are going to check to see what day the original event
+		// fell on and see if the current date is both after it and on 
+		// the correct day. If it is, display the event!
+		$day_start_event = date('D',strtotime($event->event_begin));
+		$day_end_event = date('D',strtotime($event->event_end));
+		$current_day = date('D',strtotime($date));
+		$current_date = date('Y-m-d',strtotime($date));
+		$start_date = $event->event_begin;
+		
+		$plan = array("Mon"=>1,"Tue"=>2,"Wed"=>3,"Thu"=>4,"Fri"=>5,"Sat"=>6,"Sun"=>7);
+
+			for ($n=0;$n<=$event->event_repeats;$n++) {
+				if ( $current_date == my_calendar_add_date($start_date,(14*$n)) ) {
+					if ($plan[$day_start_event] > $plan[$day_end_event]) {
+						if (($plan[$day_start_event] <= $plan[$current_day]) || ($plan[$current_day] <= $plan[$day_end_event]))	{
+						$arr_events[]=$event;
+						}
+					} else if (($plan[$day_start_event] < $plan[$day_end_event]) || ($plan[$day_start_event]== $plan[$day_end_event])) {
+						if (($plan[$day_start_event] <= $plan[$current_day]) && ($plan[$current_day] <= $plan[$day_end_event])) {
+						$arr_events[]=$event;
+						}		
+					}
+				}
+			}
+		}
+    }
+ 	/* 
 	  Weekly - well isn't this fun! We need to scan all weekly events, find what day they fell on
 	  and see if that matches the current day. If it does, we check to see if the repeats are 0. 
 	  If they are, display the event, if not, we fast forward from the original day in week blocks 
@@ -1180,10 +1344,8 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 
 	// The weekly events that never stop recurring
 	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'W' AND '$date' >= event_begin AND event_repeats = 0 ORDER BY event_id");
-	if (!empty($events))
-     	{
-       	  foreach($events as $event)
-          {
+	if ( !empty( $events ) ) {
+       	  foreach( $events as $event ) {
 	    // This is going to get complex so lets setup what we would place in for 
 	    // an event so we can drop it in with ease
 
@@ -1208,7 +1370,7 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 	    
           }
      	}
-
+		
 	// The weekly events that have a limit on how many times they occur
 	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'W' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*7) >= (TO_DAYS('$date') - TO_DAYS(event_end)) ORDER BY event_id");
 	if (!empty($events)) {
@@ -1584,5 +1746,21 @@ if ($date_format == "") {
 function my_calendar_is_odd( $int ) {
   return( $int & 1 );
 }
+
+
+function mc_can_edit_event($author_id) {
+	global $user_ID;
+	get_currentuserinfo();
+	$user = get_userdata($user_ID);	
+	
+	if ($user->user_level == 10) {
+			return true;
+		} elseif ( $user_ID == $author_id ) {
+			return true;
+		} else {
+			return false;
+		}
+}
+			
 
 ?>

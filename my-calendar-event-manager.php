@@ -14,7 +14,7 @@ if ( get_option('ko_calendar_imported') != 'true' ) {
 	_e('My Calendar has identified that you have the Calendar plugin by Kieran O\'Shea installed. You can import those events and categories into the My Calendar database. Would you like to import these events?','my-calendar');
 	echo "</p>";
 	?>
-		<form method="post" action="<?php bloginfo('url'); ?>/wp-admin/admin.php?page=my-calendar-config">
+		<form method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
 		<div>
 		<input type="hidden" name="import" value="true" />
 		<input type="submit" value="Import from Calendar" name="import-calendar" class="button-primary" />
@@ -45,20 +45,28 @@ if ($_GET['action'] == 'edit') {
 check_my_calendar();
 
 if ($_GET['action'] == 'delete') {
-	    $sql = "SELECT event_title FROM " . MY_CALENDAR_TABLE . " WHERE event_id=" . (int) $_GET['event_id'];
+	    $sql = "SELECT event_title, event_author FROM " . MY_CALENDAR_TABLE . " WHERE event_id=" . (int) $_GET['event_id'];
 	   $result = $wpdb->get_results($sql);
-?>
-	<div class="error">
-	<p><strong><?php _e('Delete Event','my-calendar'); ?>:</strong> <?php _e('Are you sure you want to delete this event?','my-calendar'); ?></p>
-	<form action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar" method="post">
-	<div>
-	<input type="hidden" value="delete" name="action" />
-	<input type="hidden" value="<?php echo (int) $_GET['event_id']; ?>" name="event_id" />
-	<input type="submit" name="submit" class="button-primary" value="<?php _e('Delete','my-calendar'); echo " &quot;".$result[0]->event_title."&quot;"; ?>" />
-	</div>
-	</form>
-	</div>
-<?php
+	if ( mc_can_edit_event( $result[1] ) ) {
+	?>
+		<div class="error">
+		<p><strong><?php _e('Delete Event','my-calendar'); ?>:</strong> <?php _e('Are you sure you want to delete this event?','my-calendar'); ?></p>
+		<form action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar" method="post">
+		<div>
+		<input type="hidden" value="delete" name="action" />
+		<input type="hidden" value="<?php echo (int) $_GET['event_id']; ?>" name="event_id" />
+		<input type="submit" name="submit" class="button-primary" value="<?php _e('Delete','my-calendar'); echo " &quot;".$result[0]->event_title."&quot;"; ?>" />
+		</div>
+		</form>
+		</div>
+	<?php
+	} else {
+	?>
+		<div class="error">
+		<p><strong><?php _e('You do not have permission to delete that event.','my-calendar'); ?></strong></p>
+		</div>
+	<?php
+	}
 }
 
 // Deal with adding an event to the database
@@ -152,15 +160,16 @@ if ( $action == 'add' ) {
               <?php
 	  }
 	// The title must be at least one character in length and no more than 60 - only basic punctuation is allowed
-	if (preg_match('/^[a-zA-Z0-9\'\"]{1}[a-zA-Z0-9[:space:][.,;:()\'\"]{0,60}$/',$title)) {
+	$title_length = strlen($title);
+	if ( $title_length > 1 && $title_length <= 60 ) {
 	    $title_ok =1;
 	  }	else {
               ?>
-              <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The event title must be between 1 and 60 characters in length. Some punctuation characters may not be allowed.','my-calendar'); ?></p></div>
+              <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The event title must be between 1 and 60 characters in length.','my-calendar'); ?></p></div>
               <?php
 	  }
 	// We run some checks on recurrance                                                                        
-	if (($repeats == 0 && $recur == 'S') || (($repeats >= 0) && ($recur == 'W' || $recur == 'M' || $recur == 'Y' || $recur == 'D'))) {
+	if (($repeats == 0 && $recur == 'S') || (($repeats >= 0) && ($recur == 'W' || $recur == 'B' || $recur == 'M' || $recur == 'Y' || $recur == 'D'))) {
 	    $recurring_ok = 1;
 	  }	else {
               ?>
@@ -239,6 +248,9 @@ if ( $action == 'add' ) {
     $event_state = !empty($_POST['event_state']) ? $_POST['event_state'] : '';
     $event_postcode = !empty($_POST['event_postcode']) ? $_POST['event_postcode'] : '';
     $event_country = !empty($_POST['event_country']) ? $_POST['event_country'] : '';
+    $event_author = !empty($_POST['event_author']) ? $_POST['event_author'] : '';
+	
+	if ( mc_can_edit_event( $event_author ) ) {
 	
 
 	// Deal with the fools who have left magic quotes turned on
@@ -259,6 +271,7 @@ if ( $action == 'add' ) {
 		$event_state = stripslashes($event_state);
 		$event_postcode = stripslashes($event_postcode);
 		$event_country = stripslashes($event_country);
+		$event_author = stripslashes($event_author);
 	}
 	
 	if ( empty($event_id) ) {
@@ -318,15 +331,16 @@ if ( $action == 'add' ) {
 	      <?php
 	    }
 	  // The title must be at least one character in length and no more than 60 - no non-standard characters allowed
-	if (preg_match('/^[a-zA-Z0-9\'\"]{1}[a-zA-Z0-9[:space:][.,;:()\'\"]{0,60}$/',$title)) {
+	$title_length = strlen($title);
+	if ( $title_length > 1 && $title_length <= 60 ) {
 	      $title_ok =1;
 	    } else {
 	      ?>
-              <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The event title must be between 1 and 60 characters in length. Some punctuation characters may not be allowed.','my-calendar'); ?></p></div>
+              <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The event title must be between 1 and 60 characters in length.','my-calendar'); ?></p></div>
               <?php
 	    }
 	  // We run some checks on recurrance              
-          if (($repeats == 0 && $recur == 'S') || (($repeats >= 0) && ($recur == 'W' || $recur == 'M' || $recur == 'Y' || $recur == 'D' ))) {
+          if (($repeats == 0 && $recur == 'S') || (($repeats >= 0) && ($recur == 'W' || $recur == 'B' || $recur == 'M' || $recur == 'Y' || $recur == 'D' ))) {
               $recurring_ok = 1;
             } else {
               ?>
@@ -342,7 +356,6 @@ if ( $action == 'add' ) {
 				event_time='" . mysql_real_escape_string($time) . "', 
 				event_recur='" . mysql_real_escape_string($recur) . "', 
 				event_repeats='" . mysql_real_escape_string($repeats) . "', 
-				event_author=".$current_user->ID . ", 
 				event_category=".mysql_real_escape_string($category).", 
 				event_link='".mysql_real_escape_string($linky)."', 
 				event_label='".mysql_real_escape_string($event_label)."', 
@@ -387,8 +400,16 @@ if ( $action == 'add' ) {
 		  $users_entries->event_state = $event_state;
 		  $users_entries->event_postcode = $event_postcode;
 		  $users_entries->event_country = $event_country;
+		  $users_entries->event_author = $event_author;
 	      $error_with_saving = 1;
 	    }		
+	}
+	} else {
+	?>
+	<div class="error">
+	<p><strong><?php _e('You do not have sufficient permissions to edit that event.','my-calendar'); ?></strong></p>
+	</div>
+	<?php
 	}
 } elseif ( $action == 'delete' ) {
 // Deal with deleting an event from the database
@@ -475,8 +496,10 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 	  // Deal with possibility that form was submitted but not saved due to error - recover user's entries here
 	  $data = $users_entries;
 	}
-	
+	global $user_ID;
+	get_currentuserinfo();
 	?>
+	
 <div id="poststuff" class="jd-my-calendar">
 <div class="postbox">
 	<h3><?php if ($mode == "add") { _e('Add an Event','my-calendar'); } else { _e('Edit Event'); } ?></h3>
@@ -485,6 +508,7 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 		<div>
 		<input type="hidden" name="action" value="<?php echo $mode; ?>" />
 		<input type="hidden" name="event_id" value="<?php echo $event_id; ?>" />
+		<input type="hidden" name="event_author" value="<?php echo $user_ID; ?>" />
 		</div>
         <fieldset>
 		<legend><?php _e('Enter your Event Information','my-calendar'); ?></legend>
@@ -547,9 +571,11 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 					if ($data->event_recur == "S") {
 						$selected_s = 'selected="selected"';
 					} else if ($data->event_recur == "D") {
-						$selected_d = 'selected="selected"';
+						$selected_d = 'selected="selected"';						
 					} else if ($data->event_recur == "W") {
 						$selected_w = 'selected="selected"';
+					} else if ($data->event_recur == "B") {
+						$selected_b = 'selected="selected"';						
 					} else if ($data->event_recur == "M")	{
 						$selected_m = 'selected="selected"';
 					} else if ($data->event_recur == "Y")	{
@@ -559,11 +585,12 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 			<p>
 			<label for="event_repeats"><?php _e('Repeats for','my-calendar'); ?></label> <input type="text" name="event_repeats" id="event_repeats" class="input" size="1" value="<?php echo $repeats; ?>" /> 
 			<label for="event_recur"><?php _e('Units','my-calendar'); ?></label> <select name="event_recur" class="input" id="event_recur">
-						<option class="input" <?php echo $selected_s; ?> value="S">Does not recur</option>
-						<option class="input" <?php echo $selected_d; ?> value="D">Days</option>						
-						<option class="input" <?php echo $selected_w; ?> value="W">Weeks</option>
-						<option class="input" <?php echo $selected_m; ?> value="M">Months</option>
-						<option class="input" <?php echo $selected_y; ?> value="Y">Years</option>
+						<option class="input" <?php echo $selected_s; ?> value="S"><?php _e('Does not recur','my-calendar'); ?></option>
+						<option class="input" <?php echo $selected_d; ?> value="D"><?php _e('Daily','my-calendar'); ?></option>						
+						<option class="input" <?php echo $selected_w; ?> value="W"><?php _e('Weekly','my-calendar'); ?></option>
+						<option class="input" <?php echo $selected_b; ?> value="B"><?php _e('Bi-weekly','my-calendar'); ?></option>						
+						<option class="input" <?php echo $selected_m; ?> value="M"><?php _e('Monthly','my-calendar'); ?></option>
+						<option class="input" <?php echo $selected_y; ?> value="Y"><?php _e('Annually','my-calendar'); ?></option>
 			</select><br />
 					<?php _e('Entering 0 means forever, if a unit is selected. If the recurrance unit is left at "Does not recur," the event will not reoccur.','my-calendar'); ?>
 			</p>
@@ -629,6 +656,7 @@ function jd_events_display_list() {
 		$class = '';
 		foreach ( $events as $event ) {
 			$class = ($class == 'alternate') ? '' : 'alternate';
+			$author = get_userdata($event->event_author); 
 			?>
 			<tr class="<?php echo $class; ?>">
 				<th scope="row"><?php echo $event->event_id; ?></th>
@@ -642,6 +670,7 @@ function jd_events_display_list() {
 					if ($event->event_recur == 'S') { _e('Never','my-calendar'); } 
 					else if ($event->event_recur == 'D') { _e('Daily','my-calendar'); }
 					else if ($event->event_recur == 'W') { _e('Weekly','my-calendar'); }
+					else if ($event->event_recur == 'B') { _e('Bi-Weekly','my-calendar'); }
 					else if ($event->event_recur == 'M') { _e('Monthly','my-calendar'); }
 					else if ($event->event_recur == 'Y') { _e('Yearly','my-calendar'); }
 				?>
@@ -654,14 +683,18 @@ function jd_events_display_list() {
 					else if ($event->event_repeats > 0) { echo $event->event_repeats.' '.__('Times','my-calendar'); }					
 				?>
 				</td>
-				<td><?php $e = get_userdata($event->event_author); echo $e->display_name; ?></td>
+				<td><?php echo $author->display_name; ?></td>
                                 <?php
 				$sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".$event->event_category;
                                 $this_cat = $wpdb->get_row($sql);
                                 ?>
 				<td style="background-color:<?php echo $this_cat->category_color;?>;"><?php echo $this_cat->category_name; ?></td>
 				<?php unset($this_cat); ?>
-				<td><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;action=edit&amp;event_id=<?php echo $event->event_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a> &middot; <a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;action=delete&amp;event_id=<?php echo $event->event_id;?>" class="delete"><?php echo __('Delete','my-calendar'); ?></a></td>			</tr>
+				<td>
+				<?php if ( mc_can_edit_event( $event->event_author ) ) { ?>
+				<a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;action=edit&amp;event_id=<?php echo $event->event_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a> &middot; <a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;action=delete&amp;event_id=<?php echo $event->event_id;?>" class="delete"><?php echo __('Delete','my-calendar'); ?></a></td>
+				<?php } else { echo "Not editable."; } ?>
+				</tr>
 			<?php
 		}
 		?>
