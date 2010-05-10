@@ -40,6 +40,12 @@ Features:
 *	Events can be links pointing to a location of your choice
 *   Import method from Kieran's Calendar plugin
 
+Languages available:
+
+* American English (Default)
+* Brazilian Portuguese ([Daniel Prata](daniel@grudaemmim.com.br))
+* Spanish ([Esteban Truelsegaard](http://www.netmdp.com))
+
 == Installation ==
 
 1. Upload the `/my-calendar/` directory into your WordPress plugins directory.
@@ -57,6 +63,16 @@ Features:
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.2.0 = 
+
+* Added shortcodes to support inserting upcoming events and todays events lists into page/post content.
+* Added option to restrict upcoming events widgets by category
+* More superficial CSS changes
+* Added Brazilian Portuguese language files
+* Fixed bug where I reversed the future and past variable values for upcoming events widgets
+* Fixed bug in multi-user permissions.
+* Added feature to look for a custom location for icons to prevent overwriting of custom icons on upgrade.
 
 = 1.1.0 =
 

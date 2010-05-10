@@ -1,8 +1,7 @@
 <?php
 // Function to handle the management of categories
 
-function my_dirlist() {
-$directory = dirname(__FILE__).'/icons/';
+function my_dirlist($directory) {
     // create an array to hold directory list
     $results = array();
     // create a handler for the directory
@@ -63,14 +62,21 @@ function my_calendar_manage_categories() {
 				<label for="category_color"><?php _e('Category Color (Hex format)','my-calendar'); ?>:</label> <input type="text" id="category_color" name="category_color" class="input" size="10" maxlength="7" value="<?php echo $cur_cat->category_color ?>" /><br />
 				<label for="category_icon"><?php _e('Category Icon','my-calendar'); ?>:</label> <select name="category_icon" id="category_icon">
 <?php
-$files = my_dirlist();
+if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
+		$directory = WP_PLUGIN_DIR . '/my-calendar-custom/';
+		$path = '/my-calendar-custom';
+	} else {
+		$directory = dirname(__FILE__).'/icons/';
+		$path = '/my-calendar/icons';
+    }
+$files = my_dirlist($directory);
 foreach ($files as $value) {
 if ($cur_cat->category_icon == $value) {
 	$selected = " selected='selected'";
 } else {
 	$selected = "";
 }
-	echo "<option value='$value'$selected style='background: url(".WP_PLUGIN_URL."/my-calendar/icons/$value) left 50% no-repeat;'>$value</option>";
+	echo "<option value='$value'$selected style='background: url(".WP_PLUGIN_URL."$path/$value) left 50% no-repeat;'>$value</option>";
 }
 ?>			
 				</select>					
@@ -109,9 +115,16 @@ if ($cur_cat->category_icon == $value) {
 				<label for="category_color"><?php _e('Category Color (Hex format)','my-calendar'); ?>:</label> <input type="text" id="category_color" name="category_color" class="input" size="10" maxlength="7" value="#" /><br />
 				<label for="category_icon"><?php _e('Category Icon','my-calendar'); ?>:</label> <select name="category_icon" id="category_icon">
 <?php
-$files = my_dirlist();
+if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
+		$directory = WP_PLUGIN_DIR . '/my-calendar-custom/';
+		$path = '/my-calendar-custom';
+	} else {
+		$directory = dirname(__FILE__).'/icons/';
+		$path = '/my-calendar/icons';
+    }
+$files = my_dirlist($directory);
 foreach ($files as $value) {
-	echo "<option value='$value' style='background: url(".WP_PLUGIN_URL."/my-calendar/icons/$value) no-repeat;'>$value</option>";
+	echo "<option value='$value' style='background: url(".WP_PLUGIN_URL."$path/$value) no-repeat;'>$value</option>";
 }
 ?>			
 				</select>			
@@ -152,7 +165,7 @@ foreach ($files as $value) {
 	     <th scope="row"><?php echo $category->category_id; ?></th>
 	     <td><?php echo $category->category_name; ?></td>
 	     <td style="background-color:<?php echo $category->category_color; ?>;">&nbsp;</td>
-	     <td style="background-color:<?php echo $category->category_color; ?>;"><img src="<?php echo WP_PLUGIN_URL; ?>/my-calendar/icons/<?php echo $category->category_icon; ?>" alt="" /></td>		 
+	     <td style="background-color:<?php echo $category->category_color; ?>;"><img src="<?php echo WP_PLUGIN_URL . $path; ?>/<?php echo $category->category_icon; ?>" alt="" /></td>		 
 	     <td><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories&amp;mode=edit&amp;category_id=<?php echo $category->category_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a></td>
 	     <?php
 		       if ($category->category_id == 1) {

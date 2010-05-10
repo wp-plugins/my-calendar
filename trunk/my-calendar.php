@@ -291,8 +291,32 @@ function my_calendar_insert($atts) {
 			), $atts));
 	return my_calendar($name,$format,$category,$showkey);
 }
+
+function my_calendar_insert_upcoming($atts) {
+	extract(shortcode_atts(array(
+				'before' => 'default',
+				'after' => 'default',
+				'type' => 'default',
+				'category' => 'default'
+			), $atts));
+	return my_calendar_upcoming_events($before, $after, $type, $category);
+}
+
+function my_calendar_insert_today($atts) {
+	extract(shortcode_atts(array(
+				'before' => '',
+				'after' => '',
+				'type' => '',
+				'category' => ''
+			), $atts));
+	return my_calendar_today_events($before, $after, $type, $category);
+}
+
+
 // add shortcode interpreter
 add_shortcode('my_calendar','my_calendar_insert');
+add_shortcode('my_calendar_upcoming','my_calendar_insert_upcoming');
+add_shortcode('my_calendar_today','my_calendar_insert_today');
 
 // Function to check what version of My Calendar is installed and install if needed
 function check_my_calendar() {
@@ -791,7 +815,12 @@ function my_calendar_draw_event($event, $type="calendar") {
     $cat_details = $wpdb->get_row($sql);
     $style = "background-color:".$cat_details->category_color.";";
 	    if ($cat_details->category_icon != "") {
-			$image = '<img src="'.WP_PLUGIN_URL.'/my-calendar/icons/'.$cat_details->category_icon.'" alt="" class="category-icon" style="background:'.$cat_details->category_color.';" />';
+			if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
+					$path = '/my-calendar-custom';
+				} else {
+					$path = '/my-calendar/icons';
+			    }
+			$image = '<img src="'.WP_PLUGIN_URL.$path.'/'.$cat_details->category_icon.'" alt="" class="category-icon" style="background:'.$cat_details->category_color.';" />';
 		} else {
 			$image = "";
 		}
@@ -804,25 +833,25 @@ function my_calendar_draw_event($event, $type="calendar") {
 			if ($display_address == 'true' && strlen($location_string) > 5) {
 				$address .= "<div class=\"adr\">";
 					if ($event->event_label != "") {
-						$address .= "<strong class=\"org\">".$event->event_label."</strong><br />";
+						$address .= "<strong class=\"org\">".stripslashes($event->event_label)."</strong><br />";
 					}					
 					if ($event->event_street != "") {
-						$address .= "<div class=\"street-address\">".$event->event_street."</div>";
+						$address .= "<div class=\"street-address\">".stripslashes($event->event_street)."</div>";
 					}
 					if ($event->event_street2 != "") {
-						$address .= "<div class=\"street-address\">".$event->event_street2."</div>";
+						$address .= "<div class=\"street-address\">".stripslashes($event->event_street2)."</div>";
 					}
 					if ($event->event_city != "") {
-						$address .= "<span class=\"locality\">".$event->event_city.",</span>";
+						$address .= "<span class=\"locality\">".stripslashes($event->event_city).",</span>";
 					}						
 					if ($event->event_state != "") {
-						$address .= " <span class=\"region\">".$event->event_state."</span> ";
+						$address .= " <span class=\"region\">".stripslashes($event->event_state)."</span> ";
 					}
 					if ($event->event_postcode != "") {
-						$address .= " <span class=\"postal-code\">".$event->event_postcode."</span>";
+						$address .= " <span class=\"postal-code\">".stripslashes($event->event_postcode)."</span>";
 					}	
 					if ($event->event_country != "") {
-						$address .= "<div class=\"country-name\">".$event->event_country."</div>";
+						$address .= "<div class=\"country-name\">".stripslashes($event->event_country)."</div>";
 					}	
 				$address .= "</div>";			
 			}
@@ -830,9 +859,9 @@ function my_calendar_draw_event($event, $type="calendar") {
 				if (strlen($location_string) > 5) {
 					$map_string = str_replace(" ","+",$map_string);
 					if ($event->event_label != "") {
-						$map_label = $event->event_label;
+						$map_label = stripslashes($event->event_label);
 					} else {
-						$map_label = $event->event_title;
+						$map_label = stripslashes($event->event_title);
 					}
 					$map = "<a href=\"http://maps.google.com/maps?f=q&amp;z=15&amp;q=$map_string\">Map<span> to $map_label</span></a>";
 					$address .= "<div class=\"url map\">$map</div>";
@@ -845,7 +874,7 @@ $my_calendar_directory = get_bloginfo( 'wpurl' ) . '/' . PLUGINDIR . '/' . dirna
 
   $header_details .=  "\n<div class='$type-event'>\n";
 		if ($type == "calendar") {
-		$header_details .= "<h3 class='event-title'>$image".$event->event_title." <a href='#'><img src='$my_calendar_directory/images/event-details.png' alt='".__('Event Details','my-calendar')."' /></a></h3>\n";
+		$header_details .= "<h3 class='event-title'>$image".stripslashes($event->event_title)." <a href='#'><img src='$my_calendar_directory/images/event-details.png' alt='".__('Event Details','my-calendar')."' /></a></h3>\n";
 		}	
 	$header_details .= "<div class='details'>"; 
 		if ($event->event_time != "00:00:00") {
@@ -855,7 +884,7 @@ $my_calendar_directory = get_bloginfo( 'wpurl' ) . '/' . PLUGINDIR . '/' . dirna
 		}
 		$header_details .= "<div class='sub-details'>";
 		if ($type != "calendar") {
-			$header_details .= "<h3 class='event-title'>$image".$event->event_title."</h3>\n";
+			$header_details .= "<h3 class='event-title'>$image".stripslashes($event->event_title)."</h3>\n";
 		}
 		if ($display_author == 'true') {
 			$e = get_userdata($event->event_author);
@@ -867,16 +896,30 @@ $my_calendar_directory = get_bloginfo( 'wpurl' ) . '/' . PLUGINDIR . '/' . dirna
   
   if ($event->event_link != '') { $linky = $event->event_link; } else { $linky = '#'; }
 	if ($linky != "#") {
-  $details = "\n". $header_details . '' . wpautop($event->event_desc,1) . '<p><a href="'.$linky.'" class="event-link">' . $event->event_title . '&raquo; </a></p>'."</div></div></div>\n";
+  $details = "\n". $header_details . '' . wpautop(stripslashes($event->event_desc),1) . '<p><a href="'.$linky.'" class="event-link">' . stripslashes($event->event_title) . '&raquo; </a></p>'."</div></div></div>\n";
 	} else {
-  $details = "\n". $header_details . '' . wpautop($event->event_desc,1) . "</div></div></div>\n";	
+  $details = "\n". $header_details . '' . wpautop(stripslashes($event->event_desc),1) . "</div></div></div>\n";	
 	}
   return $details;
 }
 // used to generate upcoming events lists
-function mc_get_all_events() {
+function mc_get_all_events($category=null) {
 global $wpdb;
-    $events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE);
+	 if ( $category!=null ) {
+		if (is_numeric($category)) {
+		$select_category = " WHERE event_category = $category";
+		} else {
+		$cat = $wpdb->get_row("SELECT category_id FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_name = '$category'");
+		$category_id = $cat->category_id;
+			if (!$category_id) {
+				//if the requested category doesn't exist, fail silently
+				$select_category = "";
+			} else {
+				$select_category = " WHERE event_category = $category_id";
+			}
+		}
+	 }
+    $events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . "$select_category");
 	$offset = get_option('gmt_offset');
 	$date = date('Y', time()+(60*60*$offset)).'-'.date('m', time()+(60*60*$offset)).'-'.date('d', time()+(60*60*$offset));
     if (!empty($events)) {
@@ -1729,9 +1772,14 @@ if ($date_format == "") {
 		$cat_details = $wpdb->get_results($sql);
         $my_calendar_body .= '<div class="category-key">
 		<h3>'.__('Category Key','my-calendar')."</h3>\n<ul>\n";
+		if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
+				$path = '/my-calendar-custom';
+			} else {
+				$path = '/my-calendar/icons';
+		    }
         foreach($cat_details as $cat_detail) {
 			if ($cat_detail->category_icon != "") {
-			$my_calendar_body .= '<li><span class="category-color-sample"><img src="'.WP_PLUGIN_URL.'/my-calendar/icons/'.$cat_detail->category_icon.'" alt="" style="background:'.$cat_detail->category_color.';" /></span>'.$cat_detail->category_name."</li>\n";
+			$my_calendar_body .= '<li><span class="category-color-sample"><img src="'.WP_PLUGIN_URL.$path.'/'.$cat_detail->category_icon.'" alt="" style="background:'.$cat_detail->category_color.';" /></span>'.$cat_detail->category_name."</li>\n";
 			} else {
 			$my_calendar_body .= '<li><span class="category-color-sample" style="background:'.$cat_detail->category_color.';"> &nbsp; </span>'.$cat_detail->category_name."</li>\n";			
 			}
@@ -1753,7 +1801,7 @@ function mc_can_edit_event($author_id) {
 	get_currentuserinfo();
 	$user = get_userdata($user_ID);	
 	
-	if ($user->user_level == 10) {
+	if ( current_user_can('create_users') ) {
 			return true;
 		} elseif ( $user_ID == $author_id ) {
 			return true;
