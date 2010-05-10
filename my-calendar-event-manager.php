@@ -46,8 +46,8 @@ check_my_calendar();
 
 if ($_GET['action'] == 'delete') {
 	    $sql = "SELECT event_title, event_author FROM " . MY_CALENDAR_TABLE . " WHERE event_id=" . (int) $_GET['event_id'];
-	   $result = $wpdb->get_results($sql);
-	if ( mc_can_edit_event( $result[1] ) ) {
+	   $result = $wpdb->get_results( $sql, ARRAY_A );
+	if ( mc_can_edit_event( $result[0]['event_author'] ) ) {
 	?>
 		<div class="error">
 		<p><strong><?php _e('Delete Event','my-calendar'); ?>:</strong> <?php _e('Are you sure you want to delete this event?','my-calendar'); ?></p>
@@ -55,7 +55,7 @@ if ($_GET['action'] == 'delete') {
 		<div>
 		<input type="hidden" value="delete" name="action" />
 		<input type="hidden" value="<?php echo (int) $_GET['event_id']; ?>" name="event_id" />
-		<input type="submit" name="submit" class="button-primary" value="<?php _e('Delete','my-calendar'); echo " &quot;".$result[0]->event_title."&quot;"; ?>" />
+		<input type="submit" name="submit" class="button-primary" value="<?php _e('Delete','my-calendar'); echo " &quot;".$result[0]['event_title']."&quot;"; ?>" />
 		</div>
 		</form>
 		</div>

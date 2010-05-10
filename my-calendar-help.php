@@ -18,6 +18,12 @@ function my_calendar_help() {
 <li><code>[my_calendar category="General" format="list" showkey="no"]</code><br />
 <?php _e('The shortcode supports three attributes, <code>category</code>, <code>format</code> and <code>showkey</code>. There is currently only one alternate option for <code>format</code> &mdash; <code>list</code> &mdash; which will show the calendar in a list format, skipping dates without any events. The <code>category</code> attribute requires either the name of or ID number one of your event categories (the name is case-sensitive). This will show a calendar only including events in that category. Setting <code>showkey</code> to <code>no</code> will prevent the category key from being displayed &mdash; this can be useful with single-category output.','my-calendar'); ?>
 </li>
+<li><code>[my_calendar_upcoming before="3" after="3" type="event" category="General"]</code><br />
+	<?php _e('This shortcode displays the output of the Upcoming Events widget. Without attributes, it will display using the settings in your widget; the attributes are used to override the widget settings.The <code>before</code> and <code>after</code> attributes should be numbers; the <code>type</code> attribute can be either "event" or "date", and the <code>category</code> attribute works the same way as the category attribute on the main calendar shortcode.','my-calendar'); ?>
+</li>
+<li><code>[my_calendar_today category="General"]</code><br />
+	<?php _e('Predictably enough, this shortcode displays the output of the Today\'s Events widget, with one configurable category attribute.','my-calendar'); ?>
+</li>
 </ul>
 </div>
 </div>
@@ -30,7 +36,7 @@ function my_calendar_help() {
 <?php _e('My Calendar is designed to manage multiple calendars. The basis for these calendars are categories; you can easily setup a calendar page which includes all categories, or you can dedicate separate pages to calendars in each category. For an example, this might be useful for you in managing the tour calendars for multiple bands; event calendars for a variety of locations, etc.','my-calendar'); ?>
 </p>
 <p>
-<?php _e('The pre-installed category icons may not be especially useful for your needs or design. I\'m assuming that you\'re going to upload your own icons -- all you need to do is upload them to the plugin\'s icons folder, and they\'ll be available for immediate use.','my-calendar'); ?> <?php _e('Your icons folder is:','my-calendar'); ?> <code><?php echo WP_PLUGIN_DIR; ?>/my-calendar/icons/</code>
+<?php _e('The pre-installed category icons may not be especially useful for your needs or design. I\'m assuming that you\'re going to upload your own icons -- all you need to do is upload them to the plugin\'s icons folder, and they\'ll be available for immediate use, or place them in a folder at "my-calendar-custom" to avoid having them overwritten by upgrades.','my-calendar'); ?> <?php _e('Your icons folder is:','my-calendar'); ?> <code><?php echo WP_PLUGIN_DIR; ?>/my-calendar/icons/</code> <?php _e('You can alternately place icons in:','my-calendar'); ?> <code><?php echo WP_PLUGIN_DIR; ?>/my-calendar-custom/</code>
 </p>
 </div>
 </div>

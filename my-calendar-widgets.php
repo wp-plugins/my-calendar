@@ -74,6 +74,9 @@ function init_my_calendar_upcoming() {
 	if (isset($_POST['my_calendar_upcoming_title'])) {
       update_option('my_calendar_upcoming_title',strip_tags($_POST['my_calendar_upcoming_title']));
     }
+	if (isset($_POST['display_in_category'])) {
+      update_option('display_in_category',$_POST['display_in_category']);
+    }	
     if (isset($_POST['my_calendar_upcoming_template'])) {
       update_option('my_calendar_upcoming_template',$_POST['my_calendar_upcoming_template']);
     }	
@@ -116,9 +119,9 @@ function init_my_calendar_upcoming() {
 	<legend><?php _e('Widget Options','my-calendar'); ?></legend>
 	<p>
 	<label for="display_upcoming_type"><?php _e('Display upcoming events by:','my-calendar'); ?></label> <select id="display_upcoming_type" name="display_upcoming_type">
-						<option value="events" <?php jd_cal_checkSelect('display_upcoming_type','events'); ?>><?php _e('Events (e.g. 2 past, 3 future)','my-calendar') ?></option>
-						<option value="days" <?php jd_cal_checkSelect('display_upcoming_type','days'); ?>><?php _e('Dates (e.g. 4 days past, 5 forward)','my-calendar') ?></option>
-                                    </select>
+	<option value="events" <?php jd_cal_checkSelect('display_upcoming_type','events'); ?>><?php _e('Events (e.g. 2 past, 3 future)','my-calendar') ?></option>
+	<option value="days" <?php jd_cal_checkSelect('display_upcoming_type','days'); ?>><?php _e('Dates (e.g. 4 days past, 5 forward)','my-calendar') ?></option>
+	</select>
 	</p>
 	<p>
 	<input type="text" id="display_upcoming_events" name="display_upcoming_events" value="<?php  if(isset($_POST['display_upcoming_events'])){echo $_POST['display_upcoming_events']; } else { echo $upcoming_events; } ?>" size="1" maxlength="2" /> <label for="display_upcoming_events"><?php _e('events into the future;','my-calendar'); ?></label><br />
@@ -128,6 +131,9 @@ function init_my_calendar_upcoming() {
 	<input type="text" id="display_upcoming_days" name="display_upcoming_days" value="<?php if(isset($_POST['display_upcoming_days'])){echo $_POST['display_upcoming_days']; } else { echo $upcoming_days; } ?>" size="1" maxlength="2" /> <label for="display_upcoming_days"><?php _e('days into the future;','my-calendar'); ?></label><br />
 	<input type="text" id="display_past_days" name="display_past_days" value="<?php if(isset($_POST['display_past_days'])){echo $_POST['display_past_days']; } else { echo $past_days; } ?>" size="1" maxlength="2" /> <label for="display_past_days"><?php _e('days from the past','my-calendar'); ?></label>
 	</p>
+	<p>
+	<label for="display_in_category"><?php _e('Show only this category:','my-calendar'); ?></label><br />
+	<input type="text" id="display_in_category" name="display_in_category" value="<?php if(isset($_POST['display_in_category'])){echo $_POST['display_in_category']; } else { echo $display_in_category; } ?>" class="widefat" />
 	</fieldset>
     <?php
   }
@@ -138,21 +144,43 @@ function init_my_calendar_upcoming() {
 
 
 // Widget upcoming events
-function my_calendar_upcoming_events() {
+function my_calendar_upcoming_events($before='default',$after='default',$type='default',$category='default') {
   global $wpdb;
 
   // This function cannot be called unless calendar is up to date
-  check_my_calendar();
-  $template = get_option('my_calendar_upcoming_template');
-  $display_upcoming_type = get_option('display_upcoming_type');
-  $today = date('Y').'-'.date('m').'-'.date('d');
+	check_my_calendar();
+	$template = get_option('my_calendar_upcoming_template');
+	$offset = get_option('gmt_offset');  
+	$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
+  
+	if ($type == 'default') {
+		$display_upcoming_type = get_option('display_upcoming_type');
+    } else {
+		$display_upcoming_type = $type;
+	}
   
       // Get number of days we should go into the future
-      $future_days = get_option('display_upcoming_days');
-	  // Get number of days we should go into the past
-	  $past_days = get_option('display_past_days');
-	  $future_events = get_option('display_past_events');
-	  $past_events = get_option('display_upcoming_events');
+	if ($after == 'default') {
+		$future_days = get_option('display_upcoming_days');
+		$future_events = get_option('display_future_events');	  
+	} else {
+		$future_days = $after;
+		$future_events = $after;
+	}
+	// Get number of days we should go into the past
+	if ($before == 'default') {	  
+		$past_days = get_option('display_past_days');
+		$past_events = get_option('display_pasts_events');
+	} else {
+		$past_days = $before;
+		$past_events = $before;
+	}
+	 
+	if ($category == 'default') {
+		$category = get_option('display_in_category');
+	} else {
+		$category = $category;
+	}
 	  
       $day_count = -($past_days);
 	  $output = "<ul>";
@@ -160,7 +188,7 @@ function my_calendar_upcoming_events() {
 	if ($display_upcoming_type == "date") {
       while ($day_count < $future_days+1) {
           list($y,$m,$d) = split("-",date("Y-m-d",mktime($day_count*24,0,0,date("m"),date("d"),date("Y"))));
-          $events = my_calendar_grab_events( $y,$m,$d );
+          $events = my_calendar_grab_events( $y,$m,$d,$category );
 
           @usort($events, "my_calendar_time_cmp");
           foreach($events as $event) {
@@ -170,7 +198,7 @@ function my_calendar_upcoming_events() {
           $day_count = $day_count+1;
         }
 	} else {
-         $events = mc_get_all_events();		 // grab all events WITHIN reasonable proximity		 
+         $events = mc_get_all_events($category);		 // grab all events WITHIN reasonable proximity		 	 
 		 $past = 1;
 		 $future = 1;
          @usort( $events, "my_calendar_timediff_cmp" );// sort all events by proximity to current date
@@ -322,27 +350,27 @@ $date_end = date(get_option('date_format'),strtotime($event->event_end));
 
 
     $details = array();
-	$details['category'] = $category_name->category_name;
-	$details['title'] = $event->event_title;
+	$details['category'] = stripslashes($category_name->category_name);
+	$details['title'] = stripslashes($event->event_title);
 	$details['time'] = date(get_option('time_format'),strtotime($event->event_time));
 	$details['author'] = $e->display_name;
 	$details['link'] = $event->event_link;
-	$details['description'] = $event->event_desc;
+	$details['description'] = stripslashes($event->event_desc);
 	if ($event->event_link != '') {
-	$details['link_title'] = "<a href='".$event->event_link."'>".$event->event_title."</a>";
+	$details['link_title'] = "<a href='".$event->event_link."'>".stripslashes($event->event_title)."</a>";
 	} else {
-	$details['link_title'] = $event->event_title;	
+	$details['link_title'] = stripslashes($event->event_title);	
 	}
 	$details['date'] = $date;
 	$details['enddate'] = $date_end;
-	$details['location'] = $event->event_label;
-	$details['street'] = $event->event_street;
-	$details['street2'] = $event->event_street2;
-	$details['city'] = $event->event_city;
-	$details['state'] = $event->event_state;
-	$details['postcode'] = $event->event_postcode;
-	$details['country'] = $event->event_country;
-	$details['hcard'] = $hcard;
+	$details['location'] = stripslashes($event->event_label);
+	$details['street'] = stripslashes($event->event_street);
+	$details['street2'] = stripslashes($event->event_street2);
+	$details['city'] = stripslashes($event->event_city);
+	$details['state'] = stripslashes($event->event_state);
+	$details['postcode'] = stripslashes($event->event_postcode);
+	$details['country'] = stripslashes($event->event_country);
+	$details['hcard'] = stripslashes($hcard);
 	$details['link_map'] = $map;
   
   return $details;
