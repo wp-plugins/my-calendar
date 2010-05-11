@@ -340,7 +340,7 @@ background: #fff;
 #jd-calendar caption, #jd-calendar .my-calendar-date-switcher  {
 background: #edf7ff;
 border: 1px solid #a9e3ff;
-margin: 0;
+margin: 2px 0;
 font-weight:700;
 padding:2px 0;
 }
@@ -519,9 +519,6 @@ clear:left;
 background: #fff;
 }
 #jd-calendar {
--moz-border-radius: 5px;
--webkit-border-radius: 5px;
-border-radius: 5px;
 position: relative;
 }
 #jd-calendar img {
@@ -532,11 +529,11 @@ margin-right: 5px;
 vertical-align: top;
 }
 .my-calendar-nav {
-height: 2.25em;
-border-bottom: 1px solid #ac6;
+
 }
 
 #jd-calendar .my-calendar-nav ul {
+height: 2.95em;
 list-style-type:none;
 margin:0;
 padding:0;
@@ -550,19 +547,10 @@ list-style-type: none;
 #jd-calendar .my-calendar-nav li:before {
 content:'';
 }
-
-my-calendar-nav .my-calendar-next {
-text-align:right;
-}
-
 #jd-calendar .my-calendar-nav li a {
 display:block;
 background:#fff;
 border:1px solid #9b5;
--moz-border-radius:5px 5px 0 0;
--webkit-border-radius:5px 5px 0 0;
-border-radius:5px 5px 0 0;
-border-bottom:none;
 text-align:center;
 padding:1px 20px;
 color: #243f82;
@@ -572,10 +560,26 @@ color: #243f82;
 background:#a9e3ff;
 color:#000;
 border: 1px solid #243f82;
-border-bottom: none;
 }
 #jd-calendar .my-calendar-next {
-margin-left: 1px;
+margin-left: 4px;
+text-align:right;
+}
+#jd-calendar .my-calendar-next a {
+-webkit-border-top-right-radius: 8px;
+-webkit-border-bottom-right-radius: 8px;
+-moz-border-radius-topright: 8px;
+-moz-border-radius-bottomright: 8px;
+border-top-right-radius: 8px;
+border-bottom-right-radius: 8px;
+}
+#jd-calendar .my-calendar-prev a {
+-webkit-border-top-left-radius: 8px;
+-webkit-border-bottom-left-radius: 8px;
+-moz-border-radius-topleft: 8px;
+-moz-border-radius-bottomleft: 8px;
+border-top-left-radius: 8px;
+border-bottom-left-radius: 8px;
 }
 #jd-calendar .day-without-date {
 background: #fafafa;
