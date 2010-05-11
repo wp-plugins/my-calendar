@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.2.0
+Version: 1.2.1
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -903,9 +903,9 @@ $my_calendar_directory = get_bloginfo( 'wpurl' ) . '/' . PLUGINDIR . '/' . dirna
   return $details;
 }
 // used to generate upcoming events lists
-function mc_get_all_events($category=null) {
+function mc_get_all_events($category) {
 global $wpdb;
-	 if ( $category!=null ) {
+	 if ( $category!='default' ) {
 		if (is_numeric($category)) {
 		$select_category = " WHERE event_category = $category";
 		} else {
@@ -918,6 +918,8 @@ global $wpdb;
 				$select_category = " WHERE event_category = $category_id";
 			}
 		}
+	 } else {
+		$select_category = "";
 	 }
     $events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . "$select_category");
 	$offset = get_option('gmt_offset');

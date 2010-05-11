@@ -162,7 +162,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
       // Get number of days we should go into the future
 	if ($after == 'default') {
 		$future_days = get_option('display_upcoming_days');
-		$future_events = get_option('display_future_events');	  
+		$future_events = get_option('display_upcoming_events');	  
 	} else {
 		$future_days = $after;
 		$future_events = $after;
@@ -170,7 +170,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 	// Get number of days we should go into the past
 	if ($before == 'default') {	  
 		$past_days = get_option('display_past_days');
-		$past_events = get_option('display_pasts_events');
+		$past_events = get_option('display_past_events');
 	} else {
 		$past_days = $before;
 		$past_events = $before;
@@ -181,10 +181,10 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 	} else {
 		$category = $category;
 	}
-	  
+  
       $day_count = -($past_days);
 	  $output = "<ul>";
-
+	  
 	if ($display_upcoming_type == "date") {
       while ($day_count < $future_days+1) {
           list($y,$m,$d) = split("-",date("Y-m-d",mktime($day_count*24,0,0,date("m"),date("d"),date("Y"))));
