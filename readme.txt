@@ -64,6 +64,10 @@ Languages available:
 
 == Changelog ==
 
+= 1.2.1 = 
+
+* Corrected a typo which broke the upcoming events widget.
+
 = 1.2.0 = 
 
 * Added shortcodes to support inserting upcoming events and todays events lists into page/post content.
