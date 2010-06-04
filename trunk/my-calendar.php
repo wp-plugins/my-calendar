@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.2.1
+Version: 1.3.0
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -31,6 +31,8 @@ global $wpdb;
 // Define the tables used in My Calendar
 define('MY_CALENDAR_TABLE', $wpdb->prefix . 'my_calendar');
 define('MY_CALENDAR_CATEGORIES_TABLE', $wpdb->prefix . 'my_calendar_categories');
+define('MY_CALENDAR_LOCATIONS_TABLE', $wpdb->prefix . 'my_calendar_locations');
+
 // Create a master category for My Calendar and its sub-pages
 add_action('admin_menu', 'my_calendar_menu');
 // Add the function that puts style information in the header
@@ -50,8 +52,10 @@ add_filter('plugin_action_links', 'jd_calendar_plugin_action', -10, 2);
 
 include(dirname(__FILE__).'/my-calendar-settings.php' );
 include(dirname(__FILE__).'/my-calendar-categories.php' );
+include(dirname(__FILE__).'/my-calendar-locations.php' );
 include(dirname(__FILE__).'/my-calendar-help.php' );
 include(dirname(__FILE__).'/my-calendar-event-manager.php' );
+include(dirname(__FILE__).'/my-calendar-styles.php' );
 include(dirname(__FILE__).'/my-calendar-widgets.php' );
 include(dirname(__FILE__).'/date-utilities.php' );
 
@@ -125,8 +129,10 @@ function my_calendar_menu() {
 		add_action( "admin_head", 'my_calendar_add_styles' );
 		// Note only admin can change calendar options
 		add_submenu_page('my-calendar', __('Manage Categories','my-calendar'), __('Manage Categories','my-calendar'), 'manage_options', 'my-calendar-categories', 'my_calendar_manage_categories');
+		add_submenu_page('my-calendar', __('Manage Locations','my-calendar'), __('Manage Locations','my-calendar'), 'manage_options', 'my-calendar-locations', 'my_calendar_manage_locations');		
 		add_submenu_page('my-calendar', __('Settings','my-calendar'), __('Settings','my-calendar'), 'manage_options', 'my-calendar-config', 'edit_my_calendar_config');
-		add_submenu_page('my-calendar', __('My Calendar Help','my-calendar'), __('Help','my-calendar'), 'manage_options', 'my-calendar-help', 'my_calendar_help');
+		add_submenu_page('my-calendar', __('Style Editor','my-calendar'), __('Style Editor','my-calendar'), 'manage_options', 'my-calendar-styles', 'edit_my_calendar_styles');
+		add_submenu_page('my-calendar', __('My Calendar Help','my-calendar'), __('Help','my-calendar'), 'manage_options', 'my-calendar-help', 'my_calendar_help');		
 	}
 }
 add_action( "admin_menu", 'my_calendar_add_javascript' );
@@ -175,43 +181,20 @@ function my_calendar_add_display_javascript() {
 add_action('init','my_calendar_add_display_javascript');
 
 function my_calendar_calendar_javascript() {
+$list_js = stripcslashes( get_option( 'my_calendar_listjs' ) );
+$cal_js = stripcslashes( get_option( 'my_calendar_caljs' ) );
+
 	if ( get_option('calendar_javascript') != 1 ) {
 ?>
 <script type='text/javascript'>
-var $j = jQuery.noConflict();
-
-$j(document).ready(function() {
-  $j('.calendar-event').children().not('h3').hide();
-  $j('.calendar-event h3').toggle(
-     function() {
-     $j('.calendar-event').children().not('h3').hide();
-	 $j(this).parent().children().not('h3').show('fast');
-     }, 
-     function() { 
-     $j('.calendar-event').children().not('h3').hide('fast');
-     }
-     );
-});
+<?php echo $cal_js; ?>
 </script>
 <?php
 	}
 	if ( get_option('list_javascript') != 1 ) {
 ?>
 <script type='text/javascript'>
-var $j = jQuery.noConflict();
-
-$j(document).ready(function() {
-  $j('#calendar-list li').children().not('.event-date').hide();
-  $j('.event-date').toggle(
-     function() {
-     $j('#calendar-list li').children().not('.event-date').hide();
-	 $j(this).parent().children().not('.event-date').show('fast');
-     }, 
-     function() { 
-     $j('#calendar-list li').children().not('.event-date').hide('fast');
-     }
-     );
-});
+<?php echo $list_js; ?>
 </script>
 <?php	
 	}
@@ -273,11 +256,20 @@ border: 1px solid #aaa;
 border-radius: 5px;
 margin: 15px 0;
 }
-.n4 {width: 16px;}
+.n4 {width: 32px;}
 .n5 {width: 32px;}
 .n6 {width: 64px;}
 .n7 {width: 128px;}
 .n8 {width: 256px;}
+.category-color {
+width: 1.2em;
+height: 1.2em;
+display: inline-block;
+-moz-border-radius: 3px;
+-webkit-border-radius: 3px;
+border-radius: 3px;
+border: 1px solid #000;
+}
 //-->
 </style>';
 }
@@ -297,19 +289,18 @@ function my_calendar_insert_upcoming($atts) {
 				'before' => 'default',
 				'after' => 'default',
 				'type' => 'default',
-				'category' => 'default'
+				'category' => 'default',
+				'template' => 'default'
 			), $atts));
-	return my_calendar_upcoming_events($before, $after, $type, $category);
+	return my_calendar_upcoming_events($before, $after, $type, $category, $template);
 }
 
 function my_calendar_insert_today($atts) {
 	extract(shortcode_atts(array(
-				'before' => '',
-				'after' => '',
-				'type' => '',
-				'category' => ''
+				'category' => '',
+				'template' => ''
 			), $atts));
-	return my_calendar_today_events($before, $after, $type, $category);
+	return my_calendar_today_events($category, $template);
 }
 
 
@@ -326,9 +317,40 @@ function check_my_calendar() {
   // then it is upgraded. (Or will be, once there's a need.)
 
   // Lets see if this is first run and create a table if it is!
-  global $wpdb, $initial_style;
+  global $wpdb, $initial_style, $initial_listjs, $initial_caljs;
 
-  // default styles will go into the options table on a new install
+  // defaults will go into the options table on a new install
+$initial_listjs = 'var $j = jQuery.noConflict();
+
+$j(document).ready(function() {
+  $j("#calendar-list li").children().not(".event-date").hide();
+  $j("#calendar-list li.current-day").children().show();
+  $j(".event-date").toggle(
+     function() {
+     $j("#calendar-list li").children().not(".event-date").hide();
+	 $j(this).parent().children().not(".event-date").show("fast");
+     }, 
+     function() { 
+     $j("#calendar-list li").children().not(".event-date").hide("fast");
+     }
+     );
+});';  
+  
+$initial_caljs = 'var $j = jQuery.noConflict();
+
+$j(document).ready(function() {
+  $j(".calendar-event").children().not("h3").hide();
+  $j(".calendar-event h3").toggle(
+     function() {
+     $j(".calendar-event").children().not("h3").hide();
+	 $j(this).parent().children().not("h3").show("fast");
+     }, 
+     function() { 
+     $j(".calendar-event").children().not("h3").hide("fast");
+     }
+     );
+});';  
+  
 $initial_style = "
 #jd-calendar * {
 margin: 0;
@@ -615,7 +637,9 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
     }
   if ( $my_calendar_exists == false ) {
       $new_install = true;
-    }
+    } else if ( version_compare( $current_version,"1.3.0","<" ) ) {
+		$upgrade_path = "1.3.0";
+	}
 
   // Now we've determined what the current install is or isn't 
   if ( $new_install == true ) {
@@ -663,6 +687,8 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
 	  add_option('my_calendar_upcoming_title','Upcoming Events');
 	  add_option('calendar_javascript',0);
 	  add_option('list_javascript',0);
+	  add_option('my_calendar_listjs',$initial_listjs);
+	  add_option('my_calendar_caljs',$initial_caljs);
       $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_category=1";
       $wpdb->get_results($sql);
 	  
@@ -676,13 +702,72 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
       $wpdb->get_results($sql);
       $sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_color='#ffffff', category_icon='event.png'";
       $wpdb->get_results($sql);
-    }
+	  
+      $sql = "CREATE TABLE " . MY_CALENDAR_LOCATIONS_TABLE . " ( 
+                                location_id INT(11) NOT NULL AUTO_INCREMENT, 
+								location_label VARCHAR(60) NOT NULL ,
+								location_street VARCHAR(60) NOT NULL ,
+								location_street2 VARCHAR(60) NOT NULL ,
+								location_city VARCHAR(60) NOT NULL ,
+								location_state VARCHAR(60) NOT NULL ,
+								location_postcode VARCHAR(10) NOT NULL ,
+								location_country VARCHAR(60) NOT NULL ,
+                                PRIMARY KEY (location_id) 
+                             )";
+      $wpdb->get_results($sql);	  
+	  
+    } 
 	
 	// placeholder for future upgrades
 	
 	switch ($upgrade_path) {
 		case $upgrade_path == FALSE:
 		break;
+		case $upgrade_path == '1.3.0':
+			add_option('my_calendar_listjs',$initial_listjs);
+			add_option('my_calendar_caljs',$initial_caljs);
+			add_option('my_calendar_show_heading','true');
+
+			$sql = "CREATE TABLE " . MY_CALENDAR_LOCATIONS_TABLE . " ( 
+						location_id INT(11) NOT NULL AUTO_INCREMENT, 
+						location_label VARCHAR(60) NOT NULL ,
+						location_street VARCHAR(60) NOT NULL ,
+						location_street2 VARCHAR(60) NOT NULL ,
+						location_city VARCHAR(60) NOT NULL ,
+						location_state VARCHAR(60) NOT NULL ,
+						location_postcode VARCHAR(10) NOT NULL ,
+						location_country VARCHAR(60) NOT NULL ,
+						PRIMARY KEY (category_id) 
+					 )";
+			$wpdb->get_results($sql);	  
+			
+			/* 
+			if the user has fully uninstalled the plugin but kept the database of events, this will restore default settings.
+			*/
+			if ( get_option( 'my_calendar_uninstalled' ) == 'true' ) {
+				add_option('can_manage_events','edit_posts');
+				add_option('my_calendar_style',"$initial_style");
+				add_option('display_author','false');
+				add_option('display_jump','false');
+				add_option('display_todays','true');
+				add_option('display_upcoming','true');
+				add_option('display_upcoming_days',7);
+				add_option('my_calendar_version','1.0');
+				add_option('display_upcoming_type','false');
+				add_option('display_upcoming_events',3);
+				add_option('display_past_days',0);
+				add_option('display_past_events',2);
+				add_option('my_calendar_use_styles','false');
+				add_option('my_calendar_show_months',1);
+				add_option('my_calendar_show_map','true');
+				add_option('my_calendar_show_address','false');
+				add_option('my_calendar_today_template',$default_template);
+				add_option('my_calendar_upcoming_template',$default_template);
+				add_option('my_calendar_today_title','Today\'s Events');
+				add_option('my_calendar_upcoming_title','Upcoming Events');
+				add_option('calendar_javascript',0);
+				add_option('list_javascript',0);				
+			}
 		default:
 		break;
 	}
@@ -910,16 +995,49 @@ $my_calendar_directory = get_bloginfo( 'wpurl' ) . '/' . PLUGINDIR . '/' . dirna
 function mc_get_all_events($category) {
 global $wpdb;
 	 if ( $category!='default' ) {
-		if (is_numeric($category)) {
-		$select_category = " WHERE event_category = $category";
-		} else {
-		$cat = $wpdb->get_row("SELECT category_id FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_name = '$category'");
-		$category_id = $cat->category_id;
-			if (!$category_id) {
-				//if the requested category doesn't exist, fail silently
-				$select_category = "";
+		if ( strpos( $category, "|" ) ) {
+			$categories = explode( "|", $category );
+			$numcat = count($categories);
+			$i = 1;
+			foreach ($categories as $key) {
+				if ( is_numeric($key) ) {
+					if ($i == 1) {
+						$select_category .= " WHERE (";
+					}				
+					$select_category .= " event_category = $key";
+					if ($i < $numcat) {
+						$select_category .= " OR ";
+					} else if ($i == $numcat) {
+						$select_cateory .= ") ";
+					}
+				$i++;
+				} else {
+					$cat = $wpdb->get_row("SELECT category_id FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_name = '$key'");
+					$category_id = $cat->category_id;
+					if ($i == 1) {
+						$select_category .= " WHERE (";
+					}
+					$select_category .= " event_category = $category_id";
+					if ($i < $numcat) {
+						$select_category .= " OR ";
+					} else if ($i == $numcat) {
+						$select_category .= ") ";
+					}
+					$i++;						
+				}
+			}
+		} else {	 
+			if (is_numeric($category)) {
+			$select_category = " WHERE event_category = $category";
 			} else {
-				$select_category = " WHERE event_category = $category_id";
+			$cat = $wpdb->get_row("SELECT category_id FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_name = '$category'");
+			$category_id = $cat->category_id;
+				if (!$category_id) {
+					//if the requested category doesn't exist, fail silently
+					$select_category = "";
+				} else {
+					$select_category = " WHERE event_category = $category_id";
+				}
 			}
 		}
 	 } else {
@@ -1197,16 +1315,49 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
      global $wpdb;
 
 	 if ( $category!=null ) {
-		if (is_numeric($category)) {
-		$select_category = "event_category = $category AND";
+		if ( strpos( $category, "|" ) ) {
+			$categories = explode( "|", $category );
+			$numcat = count($categories);
+			$i = 1;
+			foreach ($categories as $key) {
+				if ( is_numeric($key) ) {
+					if ($i == 1) {
+						$select_category .= "(";
+					}
+					$select_category .= " event_category = $key";
+					if ($i < $numcat) {
+						$select_category .= " OR ";
+					} else if ($i == $numcat) {
+						$select_category .= ") AND";
+					}
+				$i++;
+				} else {
+					$cat = $wpdb->get_row("SELECT category_id FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_name = '$key'");
+					$category_id = $cat->category_id;
+					if ($i == 1) {
+						$select_category .= "(";
+					}					
+					$select_category .= " event_category = $category_id";
+					if ($i < $numcat) {
+						$select_category .= " OR ";
+					} else if ($i == $numcat) {
+						$select_category .= ") AND";
+					}
+					$i++;						
+				}
+			}
 		} else {
-		$cat = $wpdb->get_row("SELECT category_id FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_name = '$category'");
-		$category_id = $cat->category_id;
-			if (!$category_id) {
-				//if the requested category doesn't exist, fail silently
-				$select_category = "";
+			if (is_numeric($category)) {
+			$select_category = "event_category = $category AND";
 			} else {
-				$select_category = "event_category = $category_id AND";
+			$cat = $wpdb->get_row("SELECT category_id FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_name = '$category'");
+			$category_id = $cat->category_id;
+				if (!$category_id) {
+					//if the requested category doesn't exist, fail silently
+					$select_category = "";
+				} else {
+					$select_category = "event_category = $category_id AND";
+				}
 			}
 		}
 	 }
@@ -1624,8 +1775,9 @@ function my_calendar($name,$format,$category,$showkey) {
       }
 
     $days_in_month = date("t", mktime (0,0,0,$c_month,1,$c_year));
+	$and = __("and",'my-calendar');
 	if ($category != "" && $category != "all") {
-		$category_label = $category . ' ';
+		$category_label = str_replace("|"," $and ",$category) . ' ';
 	} else {
 		$category_label = "";
 	}
@@ -1654,8 +1806,9 @@ function my_calendar($name,$format,$category,$showkey) {
 			$my_calendar_body .= "\n<table class=\"my-calendar-table\" summary=\"$category_label".__('Calendar','my-calendar')."\">\n";
 			$my_calendar_body .= '<caption class="my-calendar-month">'.$name_months[(int)$c_month].' '.$c_year."</caption>\n";
 		} else {
-			$my_calendar_body .= "\n<h2 class=\"my-calendar-header\">$category_label".__('Calendar','my-calendar')."</h2>\n";
-
+			if ( get_option('my_calendar_show_heading') == 'true' ) {
+			$my_calendar_body .= "\n<h2 class=\"my-calendar-heading\">$category_label".__('Calendar','my-calendar')."</h2>\n";
+			}
 			$num_months = get_option('my_calendar_show_months');
 			if ($num_months <= 1) {			
 			$my_calendar_body .= '<h3 class="my-calendar-month">'.__('Events in','my-calendar').' '.$name_months[(int)$c_month].' '.$c_year."</h3>\n";
@@ -1756,15 +1909,15 @@ if ($date_format == "") {
 				} else {
 					$is_anchor = $is_close_anchor = "";
 				}
-				$my_calendar_body .= "<li$class><strong class=\"event-date\">$is_anchor".date($date_format,mktime(0,0,0,$c_month,$i,$c_year))."$is_close_anchor</strong>".my_calendar_draw_events($grabbed_events, $format)."</li>";
+				$my_calendar_body .= "<li class='$class".(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd",time()+(60*60*$offset))?' current-day':'')."'><strong class=\"event-date\">$is_anchor".date_i18n($date_format,mktime(0,0,0,$c_month,$i,$c_year))."$is_close_anchor</strong>".my_calendar_draw_events($grabbed_events, $format)."</li>";
 				$num_events++;
 			} 	
 			if (my_calendar_is_odd($num_events)) {
-				$class = " class='odd'";
+				$class = "odd";
 			} else {
-				$class = "";
-			}		
-		}		
+				$class = "even";
+			}	
+		}	
 	}
 	if ($num_events == 0) {
 		$my_calendar_body .= "<li class='no-events'>".__('There are no events scheduled during this period.','my-calendar') . "</li>";

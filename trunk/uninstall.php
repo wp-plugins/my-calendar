@@ -34,6 +34,9 @@ delete_option('display_past_events');
 delete_option('display_past_days');
 delete_option('ko_calendar_imported');
 delete_option('display_in_category');
-
+delete_option('my_calendar_show_heading');
+delete_option('my_calendar_listjs');
+delete_option('my_calendar_caljs');
+add_option('my_calendar_uninstalled','true');
 }
 ?>

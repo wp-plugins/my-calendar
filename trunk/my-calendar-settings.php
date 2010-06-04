@@ -1,16 +1,18 @@
 <?php
 // Display the admin configuration page
 
-	if ($_POST['import'] == 'true') {
-		my_calendar_import();
-	}
-
+if ($_POST['import'] == 'true') {
+	my_calendar_import();
+}
+	
 function my_calendar_import() {
 if ( get_option('ko_calendar_imported') != 'true' ) {
 global $wpdb;
+$wpdb->hide_errors();
 		define('KO_CALENDAR_TABLE', $wpdb->prefix . 'calendar');
 		define('KO_CALENDAR_CATS', $wpdb->prefix . 'calendar_categories');
 		$events = $wpdb->get_results("SELECT * FROM " . KO_CALENDAR_TABLE, 'ARRAY_A');
+		$wpdb->print_error();
 		$sql = "";
 		foreach ($events as $key) {
 			$title = mysql_real_escape_string($key['event_title']);
@@ -24,7 +26,7 @@ global $wpdb;
 			$category = mysql_real_escape_string($key['event_category']);
 			$linky = mysql_real_escape_string($key['event_link']);
 			
-		    $sql .= "INSERT INTO " . MY_CALENDAR_TABLE . " SET 
+		    $sql = "INSERT INTO " . MY_CALENDAR_TABLE . " SET 
 			event_title='" . ($title) . "', 
 			event_desc='" . ($desc) . "', 
 			event_begin='" . ($begin) . "', 
@@ -34,24 +36,33 @@ global $wpdb;
 			event_repeats='" . ($repeats) . "', 
 			event_author=".($author).", 
 			event_category=".($category).", 
-			event_link='".($linky)."';";
+			event_link='".($linky)."';
+			";
+		$events_results = $wpdb->query($sql);		
+		$wpdb->print_error(); 				
 		}	
 		$cats = $wpdb->get_results("SELECT * FROM " . KO_CALENDAR_CATS, 'ARRAY_A');
+		$wpdb->print_error(); 
+		
 		$catsql = "";
 		foreach ($cats as $key) {
 			$name = mysql_real_escape_string($key['category_name']);
 			$color = mysql_real_escape_string($key['category_colour']);
 			$id = mysql_real_escape_string($key['category_id']);
 			
-			if ($id != '1') {
-				$catsql .= "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET 
-					category_id='".$id."',
-					category_name='".$name."', 
-					category_color='".$color."';";
-				}
-			}
-	    $cats_results = $wpdb->query($catsql);
-		$events_results = $wpdb->query($sql);
+			$catsql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET 
+				category_id='".$id."',
+				category_name='".$name."', 
+				category_color='".$color."' 
+				ON DUPLICATE KEY UPDATE 
+				category_name='".$name."', 
+				category_color='".$color."';
+				";	
+			$cats_results = $wpdb->query($catsql);
+			$wpdb->print_error(); 			
+		}
+	 			
+
 		if ($cats_results !== false) {
 			$message = __('Categories imported successfully.','my-calendar');
 		} else {
@@ -62,19 +73,21 @@ global $wpdb;
 		} else {
 			$e_message = __('Events not imported.','my-calendar');
 		}
-		$return_value = "<div id='message' class='updated fade'><p><strong>$message</strong><br /><strong>$e_message</strong></p></div>";
+		$return_value = "<div id='message' class='updated fade'><ul><li>$message</li><li>$e_message</li></ul></div>";
 		echo $return_value;
-		add_option( 'ko_calendar_imported','true' );
+		if ( $cats_results !== false && $events_results !== false ) {
+			update_option( 'ko_calendar_imported','true' );
+		}
 	} 
 }
 
 function edit_my_calendar_config() {
-  global $wpdb, $initial_style;
+  global $wpdb;
 
   // We can't use this page unless My Calendar is installed/upgraded
   check_my_calendar();
 
-  if (isset($_POST['permissions']) && isset($_POST['style'])) {
+  if (isset($_POST['permissions'])) {
   
 	if ($_POST['permissions'] == 'subscriber') { $new_perms = 'read'; }
 	else if ($_POST['permissions'] == 'contributor') { $new_perms = 'edit_posts'; }
@@ -83,45 +96,32 @@ function edit_my_calendar_config() {
 	else if ($_POST['permissions'] == 'admin') { $new_perms = 'manage_options'; }
 	else { $new_perms = 'manage_options'; }
 
-	$my_calendar_style = $_POST['style'];
 	$my_calendar_show_months = (int) $_POST['my_calendar_show_months'];
 	$my_calendar_date_format = $_POST['my_calendar_date_format'];
 
 	$disp_author = ($_POST['display_author']=='on')?'true':'false';
 	$disp_jump = ($_POST['display_jump']=='on')?'true':'false';
-	$use_styles = ($_POST['use_styles']=='on')?'true':'false';
 	$my_calendar_show_map = ($_POST['my_calendar_show_map']=='on')?'true':'false';
 	$my_calendar_show_address = ($_POST['my_calendar_show_address']=='on')?'true':'false';
+	$my_calendar_show_heading = ($_POST['my_calendar_show_heading']=='on')?'true':'false';
 	
 	  update_option('can_manage_events',$new_perms);
-	  update_option('my_calendar_style',$my_calendar_style);
 	  update_option('display_author',$disp_author);
 	  update_option('display_jump',$disp_jump);
-	  update_option('my_calendar_use_styles',$use_styles);
 	  update_option('my_calendar_show_months',$my_calendar_show_months);
 	  update_option('my_calendar_date_format',$my_calendar_date_format);
 	  update_option('my_calendar_show_map',$my_calendar_show_map);
 	  update_option('my_calendar_show_address',$my_calendar_show_address); 
-	  update_option('calendar_javascript', (int) $_POST['calendar_javascript']);
-	  update_option('list_javascript', (int) $_POST['list_javascript']);
-	  // Check to see if we are replacing the original style
-	  
-      if ( $_POST['reset_styles'] == 'on') {
-          update_option('my_calendar_style',$initial_style);
-        }
+	  update_option('my_calendar_show_heading',$my_calendar_show_heading);
       echo "<div class=\"updated\"><p><strong>".__('Settings saved','my-calendar').".</strong></p></div>";
     }
 
   // Pull the values out of the database that we need for the form
   $allowed_group = get_option('can_manage_events');
-  $my_calendar_style = stripcslashes(get_option('my_calendar_style'));
-  $my_calendar_use_styles = get_option('my_calendar_use_styles');
   $my_calendar_show_months = get_option('my_calendar_show_months');
   $my_calendar_show_map = get_option('my_calendar_show_map');
   $my_calendar_show_address = get_option('my_calendar_show_address');
   $disp_author = get_option('display_author');
-  $calendar_javascript = get_option('calendar_javascript');
-  $list_javascript = get_option('list_javascript');
   // checkbox
   $disp_jump = get_option('display_jump');
   //checkbox
@@ -161,6 +161,9 @@ function edit_my_calendar_config() {
                                     </select>
 	</p>
 	<p>
+	<input type="checkbox" id="my_calendar_show_heading" name="my_calendar_show_heading" <?php jd_cal_checkCheckbox('my_calendar_show_heading','true'); ?> /> <label for="my_calendar_show_heading"><?php _e('Show Heading for Calendar','my-calendar'); ?></label>	
+    </p>
+	<p>
 	<label for="display_jump"><?php _e('Display a jumpbox for changing month and year quickly?','my-calendar'); ?></label> <select id="display_jump" name="display_jump">
                                          <option value="on" <?php jd_cal_checkSelect('display_jump','true'); ?>><?php _e('Yes','my-calendar') ?></option>
                                          <option value="off" <?php jd_cal_checkSelect('display_jump','false'); ?>><?php _e('No','my-calendar') ?></option>
@@ -170,7 +173,7 @@ function edit_my_calendar_config() {
 	<label for="my_calendar_show_months"><?php _e('In list mode, show how many months of events at a time:','my-calendar'); ?></label> <input type="text" size="3" id="my_calendar_show_months" name="my_calendar_show_months" value="<?php echo $my_calendar_show_months; ?>" />
 	</p>
 	<p>
-	<label for="my_calendar_date_format"><?php _e('Date format in list mode','my-calendar'); ?></label> <input type="text" id="my_calendar_date_format" name="my_calendar_date_format" value="<?php if ( get_option('my_calendar_date_format')  == "") { echo get_option('date_format'); } else { echo get_option( 'my_calendar_date_format'); } ?>" /> Current: <?php if ( get_option('my_calendar_date_format') == '') { echo date(get_option('date_format')); } else { echo date(get_option('my_calendar_date_format')); } ?><br />
+	<label for="my_calendar_date_format"><?php _e('Date format in list mode','my-calendar'); ?></label> <input type="text" id="my_calendar_date_format" name="my_calendar_date_format" value="<?php if ( get_option('my_calendar_date_format')  == "") { echo get_option('date_format'); } else { echo get_option( 'my_calendar_date_format'); } ?>" /> Current: <?php if ( get_option('my_calendar_date_format') == '') { echo date_i18n(get_option('date_format')); } else { echo date_i18n(get_option('my_calendar_date_format')); } ?><br />
 	<small><?php _e('Date format uses the same syntax as the <a href="http://php.net/date">PHP <code>date()</code> function</a>. Save option to update sample output.','my-calendar'); ?></small>
 	</p>
 	<p>
@@ -178,28 +181,14 @@ function edit_my_calendar_config() {
     <input type="checkbox" id="my_calendar_show_address" name="my_calendar_show_address" <?php jd_cal_checkCheckbox('my_calendar_show_address','true'); ?> /> <label for="my_calendar_show_address"><?php _e('Show Event Address in Details','my-calendar'); ?></label>
 	</p>
 	</fieldset>
-	<fieldset>
-	<legend><?php _e('Calendar Styles','my-calendar'); ?></legend>
 	<p>
-	<input type="checkbox" id="reset_styles" name="reset_styles" /> <label for="reset_styles"><?php _e('Reset the My Calendar style to default','my-calendar'); ?></label><br />
-    <input type="checkbox" id="use_styles" name="use_styles" <?php jd_cal_checkCheckbox('my_calendar_use_styles','true'); ?> /> <label for="use_styles"><?php _e('Disable My Calendar Stylesheet','my-calendar'); ?></label>
-	</p>	
-	<p>
-	<label for="style"><?php _e('Edit the stylesheet for My Calendar','my-calendar'); ?></label><br /><textarea id="style" name="style" rows="10" cols="60" tabindex="2"><?php echo $my_calendar_style; ?></textarea>
-	</p>	
-	</fieldset>
-    <fieldset>
-	<legend><?php _e('Calendar Behaviors','my-calendar'); ?></legend>
-	<p>
-	<input type="checkbox" id="list_javascript" name="list_javascript" value="1" <?php jd_cal_checkCheckbox('list_javascript',1); ?> /> <label for="list_javascript"><?php _e('Disable List Javascript Effects','my-calendar'); ?></label><br />
-	<input type="checkbox" id="calendar_javascript" name="calendar_javascript" value="1"  <?php jd_cal_checkCheckbox('calendar_javascript',1); ?>/> <label for="calendar_javascript"><?php _e('Disable Calendar Javascript Effects','my-calendar'); ?></label>
-	</p>
-	<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save','my-calendar'); ?> &raquo;" />
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Settings','my-calendar'); ?> &raquo;" />
 	</p>
   </form>
   <?php
-if ( get_option('ko_calendar_imported') != 'true' ) {
+//update_option( 'ko_calendar_imported','false' );
+    
+if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
   	if (function_exists('check_calendar')) {
 	echo "<div class='import'>";
 	echo "<p>";
@@ -209,7 +198,7 @@ if ( get_option('ko_calendar_imported') != 'true' ) {
 		<form method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
 		<div>
 		<input type="hidden" name="import" value="true" />
-		<input type="submit" value="Import from Calendar" name="import-calendar" class="button-primary" />
+		<input type="submit" value="<?php _e('Import from Calendar','my-calendar'); ?>" name="import-calendar" class="button-primary" />
 		</div>
 		</form>
 	<?php

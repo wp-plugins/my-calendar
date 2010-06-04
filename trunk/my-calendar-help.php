@@ -15,14 +15,14 @@ function my_calendar_help() {
 <li><code>[my_calendar]</code><br />
 <?php _e('This basic shortcode will show the calendar on a post or page including all categories and the category key, in a traditional month-by-month format.','my-calendar'); ?>
 </li>
-<li><code>[my_calendar category="General" format="list" showkey="no"]</code><br />
-<?php _e('The shortcode supports three attributes, <code>category</code>, <code>format</code> and <code>showkey</code>. There is currently only one alternate option for <code>format</code> &mdash; <code>list</code> &mdash; which will show the calendar in a list format, skipping dates without any events. The <code>category</code> attribute requires either the name of or ID number one of your event categories (the name is case-sensitive). This will show a calendar only including events in that category. Setting <code>showkey</code> to <code>no</code> will prevent the category key from being displayed &mdash; this can be useful with single-category output.','my-calendar'); ?>
+<li><code>[my_calendar category="General|Other" format="list" showkey="no"]</code><br />
+<?php _e('The shortcode supports three attributes, <code>category</code>, <code>format</code> and <code>showkey</code>. There is currently only one alternate option for <code>format</code> &mdash; <code>list</code> &mdash; which will show the calendar in a list format, skipping dates without any events. The <code>category</code> attribute requires either the name of or ID number one of your event categories (the name is case-sensitive). This will show a calendar only including events in that category. Multiple categories can be specified by separating the category names or IDs using the pipe character: <code>|</code>. Setting <code>showkey</code> to <code>no</code> will prevent the category key from being displayed &mdash; this can be useful with single-category output.','my-calendar'); ?>
 </li>
-<li><code>[my_calendar_upcoming before="3" after="3" type="event" category="General"]</code><br />
-	<?php _e('This shortcode displays the output of the Upcoming Events widget. Without attributes, it will display using the settings in your widget; the attributes are used to override the widget settings.The <code>before</code> and <code>after</code> attributes should be numbers; the <code>type</code> attribute can be either "event" or "date", and the <code>category</code> attribute works the same way as the category attribute on the main calendar shortcode.','my-calendar'); ?>
+<li><code>[my_calendar_upcoming before="3" after="3" type="event" category="General" template="{title} {date}"]</code><br />
+	<?php _e('This shortcode displays the output of the Upcoming Events widget. Without attributes, it will display using the settings in your widget; the attributes are used to override the widget settings. The <code>before</code> and <code>after</code> attributes should be numbers; the <code>type</code> attribute can be either "event" or "date", and the <code>category</code> attribute works the same way as the category attribute on the main calendar shortcode. Templates work using the template codes listed below.','my-calendar'); ?>
 </li>
-<li><code>[my_calendar_today category="General"]</code><br />
-	<?php _e('Predictably enough, this shortcode displays the output of the Today\'s Events widget, with one configurable category attribute.','my-calendar'); ?>
+<li><code>[my_calendar_today category="" template="{title} {date}"]</code><br />
+	<?php _e('Predictably enough, this shortcode displays the output of the Today\'s Events widget, with two configurable attributes: category and template.','my-calendar'); ?>
 </li>
 </ul>
 </div>

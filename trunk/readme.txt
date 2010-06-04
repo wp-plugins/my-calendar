@@ -56,13 +56,32 @@ Languages available:
 
    My Calendar -> Add/Edit Events
    My Calendar -> Manage Categories
-   My Calendar -> Settings
+   My Calendar -> Manage Locations
+   My Calendar -> Settings   
+   My Calendar -> Style Editor
 
+   
 4. Edit or create a page on your blog which includes the shortcode [my_calendar] and visit
    the page you have edited or created. You should see your calendar. Visit My Calendar -> Help for assistance
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.3.0 = 
+
+* Fixed a CSS class which was applied to an incorrect element.
+* Revisions to the Calendar import methods
+* Moved style editing to its own page
+* Added JavaScript editing to allow for customization of jQuery behaviors.
+* Internationalized date formats
+* Shortcode support for multiple categories.
+* Shortcode support for custom templates in upcoming and today's events
+* Added a settings option to eliminate the heading in list format display.
+* Fixed a bug which treated the event repetition value as a string on event adding or updating, not allowing some users to use '0' as an event repetition.
+* Made events listing sortable in admin view
+* Minor revisions in admin UI.
+* Added database storage for frequently used venues or event locations.
+* Modified JavaScript for list display to automatically expand events scheduled for today.
 
 = 1.2.1 = 
 
@@ -112,6 +131,15 @@ Languages available:
 = This looks terrible with my template! You suck! =
 
 Hey, give me a break. I'm only going to release this with one default CSS - it works pretty well with Kubrick or Twenty Ten, and should be usable in many other themes. However, I'm not about to make any guarantees that it'll work with your theme. If you want it to look a particular way, you'll need to do some customization.
+
+= Why are past events showing up in my upcoming events widget? =
+
+The upcoming events widget has a number of options, including the choice to display any number of past or future events. The default settings allow for both, so if you only want future events to be shown you'll need to change the settings.
+
+= I don't want to show event categories in my widgets. How can I change that? =
+
+The widgets both use templates to determine what they'll display. You can edit those templates to show whatever you need within your list of events. The available shortcodes can be found on the plugin's Help page.
+
 
 
 == Screenshots ==
