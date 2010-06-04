@@ -672,7 +672,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
       add_option('display_todays','true');
       add_option('display_upcoming','true');
       add_option('display_upcoming_days',7);
-      add_option('my_calendar_version','1.0');
+      add_option('my_calendar_version','1.3.0');
       add_option('display_upcoming_type','false');
       add_option('display_upcoming_events',3);
       add_option('display_past_days',0);
@@ -752,7 +752,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
 				add_option('display_todays','true');
 				add_option('display_upcoming','true');
 				add_option('display_upcoming_days',7);
-				add_option('my_calendar_version','1.0');
+				add_option('my_calendar_version','1.3.0');
 				add_option('display_upcoming_type','false');
 				add_option('display_upcoming_events',3);
 				add_option('display_past_days',0);
