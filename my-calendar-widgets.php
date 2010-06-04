@@ -70,6 +70,8 @@ function init_my_calendar_upcoming() {
 	$past_days = get_option('display_past_days');
 	$upcoming_events = get_option('display_upcoming_events');
 	$past_events = get_option('display_past_events');	
+    $display_in_category = get_option('display_in_category');
+	
     
 	if (isset($_POST['my_calendar_upcoming_title'])) {
       update_option('my_calendar_upcoming_title',strip_tags($_POST['my_calendar_upcoming_title']));
@@ -144,12 +146,11 @@ function init_my_calendar_upcoming() {
 
 
 // Widget upcoming events
-function my_calendar_upcoming_events($before='default',$after='default',$type='default',$category='default') {
+function my_calendar_upcoming_events($before='default',$after='default',$type='default',$category='default',$template='default') {
   global $wpdb;
 
   // This function cannot be called unless calendar is up to date
 	check_my_calendar();
-	$template = get_option('my_calendar_upcoming_template');
 	$offset = get_option('gmt_offset');  
 	$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
   
@@ -180,6 +181,12 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 		$category = get_option('display_in_category');
 	} else {
 		$category = $category;
+	}
+    
+	if ($template == 'default') {
+		$template = get_option('my_calendar_upcoming_template');
+	} else {
+		$template = $template;
 	}
   
       $day_count = -($past_days);
@@ -251,15 +258,25 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 }
 
 // Widget todays events
-function my_calendar_todays_events() {
+function my_calendar_todays_events($category='default',$template='default') {
   global $wpdb;
 
   // This function cannot be called unless calendar is up to date
   check_my_calendar();
 
-  $template = get_option('my_calendar_today_template');
   
-    $events = my_calendar_grab_events(date("Y"),date("m"),date("d"));
+	if ($template == 'default') {
+		$template = get_option('my_calendar_today_template');
+	} else {
+		$template = $template;
+	}  
+	if ($category == 'default') {
+		$category = null;
+	} else {
+		$category = $category;
+	}  
+  
+    $events = my_calendar_grab_events(date("Y"),date("m"),date("d"),$category);
 	if (count($events) != 0) {
 		$output = "<ul>";
 	}
@@ -268,9 +285,9 @@ function my_calendar_todays_events() {
 		    $event_details = event_as_array($event);
 
 				if (get_option('my_calendar_date_format') != '') {
-				$date = date(get_option('my_calendar_date_format'),time());
+				$date = date_i18n(get_option('my_calendar_date_format'),time());
 				} else {
-				$date = date(get_option('date_format'),time());
+				$date = date_i18n(get_option('date_format'),time());
 				}			
 			// correct displayed time to today
 			$event_details['date'] = $date;
@@ -341,11 +358,11 @@ if (strlen($map_string) > 10) {
 }
 
 if (get_option('my_calendar_date_format') != '') {
-$date = date(get_option('my_calendar_date_format'),strtotime($event->event_begin));
-$date_end = date(get_option('my_calendar_date_format'),strtotime($event->event_end));
+$date = date_i18n(get_option('my_calendar_date_format'),strtotime($event->event_begin));
+$date_end = date_i18n(get_option('my_calendar_date_format'),strtotime($event->event_end));
 } else {
-$date = date(get_option('date_format'),strtotime($event->event_begin));
-$date_end = date(get_option('date_format'),strtotime($event->event_end));
+$date = date_i18n(get_option('date_format'),strtotime($event->event_begin));
+$date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 }
 
 
