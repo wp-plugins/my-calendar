@@ -67,6 +67,10 @@ Languages available:
 
 == Changelog ==
 
+= 1.3.1 = 
+
+* Corrected incorrect primary key in upgrade path.
+
 = 1.3.0 = 
 
 * Fixed a CSS class which was applied to an incorrect element.
