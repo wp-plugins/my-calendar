@@ -70,6 +70,7 @@ Languages available:
 = 1.3.1 = 
 
 * Corrected incorrect primary key in upgrade path.
+* Added version incrementing in upgrade path.
 
 = 1.3.0 = 
 
