@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.3.0
+Version: 1.3.1
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -672,7 +672,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
       add_option('display_todays','true');
       add_option('display_upcoming','true');
       add_option('display_upcoming_days',7);
-      add_option('my_calendar_version','1.3.0');
+      add_option('my_calendar_version','1.3.1');
       add_option('display_upcoming_type','false');
       add_option('display_upcoming_events',3);
       add_option('display_past_days',0);
@@ -727,7 +727,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
 			add_option('my_calendar_listjs',$initial_listjs);
 			add_option('my_calendar_caljs',$initial_caljs);
 			add_option('my_calendar_show_heading','true');
-
+            update_option( 'my_calendar_version' , '1.3.1' );
 			$sql = "CREATE TABLE " . MY_CALENDAR_LOCATIONS_TABLE . " ( 
 						location_id INT(11) NOT NULL AUTO_INCREMENT, 
 						location_label VARCHAR(60) NOT NULL ,
@@ -752,7 +752,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
 				add_option('display_todays','true');
 				add_option('display_upcoming','true');
 				add_option('display_upcoming_days',7);
-				add_option('my_calendar_version','1.3.0');
+				add_option('my_calendar_version','1.3.1');
 				add_option('display_upcoming_type','false');
 				add_option('display_upcoming_events',3);
 				add_option('display_past_days',0);
