@@ -737,7 +737,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
 						location_state VARCHAR(60) NOT NULL ,
 						location_postcode VARCHAR(10) NOT NULL ,
 						location_country VARCHAR(60) NOT NULL ,
-						PRIMARY KEY (category_id) 
+						PRIMARY KEY (location_id) 
 					 )";
 			$wpdb->get_results($sql);	  
 			
