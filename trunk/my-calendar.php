@@ -377,7 +377,7 @@ border-collapse:collapse;
 vertical-align:top;
 border:1px solid #eee;
 text-align:left;
-width:60px;
+width:13%;
 height:70px;
 padding:2px!important;
 }
