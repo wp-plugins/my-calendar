@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling
 Requires at least: 2.7
-Tested up to: 3.0 beta1
+Tested up to: 3.0 RC3
 Stable tag: trunk
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
@@ -66,6 +66,12 @@ Languages available:
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.3.2 = 
+
+* Fixed bugs with unstripped slashes in output
+* Fixed a bug where users could not add location information in events if they had not added any recurring locations
+* Removed requirement that address string must be five characters to display a link
 
 = 1.3.1 = 
 

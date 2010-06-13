@@ -41,19 +41,19 @@ function my_calendar_manage_locations() {
 			<?php _e('All location fields are optional: <em>insufficient information may result in an inaccurate map</em>.','my-calendar'); ?>
 			</p>
 			<p>
-			<label for="location_label"><?php _e('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar'); ?></label> <input type="text" id="location_label" name="location_label" class="input" size="40" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars($cur_loc->location_label); ?>" />
+			<label for="location_label"><?php _e('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar'); ?></label> <input type="text" id="location_label" name="location_label" class="input" size="40" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars(stripslashes($cur_loc->location_label)); ?>" />
 			</p>
 			<p>
-			<label for="location_street"><?php _e('Street Address','my-calendar'); ?></label> <input type="text" id="location_street" name="location_street" class="input" size="40" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars($cur_loc->location_street); ?>" />
+			<label for="location_street"><?php _e('Street Address','my-calendar'); ?></label> <input type="text" id="location_street" name="location_street" class="input" size="40" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars(stripslashes($cur_loc->location_street)); ?>" />
 			</p>			
 			<p>
-			<label for="location_street2"><?php _e('Street Address (2)','my-calendar'); ?></label> <input type="text" id="location_street2" name="location_street2" class="input" size="40" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars($cur_loc->location_street2); ?>" />
+			<label for="location_street2"><?php _e('Street Address (2)','my-calendar'); ?></label> <input type="text" id="location_street2" name="location_street2" class="input" size="40" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars(stripslashes($cur_loc->location_street2)); ?>" />
 			</p>
 			<p>
-			<label for="location_city"><?php _e('City','my-calendar'); ?></label> <input type="text" id="location_city" name="location_city" class="input" size="40" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars($cur_loc->location_city); ?>" /> <label for="location_state"><?php _e('State/Province','my-calendar'); ?></label> <input type="text" id="location_state" name="location_state" class="input" size="10" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars($cur_loc->location_state); ?>" /> <label for="location_postcode"><?php _e('Postal Code','my-calendar'); ?></label> <input type="text" id="location_postcode" name="location_postcode" class="input" size="10" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars($cur_loc->location_postcode); ?>" />
+			<label for="location_city"><?php _e('City','my-calendar'); ?></label> <input type="text" id="location_city" name="location_city" class="input" size="40" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars(stripslashes($cur_loc->location_city)); ?>" /> <label for="location_state"><?php _e('State/Province','my-calendar'); ?></label> <input type="text" id="location_state" name="location_state" class="input" size="10" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars($cur_loc->location_state); ?>" /> <label for="location_postcode"><?php _e('Postal Code','my-calendar'); ?></label> <input type="text" id="location_postcode" name="location_postcode" class="input" size="10" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars($cur_loc->location_postcode); ?>" />
 			</p>			
 			<p>
-			<label for="location_country"><?php _e('Country','my-calendar'); ?></label> <input type="text" id="location_country" name="location_country" class="input" size="10" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars($cur_loc->location_country); ?>" />
+			<label for="location_country"><?php _e('Country','my-calendar'); ?></label> <input type="text" id="location_country" name="location_country" class="input" size="10" value="<?php if ( !empty($cur_loc) ) echo htmlspecialchars(stripslashes($cur_loc->location_country)); ?>" />
 			</p>
 			</fieldset>
 			<p>
@@ -137,7 +137,7 @@ function my_calendar_manage_locations() {
            ?>
            <tr class="<?php echo $class; ?>">
 	     <th scope="row"><?php echo $location->location_id; ?></th>
-	     <td><?php echo $location->location_label . "<br />" . $location->location_street . "<br />" . $location->location_street2 . "<br />" . $location->location_city . ", " . $location->location_state . " " . $location->location_postcode; ?></td>
+	     <td><?php echo stripslashes($location->location_label) . "<br />" . stripslashes($location->location_street) . "<br />" . stripslashes($location->location_street2) . "<br />" . stripslashes($location->location_city) . ", " . stripslashes($location->location_state) . " " . stripslashes($location->location_postcode); ?></td>
 	     <td><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-locations&amp;mode=edit&amp;location_id=<?php echo $location->location_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a></td>
          <td><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-locations&amp;mode=delete&amp;location_id=<?php echo $category->location_id;?>" class="delete" onclick="return confirm('<?php echo __('Are you sure you want to delete this category?','my-calendar'); ?>')"><?php echo __('Delete','my-calendar'); ?></a></td>
          </tr>

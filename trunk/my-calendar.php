@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.3.1
+Version: 1.3.2
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -632,13 +632,15 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
 		      $my_calendar_exists = true;
 			  $current_version = get_option('my_calendar_version');
 			  // check whether installed version matches most recent version, establish upgrade process.
-		    }
+		    } 
        }
     }
   if ( $my_calendar_exists == false ) {
       $new_install = true;
     } else if ( version_compare( $current_version,"1.3.0","<" ) ) {
 		$upgrade_path = "1.3.0";
+		// having determined upgrade path, assign new version number
+		update_option( 'my_calendar_version' , '1.3.2' );		
 	}
 
   // Now we've determined what the current install is or isn't 
@@ -672,7 +674,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
       add_option('display_todays','true');
       add_option('display_upcoming','true');
       add_option('display_upcoming_days',7);
-      add_option('my_calendar_version','1.3.1');
+      add_option('my_calendar_version','1.3.2');
       add_option('display_upcoming_type','false');
       add_option('display_upcoming_events',3);
       add_option('display_past_days',0);
@@ -721,13 +723,12 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
 	// placeholder for future upgrades
 	
 	switch ($upgrade_path) {
-		case $upgrade_path == FALSE:
+		case $upgrade_path == FALSE:		
 		break;
 		case $upgrade_path == '1.3.0':
 			add_option('my_calendar_listjs',$initial_listjs);
 			add_option('my_calendar_caljs',$initial_caljs);
 			add_option('my_calendar_show_heading','true');
-            update_option( 'my_calendar_version' , '1.3.1' );
 			$sql = "CREATE TABLE " . MY_CALENDAR_LOCATIONS_TABLE . " ( 
 						location_id INT(11) NOT NULL AUTO_INCREMENT, 
 						location_label VARCHAR(60) NOT NULL ,
@@ -767,7 +768,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
 				add_option('my_calendar_upcoming_title','Upcoming Events');
 				add_option('calendar_javascript',0);
 				add_option('list_javascript',0);				
-			}
+			}		
 		default:
 		break;
 	}
@@ -914,12 +915,12 @@ function my_calendar_draw_event($event, $type="calendar") {
 			$image = "";
 		}
     $location_string = $event->event_street.$event->event_street2.$event->event_city.$event->event_state.$event->event_postcode.$event->event_country;		
-	if (($display_address == 'true' || $display_map == 'true') && strlen($location_string) > 5) {
+	if (($display_address == 'true' || $display_map == 'true')) {
 		$map_string = $event->event_street.' '.$event->event_street2.' '.$event->event_city.' '.$event->event_state.' '.$event->event_postcode.' '.$event->event_country;	
 		
 		$address .= '<div class="address vcard">';
 		
-			if ($display_address == 'true' && strlen($location_string) > 5) {
+			if ($display_address == 'true') {
 				$address .= "<div class=\"adr\">";
 					if ($event->event_label != "") {
 						$address .= "<strong class=\"org\">".stripslashes($event->event_label)."</strong><br />";
@@ -945,7 +946,6 @@ function my_calendar_draw_event($event, $type="calendar") {
 				$address .= "</div>";			
 			}
 			if ($display_map == 'true') {
-				if (strlen($location_string) > 5) {
 					$map_string = str_replace(" ","+",$map_string);
 					if ($event->event_label != "") {
 						$map_label = stripslashes($event->event_label);
@@ -954,7 +954,6 @@ function my_calendar_draw_event($event, $type="calendar") {
 					}
 					$map = "<a href=\"http://maps.google.com/maps?f=q&amp;z=15&amp;q=$map_string\">Map<span> to $map_label</span></a>";
 					$address .= "<div class=\"url map\">$map</div>";
-				}
 			}
 		$address .= "</div>";
 	}
