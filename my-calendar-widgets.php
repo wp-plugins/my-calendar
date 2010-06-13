@@ -12,7 +12,7 @@ function init_my_calendar_today() {
     $the_events = my_calendar_todays_events();
     if ($the_events != '') {
       echo $before_widget;
-      echo $before_title . $widget_title . $after_title;
+      echo $before_title . stripslashes($widget_title) . $after_title;
       echo $the_events;
       echo $after_widget;
     }
@@ -30,7 +30,7 @@ function init_my_calendar_today() {
     ?>
 <p>
    <label for="my_calendar_today_title"><?php _e('Title','my-calendar'); ?>:</label><br />
-   <input class="widefat" type="text" id="my_calendar_today_title" name="my_calendar_today_title" value="<?php echo $widget_title; ?>"/>
+   <input class="widefat" type="text" id="my_calendar_today_title" name="my_calendar_today_title" value="<?php echo stripslashes($widget_title); ?>"/>
 </p>
 <p>
 	<label for="my_calendar_today_template"><?php _e('Template','my-calendar'); ?></label><br />
@@ -57,7 +57,7 @@ function init_my_calendar_upcoming() {
     $the_events = my_calendar_upcoming_events();
     if ($the_events != '') {
       echo $before_widget;
-      echo $before_title . $widget_title . $after_title;
+      echo $before_title . stripslashes($widget_title) . $after_title;
       echo $the_events;
       echo $after_widget;
     }
