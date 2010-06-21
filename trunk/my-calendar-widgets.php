@@ -369,7 +369,11 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
     $details = array();
 	$details['category'] = stripslashes($category_name->category_name);
 	$details['title'] = stripslashes($event->event_title);
+	if ($event->event_time == '00:00:00' ) {
+	$details['time'] = __('N/A','my-calendar');
+	} else {
 	$details['time'] = date(get_option('time_format'),strtotime($event->event_time));
+	}
 	$details['author'] = $e->display_name;
 	$details['link'] = $event->event_link;
 	$details['description'] = stripslashes($event->event_desc);

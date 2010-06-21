@@ -758,8 +758,8 @@ function jd_events_display_list($sortby='default',$sortdir='default') {
 			?>
 			<tr class="<?php echo $class; ?>">
 				<th scope="row"><?php echo $event->event_id; ?></th>
-				<td><?php echo htmlentities($event->event_title); ?></td>
-				<td><?php echo htmlentities($event->event_desc); ?></td>
+				<td><?php echo htmlentities(stripslashes($event->event_title)); ?></td>
+				<td><?php echo htmlentities(stripslashes($event->event_desc)); ?></td>
 				<td><?php echo $event->event_begin; ?></td>
 				<?php /* <td><?php echo $event->event_end; ?></td> */ ?>
 				<td>
@@ -786,7 +786,7 @@ function jd_events_display_list($sortby='default',$sortdir='default') {
 				$sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".$event->event_category;
                                 $this_cat = $wpdb->get_row($sql);
                                 ?>
-				<td><div class="category-color" style="background-color:<?php echo $this_cat->category_color;?>;"> </div> <?php echo $this_cat->category_name; ?></td>
+				<td><div class="category-color" style="background-color:<?php echo $this_cat->category_color;?>;"> </div> <?php echo stripslashes($this_cat->category_name); ?></td>
 				<?php unset($this_cat); ?>
 				<td>
 				<?php if ( mc_can_edit_event( $event->event_author ) ) { ?>
