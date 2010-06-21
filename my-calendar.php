@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.3.2
+Version: 1.3.3
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -297,10 +297,10 @@ function my_calendar_insert_upcoming($atts) {
 
 function my_calendar_insert_today($atts) {
 	extract(shortcode_atts(array(
-				'category' => '',
-				'template' => ''
+				'category' => 'default',
+				'template' => 'default'
 			), $atts));
-	return my_calendar_today_events($category, $template);
+	return my_calendar_todays_events($category, $template);
 }
 
 
@@ -640,7 +640,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
     } else if ( version_compare( $current_version,"1.3.0","<" ) ) {
 		$upgrade_path = "1.3.0";
 		// having determined upgrade path, assign new version number
-		update_option( 'my_calendar_version' , '1.3.2' );		
+		update_option( 'my_calendar_version' , '1.3.3' );		
 	}
 
   // Now we've determined what the current install is or isn't 
@@ -674,7 +674,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
       add_option('display_todays','true');
       add_option('display_upcoming','true');
       add_option('display_upcoming_days',7);
-      add_option('my_calendar_version','1.3.2');
+      add_option('my_calendar_version','1.3.3');
       add_option('display_upcoming_type','false');
       add_option('display_upcoming_events',3);
       add_option('display_past_days',0);
@@ -720,12 +720,11 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
 	  
     } 
 	
-	// placeholder for future upgrades
-	
+// switch for different upgrade paths
 	switch ($upgrade_path) {
-		case $upgrade_path == FALSE:		
+		case FALSE:		
 		break;
-		case $upgrade_path == '1.3.0':
+		case '1.3.0':
 			add_option('my_calendar_listjs',$initial_listjs);
 			add_option('my_calendar_caljs',$initial_caljs);
 			add_option('my_calendar_show_heading','true');
@@ -1058,7 +1057,7 @@ global $wpdb;
 							for ($i=$numback;$i<=$numforward;$i++) {
 								$begin = my_calendar_add_date($orig_begin,$i,0,0);
 								$end = my_calendar_add_date($orig_end,$i,0,0);		
-								${$i} = clone $event;
+								${$i} = clone($event);
 								${$i}->event_begin = $begin;
 								${$i}->event_end = $end;							
 								$arr_events[]=${$i};
@@ -1068,7 +1067,7 @@ global $wpdb;
 							for ($i=$numback;$i<=$numforward;$i++) {
 								$begin = my_calendar_add_date($orig_begin,($i*7),0,0);
 								$end = my_calendar_add_date($orig_end,($i*7),0,0);
-								${$i} = clone $event;
+								${$i} = clone($event);
 								${$i}->event_begin = $begin;
 								${$i}->event_end = $end;							
 								$arr_events[]=${$i};
@@ -1078,7 +1077,7 @@ global $wpdb;
 							for ($i=$numback;$i<=$numforward;$i++) {
 								$begin = my_calendar_add_date($orig_begin,($i*14),0,0);
 								$end = my_calendar_add_date($orig_end,($i*14),0,0);
-								${$i} = clone $event;
+								${$i} = clone($event);
 								${$i}->event_begin = $begin;
 								${$i}->event_end = $end;							
 								$arr_events[]=${$i};
@@ -1088,7 +1087,7 @@ global $wpdb;
 							for ($i=$numback;$i<=$numforward;$i++) {
 								$begin = my_calendar_add_date($orig_begin,0,$i,0);
 								$end = my_calendar_add_date($orig_end,0,$i,0);
-								${$i} = clone $event;
+								${$i} = clone($event);
 								${$i}->event_begin = $begin;
 								${$i}->event_end = $end;							
 								$arr_events[]=${$i};
@@ -1098,7 +1097,7 @@ global $wpdb;
 							for ($i=$numback;$i<=$numforward;$i++) {
 								$begin = my_calendar_add_date($orig_begin,0,0,$i);
 								$end = my_calendar_add_date($orig_end,0,0,$i);
-								${$i} = clone $event;
+								${$i} = clone($event);
 								${$i}->event_begin = $begin;
 								${$i}->event_end = $end;							
 								$arr_events[]=${$i};
@@ -1123,7 +1122,7 @@ global $wpdb;
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
 									$this_date = my_calendar_add_date($event_begin,($realStart),0,0);
 										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
-											${$realStart} = clone $event;
+											${$realStart} = clone($event);
 											${$realStart}->event_begin = $this_date;
 											$arr_events[] = ${$realStart};
 										}
@@ -1134,7 +1133,7 @@ global $wpdb;
 								for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
 								$this_date = my_calendar_add_date($event_begin,$realDays,0,0);
 									if ( my_calendar_date_comp( $event->event_begin,$this_date ) == true ) {
-										${$realDays} = clone $event;
+										${$realDays} = clone($event);
 										${$realDays}->event_begin = $this_date;
 										$arr_events[] = ${$realDays};
 									}
@@ -1162,7 +1161,7 @@ global $wpdb;
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
 									$this_date = my_calendar_add_date($event_begin,($realStart*7),0,0);
 										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
-											${$realStart} = clone $event;
+											${$realStart} = clone($event);
 											${$realStart}->event_begin = $this_date;
 											$arr_events[] = ${$realStart};
 										}
@@ -1173,7 +1172,7 @@ global $wpdb;
 								for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
 								$this_date = my_calendar_add_date($event_begin,($realDays*7),0,0);
 									if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
-										${$realDays} = clone $event;
+										${$realDays} = clone($event);
 										${$realDays}->event_begin = $this_date;
 										$arr_events[] = ${$realDays};
 									}
@@ -1201,7 +1200,7 @@ global $wpdb;
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
 									$this_date = my_calendar_add_date($event_begin,($realStart*14),0,0);
 										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
-											${$realStart} = clone $event;
+											${$realStart} = clone($event);
 											${$realStart}->event_begin = $this_date;
 											$arr_events[] = ${$realStart};
 										}
@@ -1212,7 +1211,7 @@ global $wpdb;
 								for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
 								$this_date = my_calendar_add_date($event_begin,($realDays*14),0,0);
 									if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
-										${$realDays} = clone $event;
+										${$realDays} = clone($event);
 										${$realDays}->event_begin = $this_date;
 										$arr_events[] = ${$realDays};
 									}
@@ -1240,7 +1239,7 @@ global $wpdb;
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
 									$this_date = my_calendar_add_date($event_begin,0,$realStart,0);
 										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
-											${$realStart} = clone $event;
+											${$realStart} = clone($event);
 											${$realStart}->event_begin = $this_date;
 											$arr_events[] = ${$realStart};
 										}
@@ -1251,7 +1250,7 @@ global $wpdb;
 								for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
 								$this_date = my_calendar_add_date($event_begin,0,$realDays,0);
 									if ( my_calendar_date_comp( $event->event_begin,$this_date ) == true ) {
-										${$realDays} = clone $event;
+										${$realDays} = clone($event);
 										${$realDays}->event_begin = $this_date;
 										$arr_events[] = ${$realDays};
 									}
@@ -1279,7 +1278,7 @@ global $wpdb;
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
 									$this_date = my_calendar_add_date($event_begin,0,0,$realStart);
 										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
-											${$realStart} = clone $event;
+											${$realStart} = clone($event);
 											${$realStart}->event_begin = $this_date;
 											$arr_events[] = ${$realStart};
 										}
@@ -1290,7 +1289,7 @@ global $wpdb;
 								for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
 								$this_date = my_calendar_add_date($event_begin,0,0,$realDays);
 									if ( my_calendar_date_comp( $event->event_begin,$this_date ) == true ) {
-										${$realDays} = clone $event;
+										${$realDays} = clone($event);
 										${$realDays}->event_begin = $this_date;
 										$arr_events[] = ${$realDays};
 									}
@@ -1967,6 +1966,15 @@ function mc_can_edit_event($author_id) {
 			return false;
 		}
 }
-			
+
+// compatibility of clone keyword between PHP 5 and 4
+if (version_compare(phpversion(), '5.0') < 0) {
+	eval('
+	function clone($object) {
+	  return $object;
+	}
+	');
+}
+	
 
 ?>

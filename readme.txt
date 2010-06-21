@@ -67,6 +67,13 @@ Languages available:
 
 == Changelog ==
 
+= 1.3.3 = 
+
+* Fixed bug with upgrade path which caused locations database to be created on every activation (also cause of errors with some other plugins). (Thanks to Steven J. Kiernan)
+* Made clone object PHP 4 compatible (Thanks to Peder Lindkvist)
+* Corrected errors in shortcode functions for today's events
+* Corrected rendering of non-specific time events as happening at midnight in widget output
+
 = 1.3.2 = 
 
 * Fixed bugs with unstripped slashes in output
