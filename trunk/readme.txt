@@ -35,7 +35,7 @@ Features:
 *	Optional drop down boxes to quickly change month and year
 *	User groups other than admin can be permitted to manage events
 *	Events can be placed into categories
-*	A calendar of events can be displayed including a single category or all categories
+*	Calendar can be displayed including a single category, all categories, or a selection of categories
 *	Events can be links pointing to a location of your choice
 *   Import method from Kieran's Calendar plugin
 * 	Help information within the plugin for shortcodes and widget templates.
