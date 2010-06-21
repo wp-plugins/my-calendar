@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling
 Requires at least: 2.7
-Tested up to: 3.0 RC3
+Tested up to: 3.0
 Stable tag: trunk
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
