@@ -18,7 +18,6 @@ Features:
 
 *	Monthly view of events
 *	List view of events; multiple months can be viewed at once.
-*	Events can have a timestamp (optional)
 *	Events can display their author (optional)
 *	Events can span more than one day
 *	Events can include location information
@@ -32,13 +31,14 @@ Features:
 *	Highly configurable widget to show upcoming events 
 *	Widget templating to control what information is displayed in widget output.
 *	Extensive settings panel for administration
-*	Edit or disable default CSS from the settings page
+*	Edit or disable default CSS and default JavaScript from the style editor
 *	Optional drop down boxes to quickly change month and year
 *	User groups other than admin can be permitted to manage events
 *	Events can be placed into categories
 *	A calendar of events can be displayed including a single category or all categories
 *	Events can be links pointing to a location of your choice
 *   Import method from Kieran's Calendar plugin
+* 	Help information within the plugin for shortcodes and widget templates.
 
 Languages available:
 
