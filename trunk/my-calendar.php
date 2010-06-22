@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.3.3
+Version: 1.3.4
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -640,7 +640,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
     } else if ( version_compare( $current_version,"1.3.0","<" ) ) {
 		$upgrade_path = "1.3.0";
 		// having determined upgrade path, assign new version number
-		update_option( 'my_calendar_version' , '1.3.3' );		
+		update_option( 'my_calendar_version' , '1.3.4' );		
 	}
 
   // Now we've determined what the current install is or isn't 
@@ -674,7 +674,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
       add_option('display_todays','true');
       add_option('display_upcoming','true');
       add_option('display_upcoming_days',7);
-      add_option('my_calendar_version','1.3.3');
+      add_option('my_calendar_version','1.3.4');
       add_option('display_upcoming_type','false');
       add_option('display_upcoming_events',3);
       add_option('display_past_days',0);
@@ -914,7 +914,7 @@ function my_calendar_draw_event($event, $type="calendar") {
 			$image = "";
 		}
     $location_string = $event->event_street.$event->event_street2.$event->event_city.$event->event_state.$event->event_postcode.$event->event_country;		
-	if (($display_address == 'true' || $display_map == 'true')) {
+	if (($display_address == 'true' || $display_map == 'true') && strlen($location_string) > 0 ) {
 		$map_string = $event->event_street.' '.$event->event_street2.' '.$event->event_city.' '.$event->event_state.' '.$event->event_postcode.' '.$event->event_country;	
 		
 		$address .= '<div class="address vcard">';
@@ -944,7 +944,7 @@ function my_calendar_draw_event($event, $type="calendar") {
 					}	
 				$address .= "</div>";			
 			}
-			if ($display_map == 'true') {
+			if ($display_map == 'true' && strlen($location_string) > 0 ) {
 					$map_string = str_replace(" ","+",$map_string);
 					if ($event->event_label != "") {
 						$map_label = stripslashes($event->event_label);
@@ -977,7 +977,7 @@ $my_calendar_directory = get_bloginfo( 'wpurl' ) . '/' . PLUGINDIR . '/' . dirna
 			$e = get_userdata($event->event_author);
 			$header_details .= '<span class="event-author">'.__('Posted by', 'my-calendar').': <span class="author-name">'.$e->display_name."</span></span><br />\n		";
 		}	
-	if ($display_address == 'true' || $display_map == 'true') {
+	if (($display_address == 'true' || $display_map == 'true') && strlen($location_string) > 0 ) {
 		$header_details .= $address;
 	}
   
