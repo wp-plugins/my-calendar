@@ -68,6 +68,10 @@ Languages available:
 
 == Changelog ==
 
+= 1.3.4 =
+
+* Fixed a bug with map link and address display which I forgot to deal with in previous release.
+
 = 1.3.3 = 
 
 * Fixed bug with upgrade path which caused locations database to be created on every activation (also cause of errors with some other plugins). (Thanks to Steven J. Kiernan)
