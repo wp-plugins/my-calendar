@@ -68,6 +68,21 @@ Languages available:
 
 == Changelog ==
 
+= 1.3.5 =
+
+* Fix for flash of unstyled content issue.
+* Added configuration for time text on events with non-specific time.
+* Fixed bug where, in list views with multiple months, events occurring on days which did not exist in the previous month were not rendered. (Such as March 30th where previous month was February.)
+* Fixed bug where the multi-month view setting for lists caused previous/next events buttons to skip months in calendar view.
+* Added option to disable category icons.
+* Added option to insert text in calendar caption/title area, appended to the month/year information.
+* Fixed a bug where it was not possible to choose the "Show by days" option in the upcoming events widget.
+* Updated documentation to match
+* Fixed a bug where upcoming events in Days mode did not display correct date
+* Added an option to define text to be displayed in place of Today's Events widget if there are no events scheduled.
+* Minor changes to default CSS
+* Ability to show CSS and JavaScript only on selected pages.
+
 = 1.3.4 =
 
 * Fixed a bug with map link and address display which I forgot to deal with in previous release.

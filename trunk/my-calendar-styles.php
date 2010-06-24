@@ -22,6 +22,8 @@ function edit_my_calendar_styles() {
 	  update_option('list_javascript', (int) $_POST['list_javascript']);
 	  update_option('my_calendar_listjs',$my_calendar_listjs);
 	  update_option('my_calendar_caljs',$my_calendar_caljs);
+	  $my_calendar_show_css = ($_POST['my_calendar_show_css']=='')?'false':$_POST['my_calendar_show_css'];
+	  update_option('my_calendar_show_css',$my_calendar_show_css);
 	  // Check to see if we are replacing the original style
 	  
 		if ( $_POST['reset_styles'] == 'on') {
@@ -45,6 +47,9 @@ function edit_my_calendar_styles() {
   $my_calendar_caljs = stripcslashes(get_option('my_calendar_caljs'));
   $calendar_javascript = get_option('calendar_javascript');
 
+  $my_calendar_show_css = stripcslashes(get_option('my_calendar_show_css'));
+
+  
   // Now we render the form
  
  
@@ -66,6 +71,9 @@ function edit_my_calendar_styles() {
 	<p>
 	<label for="style"><?php _e('Edit the stylesheet for My Calendar','my-calendar'); ?></label><br /><textarea id="style" name="style" rows="30" cols="80"><?php echo $my_calendar_style; ?></textarea>
 	</p>	
+	<p>
+	<label for="my_calendar_show_css"><?php _e('Show CSS only on these pages (comma separated page IDs)','my-calendar'); ?></label> <input type="text" id="my_calendar_show_css" name="my_calendar_show_css" value="<?php echo $my_calendar_show_css; ?>" />
+	</p>
 	</fieldset>
     <fieldset>
 	<legend><?php _e('Calendar Behaviors: Calendar View','my-calendar'); ?></legend>

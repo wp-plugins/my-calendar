@@ -104,6 +104,9 @@ function edit_my_calendar_config() {
 	$my_calendar_show_map = ($_POST['my_calendar_show_map']=='on')?'true':'false';
 	$my_calendar_show_address = ($_POST['my_calendar_show_address']=='on')?'true':'false';
 	$my_calendar_show_heading = ($_POST['my_calendar_show_heading']=='on')?'true':'false';
+	$my_calendar_notime_text = $_POST['my_calendar_notime_text'];
+	$my_calendar_hide_icons = ($_POST['my_calendar_hide_icons']=='on')?'true':'false';
+	$my_calendar_caption = $_POST['my_calendar_caption'];
 	
 	  update_option('can_manage_events',$new_perms);
 	  update_option('display_author',$disp_author);
@@ -113,6 +116,9 @@ function edit_my_calendar_config() {
 	  update_option('my_calendar_show_map',$my_calendar_show_map);
 	  update_option('my_calendar_show_address',$my_calendar_show_address); 
 	  update_option('my_calendar_show_heading',$my_calendar_show_heading);
+	  update_option('my_calendar_notime_text',$my_calendar_notime_text);
+	  update_option('my_calendar_hide_icons',$my_calendar_hide_icons);
+	  update_option('my_calendar_caption',$my_calendar_caption);
       echo "<div class=\"updated\"><p><strong>".__('Settings saved','my-calendar').".</strong></p></div>";
     }
 
@@ -144,30 +150,31 @@ function edit_my_calendar_config() {
 	<div class="inside">	
     <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
     <fieldset>
-    <legend><?php _e('Primary Calendar Options','my-calendar'); ?></legend>
+    <legend><?php _e('Calendar Options: Management','my-calendar'); ?></legend>
     <p>
     <label for="permissions"><?php _e('Choose the lowest user group that may manage events','my-calendar'); ?></label> <select id="permissions" name="permissions">
-				            <option value="subscriber"<?php echo $subscriber_selected ?>><?php _e('Subscriber','my-calendar')?></option>
-				            <option value="contributor" <?php echo $contributor_selected ?>><?php _e('Contributor','my-calendar')?></option>
-				            <option value="author" <?php echo $author_selected ?>><?php _e('Author','my-calendar')?></option>
-				            <option value="editor" <?php echo $editor_selected ?>><?php _e('Editor','my-calendar')?></option>
-				            <option value="admin" <?php echo $admin_selected ?>><?php _e('Administrator','my-calendar')?></option>
-				        </select>
+		<option value="subscriber"<?php echo $subscriber_selected ?>><?php _e('Subscriber','my-calendar')?></option>
+		<option value="contributor" <?php echo $contributor_selected ?>><?php _e('Contributor','my-calendar')?></option>
+		<option value="author" <?php echo $author_selected ?>><?php _e('Author','my-calendar')?></option>
+		<option value="editor" <?php echo $editor_selected ?>><?php _e('Editor','my-calendar')?></option>
+		<option value="admin" <?php echo $admin_selected ?>><?php _e('Administrator','my-calendar')?></option>
+	</select>
 	</p>
+	</fieldset>
+	<fieldset>
+	<legend><?php _e('Calendar Options: Output','my-calendar'); ?></legend>
 	<p>
     <label for="display_author"><?php _e('Do you want to display the author name on events?','my-calendar'); ?></label> <select id="display_author" name="display_author">
-                                        <option value="on" <?php jd_cal_checkSelect('display_author','true'); ?>><?php _e('Yes','my-calendar') ?></option>
-                                        <option value="off" <?php jd_cal_checkSelect('display_author','false'); ?>><?php _e('No','my-calendar') ?></option>
-                                    </select>
+		<option value="on" <?php jd_cal_checkSelect('display_author','true'); ?>><?php _e('Yes','my-calendar') ?></option>
+		<option value="off" <?php jd_cal_checkSelect('display_author','false'); ?>><?php _e('No','my-calendar') ?></option>
+	</select>
 	</p>
-	<p>
-	<input type="checkbox" id="my_calendar_show_heading" name="my_calendar_show_heading" <?php jd_cal_checkCheckbox('my_calendar_show_heading','true'); ?> /> <label for="my_calendar_show_heading"><?php _e('Show Heading for Calendar','my-calendar'); ?></label>	
-    </p>
+
 	<p>
 	<label for="display_jump"><?php _e('Display a jumpbox for changing month and year quickly?','my-calendar'); ?></label> <select id="display_jump" name="display_jump">
-                                         <option value="on" <?php jd_cal_checkSelect('display_jump','true'); ?>><?php _e('Yes','my-calendar') ?></option>
-                                         <option value="off" <?php jd_cal_checkSelect('display_jump','false'); ?>><?php _e('No','my-calendar') ?></option>
-                                    </select>
+		 <option value="on" <?php jd_cal_checkSelect('display_jump','true'); ?>><?php _e('Yes','my-calendar') ?></option>
+		 <option value="off" <?php jd_cal_checkSelect('display_jump','false'); ?>><?php _e('No','my-calendar') ?></option>
+	</select>
 	</p>
 	<p>
 	<label for="my_calendar_show_months"><?php _e('In list mode, show how many months of events at a time:','my-calendar'); ?></label> <input type="text" size="3" id="my_calendar_show_months" name="my_calendar_show_months" value="<?php echo $my_calendar_show_months; ?>" />
@@ -177,7 +184,21 @@ function edit_my_calendar_config() {
 	<small><?php _e('Date format uses the same syntax as the <a href="http://php.net/date">PHP <code>date()</code> function</a>. Save option to update sample output.','my-calendar'); ?></small>
 	</p>
 	<p>
-    <input type="checkbox" id="my_calendar_show_map" name="my_calendar_show_map" <?php jd_cal_checkCheckbox('my_calendar_show_map','true'); ?> /> <label for="my_calendar_show_map"><?php _e('Show Link to Google Map (when sufficient address information is available.)','my-calendar'); ?></label><br />
+	<input type="checkbox" id="my_calendar_show_heading" name="my_calendar_show_heading" <?php jd_cal_checkCheckbox('my_calendar_show_heading','true'); ?> /> <label for="my_calendar_show_heading"><?php _e('Show Heading for Calendar','my-calendar'); ?></label>
+    </p>	
+	<p>
+	<label for="my_calendar_notime_text"><?php _e('Label for events without a specific time'); ?></label> <input type="text" id="my_calendar_notime_text" name="my_calendar_notime_text" value="<?php if ( get_option('my_calendar_notime_text') == "") { _e('N/A','my-calendar'); } else { echo stripslashes( get_option('my_calendar_notime_text') ); } ?>" />
+	</p>
+	<p>
+	<label for="my_calendar_caption"><?php _e('Additional caption text','my-calendar'); ?></label> <input type="text" id="my_calendar_caption" name="my_calendar_caption" value="<?php echo stripslashes( get_option('my_calendar_caption') ); ?>" /><br /><small><?php _e('The calendar caption is the text containing the displayed month and year in either list or calendar format. This text will be displayed following that existing text.'); ?></small>
+	</p>
+	<p>
+	<input type="checkbox" id="my_calendar_hide_icons" name="my_calendar_hide_icons" <?php jd_cal_checkCheckbox('my_calendar_hide_icons','true'); ?> /> <label for="my_calendar_hide_icons"><?php _e('Hide category icons in output','my-calendar'); ?></label>
+	</p>
+	<p>
+    <input type="checkbox" id="my_calendar_show_map" name="my_calendar_show_map" <?php jd_cal_checkCheckbox('my_calendar_show_map','true'); ?> /> <label for="my_calendar_show_map"><?php _e('Show Link to Google Map (when sufficient address information is available.)','my-calendar'); ?></label>
+	</p>
+	<p>
     <input type="checkbox" id="my_calendar_show_address" name="my_calendar_show_address" <?php jd_cal_checkCheckbox('my_calendar_show_address','true'); ?> /> <label for="my_calendar_show_address"><?php _e('Show Event Address in Details','my-calendar'); ?></label>
 	</p>
 	</fieldset>

@@ -93,18 +93,31 @@ function mc_deal_with_deleted_user($id) {
 
 // Function to add the calendar style into the header
 function my_calendar_wp_head() {
-  global $wpdb;
+  global $wpdb, $wp_query;
   // If the calendar isn't installed or upgraded this won't work
   check_my_calendar();
   $styles = stripcslashes(get_option('my_calendar_style'));
 	if ( get_option('my_calendar_use_styles') != 'true' ) {
+	
+		$this_post = $wp_query->get_queried_object();
+		if (is_object($this_post)) {
+			$id = $this_post->ID;
+		} 
+		if ( get_option( 'my_calendar_show_css' ) != 'false' ) {
+		$array = explode( ",",get_option( 'my_calendar_show_css' ) );
+		}
+		if ( in_array( $id, $array ) || get_option( 'my_calendar_show_css' == 'false' ) || get_option( 'my_calendar_show_css' ) == '' ) {
+	
 echo "
 <style type=\"text/css\">
 <!--
 // Styles from My Calendar - Joseph C Dolson http://www.joedolson.com/
 $styles
+.js #jd-calendar .calendar-event div {display: none;}
 -->
 </style>";
+
+		}
 	}
 }
 
@@ -183,6 +196,13 @@ add_action('init','my_calendar_add_display_javascript');
 function my_calendar_calendar_javascript() {
 $list_js = stripcslashes( get_option( 'my_calendar_listjs' ) );
 $cal_js = stripcslashes( get_option( 'my_calendar_caljs' ) );
+
+if ( get_option('calendar_javascript') != 1 || get_option('list_javascript') != 1 ) {
+echo '<script type="text/javascript">
+var $j = jQuery.noConflict();
+$j(\'html\').addClass(\'js\');
+</script>';
+}
 
 	if ( get_option('calendar_javascript') != 1 ) {
 ?>
@@ -433,7 +453,10 @@ margin:5px 0;
 padding:5px 5px 0;
 color: #333;
 }
-
+#jd-calendar #calendar-list {
+margin: 0;
+padding: 0;
+}
 #jd-calendar #calendar-list li {
 padding:5px;
 list-style-type: none;
@@ -495,10 +518,18 @@ padding: 0;
 #jd-calendar .category-key li {
 margin: 2px 10px;
 }
-#jd-calendar .category-icon {
+#jd-calendar .category-key span {
 margin-right:5px;
-margin-bottom:5px;
 vertical-align:middle;
+}
+#jd-calendar .category-key .no-icon {
+width: 10px;
+height: 10px;
+display: inline-block;
+border: 1px solid #555;
+-moz-border-radius: 2px;
+-webkit-border-radius: 2px;
+border-radius: 2px;
 }
 
 #calendar-list li {
@@ -691,6 +722,8 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
 	  add_option('list_javascript',0);
 	  add_option('my_calendar_listjs',$initial_listjs);
 	  add_option('my_calendar_caljs',$initial_caljs);
+	  add_option('my_calendar_notime_text','N/A');
+	  add_option('my_calendar_hide_icons','false');	  
       $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_category=1";
       $wpdb->get_results($sql);
 	  
@@ -823,12 +856,12 @@ function my_calendar_permalink_prefix() {
 }
 
 // Configure the "Next" link in the calendar
-function my_calendar_next_link($cur_year,$cur_month) {
+function my_calendar_next_link($cur_year,$cur_month,$format) {
   $mod_rewrite_months = array(1=>'jan','feb','mar','apr','may','jun','jul','aug','sept','oct','nov','dec');
   $next_year = $cur_year + 1;
 
 $num_months = get_option('my_calendar_show_months');
-  if ($num_months <= 1) {  
+  if ($num_months <= 1 || $format=="calendar") {  
 	  if ($cur_month == 12) {
 	      return '<a href="' . my_calendar_permalink_prefix() . 'month=jan&amp;yr=' . $next_year . '" rel="nofollow">'.__('Next Events','my-calendar').' &raquo;</a>';
 	    } else {
@@ -852,12 +885,12 @@ $num_months = get_option('my_calendar_show_months');
 }
 
 // Configure the "Previous" link in the calendar
-function my_calendar_prev_link($cur_year,$cur_month) {
+function my_calendar_prev_link($cur_year,$cur_month,$format) {
   $mod_rewrite_months = array(1=>'jan','feb','mar','apr','may','jun','jul','aug','sept','oct','nov','dec');
   $last_year = $cur_year - 1;
   
 $num_months = get_option('my_calendar_show_months');
-  if ($num_months <= 1) {  
+  if ($num_months <= 1 || $format=="calendar") {  
 		if ($cur_month == 1) {
 	      return '<a href="' . my_calendar_permalink_prefix() . 'month=dec&amp;yr='. $last_year .'" rel="nofollow">&laquo; '.__('Previous Events','my-calendar').'</a>';
 	    } else {
@@ -903,6 +936,9 @@ function my_calendar_draw_event($event, $type="calendar") {
     $sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".$event->event_category;
     $cat_details = $wpdb->get_row($sql);
     $style = "background-color:".$cat_details->category_color.";";
+	if ( get_option('my_calendar_hide_icons')=='true' ) {
+		$image = "";
+	} else {
 	    if ($cat_details->category_icon != "") {
 			if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
 					$path = '/my-calendar-custom';
@@ -913,6 +949,7 @@ function my_calendar_draw_event($event, $type="calendar") {
 		} else {
 			$image = "";
 		}
+	}
     $location_string = $event->event_street.$event->event_street2.$event->event_city.$event->event_state.$event->event_postcode.$event->event_country;		
 	if (($display_address == 'true' || $display_map == 'true') && strlen($location_string) > 0 ) {
 		$map_string = $event->event_street.' '.$event->event_street2.' '.$event->event_city.' '.$event->event_state.' '.$event->event_postcode.' '.$event->event_country;	
@@ -967,7 +1004,13 @@ $my_calendar_directory = get_bloginfo( 'wpurl' ) . '/' . PLUGINDIR . '/' . dirna
 		if ($event->event_time != "00:00:00") {
 			$header_details .= "<span class='event-time'>".date(get_option('time_format'), strtotime($event->event_time)) . "</span>\n";
 		} else {
-			$header_details .= "<span class='event-time'><abbr title='".__('Not Applicable','my-calendar')."'>".__('N/A','my-calendar')."</abbr></span>\n";
+			$header_details .= "<span class='event-time'>";
+				if ( get_option('my_calendar_notime_text') == '' || get_option('my_calendar_notime_text') == "N/A" ) { 
+				$header_details .= "<abbr title='".__('Not Applicable','my-calendar')."'>".__('N/A','my-calendar')."</abbr>\n"; 
+				} else {
+				$header_details .= get_option('my_calendar_notime_text');
+				}
+			$header_details .= "</span>";
 		}
 		$header_details .= "<div class='sub-details'>";
 		if ($type != "calendar") {
@@ -1310,6 +1353,11 @@ global $wpdb;
 }
 // Grab all events for the requested date from calendar
 function my_calendar_grab_events($y,$m,$d,$category=null) {
+
+	if (!checkdate($m,$d,$y)) {
+		return;
+	}
+
      global $wpdb;
 
 	 if ( $category!=null ) {
@@ -1782,6 +1830,8 @@ function my_calendar($name,$format,$category,$showkey) {
     // Start the calendar and add header and navigation
 		$my_calendar_body .= "<div id=\"jd-calendar\">";
 		// Add the calendar table and heading
+		$caption_text = stripslashes( get_option('my_calendar_caption') );
+		
 		if ($format == "calendar") {
 		$my_calendar_body .= '<div class="my-calendar-header">';
 
@@ -1791,27 +1841,26 @@ function my_calendar($name,$format,$category,$showkey) {
 	    if ($date_switcher == 'true') {
 			$my_calendar_body .= mc_build_date_switcher();
 		}
-
 	    // The header of the calendar table and the links. Note calls to link functions
 	    $my_calendar_body .= '
 						<div class="my-calendar-nav">
 						<ul>
-						<li class="my-calendar-prev">' . my_calendar_prev_link($c_year,$c_month) . '</li>
-	                    <li class="my-calendar-next">' . my_calendar_next_link($c_year,$c_month) . '</li>
+						<li class="my-calendar-prev">' . my_calendar_prev_link($c_year,$c_month,$format) . '</li>
+	                    <li class="my-calendar-next">' . my_calendar_next_link($c_year,$c_month,$format) . '</li>
 						</ul>
 	                    </div>
 					</div>';		
 			$my_calendar_body .= "\n<table class=\"my-calendar-table\" summary=\"$category_label".__('Calendar','my-calendar')."\">\n";
-			$my_calendar_body .= '<caption class="my-calendar-month">'.$name_months[(int)$c_month].' '.$c_year."</caption>\n";
+			$my_calendar_body .= '<caption class="my-calendar-month">'.$name_months[(int)$c_month].' '.$c_year.$caption_text."</caption>\n";
 		} else {
 			if ( get_option('my_calendar_show_heading') == 'true' ) {
 			$my_calendar_body .= "\n<h2 class=\"my-calendar-heading\">$category_label".__('Calendar','my-calendar')."</h2>\n";
 			}
 			$num_months = get_option('my_calendar_show_months');
 			if ($num_months <= 1) {			
-			$my_calendar_body .= '<h3 class="my-calendar-month">'.__('Events in','my-calendar').' '.$name_months[(int)$c_month].' '.$c_year."</h3>\n";
+			$my_calendar_body .= '<h3 class="my-calendar-month">'.__('Events in','my-calendar').' '.$name_months[(int)$c_month].' '.$c_year.$caption_text."</h3>\n";
 			} else {
-			$my_calendar_body .= '<h3 class="my-calendar-month">'.$name_months[(int)$c_month].'&thinsp;&ndash;&thinsp;'.$name_months[(int)$c_month+$num_months-1].' '.$c_year."</h3>\n";			
+			$my_calendar_body .= '<h3 class="my-calendar-month">'.$name_months[(int)$c_month].'&thinsp;&ndash;&thinsp;'.$name_months[(int)$c_month+$num_months-1].' '.$c_year.$caption_text."</h3>\n";			
 			}
 		$my_calendar_body .= '<div class="my-calendar-header">';
 
@@ -1826,8 +1875,8 @@ function my_calendar($name,$format,$category,$showkey) {
 	    $my_calendar_body .= '
 						<div class="my-calendar-nav">
 						<ul>
-						<li class="my-calendar-prev">' . my_calendar_prev_link($c_year,$c_month) . '</li>
-	                    <li class="my-calendar-next">' . my_calendar_next_link($c_year,$c_month) . '</li>
+						<li class="my-calendar-prev">' . my_calendar_prev_link($c_year,$c_month,$format) . '</li>
+	                    <li class="my-calendar-next">' . my_calendar_next_link($c_year,$c_month,$format) . '</li>
 						</ul>
 	                    </div>
 					</div>';	
@@ -1898,7 +1947,7 @@ if ($date_format == "") {
 			$add_month = 1;
 		}
 		$c_month = (int) $c_month + $add_month;
-	    for ($i=1; $i<=$days_in_month; $i++) {
+	    for ($i=1; $i<=31; $i++) {
 			$grabbed_events = my_calendar_grab_events($c_year,$c_month,$i,$category);
 			if (count($grabbed_events)) {
 				if ( get_option('list_javascript') != 1) {
@@ -1929,16 +1978,18 @@ if ($date_format == "") {
 		$cat_details = $wpdb->get_results($sql);
         $my_calendar_body .= '<div class="category-key">
 		<h3>'.__('Category Key','my-calendar')."</h3>\n<ul>\n";
+
 		if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
 				$path = '/my-calendar-custom';
 			} else {
 				$path = '/my-calendar/icons';
 		    }
         foreach($cat_details as $cat_detail) {
-			if ($cat_detail->category_icon != "") {
+		
+			if ($cat_detail->category_icon != "" && get_option('my_calendar_hide_icons')!='true') {
 			$my_calendar_body .= '<li><span class="category-color-sample"><img src="'.WP_PLUGIN_URL.$path.'/'.$cat_detail->category_icon.'" alt="" style="background:'.$cat_detail->category_color.';" /></span>'.$cat_detail->category_name."</li>\n";
 			} else {
-			$my_calendar_body .= '<li><span class="category-color-sample" style="background:'.$cat_detail->category_color.';"> &nbsp; </span>'.$cat_detail->category_name."</li>\n";			
+			$my_calendar_body .= '<li><span class="category-color-sample no-icon" style="background:'.$cat_detail->category_color.';"> &nbsp; </span>'.$cat_detail->category_name."</li>\n";			
 			}
 		}
         $my_calendar_body .= "</ul>\n</div>";
