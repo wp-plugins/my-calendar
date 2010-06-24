@@ -68,6 +68,10 @@ Languages available:
 
 == Changelog ==
 
+= 1.3.7 =
+
+* Aren't you enjoying the daily upgrades? I made a mistake in 1.3.5 which hid text in an incorrect way, causing problems in some contexts.
+
 = 1.3.6 =
 
 * Fixed an issue where not having defined Pages to show CSS resulted in a PHP warning for some configs.
