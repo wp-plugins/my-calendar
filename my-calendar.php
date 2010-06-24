@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.3.6
+Version: 1.3.7
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -116,7 +116,6 @@ echo "
 <!--
 // Styles from My Calendar - Joseph C Dolson http://www.joedolson.com/
 $styles
-.js #jd-calendar .calendar-event div {display: none;}
 -->
 </style>";
 
@@ -201,10 +200,10 @@ $list_js = stripcslashes( get_option( 'my_calendar_listjs' ) );
 $cal_js = stripcslashes( get_option( 'my_calendar_caljs' ) );
 
 if ( get_option('calendar_javascript') != 1 || get_option('list_javascript') != 1 ) {
-echo '<script type="text/javascript">
-var $j = jQuery.noConflict();
-$j(\'html\').addClass(\'js\');
-</script>';
+//echo '<script type="text/javascript">
+//var $j = jQuery.noConflict();
+//$j(\'html\').addClass(\'js\');
+//</script>';
 }
 
 	if ( get_option('calendar_javascript') != 1 ) {
@@ -674,7 +673,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
     } else if ( version_compare( $current_version,"1.3.0","<" ) ) {
 		$upgrade_path = "1.3.0";
 		// having determined upgrade path, assign new version number
-		update_option( 'my_calendar_version' , '1.3.6' );		
+		update_option( 'my_calendar_version' , '1.3.7' );		
 	}
 
   // Now we've determined what the current install is or isn't 
@@ -708,7 +707,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
       add_option('display_todays','true');
       add_option('display_upcoming','true');
       add_option('display_upcoming_days',7);
-      add_option('my_calendar_version','1.3.6');
+      add_option('my_calendar_version','1.3.7');
       add_option('display_upcoming_type','false');
       add_option('display_upcoming_events',3);
       add_option('display_past_days',0);
