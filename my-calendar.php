@@ -106,7 +106,7 @@ function my_calendar_wp_head() {
 		if ( get_option( 'my_calendar_show_css' ) != 'false' ) {
 		$array = explode( ",",get_option( 'my_calendar_show_css' ) );
 		}
-		if ( in_array( $id, $array ) || get_option( 'my_calendar_show_css' == 'false' ) || get_option( 'my_calendar_show_css' ) == '' ) {
+		if ( @in_array( $id, $array ) || get_option( 'my_calendar_show_css' == 'false' ) || get_option( 'my_calendar_show_css' ) == '' ) {
 	
 echo "
 <style type=\"text/css\">
