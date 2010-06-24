@@ -37,6 +37,9 @@ delete_option('display_in_category');
 delete_option('my_calendar_show_heading');
 delete_option('my_calendar_listjs');
 delete_option('my_calendar_caljs');
+delete_option('my_calendar_notime_text');
+delete_option('my_calendar_hide_icons');
+delete_option('my_calendar_caption');
 add_option('my_calendar_uninstalled','true');
 }
 ?>

@@ -21,12 +21,17 @@ function init_my_calendar_today() {
   function my_calendar_today_control() {
     $widget_title = get_option('my_calendar_today_title');
 	$widget_template = get_option('my_calendar_today_template');
+	$widget_text = get_option('my_calendar_no_events_text');
+	
     if (isset($_POST['my_calendar_today_title'])) {
       update_option('my_calendar_today_title',strip_tags($_POST['my_calendar_today_title']));
     }
     if (isset($_POST['my_calendar_today_template'])) {
       update_option('my_calendar_today_template',$_POST['my_calendar_today_template']);
-    }		
+    }
+	if (isset($_POST['my_calendar_no_events_text'])) {
+      update_option('my_calendar_no_events_text',$_POST['my_calendar_no_events_text']);	
+	}
     ?>
 <p>
    <label for="my_calendar_today_title"><?php _e('Title','my-calendar'); ?>:</label><br />
@@ -35,6 +40,10 @@ function init_my_calendar_today() {
 <p>
 	<label for="my_calendar_today_template"><?php _e('Template','my-calendar'); ?></label><br />
 	<textarea class="widefat" rows="8" cols="20" id="my_calendar_today_template" name="my_calendar_today_template"><?php echo stripcslashes($widget_template); ?></textarea>
+</p>
+<p>
+	<label for="my_calendar_no_events_text"><?php _e('Show this text if there are no events today:','my-calendar'); ?></label><br />
+	<input class="widefat" type="text" id="my_calendar_no_events_text" name="my_calendar_no_events_text" value="<?php echo stripcslashes($widget_text); ?>" /></textarea>
 </p>	
     <?php
   }
@@ -192,14 +201,27 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
       $day_count = -($past_days);
 	  $output = "<ul>";
 	  
-	if ($display_upcoming_type == "date") {
+	if ($display_upcoming_type == "days") {
       while ($day_count < $future_days+1) {
           list($y,$m,$d) = split("-",date("Y-m-d",mktime($day_count*24,0,0,date("m"),date("d"),date("Y"))));
           $events = my_calendar_grab_events( $y,$m,$d,$category );
-
+			$current_date = "$y-$m-$d";
           @usort($events, "my_calendar_time_cmp");
           foreach($events as $event) {
 		    $event_details = event_as_array($event);
+			$date_diff = jd_date_diff($event_details['date'],$event_details['date_end']);
+			
+			if (get_option('my_calendar_date_format') != '') {
+				$date = date_i18n(get_option('my_calendar_date_format'),strtotime($current_date));
+				$date_end = date_i18n(get_option('my_calendar_date_format'),strtotime(my_calendar_add_date($current_date,$datediff)));
+			} else {
+				$date = date_i18n(get_option('date_format'),strtotime($current_date));
+				$date_end = date_i18n(get_option('date_format'),strtotime(my_calendar_add_date($current_date,$datediff)));
+			}
+			
+			$event_details['date'] = $date;
+			$event_details['date_end'] = $date_end;
+			
 			$output .= "<li>".jd_draw_widget_event($event_details,$template)."</li>";
           }
           $day_count = $day_count+1;
@@ -296,7 +318,9 @@ function my_calendar_todays_events($category='default',$template='default') {
     if (count($events) != 0) {
 		$output .= "</ul>";
         return $output;
-    }
+    } else {
+		return stripslashes( get_option('my_calendar_no_events_text') );
+	}
 }
 
 function jd_draw_widget_event($array,$template) {
