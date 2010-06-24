@@ -68,6 +68,10 @@ Languages available:
 
 == Changelog ==
 
+= 1.3.6 =
+
+* Fixed an issue where not having defined Pages to show CSS resulted in a PHP warning for some configs.
+
 = 1.3.5 =
 
 * Fix for flash of unstyled content issue.
