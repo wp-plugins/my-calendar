@@ -22,7 +22,7 @@ function edit_my_calendar_styles() {
 	  update_option('list_javascript', (int) $_POST['list_javascript']);
 	  update_option('my_calendar_listjs',$my_calendar_listjs);
 	  update_option('my_calendar_caljs',$my_calendar_caljs);
-	  $my_calendar_show_css = ($_POST['my_calendar_show_css']=='')?'false':$_POST['my_calendar_show_css'];
+	  $my_calendar_show_css = ($_POST['my_calendar_show_css']=='')?'':$_POST['my_calendar_show_css'];
 	  update_option('my_calendar_show_css',$my_calendar_show_css);
 	  // Check to see if we are replacing the original style
 	  
