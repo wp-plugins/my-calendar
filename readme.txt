@@ -68,6 +68,10 @@ Languages available:
 
 == Changelog ==
 
+= 1.3.8 = 
+
+* Fixed problem with CSS editing which effectively disabled CSS unless a specific choice had been made for pages to show CSS
+
 = 1.3.7 =
 
 * Aren't you enjoying the daily upgrades? I made a mistake in 1.3.5 which hid text in an incorrect way, causing problems in some contexts.

@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.3.7
+Version: 1.3.8
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -103,13 +103,13 @@ function my_calendar_wp_head() {
 		if (is_object($this_post)) {
 			$id = $this_post->ID;
 		} 
-		if ( get_option( 'my_calendar_show_css' ) != 'false' ) {
+		if ( get_option( 'my_calendar_show_css' ) != '' ) {
 		$array = explode( ",",get_option( 'my_calendar_show_css' ) );
 			if (!is_array($array)) {
 				$array = array();
 			}
 		}
-		if ( @in_array( $id, $array ) || get_option( 'my_calendar_show_css' == 'false' ) || get_option( 'my_calendar_show_css' ) == '' ) {
+		if ( @in_array( $id, $array ) || get_option( 'my_calendar_show_css' ) == '' ) {
 	
 echo "
 <style type=\"text/css\">
@@ -672,9 +672,14 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
       $new_install = true;
     } else if ( version_compare( $current_version,"1.3.0","<" ) ) {
 		$upgrade_path = "1.3.0";
+		if ( version_compare( $current_version, "1.3.8","<" ) && version_compare( $current_version, "1.3.0",">" ) ) {
+			update_option('my_calendar_show_css','');
+		}		
 		// having determined upgrade path, assign new version number
-		update_option( 'my_calendar_version' , '1.3.7' );		
-	}
+		update_option( 'my_calendar_version' , '1.3.8' );
+		
+	} 
+
 
   // Now we've determined what the current install is or isn't 
   if ( $new_install == true ) {
@@ -707,7 +712,7 @@ $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{ti
       add_option('display_todays','true');
       add_option('display_upcoming','true');
       add_option('display_upcoming_days',7);
-      add_option('my_calendar_version','1.3.7');
+      add_option('my_calendar_version','1.3.8');
       add_option('display_upcoming_type','false');
       add_option('display_upcoming_events',3);
       add_option('display_past_days',0);
