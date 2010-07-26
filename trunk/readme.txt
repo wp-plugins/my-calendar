@@ -68,6 +68,25 @@ Languages available:
 
 == Changelog ==
 
+= 1.4.0 =
+
+* Bug fixed: Today's Events widget was not taking internationalized time as it's argument
+* Added end time field for events
+* Added option for links to expire after events have occurred.
+* Added options for alternate applications of category colors in output.
+* Added ability to use My Calendar shortcodes in text widgets.
+* Added GPS location option for locations
+* Added zoom selection options for map links
+* Lengthened maximum length for category and event titles
+* Added a close link on opened events details boxes.
+* Added an option for a mini calendar display type in shortcode
+* Optimized some SQL queries and reduced total number of queries significantly.
+* Extended the featured to show CSS only on certain pages to include JavaScript as well.
+* Upcoming events widget only allowed up to 99 events to be shown forward or back. Changed to 999.
+* Attempted to solve a problem with infinitely recurring events not appearing in upcoming events. Let me know.
+* Added setting to change Previous Month/Next Month text.
+* Yeah, that's enough for now.
+
 = 1.3.8 = 
 
 * Fixed problem with CSS editing which effectively disabled CSS unless a specific choice had been made for pages to show CSS

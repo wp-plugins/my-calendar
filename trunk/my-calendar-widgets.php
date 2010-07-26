@@ -135,12 +135,12 @@ function init_my_calendar_upcoming() {
 	</select>
 	</p>
 	<p>
-	<input type="text" id="display_upcoming_events" name="display_upcoming_events" value="<?php  if(isset($_POST['display_upcoming_events'])){echo $_POST['display_upcoming_events']; } else { echo $upcoming_events; } ?>" size="1" maxlength="2" /> <label for="display_upcoming_events"><?php _e('events into the future;','my-calendar'); ?></label><br />
-	<input type="text" id="display_past_events" name="display_past_events" value="<?php if(isset($_POST['display_past_events'])){echo $_POST['display_past_events']; } else { echo $past_events; } ?>" size="1" maxlength="2" /> <label for="display_past_events"><?php _e('events from the past','my-calendar'); ?></label>
+	<input type="text" id="display_upcoming_events" name="display_upcoming_events" value="<?php  if(isset($_POST['display_upcoming_events'])){echo $_POST['display_upcoming_events']; } else { echo $upcoming_events; } ?>" size="1" maxlength="3" /> <label for="display_upcoming_events"><?php _e('events into the future;','my-calendar'); ?></label><br />
+	<input type="text" id="display_past_events" name="display_past_events" value="<?php if(isset($_POST['display_past_events'])){echo $_POST['display_past_events']; } else { echo $past_events; } ?>" size="1" maxlength="3" /> <label for="display_past_events"><?php _e('events from the past','my-calendar'); ?></label>
 	</p>
 	<p>
-	<input type="text" id="display_upcoming_days" name="display_upcoming_days" value="<?php if(isset($_POST['display_upcoming_days'])){echo $_POST['display_upcoming_days']; } else { echo $upcoming_days; } ?>" size="1" maxlength="2" /> <label for="display_upcoming_days"><?php _e('days into the future;','my-calendar'); ?></label><br />
-	<input type="text" id="display_past_days" name="display_past_days" value="<?php if(isset($_POST['display_past_days'])){echo $_POST['display_past_days']; } else { echo $past_days; } ?>" size="1" maxlength="2" /> <label for="display_past_days"><?php _e('days from the past','my-calendar'); ?></label>
+	<input type="text" id="display_upcoming_days" name="display_upcoming_days" value="<?php if(isset($_POST['display_upcoming_days'])){echo $_POST['display_upcoming_days']; } else { echo $upcoming_days; } ?>" size="1" maxlength="3" /> <label for="display_upcoming_days"><?php _e('days into the future;','my-calendar'); ?></label><br />
+	<input type="text" id="display_past_days" name="display_past_days" value="<?php if(isset($_POST['display_past_days'])){echo $_POST['display_past_days']; } else { echo $past_days; } ?>" size="1" maxlength="3" /> <label for="display_past_days"><?php _e('days from the past','my-calendar'); ?></label>
 	</p>
 	<p>
 	<label for="display_in_category"><?php _e('Show only this category:','my-calendar'); ?></label><br />
@@ -157,11 +157,11 @@ function init_my_calendar_upcoming() {
 // Widget upcoming events
 function my_calendar_upcoming_events($before='default',$after='default',$type='default',$category='default',$template='default') {
   global $wpdb;
+	$offset = (60*60*get_option('gmt_offset'));
 
   // This function cannot be called unless calendar is up to date
 	check_my_calendar();
-	$offset = get_option('gmt_offset');  
-	$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
+	$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
   
 	if ($type == 'default') {
 		$display_upcoming_type = get_option('display_upcoming_type');
@@ -298,7 +298,7 @@ function my_calendar_todays_events($category='default',$template='default') {
 		$category = $category;
 	}  
   
-    $events = my_calendar_grab_events(date("Y"),date("m"),date("d"),$category);
+    $events = my_calendar_grab_events(date_i18n("Y"),date_i18n("m"),date_i18n("d"),$category);
 	if (count($events) != 0) {
 		$output = "<ul>";
 	}
@@ -339,6 +339,8 @@ function event_as_array($event) {
   // My Calendar must be updated to run this function
   check_my_calendar();
 
+$offset = (60*60*get_option('gmt_offset'));  
+  
 $sql = "SELECT category_name FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".$event->event_category;
 $category_name = $wpdb->get_row($sql);
 $e = get_userdata($event->event_author);
@@ -369,14 +371,20 @@ if ($event->event_country != "") {
 $hcard .= "</div>\n</div>";	
 
 $map_string = $event->event_street.' '.$event->event_street2.' '.$event->event_city.' '.$event->event_state.' '.$event->event_postcode.' '.$event->event_country;	
-if (strlen($map_string) > 10) {
+if ( strlen($map_string) > 0 ) {
 	$map_string = str_replace(" ","+",$map_string);
 	if ($event->event_label != "") {
 		$map_label = $event->event_label;
 	} else {
 		$map_label = $event->event_title;
 	}
-	$map = "<a href=\"http://maps.google.com/maps?f=q&z=15&q=$map_string\">Map<span> to $map_label</span></a>";
+	$zoom = ($event->event_zoom != 0)?$event->event_zoom:'15';
+	
+	if ($event->event_longitude != '0.000000' && $event->event_latitude != '0.000000') {
+		$map_string = "$event->event_longitude,$event->event_latitude";
+	}
+	
+	$map = "<a href=\"http://maps.google.com/maps?f=q&z=$zoom&q=$map_string\">Map<span> to $map_label</span></a>";
 } else {
 	$map = "";
 }
@@ -394,14 +402,27 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 	$details['category'] = stripslashes($category_name->category_name);
 	$details['title'] = stripslashes($event->event_title);
 	if ($event->event_time == '00:00:00' ) {
-	$details['time'] = __('N/A','my-calendar');
+	$details['time'] = get_option( 'my_calendar_notime_text' );
 	} else {
 	$details['time'] = date(get_option('time_format'),strtotime($event->event_time));
 	}
+	if ($event->event_endtime == '00:00:00' ) {
+	$deatils['endtime'] = '';
+	} else {
+	$details['endtime'] = date( get_option('time_format'),strtotime($event->event_endtime));
+	}
 	$details['author'] = $e->display_name;
+	if ( $event->event_link_expires == 0 ) {
 	$details['link'] = $event->event_link;
+	} else {
+		if ( my_calendar_date_comp( $event->event_begin, date_i18n('Y-m-d',time() ) ) ) {
+			$details['link'] = '';
+		} else {
+			$details['link'] = $event->event_link;
+		}
+	}
 	$details['description'] = stripslashes($event->event_desc);
-	if ($event->event_link != '') {
+	if ($details['link'] != '') {
 	$details['link_title'] = "<a href='".$event->event_link."'>".stripslashes($event->event_title)."</a>";
 	} else {
 	$details['link_title'] = stripslashes($event->event_title);	
@@ -420,6 +441,5 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
   
   return $details;
 }
-
 
 ?>

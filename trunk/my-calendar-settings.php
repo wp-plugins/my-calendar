@@ -99,14 +99,21 @@ function edit_my_calendar_config() {
 	$my_calendar_show_months = (int) $_POST['my_calendar_show_months'];
 	$my_calendar_date_format = $_POST['my_calendar_date_format'];
 
+	
 	$disp_author = ($_POST['display_author']=='on')?'true':'false';
 	$disp_jump = ($_POST['display_jump']=='on')?'true':'false';
 	$my_calendar_show_map = ($_POST['my_calendar_show_map']=='on')?'true':'false';
 	$my_calendar_show_address = ($_POST['my_calendar_show_address']=='on')?'true':'false';
 	$my_calendar_show_heading = ($_POST['my_calendar_show_heading']=='on')?'true':'false';
 	$my_calendar_notime_text = $_POST['my_calendar_notime_text'];
+	$mc_previous_events = $_POST['mc_previous_events'];
+	$mc_next_events = $_POST['mc_next_events'];
+	
 	$my_calendar_hide_icons = ($_POST['my_calendar_hide_icons']=='on')?'true':'false';
+	$mc_apply_color = $_POST['mc_apply_color'];
+	
 	$my_calendar_caption = $_POST['my_calendar_caption'];
+	$my_calendar_event_link_expires = ($_POST['mc_event_link_expires']=='on')?'true':'false';
 	
 	  update_option('can_manage_events',$new_perms);
 	  update_option('display_author',$disp_author);
@@ -117,8 +124,14 @@ function edit_my_calendar_config() {
 	  update_option('my_calendar_show_address',$my_calendar_show_address); 
 	  update_option('my_calendar_show_heading',$my_calendar_show_heading);
 	  update_option('my_calendar_notime_text',$my_calendar_notime_text);
+	  update_option('mc_next_events',$mc_next_events);
+	  update_option('mc_previous_events',$mc_previous_events);	  
 	  update_option('my_calendar_hide_icons',$my_calendar_hide_icons);
 	  update_option('my_calendar_caption',$my_calendar_caption);
+	  update_option('mc_event_link_expires',$my_calendar_event_link_expires);
+	  update_option('mc_apply_color',$mc_apply_color);
+	  
+	  
       echo "<div class=\"updated\"><p><strong>".__('Settings saved','my-calendar').".</strong></p></div>";
     }
 
@@ -128,6 +141,7 @@ function edit_my_calendar_config() {
   $my_calendar_show_map = get_option('my_calendar_show_map');
   $my_calendar_show_address = get_option('my_calendar_show_address');
   $disp_author = get_option('display_author');
+  $mc_event_link_expires = get_option('mc_event_link_expires');
   // checkbox
   $disp_jump = get_option('display_jump');
   //checkbox
@@ -190,6 +204,12 @@ function edit_my_calendar_config() {
 	<label for="my_calendar_notime_text"><?php _e('Label for events without a specific time'); ?></label> <input type="text" id="my_calendar_notime_text" name="my_calendar_notime_text" value="<?php if ( get_option('my_calendar_notime_text') == "") { _e('N/A','my-calendar'); } else { echo stripslashes( get_option('my_calendar_notime_text') ); } ?>" />
 	</p>
 	<p>
+	<label for="mc_previous_events"><?php _e('Previous events link text'); ?></label> <input type="text" id="mc_previous_events" name="mc_previous_events" value="<?php if ( get_option('mc_previous_events') == "") { _e('Previous Events','my-calendar'); } else { echo stripslashes( get_option('mc_previous_events') ); } ?>" />
+	</p>
+	<p>
+	<label for="mc_next_events"><?php _e('Next events link text'); ?></label> <input type="text" id="mc_next_events" name="mc_next_events" value="<?php if ( get_option('mc_next_events') == "") { _e('Next Events','my-calendar'); } else { echo stripslashes( get_option('mc_next_events') ); } ?>" />
+	</p>	
+	<p>
 	<label for="my_calendar_caption"><?php _e('Additional caption text','my-calendar'); ?></label> <input type="text" id="my_calendar_caption" name="my_calendar_caption" value="<?php echo stripslashes( get_option('my_calendar_caption') ); ?>" /><br /><small><?php _e('The calendar caption is the text containing the displayed month and year in either list or calendar format. This text will be displayed following that existing text.'); ?></small>
 	</p>
 	<p>
@@ -200,6 +220,14 @@ function edit_my_calendar_config() {
 	</p>
 	<p>
     <input type="checkbox" id="my_calendar_show_address" name="my_calendar_show_address" <?php jd_cal_checkCheckbox('my_calendar_show_address','true'); ?> /> <label for="my_calendar_show_address"><?php _e('Show Event Address in Details','my-calendar'); ?></label>
+	</p>
+	<p>
+	<input type="checkbox" id="mc_event_link_expires" name="mc_event_link_expires" <?php jd_cal_checkCheckbox('mc_event_link_expires','true'); ?> /> <label for="mc_event_link_expires"><?php _e('Links associated with events will automatically expire after the event has passed.','my-calendar'); ?></label>
+	</p>
+	<p>
+    <input type="radio" id="mc_apply_color_default" name="mc_apply_color" value="default" <?php jd_cal_checkCheckbox('mc_apply_color','default'); ?> /> <label for="mc_apply_color_default"><?php _e('Default usage of category colors.','my-calendar'); ?></label><br />
+    <input type="radio" id="mc_apply_color_to_titles" name="mc_apply_color" value="font"  <?php jd_cal_checkCheckbox('mc_apply_color','font'); ?> /> <label for="mc_apply_color_to_titles"><?php _e('Apply category colors to event titles as a font color.','my-calendar'); ?></label><br />
+	<input type="radio" id="mc_apply_bgcolor_to_titles" name="mc_apply_color" value="background"  <?php jd_cal_checkCheckbox('mc_apply_color','background'); ?> /> <label for="mc_apply_bgcolor_to_titles"><?php _e('Apply category colors to event titles as a background color.','my-calendar'); ?></label>	
 	</p>
 	</fieldset>
 	<p>
@@ -233,8 +261,5 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
  </div>
  </div>
   <?php
-
-
 }
-
 ?>
