@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.3.8
+Version: 1.4.0
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -43,9 +43,14 @@ add_action('delete_user', 'mc_deal_with_deleted_user');
 add_action('widgets_init', 'init_my_calendar_today');
 add_action('widgets_init', 'init_my_calendar_upcoming');
 
+register_activation_hook( __FILE__, 'check_my_calendar' );
+// add filters to text widgets which will process shortcodes
+add_filter( 'widget_text', 'do_shortcode', 9 );
+
 function jd_calendar_plugin_action($links, $file) {
 	if ($file == plugin_basename(dirname(__FILE__).'/my-calendar.php'))
 		$links[] = "<a href='admin.php?page=my-calendar-config'>" . __('Settings', 'my-calendar') . "</a>";
+		$links[] = "<a href='admin.php?page=my-calendar-help'>" . __('Help', 'my-calendar') . "</a>";
 	return $links;
 }
 add_filter('plugin_action_links', 'jd_calendar_plugin_action', -10, 2);
@@ -58,6 +63,7 @@ include(dirname(__FILE__).'/my-calendar-event-manager.php' );
 include(dirname(__FILE__).'/my-calendar-styles.php' );
 include(dirname(__FILE__).'/my-calendar-widgets.php' );
 include(dirname(__FILE__).'/date-utilities.php' );
+include(dirname(__FILE__).'/my-calendar-install.php' );
 
 
 // Before we get on with the functions, we need to define the initial style used for My Calendar
@@ -67,6 +73,7 @@ function jd_show_support_box() {
 <div class="resources">
 <ul>
 <li><a href="http://www.joedolson.com/articles/my-calendar/"><?php _e("Get Support",'my-calendar'); ?></a></li>
+<li><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-help"><?php _e("My Calendar Help",'my-calendar'); ?></a></li>
 <li><a href="http://www.joedolson.com/donate.php"><?php _e("Make a Donation",'my-calendar'); ?></a></li>
 <li><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <div>
@@ -111,11 +118,26 @@ function my_calendar_wp_head() {
 		}
 		if ( @in_array( $id, $array ) || get_option( 'my_calendar_show_css' ) == '' ) {
 	
+// generate category colors
+$categories = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " ORDER BY category_id ASC");
+	foreach ( $categories as $category ) {
+			$class = sanitize_title($category->category_name);
+			$color = $category->category_color;
+		if ( get_option( 'mc_apply_color' ) == 'font' ) {
+			$type = 'color';
+		} else if ( get_option( 'mc_apply_color' ) == 'background' ) {
+			$type = 'background';
+		}
+		$category_styles .= "\n#jd-calendar .$class { $type: $color; }";
+	}	
+	
 echo "
 <style type=\"text/css\">
 <!--
 // Styles from My Calendar - Joseph C Dolson http://www.joedolson.com/
 $styles
+
+$category_styles
 -->
 </style>";
 
@@ -198,15 +220,24 @@ add_action('init','my_calendar_add_display_javascript');
 function my_calendar_calendar_javascript() {
 $list_js = stripcslashes( get_option( 'my_calendar_listjs' ) );
 $cal_js = stripcslashes( get_option( 'my_calendar_caljs' ) );
+$mini_js = stripcslashes( get_option( 'my_calendar_minijs' ) );
 
-if ( get_option('calendar_javascript') != 1 || get_option('list_javascript') != 1 ) {
-//echo '<script type="text/javascript">
-//var $j = jQuery.noConflict();
-//$j(\'html\').addClass(\'js\');
-//</script>';
+if ( get_option('calendar_javascript') != 1 || get_option('list_javascript') != 1 || get_option('mini_javascript') != 1 ) {
+ $fouc = "$j(\'html\').addClass(\'js\')";
+} else {
+ $fouc = '';
 }
+if ( get_option( 'my_calendar_show_css' ) != '' ) {
+$array = explode( ",",get_option( 'my_calendar_show_css' ) );
+	if (!is_array($array)) {
+		$array = array();
+	}
+}
+if ( @in_array( $id, $array ) || get_option( 'my_calendar_show_css' ) == '' ) {
+
 
 	if ( get_option('calendar_javascript') != 1 ) {
+echo "\n";
 ?>
 <script type='text/javascript'>
 <?php echo $cal_js; ?>
@@ -214,12 +245,22 @@ if ( get_option('calendar_javascript') != 1 || get_option('list_javascript') != 
 <?php
 	}
 	if ( get_option('list_javascript') != 1 ) {
+echo "\n"
 ?>
 <script type='text/javascript'>
 <?php echo $list_js; ?>
 </script>
 <?php	
 	}
+	if ( get_option('mini_javascript') != 1 ) {
+echo "\n"
+?>
+<script type='text/javascript'>
+<?php echo $mini_js; ?>
+</script>
+<?php	
+	}	
+}
 }
 add_action('wp_head','my_calendar_calendar_javascript');
 
@@ -301,8 +342,11 @@ function my_calendar_insert($atts) {
 				'name' => 'all',
 				'format' => 'calendar',
 				'category' => 'all',
-				'showkey' => 'yes',
+				'showkey' => 'yes'
 			), $atts));
+	if ( isset($_GET['format']) ) {
+		$format = mysql_real_escape_string($_GET['format']);
+	}
 	return my_calendar($name,$format,$category,$showkey);
 }
 
@@ -333,486 +377,95 @@ add_shortcode('my_calendar_today','my_calendar_insert_today');
 
 // Function to check what version of My Calendar is installed and install if needed
 function check_my_calendar() {
+	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs;
+	$current_version = get_option('my_calendar_version');
+	// If current version matches, don't bother running this.
+	if ($current_version == '1.4.0') {
+		return true;
+	}
   // Checks to make sure My Calendar is installed, if not it adds the default
   // database tables and populates them with test data. If it is, then the 
   // version is checked through various means and if it is not up to date 
-  // then it is upgraded. (Or will be, once there's a need.)
+  // then it is upgraded.
 
   // Lets see if this is first run and create a table if it is!
-  global $wpdb, $initial_style, $initial_listjs, $initial_caljs;
-
-  // defaults will go into the options table on a new install
-$initial_listjs = 'var $j = jQuery.noConflict();
-
-$j(document).ready(function() {
-  $j("#calendar-list li").children().not(".event-date").hide();
-  $j("#calendar-list li.current-day").children().show();
-  $j(".event-date").toggle(
-     function() {
-     $j("#calendar-list li").children().not(".event-date").hide();
-	 $j(this).parent().children().not(".event-date").show("fast");
-     }, 
-     function() { 
-     $j("#calendar-list li").children().not(".event-date").hide("fast");
-     }
-     );
-});';  
-  
-$initial_caljs = 'var $j = jQuery.noConflict();
-
-$j(document).ready(function() {
-  $j(".calendar-event").children().not("h3").hide();
-  $j(".calendar-event h3").toggle(
-     function() {
-     $j(".calendar-event").children().not("h3").hide();
-	 $j(this).parent().children().not("h3").show("fast");
-     }, 
-     function() { 
-     $j(".calendar-event").children().not("h3").hide("fast");
-     }
-     );
-});';  
-  
-$initial_style = "
-#jd-calendar * {
-margin: 0;
-padding: 0;
-line-height: 1.5;
-color: #000;
-background: #fff;
-}
-#jd-calendar caption, #jd-calendar .my-calendar-date-switcher  {
-background: #edf7ff;
-border: 1px solid #a9e3ff;
-margin: 2px 0;
-font-weight:700;
-padding:2px 0;
-}
-
-#jd-calendar table {
-width:100%;
-line-height:1.2;
-border-collapse:collapse;
-}
-
-#jd-calendar td {
-vertical-align:top;
-border:1px solid #eee;
-text-align:left;
-width:13%;
-height:70px;
-padding:2px!important;
-}
-#jd-calendar th {
-text-align: center;
-padding: 5px 0!important;
-letter-spacing: 1px;
-}
-#jd-calendar th abbr {
-border-bottom: none;
-}
-#jd-calendar h3 {
-font-size:.9em;
-font-family: Arial, Verdana, sans-serif;
-font-weight:700;
-margin:3px 0;
-padding:0;
-width: 100%;
-}
-#jd-calendar h3 img {
-vertical-align: bottom;
-margin: 0 3px 0 0!important;
-}
-#jd-calendar #calendar-list h3 img {
-vertical-align: middle;
-}
-
-#jd-calendar .list-event h3 {
-font-size:1.2em;
-margin:0;
-}
-#jd-calendar .calendar-event .details {
-position:absolute;
-width:50%;
-background: #edf7ff;
-color:#000;
-border:1px solid #9b5;
--moz-border-radius:10px;
--moz-box-shadow:3px 3px 6px #777;
--webkit-box-shadow:3px 3px 6px #777;
-box-shadow:3px 3px 6px #777;
-padding:5px;
-z-index: 3;
-}
-
-#jd-calendar .list-event .details {
-background:#fafafa;
-border:1px solid #eee;
--moz-border-radius:5px;
--webkit-border-radius:5px;
-border-radius:5px;
-margin:5px 0;
-padding:5px 5px 0;
-color: #333;
-}
-#jd-calendar #calendar-list {
-margin: 0;
-padding: 0;
-}
-#jd-calendar #calendar-list li {
-padding:5px;
-list-style-type: none;
-margin: 0;
-}
-
-#jd-calendar #calendar-list .odd {
-background:#d3e3e3;
-}
-
-#jd-calendar .odd .list-event .details {
-background:#e3f3f3;
-border:1px solid #c3d3d3;
-}
-
-#jd-calendar .current-day {
-background:#ffb;
-}
-#jd-calendar .current-day span {
-color: #000;
-background: #eee;
-}
-
-#jd-calendar td span {
-display:block;
-background:#f6f6f6;
-margin:-2px -2px 2px;
-padding:2px 4px;
-}
-
-#jd-calendar .calendar-event span {
-display:inline;
-background:none;
-margin:0;
-padding:0;
-}
-
-#jd-calendar .weekend {
-background:#bd7;
-color: #000;
-}
-
-#jd-calendar th {
-font-size:.8em;
-text-transform:uppercase;
-padding:2px 4px 2px 0;
-}
-#jd-calendar .category-key {
-background: #edf7ff;
-border: 1px solid #a9e3ff;
-padding: 5px;
-margin: 5px 0;
-}
-#jd-calendar .category-key ul {
-list-style-type: none;
-margin: 0;
-padding: 0;
-}
-#jd-calendar .category-key li {
-margin: 2px 10px;
-}
-#jd-calendar .category-key span {
-margin-right:5px;
-vertical-align:middle;
-}
-#jd-calendar .category-key .no-icon {
-width: 10px;
-height: 10px;
-display: inline-block;
-border: 1px solid #555;
--moz-border-radius: 2px;
--webkit-border-radius: 2px;
-border-radius: 2px;
-}
-
-#calendar-list li {
-text-indent:0;
-margin:0;
-padding:0;
-}
-
-#jd-calendar .event-time {
-display:block;
-float:left;
-height:100%;
-margin-right:10px;
-margin-bottom:10px;
-font-weight:700;
-font-size:.9em;
-}
-
-#jd-calendar p {
-line-height:1.5;
-margin:0 0 1em;
-padding:0;
-}
-
-#jd-calendar .sub-details {
-margin-left:6em;
-}
-
-#jd-calendar .vcard {
-font-size:.9em;
-margin:10px 0;
-}
-
-#jd-calendar .calendar-event .vcard {
-margin:0 0 10px;
-}
-
-#jd-calendar,#calendar-list {
-clear:left;
-background: #fff;
-}
-#jd-calendar {
-position: relative;
-}
-#jd-calendar img {
-border: none;
-}
-.category-color-sample img {
-margin-right: 5px;
-vertical-align: top;
-}
-.my-calendar-nav {
-
-}
-
-#jd-calendar .my-calendar-nav ul {
-height: 2.95em;
-list-style-type:none;
-margin:0;
-padding:0;
-}
-
-#jd-calendar .my-calendar-nav li {
-float:left;
-list-style-type: none;
-}
-
-#jd-calendar .my-calendar-nav li:before {
-content:'';
-}
-#jd-calendar .my-calendar-nav li a {
-display:block;
-background:#fff;
-border:1px solid #9b5;
-text-align:center;
-padding:1px 20px;
-color: #243f82;
-}
-
-#jd-calendar .my-calendar-nav li a:hover {
-background:#a9e3ff;
-color:#000;
-border: 1px solid #243f82;
-}
-#jd-calendar .my-calendar-next {
-margin-left: 4px;
-text-align:right;
-}
-#jd-calendar .my-calendar-next a {
--webkit-border-top-right-radius: 8px;
--webkit-border-bottom-right-radius: 8px;
--moz-border-radius-topright: 8px;
--moz-border-radius-bottomright: 8px;
-border-top-right-radius: 8px;
-border-bottom-right-radius: 8px;
-}
-#jd-calendar .my-calendar-prev a {
--webkit-border-top-left-radius: 8px;
--webkit-border-bottom-left-radius: 8px;
--moz-border-radius-topleft: 8px;
--moz-border-radius-bottomleft: 8px;
-border-top-left-radius: 8px;
-border-bottom-left-radius: 8px;
-}
-#jd-calendar .day-without-date {
-background: #fafafa;
-}
-#upcoming-events .past-event {
-color: #777;
-}
-#upcoming-events .today {
-color: #111;
-}
-#upcoming-events .future-event {
-color: #555;
-}";
-
-$default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{time}, {category}</span>";
-	 
   // Assume this is not a new install until we prove otherwise
   $new_install = false;
-
   $my_calendar_exists = false;
-  $upgrade_path = false;
-
+  $upgrade_path = array();
+  
   // Determine the calendar version
   $tables = $wpdb->get_results("show tables;");
-  foreach ( $tables as $table ) {
+	foreach ( $tables as $table ) {
       foreach ( $table as $value )  {
 		  if ( $value == MY_CALENDAR_TABLE ) {
 		      $my_calendar_exists = true;
-			  $current_version = get_option('my_calendar_version');
 			  // check whether installed version matches most recent version, establish upgrade process.
 		    } 
        }
     }
-  if ( $my_calendar_exists == false ) {
-      $new_install = true;
-    } else if ( version_compare( $current_version,"1.3.0","<" ) ) {
-		$upgrade_path = "1.3.0";
-		if ( version_compare( $current_version, "1.3.8","<" ) && version_compare( $current_version, "1.3.0",">" ) ) {
-			update_option('my_calendar_show_css','');
-		}		
-		// having determined upgrade path, assign new version number
-		update_option( 'my_calendar_version' , '1.3.8' );
-		
-	} 
-
-
-  // Now we've determined what the current install is or isn't 
-  if ( $new_install == true ) {
-      $sql = "CREATE TABLE " . MY_CALENDAR_TABLE . " (
-                                event_id INT(11) NOT NULL AUTO_INCREMENT ,
-                                event_begin DATE NOT NULL ,
-                                event_end DATE NOT NULL ,
-                                event_title VARCHAR(60) NOT NULL ,
-                                event_desc TEXT NOT NULL ,
-                                event_time TIME ,
-                                event_recur CHAR(1) ,
-                                event_repeats INT(3) ,
-                                event_author BIGINT(20) UNSIGNED,
-								event_category BIGINT(20) UNSIGNED,
-								event_link TEXT,
-								event_label VARCHAR(60) NOT NULL ,
-								event_street VARCHAR(60) NOT NULL ,
-								event_street2 VARCHAR(60) NOT NULL ,
-								event_city VARCHAR(60) NOT NULL ,
-								event_state VARCHAR(60) NOT NULL ,
-								event_postcode VARCHAR(10) NOT NULL ,
-								event_country VARCHAR(60) NOT NULL ,
-                                PRIMARY KEY (event_id)
-                        )";
-      $wpdb->get_results($sql);
-      add_option('can_manage_events','edit_posts');
-      add_option('my_calendar_style',"$initial_style");
-      add_option('display_author','false');
-      add_option('display_jump','false');
-      add_option('display_todays','true');
-      add_option('display_upcoming','true');
-      add_option('display_upcoming_days',7);
-      add_option('my_calendar_version','1.3.8');
-      add_option('display_upcoming_type','false');
-      add_option('display_upcoming_events',3);
-      add_option('display_past_days',0);
-      add_option('display_past_events',2);
-	  add_option('my_calendar_use_styles','false');
-	  add_option('my_calendar_show_months',1);
-	  add_option('my_calendar_show_map','true');
-	  add_option('my_calendar_show_address','false');
-	  add_option('my_calendar_today_template',$default_template);
-	  add_option('my_calendar_upcoming_template',$default_template);
-	  add_option('my_calendar_today_title','Today\'s Events');
-	  add_option('my_calendar_upcoming_title','Upcoming Events');
-	  add_option('calendar_javascript',0);
-	  add_option('list_javascript',0);
-	  add_option('my_calendar_listjs',$initial_listjs);
-	  add_option('my_calendar_caljs',$initial_caljs);
-	  add_option('my_calendar_notime_text','N/A');
-	  add_option('my_calendar_hide_icons','false');	  
-      $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_category=1";
-      $wpdb->get_results($sql);
-	  
-      $sql = "CREATE TABLE " . MY_CALENDAR_CATEGORIES_TABLE . " ( 
-                                category_id INT(11) NOT NULL AUTO_INCREMENT, 
-                                category_name VARCHAR(30) NOT NULL , 
-                                category_color VARCHAR(30) NOT NULL , 
-								category_icon VARCHAR(128) NOT NULL ,
-                                PRIMARY KEY (category_id) 
-                             )";
-      $wpdb->get_results($sql);
-      $sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_color='#ffffff', category_icon='event.png'";
-      $wpdb->get_results($sql);
-	  
-      $sql = "CREATE TABLE " . MY_CALENDAR_LOCATIONS_TABLE . " ( 
-                                location_id INT(11) NOT NULL AUTO_INCREMENT, 
-								location_label VARCHAR(60) NOT NULL ,
-								location_street VARCHAR(60) NOT NULL ,
-								location_street2 VARCHAR(60) NOT NULL ,
-								location_city VARCHAR(60) NOT NULL ,
-								location_state VARCHAR(60) NOT NULL ,
-								location_postcode VARCHAR(10) NOT NULL ,
-								location_country VARCHAR(60) NOT NULL ,
-                                PRIMARY KEY (location_id) 
-                             )";
-      $wpdb->get_results($sql);	  
-	  
-    } 
 	
-// switch for different upgrade paths
-	switch ($upgrade_path) {
-		case FALSE:		
-		break;
-		case '1.3.0':
-			add_option('my_calendar_listjs',$initial_listjs);
-			add_option('my_calendar_caljs',$initial_caljs);
-			add_option('my_calendar_show_heading','true');
-			$sql = "CREATE TABLE " . MY_CALENDAR_LOCATIONS_TABLE . " ( 
-						location_id INT(11) NOT NULL AUTO_INCREMENT, 
-						location_label VARCHAR(60) NOT NULL ,
-						location_street VARCHAR(60) NOT NULL ,
-						location_street2 VARCHAR(60) NOT NULL ,
-						location_city VARCHAR(60) NOT NULL ,
-						location_state VARCHAR(60) NOT NULL ,
-						location_postcode VARCHAR(10) NOT NULL ,
-						location_country VARCHAR(60) NOT NULL ,
-						PRIMARY KEY (location_id) 
-					 )";
-			$wpdb->get_results($sql);	  
-			
-			/* 
-			if the user has fully uninstalled the plugin but kept the database of events, this will restore default settings.
-			*/
-			if ( get_option( 'my_calendar_uninstalled' ) == 'true' ) {
-				add_option('can_manage_events','edit_posts');
-				add_option('my_calendar_style',"$initial_style");
-				add_option('display_author','false');
-				add_option('display_jump','false');
-				add_option('display_todays','true');
-				add_option('display_upcoming','true');
-				add_option('display_upcoming_days',7);
-				add_option('my_calendar_version','1.3.1');
-				add_option('display_upcoming_type','false');
-				add_option('display_upcoming_events',3);
-				add_option('display_past_days',0);
-				add_option('display_past_events',2);
-				add_option('my_calendar_use_styles','false');
-				add_option('my_calendar_show_months',1);
-				add_option('my_calendar_show_map','true');
-				add_option('my_calendar_show_address','false');
-				add_option('my_calendar_today_template',$default_template);
-				add_option('my_calendar_upcoming_template',$default_template);
-				add_option('my_calendar_today_title','Today\'s Events');
-				add_option('my_calendar_upcoming_title','Upcoming Events');
-				add_option('calendar_javascript',0);
-				add_option('list_javascript',0);				
-			}		
-		default:
-		break;
-	}
+	if ( $my_calendar_exists == false ) {
+      $new_install = true;
+	// for each release requiring an upgrade path, add a version compare. Loop will run every relevant upgrade cycle.
+    } else if ( version_compare( $current_version,"1.3.0","<" ) ) {
+		$upgrade_path[] = "1.3.0";
+	} else if ( version_compare( $current_version,"1.3.8","<" ) ) {
+		$upgrade_path[] = "1.3.8";
+	} else if ( version_compare( $current_version, "1.4.0", "<" ) ) {
+		$upgrade_path[] = "1.4.0";
+	} 
+	
+	// having determined upgrade path, assign new version number
+	update_option( 'my_calendar_version' , '1.4.0' );
 
- }
+	// Now we've determined what the current install is or isn't 
+	if ( $new_install == true ) {
+		  //add default settings
+		mc_default_settings();
+	    
+		$sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_category=1";
+		$wpdb->get_results($sql);
+	   
+		$sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_color='#ffffff', category_icon='event.png'";
+		$wpdb->get_results($sql);
+	    	  
+    } 
+			
+// switch for different upgrade paths
+	foreach ($upgrade_path as $upgrade) {
+		switch ($upgrade) {
+			case '1.3.0':
+				add_option('my_calendar_listjs',$initial_listjs);
+				add_option('my_calendar_caljs',$initial_caljs);
+				add_option('my_calendar_show_heading','true');  
+			break;
+			case '1.3.8':
+				update_option('my_calendar_show_css','');
+			break;
+			case '1.4.0':
+			// change tables					
+				add_option( 'mc_db_version', '1.4.0' );
+				add_option( 'mc_event_link_expires','false' );
+				add_option( 'mc_apply_color','default' );
+				add_option( 'my_calendar_minijs', $initial_minijs);
+				add_option( 'mini_javascript', 1);
+				upgrade_db();
+			break;
+			default:
+			break;
+		}
+}
+	/* 
+	if the user has fully uninstalled the plugin but kept the database of events, this will restore default 
+	settings and upgrade db if needed.
+	*/
+	if ( get_option( 'my_calendar_uninstalled' ) == 'true' ) {
+		mc_default_settings();	
+		update_option( 'mc_db_version', '1.4.0' );
+	}
+}
+
 function jd_cal_checkCheckbox( $theFieldname,$theValue ){
 	if( get_option( $theFieldname ) == $theValue ){
 		echo 'checked="checked"';
@@ -864,17 +517,19 @@ function my_calendar_permalink_prefix() {
 
 // Configure the "Next" link in the calendar
 function my_calendar_next_link($cur_year,$cur_month,$format) {
-  $mod_rewrite_months = array(1=>'jan','feb','mar','apr','may','jun','jul','aug','sept','oct','nov','dec');
   $next_year = $cur_year + 1;
-
+	if ( get_option( 'mc_next_events') == '' ) {
+		$next_events = "Next events";
+	} else {
+		$next_events = stripcslashes( get_option( 'mc_next_events') );
+	}
 $num_months = get_option('my_calendar_show_months');
   if ($num_months <= 1 || $format=="calendar") {  
 	  if ($cur_month == 12) {
-	      return '<a href="' . my_calendar_permalink_prefix() . 'month=jan&amp;yr=' . $next_year . '" rel="nofollow">'.__('Next Events','my-calendar').' &raquo;</a>';
+	      return '<a href="' . my_calendar_permalink_prefix() . 'month=1&amp;yr=' . $next_year . '#jd-calendar" rel="nofollow">'.$next_events.' &raquo;</a>';
 	    } else {
 	      $next_month = $cur_month + 1;
-	      $month = $mod_rewrite_months[$next_month];
-	      return '<a href="' . my_calendar_permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '" rel="nofollow">'.__('Next Events','my-calendar').' &raquo;</a>';
+	      return '<a href="' . my_calendar_permalink_prefix() . 'month='.$next_month.'&amp;yr=' . $cur_year . '#jd-calendar" rel="nofollow">'.$next_events.' &raquo;</a>';
 	    }
 	} else {
 		if (($cur_month + $num_months) > 12) {
@@ -882,28 +537,29 @@ $num_months = get_option('my_calendar_show_months');
 		} else {
 		$next_month = $cur_month + $num_months;
 		}
-		$month = $mod_rewrite_months[$next_month];	
 		if ($cur_month >= (12-$num_months)) {	  
-		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$month.'&amp;yr=' . $next_year . '" rel="nofollow">'.__('Next Events','my-calendar').' &raquo;</a>';
+		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$next_month.'&amp;yr=' . $next_year . '#jd-calendar" rel="nofollow">'.$next_events.' &raquo;</a>';
 		} else {
-		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '" rel="nofollow">'.__('Next Events','my-calendar').' &raquo;</a>';
+		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$next_month.'&amp;yr=' . $cur_year . '#jd-calendar" rel="nofollow">'.$next_events.' &raquo;</a>';
 		}	
 	}
 }
 
 // Configure the "Previous" link in the calendar
 function my_calendar_prev_link($cur_year,$cur_month,$format) {
-  $mod_rewrite_months = array(1=>'jan','feb','mar','apr','may','jun','jul','aug','sept','oct','nov','dec');
   $last_year = $cur_year - 1;
-  
+	if ( get_option( 'mc_previous_events') == '' ) {
+		$previous_events = "Previous events";
+	} else {
+		$previous_events = stripcslashes( get_option( 'mc_previous_events') );
+	}  
 $num_months = get_option('my_calendar_show_months');
   if ($num_months <= 1 || $format=="calendar") {  
 		if ($cur_month == 1) {
-	      return '<a href="' . my_calendar_permalink_prefix() . 'month=dec&amp;yr='. $last_year .'" rel="nofollow">&laquo; '.__('Previous Events','my-calendar').'</a>';
+	      return '<a href="' . my_calendar_permalink_prefix() . 'month=12&amp;yr='. $last_year .'#jd-calendar" rel="nofollow">&laquo; '.$previous_events.'</a>';
 	    } else {
 	      $next_month = $cur_month - 1;
-	      $month = $mod_rewrite_months[$next_month];
-	      return '<a href="' . my_calendar_permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '" rel="nofollow">&laquo; '.__('Previous Events','my-calendar').'</a>';
+	      return '<a href="' . my_calendar_permalink_prefix() . 'month='.$next_month.'&amp;yr=' . $cur_year . '#jd-calendar" rel="nofollow">&laquo; '.$previous_events.'</a>';
 	    }
 	} else {
 		if ($cur_month > $num_months) {
@@ -911,11 +567,10 @@ $num_months = get_option('my_calendar_show_months');
 		} else {
 			$next_month = ($cur_month - $num_months) + 12;
 		}
-		$month = $mod_rewrite_months[$next_month];	
 		if ($cur_month <= $num_months) {	  
-		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$month.'&amp;yr=' . $last_year . '" rel="nofollow">&laquo; '.__('Previous Events','my-calendar').'</a>';
+		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$next_month.'&amp;yr=' . $last_year . '#jd-calendar" rel="nofollow">&laquo; '.$previous_events.'</a>';
 		} else {
-		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$month.'&amp;yr=' . $cur_year . '" rel="nofollow">&laquo; '.__('Previous Events','my-calendar').'</a>';
+		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$next_month.'&amp;yr=' . $cur_year . '#jd-calendar" rel="nofollow">&laquo; '.$previous_events.'</a>';
 		}	
 	}	
 }
@@ -924,9 +579,15 @@ $num_months = get_option('my_calendar_show_months');
 function my_calendar_draw_events($events, $type) {
   // We need to sort arrays of objects by time
   usort($events, "my_calendar_time_cmp");
+	if ($type == "mini" && count($events)>0) {
+		$output .= "<div class='calendar-events'>";
+	}
 	foreach($events as $event) {
 		$output .= my_calendar_draw_event($event, $type);
 	}
+	if ($type == "mini" && count($events)>0) {
+		$output .= "</div>";
+	}	
   return $output;
 }
 
@@ -943,6 +604,7 @@ function my_calendar_draw_event($event, $type="calendar") {
     $sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".$event->event_category;
     $cat_details = $wpdb->get_row($sql);
     $style = "background-color:".$cat_details->category_color.";";
+	$category = sanitize_title( $cat_details->category_name );
 	if ( get_option('my_calendar_hide_icons')=='true' ) {
 		$image = "";
 	} else {
@@ -957,10 +619,10 @@ function my_calendar_draw_event($event, $type="calendar") {
 			$image = "";
 		}
 	}
-    $location_string = $event->event_street.$event->event_street2.$event->event_city.$event->event_state.$event->event_postcode.$event->event_country;		
+    $location_string = $event->event_street.$event->event_street2.$event->event_city.$event->event_state.$event->event_postcode.$event->event_country;
+
 	if (($display_address == 'true' || $display_map == 'true') && strlen($location_string) > 0 ) {
 		$map_string = $event->event_street.' '.$event->event_street2.' '.$event->event_city.' '.$event->event_state.' '.$event->event_postcode.' '.$event->event_country;	
-		
 		$address .= '<div class="address vcard">';
 		
 			if ($display_address == 'true') {
@@ -995,7 +657,13 @@ function my_calendar_draw_event($event, $type="calendar") {
 					} else {
 						$map_label = stripslashes($event->event_title);
 					}
-					$map = "<a href=\"http://maps.google.com/maps?f=q&amp;z=15&amp;q=$map_string\">Map<span> to $map_label</span></a>";
+					$zoom = ($event->event_zoom != 0)?$event->event_zoom:'15';
+					
+					if ($event->event_longitude != '0.000000' && $event->event_latitude != '0.000000') {
+						$map_string = "$event->event_longitude,$event->event_latitude";
+					}
+					
+					$map = "<a href=\"http://maps.google.com/maps?f=q&amp;z=$zoom&amp;q=$map_string\">Map<span> to $map_label</span></a>";
 					$address .= "<div class=\"url map\">$map</div>";
 			}
 		$address .= "</div>";
@@ -1003,13 +671,23 @@ function my_calendar_draw_event($event, $type="calendar") {
 
 $my_calendar_directory = get_bloginfo( 'wpurl' ) . '/' . PLUGINDIR . '/' . dirname( plugin_basename(__FILE__) );
 
-  $header_details .=  "\n<div class='$type-event'>\n";
-		if ($type == "calendar") {
-		$header_details .= "<h3 class='event-title'>$image".stripslashes($event->event_title)." <a href='#'><img src='$my_calendar_directory/images/event-details.png' alt='".__('Event Details','my-calendar')."' /></a></h3>\n";
-		}	
+    $header_details .=  "\n<div class='$type-event'>\n";
+	if ($type == 'calendar') { 
+		$toggle = " <a href='#' class='mc-toggle mc-expand'><img src='$my_calendar_directory/images/event-details.png' alt='".__('Event Details','my-calendar')."' /></a>";
+	} else {
+		$toggle = "";
+	}
+	$header_details .= "<h3 class='event-title $category'>$image".stripslashes($event->event_title)."$toggle</h3>\n";
+
+
 	$header_details .= "<div class='details'>"; 
+	if ($type == "calendar" ) { $header_details .= "<h3 class='close'><a href='#' class='mc-toggle mc-close'><img src='$my_calendar_directory/images/event-close.png' alt='".__('Close','my-calendar')."' /></a></h3>"; }
 		if ($event->event_time != "00:00:00") {
-			$header_details .= "<span class='event-time'>".date(get_option('time_format'), strtotime($event->event_time)) . "</span>\n";
+			$header_details .= "<span class='event-time'>".date_i18n(get_option('time_format'), strtotime($event->event_time));
+			if ($event->event_endtime != "00:00:00") {
+				$header_details .= "<span class='time-separator'>&thinsp;&ndash;&thinsp;</span><span class='end-time'>".date_i18n(get_option('time_format'), strtotime($event->event_endtime))."</span>";
+			}
+			$header_details .= "</span>\n";
 		} else {
 			$header_details .= "<span class='event-time'>";
 				if ( get_option('my_calendar_notime_text') == '' || get_option('my_calendar_notime_text') == "N/A" ) { 
@@ -1020,7 +698,7 @@ $my_calendar_directory = get_bloginfo( 'wpurl' ) . '/' . PLUGINDIR . '/' . dirna
 			$header_details .= "</span>";
 		}
 		$header_details .= "<div class='sub-details'>";
-		if ($type != "calendar") {
+		if ($type == "list") {
 			$header_details .= "<h3 class='event-title'>$image".stripslashes($event->event_title)."</h3>\n";
 		}
 		if ($display_author == 'true') {
@@ -1030,12 +708,21 @@ $my_calendar_directory = get_bloginfo( 'wpurl' ) . '/' . PLUGINDIR . '/' . dirna
 	if (($display_address == 'true' || $display_map == 'true') && strlen($location_string) > 0 ) {
 		$header_details .= $address;
 	}
-  
-  if ($event->event_link != '') { $linky = $event->event_link; } else { $linky = '#'; }
-	if ($linky != "#") {
-  $details = "\n". $header_details . '' . wpautop(stripslashes($event->event_desc),1) . '<p><a href="'.$linky.'" class="event-link">' . stripslashes($event->event_title) . '&raquo; </a></p>'."</div></div></div>\n";
+  // handle link expiration
+	if ( $event->event_link_expires == 0 ) {
+		$event_link = $event->event_link;
 	} else {
-  $details = "\n". $header_details . '' . wpautop(stripslashes($event->event_desc),1) . "</div></div></div>\n";	
+		if ( my_calendar_date_comp( $event->event_begin,date_i18n('Y-m-d',time() ) ) ) {
+			$event_link = '';
+		} else {
+			$event_link = $event->event_link;		
+		}
+	}
+  
+	if ($event_link != '') {
+		$details = "\n". $header_details . '' . wpautop(stripslashes($event->event_desc),1) . '<p><a href="'.$event_link.'" class="event-link">' . stripslashes($event->event_title) . '&raquo; </a></p>'."</div></div></div>\n";
+	} else {
+		$details = "\n". $header_details . '' . wpautop(stripslashes($event->event_desc),1) . "</div></div></div>\n";	
 	}
   return $details;
 }
@@ -1092,16 +779,17 @@ global $wpdb;
 		$select_category = "";
 	 }
     $events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . "$select_category");
-	$offset = get_option('gmt_offset');
-	$date = date('Y', time()+(60*60*$offset)).'-'.date('m', time()+(60*60*$offset)).'-'.date('d', time()+(60*60*$offset));
+	$offset = (60*60*get_option('gmt_offset'));
+	$date = date('Y', time()+($offset)).'-'.date('m', time()+($offset)).'-'.date('d', time()+($offset));
     if (!empty($events)) {
         foreach($events as $event) {
 			if ($event->event_recur != "S") {
 				$orig_begin = $event->event_begin;
 				$orig_end = $event->event_end;
 				$numback = 0;
-				$numforward = $event->event_repeats;				
-				if ($event->event_repeats != 0) {				
+				$numforward = $event->event_repeats;
+				$event_repetition = (int) $event->event_repeats;
+				if ($event_repetition !== 0) {				
 					switch ($event->event_recur) {
 						case "D":
 							for ($i=$numback;$i<=$numforward;$i++) {
@@ -1158,7 +846,7 @@ global $wpdb;
 					switch ($event->event_recur) {
 						case "D":
 							$event_begin = $event->event_begin;
-							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
+							$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
 							$nDays = get_option('display_past_events');
 							$fDays = get_option('display_upcoming_events');
 							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 	
@@ -1196,7 +884,7 @@ global $wpdb;
 						
 						case "W":
 							$event_begin = $event->event_begin;
-							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
+							$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
 							$nDays = get_option('display_past_events');
 							$fDays = get_option('display_upcoming_events');
 							
@@ -1235,7 +923,7 @@ global $wpdb;
 						
 						case "B":
 							$event_begin = $event->event_begin;
-							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
+							$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
 							$nDays = get_option('display_past_events');
 							$fDays = get_option('display_upcoming_events');
 							
@@ -1274,7 +962,7 @@ global $wpdb;
 						
 						case "M":
 							$event_begin = $event->event_begin;
-							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
+							$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
 							$nDays = get_option('display_past_events');
 							$fDays = get_option('display_upcoming_events');
 							
@@ -1313,7 +1001,7 @@ global $wpdb;
 						
 						case "Y":
 							$event_begin = $event->event_begin;
-							$today = date('Y',time()+(60*60*$offset)).'-'.date('m',time()+(60*60*$offset)).'-'.date('d',time()+(60*60*$offset));
+							$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
 							$nDays = get_option('display_past_events');
 							$fDays = get_option('display_upcoming_events');
 								
@@ -1416,7 +1104,7 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 	 }
      $arr_events = array();
 
-     // Get the date format right
+     // set the date format
      $date = $y . '-' . $m . '-' . $d;
      
      // First we check for conventional events. These will form the first instance of a recurring event
@@ -1428,120 +1116,101 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
          }
      }
 
-	// Deal with forever recurring year events
-	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'Y' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats = 0 ORDER BY event_id");
-
+// Fetch Annual Events
+	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'Y' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin)
+	UNION ALL
+	SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'M' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats = 0
+	UNION ALL
+	SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'M' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats != 0 AND (PERIOD_DIFF(EXTRACT(YEAR_MONTH FROM '$date'),EXTRACT(YEAR_MONTH FROM event_begin))) <= event_repeats
+	UNION ALL
+	SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'B' AND '$date' >= event_begin AND event_repeats = 0
+	UNION ALL
+	SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'B' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*14) >= (TO_DAYS('$date') - TO_DAYS(event_end))
+	UNION ALL
+	SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'W' AND '$date' >= event_begin AND event_repeats = 0
+	UNION ALL
+	SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'W' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*7) >= (TO_DAYS('$date') - TO_DAYS(event_end))	
+	UNION ALL
+	SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'D' AND '$date' >= event_begin AND event_repeats = 0
+	UNION ALL
+	SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'D' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats) >= (TO_DAYS('$date') - TO_DAYS(event_end))	
+	ORDER BY event_id");
+	
 	if (!empty($events)) {
 			foreach($events as $event) {
-			// Technically we don't care about the years, but we need to find out if the 
-			// event spans the turn of a year so we can deal with it appropriately.
-			$year_begin = date('Y',strtotime($event->event_begin));
-			$year_end = date('Y',strtotime($event->event_end));
+				switch ($event->event_recur) {
+					case 'Y':
+				// Technically we don't care about the years, but we need to find out if the 
+				// event spans the turn of a year so we can deal with it appropriately.
+				$year_begin = date('Y',strtotime($event->event_begin));
+				$year_end = date('Y',strtotime($event->event_end));
 
-				if ($year_begin == $year_end) {
-					if (date('m-d',strtotime($event->event_begin)) <= date('m-d',strtotime($date)) && 
-						date('m-d',strtotime($event->event_end)) >= date('m-d',strtotime($date))) {
-							$arr_events[]=$event;
+					if ($year_begin == $year_end) {
+						if (date('m-d',strtotime($event->event_begin)) <= date('m-d',strtotime($date)) && 
+							date('m-d',strtotime($event->event_end)) >= date('m-d',strtotime($date))) {
+								$arr_events[]=$event;
+						}
+					} else if ($year_begin < $year_end) {
+						if (date('m-d',strtotime($event->event_begin)) <= date('m-d',strtotime($date)) || 
+							date('m-d',strtotime($event->event_end)) >= date('m-d',strtotime($date))) {
+								$arr_events[]=$event;
+						}
 					}
-				} else if ($year_begin < $year_end) {
-					if (date('m-d',strtotime($event->event_begin)) <= date('m-d',strtotime($date)) || 
-						date('m-d',strtotime($event->event_end)) >= date('m-d',strtotime($date))) {
-							$arr_events[]=$event;
-					}
-				}
-			}
-     	}
-	
-	// Now the ones that happen a finite number of times
-	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'Y' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats != 0 AND (EXTRACT(YEAR FROM '$date')-EXTRACT(YEAR FROM event_begin)) <= event_repeats ORDER BY event_id");
-	if (!empty($events)) {
-       	  foreach($events as $event) {
-	    // Technically we don't care about the years, but we need to find out if the 
-	    // event spans the turn of a year so we can deal with it appropriately.
-	    $year_begin = date('Y',strtotime($event->event_begin));
-	    $year_end = date('Y',strtotime($event->event_end));
+					break;
+					case 'M':
+				    // Technically we don't care about the years or months, but we need to find out if the 
+				    // event spans the turn of a year or month so we can deal with it appropriately.
+				    $month_begin = date('m',strtotime($event->event_begin));
+				    $month_end = date('m',strtotime($event->event_end));
 
-		    if ($year_begin == $year_end) {
-				if (date('m-d',strtotime($event->event_begin)) <= date('m-d',strtotime($date)) && 
-					date('m-d',strtotime($event->event_end)) >= date('m-d',strtotime($date))) {
-			      		$arr_events[]=$event;
-				}
-		    } else if ($year_begin < $year_end) {
-				if (date('m-d',strtotime($event->event_begin)) <= date('m-d',strtotime($date)) || 
-					date('m-d',strtotime($event->event_end)) >= date('m-d',strtotime($date))) {
-			      		$arr_events[]=$event;
-				}
-		    }
-          }
-     	}	
-	// The monthly events that never stop recurring
-	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'M' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats = 0 ORDER BY event_id");
-	if (!empty($events)) {
-       	  foreach($events as $event) {
+					    if ($month_begin == $month_end) {
+							if (date('d',strtotime($event->event_begin)) <= date('d',strtotime($date)) && 
+								date('d',strtotime($event->event_end)) >= date('d',strtotime($date))) {
+						      		$arr_events[]=$event;
+							}
+					    } else if ($month_begin < $month_end) {
+							if ( ($event->event_begin <= date('Y-m-d',strtotime($date))) && (date('d',strtotime($event->event_begin)) <= date('d',strtotime($date)) || 
+								date('d',strtotime($event->event_end)) >= date('d',strtotime($date))) )	{
+						      		$arr_events[]=$event;
+							}
+					    }					
+					break;
+					case 'B':
+				    // Now we are going to check to see what day the original event
+				    // fell on and see if the current date is both after it and on 
+				    // the correct day. If it is, display the event!
+				    $day_start_event = date('D',strtotime($event->event_begin));
+				    $day_end_event = date('D',strtotime($event->event_end));
+				    $current_day = date('D',strtotime($date));
+					$current_date = date('Y-m-d',strtotime($date));
+					$start_date = $event->event_begin;
+					
+					$plan = array("Mon"=>1,"Tue"=>2,"Wed"=>3,"Thu"=>4,"Fri"=>5,"Sat"=>6,"Sun"=>7);
 
-	    // Technically we don't care about the years or months, but we need to find out if the 
-	    // event spans the turn of a year or month so we can deal with it appropriately.
-	    $month_begin = date('m',strtotime($event->event_begin));
-	    $month_end = date('m',strtotime($event->event_end));
+						for ($n=0;$n<=$event->event_repeats;$n++) {
+							if ( $current_date == my_calendar_add_date($start_date,(14*$n)) ) {
+							    if ($plan[$day_start_event] > $plan[$day_end_event]) {
+									if (($plan[$day_start_event] <= $plan[$current_day]) || ($plan[$current_day] <= $plan[$day_end_event]))	{
+									$arr_events[]=$event;
+							    	}
+							    } else if (($plan[$day_start_event] < $plan[$day_end_event]) || ($plan[$day_start_event]== $plan[$day_end_event])) {
+									if (($plan[$day_start_event] <= $plan[$current_day]) && ($plan[$current_day] <= $plan[$day_end_event]))	{
+									$arr_events[]=$event;
+							    	}		
+							    }
+							}
+						}					
+					break;
+					case 'W':
+				    // Now we are going to check to see what day the original event
+				    // fell on and see if the current date is both after it and on 
+				    // the correct day. If it is, display the event!
+				    $day_start_event = date('D',strtotime($event->event_begin));
+				    $day_end_event = date('D',strtotime($event->event_end));
+				    $current_day = date('D',strtotime($date));
 
-		    if ($month_begin == $month_end) {
-				if (date('d',strtotime($event->event_begin)) <= date('d',strtotime($date)) && 
-					date('d',strtotime($event->event_end)) >= date('d',strtotime($date))) {
-			      		$arr_events[]=$event;
-				}
-		    } else if ($month_begin < $month_end) {
-				if ( ($event->event_begin <= date('Y-m-d',strtotime($date))) && (date('d',strtotime($event->event_begin)) <= date('d',strtotime($date)) || 
-					date('d',strtotime($event->event_end)) >= date('d',strtotime($date))) )	{
-			      		$arr_events[]=$event;
-				}
-		    }
-          }
-     	}
+				    $plan = array("Mon"=>1,"Tue"=>2,"Wed"=>3,"Thu"=>4,"Fri"=>5,"Sat"=>6,"Sun"=>7);
 
-	// Now the ones that happen a finite number of times
-	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'M' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats != 0 AND (PERIOD_DIFF(EXTRACT(YEAR_MONTH FROM '$date'),EXTRACT(YEAR_MONTH FROM event_begin))) <= event_repeats ORDER BY event_id");
-	if (!empty($events)) {
-       	  foreach($events as $event) {
-
-	    // Technically we don't care about the years or months, but we need to find out if the 
-	    // event spans the turn of a year or month so we can deal with it appropriately.
-	    $month_begin = date('m',strtotime($event->event_begin));
-	    $month_end = date('m',strtotime($event->event_end));
-
-		    if ($month_begin == $month_end) {
-				if (date('d',strtotime($event->event_begin)) <= date('d',strtotime($date)) && 
-					date('d',strtotime($event->event_end)) >= date('d',strtotime($date))) {
-				        $arr_events[]=$event;
-				}
-		    } else if ($month_begin < $month_end) {
-				if ( ($event->event_begin <= date('Y-m-d',strtotime($date))) && (date('d',strtotime($event->event_begin)) <= date('d',strtotime($date)) || 
-					date('d',strtotime($event->event_end)) >= date('d',strtotime($date))) ) {
-			      		$arr_events[]=$event;
-				}
-		    }
-          }
-     	}
-
-//bi-weekly events
-$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'B' AND '$date' >= event_begin AND event_repeats = 0 ORDER BY event_id");
-	if ( !empty( $events ) ) {
-       	  foreach( $events as $event ) {
-	    // This is going to get complex so lets setup what we would place in for 
-	    // an event so we can drop it in with ease
-
-	    // Now we are going to check to see what day the original event
-	    // fell on and see if the current date is both after it and on 
-	    // the correct day. If it is, display the event!
-	    $day_start_event = date('D',strtotime($event->event_begin));
-	    $day_end_event = date('D',strtotime($event->event_end));
-	    $current_day = date('D',strtotime($date));
-		$current_date = date('Y-m-d',strtotime($date));
-		$start_date = $event->event_begin;
-		
-		$plan = array("Mon"=>1,"Tue"=>2,"Wed"=>3,"Thu"=>4,"Fri"=>5,"Sat"=>6,"Sun"=>7);
-
-			for ($n=0;$n<=$event->event_repeats;$n++) {
-				if ( $current_date == my_calendar_add_date($start_date,(14*$n)) ) {
 				    if ($plan[$day_start_event] > $plan[$day_end_event]) {
 						if (($plan[$day_start_event] <= $plan[$current_day]) || ($plan[$current_day] <= $plan[$day_end_event]))	{
 						$arr_events[]=$event;
@@ -1550,132 +1219,22 @@ $events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $sel
 						if (($plan[$day_start_event] <= $plan[$current_day]) && ($plan[$current_day] <= $plan[$day_end_event]))	{
 						$arr_events[]=$event;
 				    	}		
-				    }
+				    }					
+					break;
+					case 'D':
+						$arr_events[]=$event;					
+					break;
+					
 				}
 			}
-	    
-          }
      	}
 
-	// The bi-weekly events that have a limit on how many times they occur
-	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'B' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*14) >= (TO_DAYS('$date') - TO_DAYS(event_end)) ORDER BY event_id");
-	if (!empty($events)) {
-		
-		foreach($events as $event) {
-		// Now we are going to check to see what day the original event
-		// fell on and see if the current date is both after it and on 
-		// the correct day. If it is, display the event!
-		$day_start_event = date('D',strtotime($event->event_begin));
-		$day_end_event = date('D',strtotime($event->event_end));
-		$current_day = date('D',strtotime($date));
-		$current_date = date('Y-m-d',strtotime($date));
-		$start_date = $event->event_begin;
-		
-		$plan = array("Mon"=>1,"Tue"=>2,"Wed"=>3,"Thu"=>4,"Fri"=>5,"Sat"=>6,"Sun"=>7);
-
-			for ($n=0;$n<=$event->event_repeats;$n++) {
-				if ( $current_date == my_calendar_add_date($start_date,(14*$n)) ) {
-					if ($plan[$day_start_event] > $plan[$day_end_event]) {
-						if (($plan[$day_start_event] <= $plan[$current_day]) || ($plan[$current_day] <= $plan[$day_end_event]))	{
-						$arr_events[]=$event;
-						}
-					} else if (($plan[$day_start_event] < $plan[$day_end_event]) || ($plan[$day_start_event]== $plan[$day_end_event])) {
-						if (($plan[$day_start_event] <= $plan[$current_day]) && ($plan[$current_day] <= $plan[$day_end_event])) {
-						$arr_events[]=$event;
-						}		
-					}
-				}
-			}
-		}
-    }
- 	/* 
-	  Weekly - well isn't this fun! We need to scan all weekly events, find what day they fell on
-	  and see if that matches the current day. If it does, we check to see if the repeats are 0. 
-	  If they are, display the event, if not, we fast forward from the original day in week blocks 
-	  until the number is exhausted. If the date we arrive at is in the future, display the event.
-	*/
-
-	// The weekly events that never stop recurring
-	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'W' AND '$date' >= event_begin AND event_repeats = 0 ORDER BY event_id");
-	if ( !empty( $events ) ) {
-       	  foreach( $events as $event ) {
-	    // This is going to get complex so lets setup what we would place in for 
-	    // an event so we can drop it in with ease
-
-	    // Now we are going to check to see what day the original event
-	    // fell on and see if the current date is both after it and on 
-	    // the correct day. If it is, display the event!
-	    $day_start_event = date('D',strtotime($event->event_begin));
-	    $day_end_event = date('D',strtotime($event->event_end));
-	    $current_day = date('D',strtotime($date));
-
-	    $plan = array("Mon"=>1,"Tue"=>2,"Wed"=>3,"Thu"=>4,"Fri"=>5,"Sat"=>6,"Sun"=>7);
-
-	    if ($plan[$day_start_event] > $plan[$day_end_event]) {
-			if (($plan[$day_start_event] <= $plan[$current_day]) || ($plan[$current_day] <= $plan[$day_end_event]))	{
-			$arr_events[]=$event;
-	    	}
-	    } else if (($plan[$day_start_event] < $plan[$day_end_event]) || ($plan[$day_start_event]== $plan[$day_end_event])) {
-			if (($plan[$day_start_event] <= $plan[$current_day]) && ($plan[$current_day] <= $plan[$day_end_event]))	{
-			$arr_events[]=$event;
-	    	}		
-	    }
-	    
-          }
-     	}
-		
-	// The weekly events that have a limit on how many times they occur
-	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'W' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*7) >= (TO_DAYS('$date') - TO_DAYS(event_end)) ORDER BY event_id");
-	if (!empty($events)) {
-		foreach($events as $event) {
-
-		// Now we are going to check to see what day the original event
-		// fell on and see if the current date is both after it and on 
-		// the correct day. If it is, display the event!
-		$day_start_event = date('D',strtotime($event->event_begin));
-		$day_end_event = date('D',strtotime($event->event_end));
-		$current_day = date('D',strtotime($date));
-
-		$plan = array("Mon"=>1,"Tue"=>2,"Wed"=>3,"Thu"=>4,"Fri"=>5,"Sat"=>6,"Sun"=>7);
-
-			if ($plan[$day_start_event] > $plan[$day_end_event]) {
-				if (($plan[$day_start_event] <= $plan[$current_day]) || ($plan[$current_day] <= $plan[$day_end_event]))	{
-				$arr_events[]=$event;
-				}
-			} else if (($plan[$day_start_event] < $plan[$day_end_event]) || ($plan[$day_start_event]== $plan[$day_end_event])) {
-				if (($plan[$day_start_event] <= $plan[$current_day]) && ($plan[$current_day] <= $plan[$day_end_event])) {
-				$arr_events[]=$event;
-				}		
-			}
-
-		}
-    }
- 
- 
- // The daily events that never stop recurring
-	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'D' AND '$date' >= event_begin AND event_repeats = 0 ORDER BY event_id");
-	if (!empty($events)) {
-       	  foreach($events as $event) {
-			// checking events which recur by day is easy: just shove 'em all in there!
-			$arr_events[]=$event;
-          }
-     	}
-
-	// The daily events that have a limit on how many times they occur
-	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'D' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats) >= (TO_DAYS('$date') - TO_DAYS(event_end)) ORDER BY event_id");
-	if (!empty($events)) {
-       	  foreach($events as $event) {
-	   		// checking events which recur by day is easy: just shove 'em all in there!
-			$arr_events[]=$event;
-          }
-     	}
-	// end daily events
     return $arr_events;
 }
 
 function mc_month_comparison($month) {
-	$offset = get_option('gmt_offset');
-	$current_month = strtolower(date("M", time()+(60*60*$offset)));
+	$offset = (60*60*get_option('gmt_offset'));
+	$current_month = date("n", time()+($offset));
 	if (isset($_GET['yr']) && isset($_GET['month'])) {
 		if ($month == $_GET['month']) {
 			return ' selected="selected"';
@@ -1686,8 +1245,8 @@ function mc_month_comparison($month) {
 }
 
 function mc_year_comparison($year) {
-	$offset = get_option('gmt_offset');
-		$current_year = strtolower(date("Y", time()+(60*60*$offset)));
+	$offset = (60*60*get_option('gmt_offset'));
+		$current_year = date("Y", time()+($offset));
 		if (isset($_GET['yr']) && isset($_GET['month'])) {
 			if ($year == $_GET['yr']) {
 				return ' selected="selected"';
@@ -1710,18 +1269,18 @@ function mc_build_date_switcher() {
 	// We build the months in the switcher
 	$my_calendar_body .= '
             <label for="my-calendar-month">'.__('Month','my-calendar').':</label> <select id="my-calendar-month" name="month" style="width:100px;">
-            <option value="jan"'.mc_month_comparison('jan').'>'.__('January','my-calendar').'</option>
-            <option value="feb"'.mc_month_comparison('feb').'>'.__('February','my-calendar').'</option>
-            <option value="mar"'.mc_month_comparison('mar').'>'.__('March','my-calendar').'</option>
-            <option value="apr"'.mc_month_comparison('apr').'>'.__('April','my-calendar').'</option>
-            <option value="may"'.mc_month_comparison('may').'>'.__('May','my-calendar').'</option>
-            <option value="jun"'.mc_month_comparison('jun').'>'.__('June','my-calendar').'</option>
-            <option value="jul"'.mc_month_comparison('jul').'>'.__('July','my-calendar').'</option> 
-            <option value="aug"'.mc_month_comparison('aug').'>'.__('August','my-calendar').'</option> 
-            <option value="sept"'.mc_month_comparison('sept').'>'.__('September','my-calendar').'</option> 
-            <option value="oct"'.mc_month_comparison('oct').'>'.__('October','my-calendar').'</option> 
-            <option value="nov"'.mc_month_comparison('nov').'>'.__('November','my-calendar').'</option> 
-            <option value="dec"'.mc_month_comparison('dec').'>'.__('December','my-calendar').'</option> 
+            <option value="1"'.mc_month_comparison('1').'>'.__('January','my-calendar').'</option>
+            <option value="2"'.mc_month_comparison('2').'>'.__('February','my-calendar').'</option>
+            <option value="3"'.mc_month_comparison('3').'>'.__('March','my-calendar').'</option>
+            <option value="4"'.mc_month_comparison('4').'>'.__('April','my-calendar').'</option>
+            <option value="5"'.mc_month_comparison('5').'>'.__('May','my-calendar').'</option>
+            <option value="6"'.mc_month_comparison('6').'>'.__('June','my-calendar').'</option>
+            <option value="7"'.mc_month_comparison('7').'>'.__('July','my-calendar').'</option> 
+            <option value="8"'.mc_month_comparison('8').'>'.__('August','my-calendar').'</option> 
+            <option value="9"'.mc_month_comparison('9').'>'.__('September','my-calendar').'</option> 
+            <option value="10"'.mc_month_comparison('10').'>'.__('October','my-calendar').'</option> 
+            <option value="11"'.mc_month_comparison('11').'>'.__('November','my-calendar').'</option> 
+            <option value="12"'.mc_month_comparison('12').'>'.__('December','my-calendar').'</option> 
             </select>
             <label for="my-calendar-year">'.__('Year','my-calendar').':</label> <select id="my-calendar-year" name="yr">
 ';
@@ -1729,24 +1288,24 @@ function mc_build_date_switcher() {
 	$past = 5;
 	$future = 5;
 	$fut = 1;
-	$offset = get_option('gmt_offset');
+	$offset = (60*60*get_option('gmt_offset'));
 	
 		while ($past > 0) {
 		    $p .= '            <option value="';
-		    $p .= date("Y",time()+(60*60*$offset))-$past;
-		    $p .= '"'.mc_year_comparison(date("Y",time()+(60*60*$offset))-$past).'>';
-		    $p .= date("Y",time()+(60*60*$offset))-$past."</option>\n";
+		    $p .= date("Y",time()+($offset))-$past;
+		    $p .= '"'.mc_year_comparison(date("Y",time()+($offset))-$past).'>';
+		    $p .= date("Y",time()+($offset))-$past."</option>\n";
 		    $past = $past - 1;
 		}
 		while ($fut < $future) {
 		    $f .= '            <option value="';
-		    $f .= date("Y",time()+(60*60*$offset))+$fut;
-		    $f .= '"'.mc_year_comparison(date("Y",time()+(60*60*$offset))+$fut).'>';
-		    $f .= date("Y",time()+(60*60*$offset))+$fut."</option>\n";
+		    $f .= date("Y",time()+($offset))+$fut;
+		    $f .= '"'.mc_year_comparison(date("Y",time()+($offset))+$fut).'>';
+		    $f .= date("Y",time()+($offset))+$fut."</option>\n";
 		    $fut = $fut + 1;
 		} 
 	$my_calendar_body .= $p;
-	$my_calendar_body .= '<option value="'.date("Y",time()+(60*60*$offset)).'"'.mc_year_comparison(date("Y",time()+(60*60*$offset))).'>'.date("Y",time()+(60*60*$offset))."</option>\n";
+	$my_calendar_body .= '<option value="'.date("Y",time()+($offset)).'"'.mc_year_comparison(date("Y",time()+($offset))).'>'.date("Y",time()+($offset))."</option>\n";
 	$my_calendar_body .= $f;
     $my_calendar_body .= '</select> <input type="submit" value="'.__('Go','my-calendar').'" /></div>
 	</form></div>';
@@ -1765,67 +1324,72 @@ function my_calendar($name,$format,$category,$showkey) {
     check_my_calendar();
 
     // Deal with the week not starting on a monday
-    if (get_option('start_of_week') == 0) {
-		$name_days = array(1=>__('<abbr title="Sunday">Sun</abbr>','my-calendar'),__('<abbr title="Monday">Mon</abbr>','my-calendar'),__('<abbr title="Tuesday">Tues</abbr>','my-calendar'),__('<abbr title="Wednesday">Wed</abbr>','my-calendar'),__('<abbr title="Thursday">Thur</abbr>','my-calendar'),__('<abbr title="Friday">Fri</abbr>','my-calendar'),__('<abbr title="Saturday">Sat</abbr>','my-calendar'));
-    } else {
-		// Choose Monday if anything other than Sunday is set
-		$name_days = array(1=>__('<abbr title="Monday">Mon</abbr>','my-calendar'),__('<abbr title="Tuesday">Tues</abbr>','my-calendar'),__('<abbr title="Wednesday">Wed</abbr>','my-calendar'),__('<abbr title="Thursday">Thur</abbr>','my-calendar'),__('<abbr title="Friday">Fri</abbr>','my-calendar'),__('<abbr title="Saturday">Sat</abbr>','my-calendar'),__('<abbr title="Sunday">Sun</abbr>','my-calendar'));
+	$name_days = array(
+		__('<abbr title="Sunday">Sun</abbr>','my-calendar'),
+		__('<abbr title="Monday">Mon</abbr>','my-calendar'),
+		__('<abbr title="Tuesday">Tues</abbr>','my-calendar'),
+		__('<abbr title="Wednesday">Wed</abbr>','my-calendar'),
+		__('<abbr title="Thursday">Thur</abbr>','my-calendar'),
+		__('<abbr title="Friday">Fri</abbr>','my-calendar'),
+		__('<abbr title="Saturday">Sat</abbr>','my-calendar')
+		);
+	
+	if ($format == "mini") {
+		$name_days = array(
+		__('<abbr title="Sunday">S</abbr>','my-calendar'),
+		__('<abbr title="Monday">M</abbr>','my-calendar'),
+		__('<abbr title="Tuesday">T</abbr>','my-calendar'),
+		__('<abbr title="Wednesday">W</abbr>','my-calendar'),
+		__('<abbr title="Thursday">T</abbr>','my-calendar'),
+		__('<abbr title="Friday">F</abbr>','my-calendar'),
+		__('<abbr title="Saturday">S</abbr>','my-calendar')
+		);
 	}
+	
+	if ( get_option('start_of_week') == '1' ) {
+   			$first = array_shift($name_days);
+			$name_days[] = $first;	
+	}
+   
 
     // Carry on with the script
     $name_months = array(1=>__('January','my-calendar'),__('February','my-calendar'),__('March','my-calendar'),__('April','my-calendar'),__('May','my-calendar'),__('June','my-calendar'),__('July','my-calendar'),__('August','my-calendar'),__('September','my-calendar'),__('October','my-calendar'),__('November','my-calendar'),__('December','my-calendar'));
-	$offset = get_option('gmt_offset');
+	$offset = (60*60*get_option('gmt_offset'));
 
     // If we don't pass arguments we want a calendar that is relevant to today
     if (empty($_GET['month']) || empty($_GET['yr'])) {
-        $c_year = date("Y",time()+(60*60*$offset));
-        $c_month = date("m",time()+(60*60*$offset));
-        $c_day = date("d",time()+(60*60*$offset));
+        $c_year = date("Y",time()+($offset));
+        $c_month = date("m",time()+($offset));
+        $c_day = date("d",time()+($offset));
     }
 
     // Years get funny if we exceed 3000, so we use this check
     if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0) {
-        // This is just plain nasty and all because of permalinks
-        // which are no longer used, this will be cleaned up soon
-        if ($_GET['month'] == 'jan' || $_GET['month'] == 'feb' || $_GET['month'] == 'mar' || $_GET['month'] == 'apr' || $_GET['month'] == 'may' || $_GET['month'] == 'jun' || $_GET['month'] == 'jul' || $_GET['month'] == 'aug' || $_GET['month'] == 'sept' || $_GET['month'] == 'oct' || $_GET['month'] == 'nov' || $_GET['month'] == 'dec') {
-	       // Again nasty code to map permalinks into something
-	       // databases can understand. This will be cleaned up
-               $c_year = mysql_real_escape_string($_GET['yr']);
-               if ($_GET['month'] == 'jan') { $t_month = 1; }
-               else if ($_GET['month'] == 'feb') { $t_month = 2; }
-               else if ($_GET['month'] == 'mar') { $t_month = 3; }
-               else if ($_GET['month'] == 'apr') { $t_month = 4; }
-               else if ($_GET['month'] == 'may') { $t_month = 5; }
-               else if ($_GET['month'] == 'jun') { $t_month = 6; }
-               else if ($_GET['month'] == 'jul') { $t_month = 7; }
-               else if ($_GET['month'] == 'aug') { $t_month = 8; }
-               else if ($_GET['month'] == 'sept') { $t_month = 9; }
-               else if ($_GET['month'] == 'oct') { $t_month = 10; }
-               else if ($_GET['month'] == 'nov') { $t_month = 11; }
-               else if ($_GET['month'] == 'dec') { $t_month = 12; }
-               $c_month = $t_month;
-               $c_day = date("d",time()+(60*60*$offset));
+ 
+        if ( isset($_GET['month']) ) {
+               $c_year = (int) $_GET['yr'];
+               $c_month = (int) $_GET['month'];
+               $c_day = date("d",time()+($offset));
         } else {
 		// No valid month causes the calendar to default to today			
-               $c_year = date("Y",time()+(60*60*$offset));
-               $c_month = date("m",time()+(60*60*$offset));
-               $c_day = date("d",time()+(60*60*$offset));
+               $c_year = date("Y",time()+($offset));
+               $c_month = date("m",time()+($offset));
+               $c_day = date("d",time()+($offset));
         }
     } else {
 		// No valid year causes the calendar to default to today	
-        $c_year = date("Y",time()+(60*60*$offset));
-        $c_month = date("m",time()+(60*60*$offset));
-        $c_day = date("d",time()+(60*60*$offset));
+        $c_year = date("Y",time()+($offset));
+        $c_month = date("m",time()+($offset));
+        $c_day = date("d",time()+($offset));
     }
 
     // Fix the days of the week if week start is not on a monday
 	if (get_option('start_of_week') == 0) {
 		$first_weekday = date("w",mktime(0,0,0,$c_month,1,$c_year));
-        $first_weekday = ($first_weekday==0?1:$first_weekday+1);
-      } else {
+    } else {
 		$first_weekday = date("w",mktime(0,0,0,$c_month,1,$c_year));
-		$first_weekday = ($first_weekday==0?7:$first_weekday);
-      }
+        $first_weekday = ($first_weekday==0?6:$first_weekday-1);
+    }
 
     $days_in_month = date("t", mktime (0,0,0,$c_month,1,$c_year));
 	$and = __("and",'my-calendar');
@@ -1835,11 +1399,11 @@ function my_calendar($name,$format,$category,$showkey) {
 		$category_label = "";
 	}
     // Start the calendar and add header and navigation
-		$my_calendar_body .= "<div id=\"jd-calendar\">";
+		$my_calendar_body .= "<div id=\"jd-calendar\" class=\"$format\">";
 		// Add the calendar table and heading
 		$caption_text = stripslashes( get_option('my_calendar_caption') );
 		
-		if ($format == "calendar") {
+		if ($format == "calendar" || $format == "mini" ) {
 		$my_calendar_body .= '<div class="my-calendar-header">';
 
 	    // We want to know if we should display the date switcher
@@ -1890,22 +1454,21 @@ function my_calendar($name,$format,$category,$showkey) {
 	}
     // If in calendar format, print the headings of the days of the week
 	//$my_calendar_body .= "$format, $category, $name";
-if ($format == "calendar") {
+if ( $format == "calendar" || $format == "mini" ) {
     $my_calendar_body .= "<thead>\n<tr>\n";
-    for ($i=1; $i<=7; $i++) {
+    for ($i=0; $i<=6; $i++) {
 	// Colors need to be different if the starting day of the week is different
-	
 		if (get_option('start_of_week') == 0) {
-		    $my_calendar_body .= '<th scope="col" class="'.($i<7&&$i>1?'day-heading':'weekend-heading').'">'.$name_days[$i]."</th>\n";
+		    $my_calendar_body .= '<th scope="col" class="'.($i<6&&$i>0?'day-heading':'weekend-heading').'">'.$name_days[$i]."</th>\n";
 		} else {
-		    $my_calendar_body .= '<th scope="col" class="'.($i<6?'day-heading':'weekend-heading').'">'.$name_days[$i]."</th>\n";
+		    $my_calendar_body .= '<th scope="col" class="'.($i<5?'day-heading':'weekend-heading').'">'.$name_days[$i]."</th>\n";
 		}
 	}	
     $my_calendar_body .= "</tr>\n</thead>\n<tbody>";
 
     for ($i=1; $i<=$days_in_month;) {
         $my_calendar_body .= '<tr>';
-        for ($ii=1; $ii<=7; $ii++) {
+        for ($ii=0; $ii<=6; $ii++) {
             if ($ii==$first_weekday && $i==1) {
 				$go = TRUE;
 			} elseif ($i > $days_in_month ) {
@@ -1914,22 +1477,26 @@ if ($format == "calendar") {
 
             if ($go) {
 		// Colors again, this time for the day numbers
-				if (get_option('start_of_week') == 0) {
-				    // This bit of code is for styles believe it or not.
 				    $grabbed_events = my_calendar_grab_events($c_year,$c_month,$i,$category);
-				    $no_events_class = '';
+				    $events_class = '';
 					    if (!count($grabbed_events)) {
-							$no_events_class = ' no-events';
-					    }
-				    $my_calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd",time()+(60*60*$offset))?'current-day':'day-with-date').$no_events_class.'">'."\n	".'<span'.($ii<7&&$ii>1?'':' class="weekend"').'>'.$i++.'</span>'."\n		". my_calendar_draw_events($grabbed_events, $format) . "\n</td>\n";
+							$events_class = ' no-events';
+							$element = 'span';
+							$trigger = '';
+					    } else {
+							$events_class = ' has-events';
+							if ($format == 'mini') {
+								$element = 'a href="#"';
+								$trigger = ' trigger';
+							} else {
+								$element = 'span';
+								$trigger = '';
+							}
+						}
+				if (get_option('start_of_week') == 0) {
+				    $my_calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date_i18n("Ymd",time())?'current-day':'day-with-date').$events_class.'">'."\n	<$element class='mc-date ".($ii<6&&$ii>0?"$trigger":"weekend$trigger")."'>".$i++."</$element>\n		". my_calendar_draw_events($grabbed_events, $format) . "\n</td>\n";
 				} else {
-				    $grabbed_events = my_calendar_grab_events($c_year,$c_month,$i,$category);
-				    $no_events_class = '';
-			            if (!count($grabbed_events))
-				      {
-					$no_events_class = ' no-events';
-				      }
-				    $my_calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd",time()+(60*60*$offset))?'current-day':'day-with-date').$no_events_class.'">'."\n	".'<span'.($ii<6?'':' class="weekend"').'>'.$i++.'</span>'."\n		". my_calendar_draw_events($grabbed_events, $format) . "\n</td>\n";
+				    $my_calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date_i18n("Ymd",time())?'current-day':'day-with-date').$events_class.'">'."\n	<$element class='mc-date ".($ii<5?"$trigger":"weekend$trigger'")."'>".$i++."</$element>\n		". my_calendar_draw_events($grabbed_events, $format) . "\n</td>\n";
 				}
 	      } else {
 			$my_calendar_body .= "<td class='day-without-date'>&nbsp;</td>\n";
@@ -1963,7 +1530,7 @@ if ($date_format == "") {
 				} else {
 					$is_anchor = $is_close_anchor = "";
 				}
-				$my_calendar_body .= "<li class='$class".(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd",time()+(60*60*$offset))?' current-day':'')."'><strong class=\"event-date\">$is_anchor".date_i18n($date_format,mktime(0,0,0,$c_month,$i,$c_year))."$is_close_anchor</strong>".my_calendar_draw_events($grabbed_events, $format)."</li>";
+				$my_calendar_body .= "<li class='$class".(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date("Ymd",time()+($offset))?' current-day':'')."'><strong class=\"event-date\">$is_anchor".date_i18n($date_format,mktime(0,0,0,$c_month,$i,$c_year))."$is_close_anchor</strong>".my_calendar_draw_events($grabbed_events, $format)."</li>";
 				$num_events++;
 			} 	
 			if (my_calendar_is_odd($num_events)) {
@@ -2001,6 +1568,8 @@ if ($date_format == "") {
 		}
         $my_calendar_body .= "</ul>\n</div>";
       }
+	//$my_calendar_body .= $wpdb->num_queries; // total number of queries	  
+	  
 	$my_calendar_body .= "\n</div>";
     // The actual printing is done by the shortcode function.
     return $my_calendar_body;

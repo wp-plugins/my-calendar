@@ -21,12 +21,10 @@ delete_option('my_calendar_show_address');
 delete_option('my_calendar_today_template');
 delete_option('my_calendar_upcoming_template');
 delete_option('my_calendar_today_title');
+delete_option('my_calendar_today_widget_title');
+delete_option('my_calendar_upcoming_widget_title');
 delete_option('my_calendar_upcoming_title');
-// Widget options
-delete_option('my_calendar_today_title');
 delete_option('my_calendar_today_template');
-delete_option('my_calendar_upcoming_title');
-delete_option('my_calendar_upcoming_template');
 delete_option('display_upcoming_type');
 delete_option('display_upcoming_days');
 delete_option('display_upcoming_events');
@@ -37,9 +35,22 @@ delete_option('display_in_category');
 delete_option('my_calendar_show_heading');
 delete_option('my_calendar_listjs');
 delete_option('my_calendar_caljs');
+delete_option('calendar_javascript');
+delete_option('list_javascript');
+delete_option('my_calendar_minijs');
+delete_option('mini_javascript');
 delete_option('my_calendar_notime_text');
 delete_option('my_calendar_hide_icons');
 delete_option('my_calendar_caption');
+delete_option('mc_event_link_expires');
+delete_option('mc_apply_color');
+delete_option('my_calendar_date_format');
+delete_option('my_calendar_no_events_text');
+delete_option('my_calendar_show_css');
+delete_option('mc_apply_color');
+delete_option('mc_next_events');
+delete_option('mc_previous_events');
+
 add_option('my_calendar_uninstalled','true');
 }
 ?>

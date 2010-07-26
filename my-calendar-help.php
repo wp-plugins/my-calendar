@@ -6,17 +6,18 @@ function my_calendar_help() {
 <h2><?php _e('How to use My Calendar','my-calendar'); ?></h2>
 <?php jd_show_support_box(); ?>
 
-<div id="poststuff" class="jd-my-calendar">
+<div id="shortcode" class="jd-my-calendar">
 <div class="postbox">
 	<h3><?php _e('Shortcode Syntax','my-calendar'); ?></h3>
 	<div class="inside">	
-
+<p>
+<?php _e('These shortcodes can be used in Posts, Pages, or in text widgets.','my-calendar'); ?>
 <ul>
 <li><code>[my_calendar]</code><br />
 <?php _e('This basic shortcode will show the calendar on a post or page including all categories and the category key, in a traditional month-by-month format.','my-calendar'); ?>
 </li>
 <li><code>[my_calendar category="General|Other" format="list" showkey="no"]</code><br />
-<?php _e('The shortcode supports three attributes, <code>category</code>, <code>format</code> and <code>showkey</code>. There is currently only one alternate option for <code>format</code> &mdash; <code>list</code> &mdash; which will show the calendar in a list format, skipping dates without any events. The <code>category</code> attribute requires either the name of or ID number one of your event categories (the name is case-sensitive). This will show a calendar only including events in that category. Multiple categories can be specified by separating the category names or IDs using the pipe character: <code>|</code>. Setting <code>showkey</code> to <code>no</code> will prevent the category key from being displayed &mdash; this can be useful with single-category output.','my-calendar'); ?>
+<?php _e('The shortcode supports three attributes, <code>category</code>, <code>format</code> and <code>showkey</code>. There two alternate option for <code>format</code> &mdash; <code>list</code> &mdash; which will show the calendar in a list format, skipping dates without any events, and <code>mini</code>, which will display the calendar in a form more suitable to being displayed in smaller spaces, such as the sidebar. The <code>category</code> attribute requires either the name of or ID number one of your event categories (the name is case-sensitive). This will show a calendar only including events in that category. Multiple categories can be specified by separating the category names or IDs using the pipe character: <code>|</code>. Setting <code>showkey</code> to <code>no</code> will prevent the category key from being displayed &mdash; this can be useful with single-category output.','my-calendar'); ?>
 </li>
 <li><code>[my_calendar_upcoming before="3" after="3" type="event" category="General" template="{title} {date}"]</code><br />
 	<?php _e('This shortcode displays the output of the Upcoming Events widget. Without attributes, it will display using the settings in your widget; the attributes are used to override the widget settings. The <code>before</code> and <code>after</code> attributes should be numbers; the <code>type</code> attribute can be either "event" or "days", and the <code>category</code> attribute works the same way as the category attribute on the main calendar shortcode. Templates work using the template codes listed below.','my-calendar'); ?>
@@ -28,7 +29,7 @@ function my_calendar_help() {
 </div>
 </div>
 </div>
-<div id="poststuff" class="jd-my-calendar">
+<div id="icons" class="jd-my-calendar">
 <div class="postbox">
 <h3><?php _e('Category Icons','my-calendar'); ?></h3>
 	<div class="inside">	
@@ -42,7 +43,7 @@ function my_calendar_help() {
 </div>
 </div>
 
-<div id="poststuff" class="jd-my-calendar">
+<div id="templates" class="jd-my-calendar">
 <div class="postbox">
 <h3 id="template"><?php _e('Widget Templating','my-calendar'); ?></h3>
 	<div class="inside">
@@ -64,6 +65,9 @@ function my_calendar_help() {
 
 <dt><code>{enddate}</code></dt>
 <dd><?php _e('Displays the date on which the event ends.','my-calendar'); ?></dd>
+
+<dt><code>{endtime}</code></dt>
+<dd><?php _e('Displays the time at which the event ends.','my-calendar'); ?></dd>
 
 <dt><code>{author}</code></dt>
 <dd><?php _e('Displays the WordPress author who posted the event.','my-calendar'); ?></dd>
