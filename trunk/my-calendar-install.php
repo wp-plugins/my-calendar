@@ -422,6 +422,8 @@ $initial_loc_db = "CREATE TABLE " . MY_CALENDAR_LOCATIONS_TABLE . " (
  PRIMARY KEY  (location_id) 
  );";
 
+ 
+ 
 function mc_default_settings( ) {
 global $initial_style, $default_template, $initial_listjs, $initial_caljs, $initial_db, $initial_loc_db, $initial_cat_db;
 // no arguments

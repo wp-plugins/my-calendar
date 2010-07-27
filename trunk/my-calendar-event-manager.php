@@ -522,6 +522,9 @@ if ( $action == 'add' ) {
 ?>
 
 <div class="wrap">
+<?php 
+my_calendar_check_db();
+?>
 	<?php
 	if ( $action == 'edit' || ($action == 'edit_save' && $error_with_saving == 1)) {
 		?>

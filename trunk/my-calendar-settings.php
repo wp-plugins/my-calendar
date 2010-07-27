@@ -155,10 +155,15 @@ function edit_my_calendar_config() {
   // Now we render the form
   ?>
     <div class="wrap">
-	
+<?php 
+echo my_calendar_check_db();
+?>	
     <h2><?php _e('My Calendar Options','my-calendar'); ?></h2>
     <?php jd_show_support_box(); ?>
 <div id="poststuff" class="jd-my-calendar">
+
+
+
 <div class="postbox">
 	<h3><?php _e('Calendar Settings','my-calendar'); ?></h3>
 	<div class="inside">	
