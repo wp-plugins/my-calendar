@@ -1,7 +1,7 @@
 <?php
 function my_calendar_help() {
-
 ?>
+
 <div class="wrap">
 <h2><?php _e('How to use My Calendar','my-calendar'); ?></h2>
 <?php jd_show_support_box(); ?>

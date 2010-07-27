@@ -45,7 +45,6 @@ Languages available:
 * American English (Default)
 * Brazilian Portuguese ([Daniel Prata](daniel@grudaemmim.com.br))
 * Spanish ([Esteban Truelsegaard](http://www.netmdp.com))
-* German ([Norman Scorpion](http://myscorpion.de)
 
 == Installation ==
 
@@ -67,6 +66,10 @@ Languages available:
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.4.1 =
+
+* Database upgrade didn't run for some users in 1.4.0. Added manual check and upgrade if necessary.
 
 = 1.4.0 =
 

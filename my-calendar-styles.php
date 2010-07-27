@@ -64,7 +64,9 @@ function edit_my_calendar_styles() {
  
   ?>
     <div class="wrap">
-	
+	<?php 
+echo my_calendar_check_db();
+?>
     <h2><?php _e('My Calendar Styles','my-calendar'); ?></h2>
     <?php jd_show_support_box(); ?>
 <div id="poststuff" class="jd-my-calendar">

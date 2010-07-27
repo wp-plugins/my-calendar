@@ -10,6 +10,9 @@ function my_calendar_manage_locations() {
   
 ?>
 <div class="wrap">
+<?php 
+echo my_calendar_check_db();
+?>
 <?php
   // We do some checking to see what we're doing
   if (isset($_POST['mode']) && $_POST['mode'] == 'add') {

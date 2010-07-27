@@ -64,6 +64,7 @@ include(dirname(__FILE__).'/my-calendar-styles.php' );
 include(dirname(__FILE__).'/my-calendar-widgets.php' );
 include(dirname(__FILE__).'/date-utilities.php' );
 include(dirname(__FILE__).'/my-calendar-install.php' );
+include(dirname(__FILE__).'/my-calendar-upgrade-db.php' );
 
 
 // Before we get on with the functions, we need to define the initial style used for My Calendar

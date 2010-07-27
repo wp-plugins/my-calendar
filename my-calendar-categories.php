@@ -29,6 +29,9 @@ function my_calendar_manage_categories() {
 
 ?>
 <div class="wrap">
+<?php 
+echo my_calendar_check_db();
+?>
 <?php
   // We do some checking to see what we're doing
   if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
@@ -46,9 +49,12 @@ function my_calendar_manage_categories() {
       $cur_cat = $wpdb->get_row($sql);
       ?>
    <h2><?php _e('Edit Category','my-calendar'); ?></h2>
+
+
 <?php jd_show_support_box(); ?>   
 <div id="poststuff" class="jd-my-calendar">
 <div class="postbox">
+
 <h3><?php _e('Category Editor','my-calendar'); ?></h3>
 	<div class="inside">	   
     <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories">
