@@ -63,7 +63,7 @@ function init_my_calendar_upcoming() {
     extract($args);
     $the_title = get_option('my_calendar_upcoming_title');
     $widget_title = empty($the_title) ? __('Upcoming Events','my-calendar') : $the_title;
-    $the_events = my_calendar_upcoming_events();
+	$the_events = my_calendar_upcoming_events();
     if ($the_events != '') {
       echo $before_widget;
       echo $before_title . stripslashes($widget_title) . $after_title;
@@ -79,7 +79,7 @@ function init_my_calendar_upcoming() {
 	$past_days = get_option('display_past_days');
 	$upcoming_events = get_option('display_upcoming_events');
 	$past_events = get_option('display_past_events');	
-    $display_in_category = get_option('display_in_category');
+    $display_in_category = stripcslashes( get_option('display_in_category') );
 	
     
 	if (isset($_POST['my_calendar_upcoming_title'])) {

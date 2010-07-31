@@ -10,6 +10,8 @@ Accessible WordPress event calendar plugin. Show events from multiple calendars 
 
 == Description ==
 
+My Calendar provides basic event management and provides numerous methods to display your events.
+
 This calendar is branched from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/). The output has been pretty much completely re-written, the settings methods have been revamped, and the widgets have been completely revamped. The information you can provide for an event has been expanded to include location information. The UI has been completely revamped.
 
 In short, there isn't actually much left of the original plugin.
@@ -66,6 +68,10 @@ Languages available:
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.4.2 =
+
+* Fixed a bug in the widget display code which caused problems displaying multiple categories.
 
 = 1.4.1 =
 
