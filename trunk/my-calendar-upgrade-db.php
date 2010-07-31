@@ -8,8 +8,6 @@ if ( $_POST['upgrade'] == 'true' ) {
 }
 
 	if ( !isset( $row->event_longitude ) ) {
-
-	print_r($row);
 	?>
 
 	<div class='upgrade-db error'>
@@ -25,7 +23,7 @@ if ( $_POST['upgrade'] == 'true' ) {
 	</div>
 <?php
 	} else {
-		if (isset($_POST)) {
+		if ( isset($_POST) && $_POST['upgrade'] == 'true' ) {
 		?>
 		<div class='upgrade-db updated'>
 		<p>
