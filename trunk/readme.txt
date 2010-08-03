@@ -69,6 +69,15 @@ Languages available:
 
 == Changelog ==
 
+= 1.4.3 = 
+
+* Fixed a bug where event end times were displaying the start time instead when editing.
+* Fixed a bug introduced by the mini calendar option which displayed titles twice in list format.
+* Fixed a bunch of typos.
+* Added a loop which automatically adds the mini calendar styles if you don't already have them.
+* Fixed a bug where JS didn't run if the 'show only on certain pages' option was used.
+* Added a qualifier for upgrading databases when you haven't added any events.
+
 = 1.4.2 =
 
 * Fixed a bug in the widget display code which caused problems displaying multiple categories.

@@ -1,7 +1,7 @@
 <?php
 
 // define global variables;
-global $initial_listjs, $initial_caljs, $initial_minijs, $initial_style, $initial_db, $initial_loc_db, $initial_cat_db, $default_template;
+global $initial_listjs, $initial_caljs, $initial_minijs, $initial_style, $initial_db, $initial_loc_db, $initial_cat_db, $default_template, $mini_styles;
 
   // defaults will go into the options table on a new install
 $initial_listjs = 'var $j = jQuery.noConflict();
@@ -369,6 +369,50 @@ font-weight: 700;
 text-decoration: underline;
 }";
 
+$mini_styles = ".mini td {
+height: auto!important;
+}
+
+.mini .my-calendar-nav ul {
+height: 2em!important;
+}
+.mini .my-calendar-nav li a {
+padding: 1px 3px!important;
+font-size: .7em;
+}
+#jd-calendar.mini .my-calendar-date-switcher label {
+display: block;
+float: left;
+width: 6em;
+}
+#jd-calendar.mini .my-calendar-date-switcher {
+padding: 4px;
+}
+#jd-calendar.mini td .category-icon {
+display: none;
+}
+#jd-calendar.mini h3 {
+font-size: 1.1em;
+}
+
+#jd-calendar.mini .day-with-date span, #jd-calendar.mini .day-with-date a {
+font-family: Arial, Verdana, sans-serif;
+font-size: .9em;
+padding:1px;
+}
+#jd-calendar .mini-event .sub-details {
+margin: 0;
+border-bottom: 1px solid #ccc;
+padding: 2px 0 0;
+margin-bottom: 5px;
+}
+#jd-calendar.mini .day-with-date a {
+display: block;
+margin: -2px;
+font-weight: 700;
+text-decoration: underline;
+}";
+
 $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{time}, {category}</span>";
 
 $initial_db = "CREATE TABLE " . MY_CALENDAR_TABLE . " ( 
@@ -425,7 +469,7 @@ $initial_loc_db = "CREATE TABLE " . MY_CALENDAR_LOCATIONS_TABLE . " (
  
  
 function mc_default_settings( ) {
-global $initial_style, $default_template, $initial_listjs, $initial_caljs, $initial_db, $initial_loc_db, $initial_cat_db;
+global $initial_style, $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_db, $initial_loc_db, $initial_cat_db;
 // no arguments
 	add_option('can_manage_events','edit_posts');
 	add_option('my_calendar_style',"$initial_style");

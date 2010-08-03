@@ -666,7 +666,7 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 						if ($data->event_endtime == "00:00:00") {
 						echo '';
 						} else {
-							echo date("H:i",strtotime($data->event_time));
+							echo date("H:i",strtotime($data->event_endtime));
 						}
 					} else {
 						echo '';
