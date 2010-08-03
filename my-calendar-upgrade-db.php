@@ -7,7 +7,7 @@ if ( $_POST['upgrade'] == 'true' ) {
 	my_calendar_upgrade_db();
 }
 
-	if ( !isset( $row->event_longitude ) ) {
+	if ( !isset( $row->event_longitude ) && isset( $row->event_id ) ) {
 	?>
 
 	<div class='upgrade-db error'>
@@ -17,6 +17,20 @@ if ( $_POST['upgrade'] == 'true' ) {
 		</div>
 		<p>
 		<?php _e('The My Calendar database needs to be updated.','my-calendar'); ?>
+		<input type="submit" value="<?php _e('Update now','my-calendar'); ?>" name="update-calendar" class="button-primary" />
+		</p>
+		</form>
+	</div>
+<?php
+	} elseif ( !isset ( $row->event_id ) ) {
+?>
+	<div class='upgrade-db error'>
+		<form method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
+		<div>
+			<input type="hidden" name="upgrade" value="true" />
+		</div>
+		<p>
+		<?php _e('You haven\'t entered any events, so My Calendar can\'t tell whether your database needs to be updated. If you can\'t add events, upgrade your database!','my-calendar'); ?>
 		<input type="submit" value="<?php _e('Update now','my-calendar'); ?>" name="update-calendar" class="button-primary" />
 		</p>
 		</form>

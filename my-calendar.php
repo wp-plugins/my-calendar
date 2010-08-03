@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.4.2
+Version: 1.4.3
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -219,6 +219,8 @@ function my_calendar_add_display_javascript() {
 add_action('init','my_calendar_add_display_javascript');
 
 function my_calendar_calendar_javascript() {
+  global $wpdb, $wp_query;
+
 $list_js = stripcslashes( get_option( 'my_calendar_listjs' ) );
 $cal_js = stripcslashes( get_option( 'my_calendar_caljs' ) );
 $mini_js = stripcslashes( get_option( 'my_calendar_minijs' ) );
@@ -228,6 +230,10 @@ if ( get_option('calendar_javascript') != 1 || get_option('list_javascript') != 
 } else {
  $fouc = '';
 }
+		$this_post = $wp_query->get_queried_object();
+		if (is_object($this_post)) {
+			$id = $this_post->ID;
+		} 
 if ( get_option( 'my_calendar_show_css' ) != '' ) {
 $array = explode( ",",get_option( 'my_calendar_show_css' ) );
 	if (!is_array($array)) {
@@ -261,6 +267,8 @@ echo "\n"
 </script>
 <?php	
 	}	
+} else {
+echo "Ha, Ha!";
 }
 }
 add_action('wp_head','my_calendar_calendar_javascript');
@@ -378,12 +386,18 @@ add_shortcode('my_calendar_today','my_calendar_insert_today');
 
 // Function to check what version of My Calendar is installed and install if needed
 function check_my_calendar() {
-	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs;
+	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs, $mini_styles;
 	$current_version = get_option('my_calendar_version');
 	// If current version matches, don't bother running this.
-	if ($current_version == '1.4.2') {
+	if ($current_version == '1.4.3') {
 		return true;
 	}
+	// check whether mini version styles exist in current styles, if not, add them
+	if (strpos(get_option('my_calendar_style'),"mini-event") === false) {
+		$cur_styles = get_option('my_calendar_style')."\n".$mini_styles;
+		update_option('my_calendar_style',$cur_styles);
+	}
+	
   // Checks to make sure My Calendar is installed, if not it adds the default
   // database tables and populates them with test data. If it is, then the 
   // version is checked through various means and if it is not up to date 
@@ -418,7 +432,7 @@ function check_my_calendar() {
 	} 
 	
 	// having determined upgrade path, assign new version number
-	update_option( 'my_calendar_version' , '1.4.2' );
+	update_option( 'my_calendar_version' , '1.4.3' );
 
 	// Now we've determined what the current install is or isn't 
 	if ( $new_install == true ) {
@@ -678,8 +692,9 @@ $my_calendar_directory = get_bloginfo( 'wpurl' ) . '/' . PLUGINDIR . '/' . dirna
 	} else {
 		$toggle = "";
 	}
+	if ($type != 'list') {
 	$header_details .= "<h3 class='event-title $category'>$image".stripslashes($event->event_title)."$toggle</h3>\n";
-
+	}
 
 	$header_details .= "<div class='details'>"; 
 	if ($type == "calendar" ) { $header_details .= "<h3 class='close'><a href='#' class='mc-toggle mc-close'><img src='$my_calendar_directory/images/event-close.png' alt='".__('Close','my-calendar')."' /></a></h3>"; }

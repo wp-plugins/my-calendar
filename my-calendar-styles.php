@@ -116,7 +116,7 @@ echo my_calendar_check_db();
    <fieldset>
 	<legend><?php _e('Calendar Behaviors: Mini Calendar View','my-calendar'); ?></legend>
 	<p>
-	<input type="checkbox" id="reset_minijs" name="reset_minijs" /> <label for="reset_listjs"><?php _e('Reset the My Calendar Mini Format Javascript','my-calendar'); ?></label> <input type="checkbox" id="list_javascript" name="list_javascript" value="1" <?php jd_cal_checkCheckbox('list_javascript',1); ?> /> <label for="list_javascript"><?php _e('Disable List Javascript Effects','my-calendar'); ?></label> 
+	<input type="checkbox" id="reset_minijs" name="reset_minijs" /> <label for="reset_minijs"><?php _e('Reset the My Calendar Mini Format Javascript','my-calendar'); ?></label> <input type="checkbox" id="mini_javascript" name="mini_javascript" value="1" <?php jd_cal_checkCheckbox('mini_javascript',1); ?> /> <label for="mini_javascript"><?php _e('Disable Mini Javascript Effects','my-calendar'); ?></label> 
 	</p>
 	<p>
 	<label for="mini-javascript"><?php _e('Edit the jQuery scripts for My Calendar in Mini Calendar format','my-calendar'); ?></label><br /><textarea id="mini-javascript" name="my_calendar_minijs" rows="10" cols="80"><?php echo $my_calendar_minijs; ?></textarea>
