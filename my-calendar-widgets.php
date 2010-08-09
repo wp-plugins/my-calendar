@@ -310,7 +310,7 @@ function my_calendar_todays_events($category='default',$template='default') {
 				$date = date_i18n(get_option('my_calendar_date_format'),time());
 				} else {
 				$date = date_i18n(get_option('date_format'),time());
-				}			
+				}	
 			// correct displayed time to today
 			$event_details['date'] = $date;
 			$output .= "<li>".jd_draw_widget_event($event_details,$template)."</li>";
@@ -407,7 +407,7 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 	$details['time'] = date(get_option('time_format'),strtotime($event->event_time));
 	}
 	if ($event->event_endtime == '00:00:00' ) {
-	$deatils['endtime'] = '';
+	$details['endtime'] = '';
 	} else {
 	$details['endtime'] = date( get_option('time_format'),strtotime($event->event_endtime));
 	}

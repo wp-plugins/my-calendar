@@ -3,39 +3,35 @@
 // to deal with posts
 function edit_my_calendar() {
     global $current_user, $wpdb, $users_entries;
-  ?>	
-  
-  <?php
-if ( get_option('ko_calendar_imported') != 'true' ) {  
-	if (function_exists('check_calendar')) {
-	echo "<div id='message' class='updated'>";
-	echo "<p>";
-	_e('My Calendar has identified that you have the Calendar plugin by Kieran O\'Shea installed. You can import those events and categories into the My Calendar database. Would you like to import these events?','my-calendar');
-	echo "</p>";
-	?>
-		<form method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
-		<div>
-		<input type="hidden" name="import" value="true" />
-		<input type="submit" value="<?php _e('Import from Calendar','my-calendar'); ?>" name="import-calendar" class="button-primary" />
-		</div>
-		</form>
-	<?php
-	echo "<p>";
-	_e('Although it is possible that this import could fail to import your events correctly, it should not have any impact on your existing Calendar database. If you encounter any problems, <a href="http://www.joedolson.com/contact.php">please contact me</a>!','my-calendar');
-	echo "</p>";
-	echo "</div>";
+
+	if ( get_option('ko_calendar_imported') != 'true' ) {  
+		if (function_exists('check_calendar')) {
+		echo "<div id='message' class='updated'>";
+		echo "<p>";
+		_e('My Calendar has identified that you have the Calendar plugin by Kieran O\'Shea installed. You can import those events and categories into the My Calendar database. Would you like to import these events?','my-calendar');
+		echo "</p>";
+		?>
+			<form method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
+			<div>
+			<input type="hidden" name="import" value="true" />
+			<input type="submit" value="<?php _e('Import from Calendar','my-calendar'); ?>" name="import-calendar" class="button-primary" />
+			</div>
+			</form>
+		<?php
+		echo "<p>";
+		_e('Although it is possible that this import could fail to import your events correctly, it should not have any impact on your existing Calendar database. If you encounter any problems, <a href="http://www.joedolson.com/contact.php">please contact me</a>!','my-calendar');
+		echo "</p>";
+		echo "</div>";
+		}
 	}
-}
-	?>  
-  
-<?php
+
 // First some quick cleaning up 
 $edit = $create = $save = $delete = false;
 
 $action = !empty($_POST['action']) ? $_POST['action'] : '';
 $event_id = !empty($_POST['event_id']) ? $_POST['event_id'] : '';
 
-if ($_GET['action'] == 'edit') {
+if ($_GET['mode'] == 'edit') {
 	$action = "edit";
 	$event_id = (int) $_GET['event_id'];
 }
@@ -43,7 +39,7 @@ if ($_GET['action'] == 'edit') {
 // Lets see if this is first run and create us a table if it is!
 check_my_calendar();
 
-if ($_GET['action'] == 'delete') {
+if ($_GET['mode'] == 'delete') {
 	    $sql = "SELECT event_title, event_author FROM " . MY_CALENDAR_TABLE . " WHERE event_id=" . (int) $_GET['event_id'];
 	   $result = $wpdb->get_results( $sql, ARRAY_A );
 	if ( mc_can_edit_event( $result[0]['event_author'] ) ) {
@@ -68,452 +64,88 @@ if ($_GET['action'] == 'delete') {
 	}
 }
 
+if ( isset( $_POST['action'] ) ) {
+$proceed = false;
 // Deal with adding an event to the database
-if ( $action == 'add' ) {
-	$title = !empty($_POST['event_title']) ? $_POST['event_title'] : '';
-	$desc = !empty($_POST['event_desc']) ? $_POST['event_desc'] : '';
-	$begin = !empty($_POST['event_begin']) ? $_POST['event_begin'] : '';
-	$end = !empty($_POST['event_end']) ? $_POST['event_end'] : $begin;
-	$time = !empty($_POST['event_time']) ? $_POST['event_time'] : '';
-	$endtime = !empty($_POST['event_endtime']) ? $_POST['event_endtime'] : '';
-	$recur = !empty($_POST['event_recur']) ? $_POST['event_recur'] : '';
-	$repeats = !empty($_POST['event_repeats']) ? $_POST['event_repeats'] : 0;
-	$category = !empty($_POST['event_category']) ? $_POST['event_category'] : '';
-    $linky = !empty($_POST['event_link']) ? $_POST['event_link'] : '';
-    $expires = !empty($_POST['event_link_expires']) ? $_POST['event_link_expires'] : '0';	
-	$location_preset = !empty($_POST['location_preset']) ? $_POST['location_preset'] : '';
-	if ($location_preset != 'none') {
-		$sql = "SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id = $location_preset";
-		$location = $wpdb->get_row($sql);
-		$event_label = $location->location_label;
-		$event_street = $location->location_street;
-		$event_street2 = $location->location_street2;
-		$event_city = $location->location_city;
-		$event_state = $location->location_state;
-		$event_postcode = $location->location_postcode;
-		$event_country = $location->location_country;
-		$event_longitude = $location->location_longitude;
-		$event_latitude = $location->location_latitude;
-		$event_zoom = $location->location_zoom;
-	} else {
-    $event_label = !empty($_POST['event_label']) ? $_POST['event_label'] : '';
-    $event_street = !empty($_POST['event_street']) ? $_POST['event_street'] : '';
-    $event_street2 = !empty($_POST['event_street2']) ? $_POST['event_street2'] : '';
-    $event_city = !empty($_POST['event_city']) ? $_POST['event_city'] : '';
-    $event_state = !empty($_POST['event_state']) ? $_POST['event_state'] : '';
-    $event_postcode = !empty($_POST['event_postcode']) ? $_POST['event_postcode'] : '';
-    $event_country = !empty($_POST['event_country']) ? $_POST['event_country'] : '';
-	$event_longitude = !empty($_POST['event_longitude']) ? $_POST['event_longitude'] : '';	
-    $event_latitude = !empty($_POST['event_latitude']) ? $_POST['event_latitude'] : '';	
-    $event_zoom = !empty($_POST['event_zoom']) ? $_POST['event_zoom'] : '';	
-    }
-	// Deal with the fools who have left magic quotes turned on
-	if ( ini_get('magic_quotes_gpc') ) {
-		$title = stripslashes($title);
-		$desc = stripslashes($desc);
-		$begin = stripslashes($begin);
-		$end = stripslashes($end);
-		$time = stripslashes($time);
-		$endtime = stripslashes($endtime);
-		$recur = stripslashes($recur);
-		$repeats = stripslashes($repeats);
-		$category = stripslashes($category);
-		$linky = stripslashes($linky);	
-		$expires = stripslashes($expires);
-		$event_label = stripslashes($event_label);
-		$event_street = stripslashes($event_street);
-		$event_street2 = stripslashes($event_street2);
-		$event_city = stripslashes($event_city);
-		$event_state = stripslashes($event_state);
-		$event_postcode = stripslashes($event_postcode);
-		$event_country = stripslashes($event_country);	
-		$event_longitude = stripslashes($event_longitude);	
-		$event_latitude = stripslashes($event_latitude);	
-		$event_zoom = stripslashes($event_zoom);	
-		
-	}	
+$event_author = (int) ($action == 'add')?($current_user->ID):($_POST['event_author']);
 
-	// Perform some validation on the submitted dates - this checks for valid years and months
-	$date_format_one = '/^([0-9]{4})-([0][1-9])-([0-3][0-9])$/';
-    $date_format_two = '/^([0-9]{4})-([1][0-2])-([0-3][0-9])$/';
-	if ((preg_match($date_format_one,$begin) || preg_match($date_format_two,$begin)) && (preg_match($date_format_one,$end) || preg_match($date_format_two,$end))) {
-            // We know we have a valid year and month and valid integers for days so now we do a final check on the date
-        $begin_split = split('-',$begin);
-	    $begin_y = $begin_split[0]; 
-	    $begin_m = $begin_split[1];
-	    $begin_d = $begin_split[2];
-        $end_split = split('-',$end);
-	    $end_y = $end_split[0];
-	    $end_m = $end_split[1];
-	    $end_d = $end_split[2];
-            if (checkdate($begin_m,$begin_d,$begin_y) && checkdate($end_m,$end_d,$end_y)) {
-		       // Ok, now we know we have valid dates, we want to make sure that they are either equal or that the end date is later than the start date
-			       if (strtotime($end) >= strtotime($begin)) {
-				   $start_date_ok = 1;
-				   $end_date_ok = 1;
-					} else {
-				   ?>
-				   <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('Your event end date must be either after or the same as your event begin date','my-calendar'); ?></p></div>
-				   <?php
-					}
-		    } else {
-			?>
-	                <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('Your date formatting is correct but one or more of your dates is invalid. Check for number of days in month and leap year related errors.','my-calendar'); ?></p></div>
-	                <?php
-		    }
-	  }	else {
-	    ?>
-            <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('Both start and end dates must be entered and be in the format YYYY-MM-DD','my-calendar'); ?></p></div>
-            <?php
-	  }
-        // We check for a valid time, or an empty one
-        $time_format_one = '/^([0-1][0-9]):([0-5][0-9])$/';
-		$time_format_two = '/^([2][0-3]):([0-5][0-9])$/';
-        if (preg_match($time_format_one,$time) || preg_match($time_format_two,$time) || $time == '') {
-            $time_ok = 1;
-        } else {
-            ?>
-            <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The time field must either be blank or be entered in the format hh:mm','my-calendar'); ?></p></div>
-            <?php
-	    }
-	// We check to make sure the URL is alright                                                        
-	if (preg_match('/^(http)(s?)(:)\/\//',$linky) || $linky == '') {
-	    $url_ok = 1;
-	  }	else {
-              ?>
-              <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The URL entered must either be prefixed with http:// or be completely blank','my-calendar'); ?></p></div>
-              <?php
-	  }
-	// The title must be at least one character in length and no more than 255 - only basic punctuation is allowed
-	$title_length = strlen($title);
-	if ( $title_length > 1 && $title_length <= 255 ) {
-	    $title_ok =1;
-	  }	else {
-              ?>
-              <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The event title must be between 1 and 255 characters in length.','my-calendar'); ?></p></div>
-              <?php
-	  }
-	// We run some checks on recurrance                                                                        
-	if (($repeats == 0 && $recur == 'S') || (($repeats >= 0) && ($recur == 'W' || $recur == 'B' || $recur == 'M' || $recur == 'Y' || $recur == 'D'))) {
-	    $recurring_ok = 1;
-	  }	else {
-              ?>
-              <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The repetition value must be 0 unless a type of recurrance is selected in which case the repetition value must be 0 or higher','my-calendar'); ?></p></div>
-              <?php
-	  }
-	if ($start_date_ok == 1 && $end_date_ok == 1 && $time_ok == 1 && $url_ok == 1 && $title_ok == 1 && $recurring_ok == 1) {
-		$update = array(
-			'event_id'=>'',
-			'event_begin'=>$begin, 
-			'event_end'=>$end, 
-			'event_title'=>$title, 
-			'event_desc'=>$desc, 			
-			'event_time'=>$time, 
-			'event_endtime'=>$endtime, 				
-			'event_recur'=>$recur, 
-			'event_repeats'=>$repeats, 
-			'event_author'=>$current_user->ID,
-			'event_category'=>$category, 
-			'event_link'=>$linky,
-			'event_link_expires'=>$expires, 
-			'event_label'=>$event_label, 
-			'event_street'=>$event_street, 
-			'event_street2'=>$event_street2, 
-			'event_city'=>$event_city, 
-			'event_state'=>$event_state, 
-			'event_postcode'=>$event_postcode, 
-			'event_country'=>$event_country,
-			'event_longitude'=>$event_longitude,
-			'event_latitude'=>$event_latitude,
-			'event_zoom'=>$event_zoom);
-			
-		$format = array('%s');
+$output = mc_check_data($action,$_POST);
+$proceed = $output[0];
+ // end data checking and gathering
+	if ( $action == 'add' && $proceed == true ) {
+		$add = $output[2];
+		$formats = array('%s','%s','%s','%s','%s','%s','%d','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%f','%f','%d');
 		$result = $wpdb->insert( 
 				MY_CALENDAR_TABLE, 
-				$update, 
+				$add, 
 				$formats 
 				);
-		
 			if ( !$result ) {
                 ?>
-			<div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('An event with the details you submitted could not be found in the database. This may indicate a problem with your database or the way in which it is configured.','my-calendar'); ?></p></div>
+			<div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('I\'m sorry! I couldn\'d add that event to the database.','my-calendar'); ?></p></div>
 			<?php
 	      } else {
 		?>
 		<div class="updated"><p><?php _e('Event added. It will now show in your calendar.','my-calendar'); ?></p></div>
 		<?php
 	      }
-	  } else {
-	    // The form is going to be rejected due to field validation issues, so we preserve the users entries here
-			$users_entries->event_title = $title;
-			$users_entries->event_desc = $desc;
-			$users_entries->event_begin = $begin;
-			$users_entries->event_end = $end;
-			$users_entries->event_time = $time;
-			$users_entries->event_endtime = $endtime;
-			$users_entries->event_recur = $recur;
-			$users_entries->event_repeats = $repeats;
-			$users_entries->event_category = $category;
-			$users_entries->event_link = $linky;
-			$users_entries->event_link_expires = $expires;
-			$users_entries->event_label = $event_label;
-			$users_entries->event_street = $event_street;
-			$users_entries->event_street2 = $event_street2;
-			$users_entries->event_city = $event_city;
-			$users_entries->event_state = $event_state;
-			$users_entries->event_postcode = $event_postcode;
-			$users_entries->event_country = $event_country;	
-			$users_entries->event_longitude = $event_longitude;		
-			$users_entries->event_latitude = $event_latitude;		
-			$users_entries->event_zoom = $event_zoom;		
-
-	  }
-// Permit saving of events that have been edited	  
-} elseif ( $action == 'edit_save' ) {
-	$title = !empty($_POST['event_title']) ? $_POST['event_title'] : '';
-	$desc = !empty($_POST['event_desc']) ? $_POST['event_desc'] : ' ';
-	$begin = !empty($_POST['event_begin']) ? $_POST['event_begin'] : '';
-	$end = !empty($_POST['event_end']) ? $_POST['event_end'] : $begin;
-	$time = !empty($_POST['event_time']) ? $_POST['event_time'] : '';
-    $endtime = !empty($_POST['event_endtime']) ? $_POST['event_endtime'] : '';		
-	$recur = !empty($_POST['event_recur']) ? $_POST['event_recur'] : '';
-	$repeats = !empty($_POST['event_repeats']) ? $_POST['event_repeats'] : 0;
-	$category = !empty($_POST['event_category']) ? $_POST['event_category'] : '';
-    $linky = !empty($_POST['event_link']) ? $_POST['event_link'] : '';
-    $expires = !empty($_POST['event_link_expires']) ? $_POST['event_link_expires'] : '0';		
-    $location_preset = !empty($_POST['location_preset']) ? $_POST['location_preset'] : '';	
-	if ($location_preset != 'none') {
-		$sql = "SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id = $location_preset";
-		$location = $wpdb->get_row($sql);
-		$event_label = $location->location_label;
-		$event_street = $location->location_street;
-		$event_street2 = $location->location_street2;
-		$event_city = $location->location_city;
-		$event_state = $location->location_state;
-		$event_postcode = $location->location_postcode;
-		$event_country = $location->location_country;
-		$event_longitude = $location->location_longitude;
-		$event_latitude = $location->location_latitude;
-		$event_zoom = $location->location_zoom;
-	} else {	
-    $event_label = !empty($_POST['event_label']) ? $_POST['event_label'] : '';
-    $event_street = !empty($_POST['event_street']) ? $_POST['event_street'] : '';
-    $event_street2 = !empty($_POST['event_street2']) ? $_POST['event_street2'] : '';
-    $event_city = !empty($_POST['event_city']) ? $_POST['event_city'] : '';
-    $event_state = !empty($_POST['event_state']) ? $_POST['event_state'] : '';
-    $event_postcode = !empty($_POST['event_postcode']) ? $_POST['event_postcode'] : '';
-    $event_country = !empty($_POST['event_country']) ? $_POST['event_country'] : '';
-    $event_longitude = !empty($_POST['event_longitude']) ? $_POST['event_longitude'] : '';
-    $event_latitude = !empty($_POST['event_latitude']) ? $_POST['event_latitude'] : '';
-    $event_zoom = !empty($_POST['event_zoom']) ? $_POST['event_zoom'] : '';
-	
 	}
-    $event_author = !empty($_POST['event_author']) ? $_POST['event_author'] : '';
-	
-	if ( mc_can_edit_event( $event_author ) ) {
-	
-
-	// Deal with the fools who have left magic quotes turned on
-	if ( ini_get('magic_quotes_gpc') ) {
-		$title = stripslashes($title);
-		$desc = stripslashes($desc);
-		$begin = stripslashes($begin);
-		$end = stripslashes($end);
-		$time = stripslashes($time);
-		$endtime = stripslashes($endtime);
-		$recur = stripslashes($recur);
-		$repeats = stripslashes($repeats);
-        $category = stripslashes($category);
-        $linky = stripslashes($linky);
-		$expires = stripslashes($expires);
-		$event_label = stripslashes($event_label);
-		$event_street = stripslashes($event_street);
-		$event_street2 = stripslashes($event_street2);
-		$event_city = stripslashes($event_city);
-		$event_state = stripslashes($event_state);
-		$event_postcode = stripslashes($event_postcode);
-		$event_country = stripslashes($event_country);
-		$event_longitude = stripslashes($event_longitude);
-		$event_latitude = stripslashes($event_latitude);
-		$event_zoom = stripslashes($event_zoom);
-		
-		$event_author = stripslashes($event_author);
-	}
-	
-	if ( empty($event_id) ) {
-		?>
-		<div class="error"><p><strong><?php _e('Failure','my-calendar'); ?>:</strong> <?php _e("You can't update an event if you haven't submitted an event id",'my-calendar'); ?></p></div>
-		<?php		
-	} else {
-	  // Perform some validation on the submitted dates - this checks for valid years and months
-      $date_format_one = '/^([0-9]{4})-([0][1-9])-([0-3][0-9])$/';
-	  $date_format_two = '/^([0-9]{4})-([1][0-2])-([0-3][0-9])$/';
-	  if ((preg_match($date_format_one,$begin) || preg_match($date_format_two,$begin)) && (preg_match($date_format_one,$end) || preg_match($date_format_two,$end)))	{
-	      // We know we have a valid year and month and valid integers for days so now we do a final check on the date
-          $begin_split = split('-',$begin);
-	      $begin_y = $begin_split[0];
-	      $begin_m = $begin_split[1];
-	      $begin_d = $begin_split[2];
-	      $end_split = split('-',$end);
-	      $end_y = $end_split[0];
-	      $end_m = $end_split[1];
-	      $end_d = $end_split[2];
-		    if (checkdate($begin_m,$begin_d,$begin_y) && checkdate($end_m,$end_d,$end_y)) {
-			  // Ok, now we know we have valid dates, we want to make sure that they are either equal or that the end date is later than the start date
-	            if (strtotime($end) >= strtotime($begin)) {
-			      $start_date_ok = 1;
-			      $end_date_ok = 1;
-			    } else {
-	                      ?>
-	                      <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('Your event end date must be either after or the same as your event begin date','my-calendar'); ?></p></div>
-	                      <?php
-	            }
-			} else {
-	                ?>
-	                <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('Your date formatting is correct but one or more of your dates is invalid. Check for number of days in month and leap year related errors.','my-calendar'); ?></p></div>
-	                <?php
-	        }
-	    } else {
-            ?>
-            <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('Both start and end dates must be entered and be in the format YYYY-MM-DD','my-calendar'); ?></p></div>
-            <?php
-	    }
-	  // We check for a valid time, or an empty one
-	  $time_format_one = '/^([0-1][0-9]):([0-5][0-9])$/';
-	  $time_format_two = '/^([2][0-3]):([0-5][0-9])$/';
-	    if (preg_match($time_format_one,$time) || preg_match($time_format_two,$time) || $time == '') {
-	      $time_ok = 1;
-	    } else {
-            ?>
-            <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The time field must either be blank or be entered in the format hh:mm','my-calendar'); ?></p></div>
-            <?php
-	    }
-          // We check to make sure the URL is alright
-	  if (preg_match('/^(http)(s?)(:)\/\//',$linky) || $linky == '') {
-	      $url_ok = 1;
-	    } else {
-	      ?>
-	      <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The URL entered must either be prefixed with http:// or be completely blank','my-calendar'); ?></p></div>
-	      <?php
-	    }
-	  // The title must be at least one character in length and no more than 255 - no non-standard characters allowed
-	$title_length = strlen($title);
-	if ( $title_length > 1 && $title_length <= 255 ) {
-	      $title_ok =1;
-	    } else {
-	      ?>
-              <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The event title must be between 1 and 255 characters in length.','my-calendar'); ?></p></div>
-              <?php
-	    }
-	  // We run some checks on recurrance              
-          if (($repeats == 0 && $recur == 'S') || (($repeats >= 0) && ($recur == 'W' || $recur == 'B' || $recur == 'M' || $recur == 'Y' || $recur == 'D' ))) {
-              $recurring_ok = 1;
-            } else {
-              ?>
-              <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The repetition value must be 0 unless a type of recurrance is selected in which case the repetition value must be 0 or higher','my-calendar'); ?></p></div>
-              <?php
-	    }
-	  if ($start_date_ok == 1 && $end_date_ok == 1 && $time_ok == 1 && $url_ok == 1 && $title_ok && $recurring_ok == 1) {
-		
-		$update = array(
-			'event_begin'=>$begin, 
-			'event_end'=>$end, 
-			'event_title'=>$title, 
-			'event_desc'=>$desc, 			
-			'event_time'=>$time, 
-			'event_endtime'=>$endtime, 				
-			'event_recur'=>$recur, 
-			'event_repeats'=>$repeats, 
-			'event_category'=>$category, 
-			'event_link'=>$linky,
-			'event_link_expires'=>$expires, 
-			'event_label'=>$event_label, 
-			'event_street'=>$event_street, 
-			'event_street2'=>$event_street2, 
-			'event_city'=>$event_city, 
-			'event_state'=>$event_state, 
-			'event_postcode'=>$event_postcode, 
-			'event_country'=>$event_country,
-			'event_longitude'=>$event_longitude,
-			'event_latitude'=>$event_latitude,
-			'event_zoom'=>$event_zoom);
-			
-		$format = array('%s');
-		$result = $wpdb->update( 
-				MY_CALENDAR_TABLE, 
-				$update, 
-				array( 'event_id'=>$event_id ),
-				$formats, 
-				'%d' );
-		
-			if ( !$result ) {
-				?>
-				<div class="error"><p><strong><?php _e('Failure','my-calendar'); ?>:</strong> <?php echo _e('Your event was not updated.','my-calendar'); ?></p></div>
-				<?php
-			} else {
-				?>
-				<div class="updated"><p><?php _e('Event updated successfully','my-calendar'); ?></p></div>
-				<?php
-			}
-	    } else {
-	      // The form is going to be rejected due to field validation issues, so we preserve the users entries here
-          $users_entries->event_title = $title;
-	      $users_entries->event_desc = $desc;
-	      $users_entries->event_begin = $begin;
-	      $users_entries->event_end = $end;
-	      $users_entries->event_time = $time;
-		  $users_entries->event_endtime = $endtime;
-	      $users_entries->event_recur = $recur;
-	      $users_entries->event_repeats = $repeats;
-	      $users_entries->event_category = $category;
-	      $users_entries->event_link = $linky;
-		  $users_entries->event_link_expires = $expires;
-		  $users_entries->event_label = $event_label;
-		  $users_entries->event_street = $event_street;
-		  $users_entries->event_street2 = $event_street2;
-		  $users_entries->event_city = $event_city;
-		  $users_entries->event_state = $event_state;
-		  $users_entries->event_postcode = $event_postcode;
-		  $users_entries->event_country = $event_country;
-		  $users_entries->event_longitude = $event_longitude;
-		  $users_entries->event_latitude = $event_latitude;
-		  $users_entries->event_zoom = $event_zoom;
-		  
-		  $users_entries->event_author = $event_author;
-	      $error_with_saving = 1;
-	    }		
-	}
-	} else {
-	?>
-	<div class="error">
-	<p><strong><?php _e('You do not have sufficient permissions to edit that event.','my-calendar'); ?></strong></p>
-	</div>
-	<?php
-	}
-} elseif ( $action == 'delete' ) {
-// Deal with deleting an event from the database
-
-	if ( empty($event_id) )	{
-		?>
-		<div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e("You can't delete an event if you haven't submitted an event id",'my-calendar'); ?></p></div>
-		<?php			
-	} else {
-		$sql = "DELETE FROM " . MY_CALENDAR_TABLE . " WHERE event_id='" . mysql_real_escape_string($event_id) . "'";
-		$wpdb->get_results($sql);
-		
-		$sql = "SELECT event_id FROM " . MY_CALENDAR_TABLE . " WHERE event_id='" . mysql_real_escape_string($event_id) . "'";
-		$result = $wpdb->get_results($sql);
-		
-		if ( empty($result) || empty($result[0]->event_id) ) {
-			?>
-			<div class="updated"><p><?php _e('Event deleted successfully','my-calendar'); ?></p></div>
-			<?php
+	if ( $action == 'edit' && $proceed == true ) {
+		if ( mc_can_edit_event( $event_author ) ) {	
+			$update = $output[2];
+			$formats = array('%s','%s','%s','%s','%s','%s','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%f','%f','%d');
+			$result = $wpdb->update( 
+					MY_CALENDAR_TABLE, 
+					$update, 
+					array( 'event_id'=>$event_id ),
+					$formats, 
+					'%d' );
+				if ( $result === false ) {
+					?>
+					<div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php echo _e('Your event was not updated.','my-calendar'); ?></p></div>
+					<?php
+				} else if ( $result === 0 ) {
+					?>
+					<div class="updated"><p><?php _e('Nothing was changed in that update.','my-calendar'); ?></p></div>
+					<?php
+				} else {
+					?>
+					<div class="updated"><p><?php _e('Event updated successfully','my-calendar'); ?></p></div>
+					<?php
+				}
 		} else {
-			?>
-			<div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('Despite issuing a request to delete, the event still remains in the database. Please investigate.','my-calendar'); ?></p></div>
-			<?php
+		?>
+		<div class="error">
+		<p><strong><?php _e('You do not have sufficient permissions to edit that event.','my-calendar'); ?></strong></p>
+		</div>
+		<?php
+		}			
+	}
 
-		}		
+	if ( $action == 'delete' ) {
+// Deal with deleting an event from the database
+		if ( empty($event_id) )	{
+			?>
+			<div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e("You can't delete an event if you haven't submitted an event id",'my-calendar'); ?></p></div>
+			<?php			
+		} else {
+			$sql = "DELETE FROM " . MY_CALENDAR_TABLE . " WHERE event_id='" . mysql_real_escape_string($event_id) . "'";
+			$wpdb->get_results($sql);
+			
+			$sql = "SELECT event_id FROM " . MY_CALENDAR_TABLE . " WHERE event_id='" . mysql_real_escape_string($event_id) . "'";
+			$result = $wpdb->get_results($sql);
+			
+			if ( empty($result) || empty($result[0]->event_id) ) {
+				?>
+				<div class="updated"><p><?php _e('Event deleted successfully','my-calendar'); ?></p></div>
+				<?php
+			} else {
+				?>
+				<div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('Despite issuing a request to delete, the event still remains in the database. Please investigate.','my-calendar'); ?></p></div>
+				<?php
+
+			}		
+		}
 	}
 }
 
@@ -526,7 +158,7 @@ if ( $action == 'add' ) {
 my_calendar_check_db();
 ?>
 	<?php
-	if ( $action == 'edit' || ($action == 'edit_save' && $error_with_saving == 1)) {
+	if ( $action == 'edit' || ($action == 'edit' && $error_with_saving == 1)) {
 		?>
 		<h2><?php _e('Edit Event','my-calendar'); ?></h2>
 		<?php jd_show_support_box(); ?>
@@ -534,7 +166,7 @@ my_calendar_check_db();
 		if ( empty($event_id) ) {
 			echo "<div class=\"error\"><p>".__("You must provide an event id in order to edit it",'my-calendar')."</p></div>";
 		} else {
-			jd_events_edit_form('edit_save', $event_id);
+			jd_events_edit_form('edit', $event_id);
 		}	
 	} else {
 		?>
@@ -648,6 +280,7 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 			<p>
 			<label for="event_time"><?php _e('Time (hh:mm)','my-calendar'); ?></label> <input type="text" id="event_time" name="event_time" class="input" size="12"
 					value="<?php 
+					$offset = (60*60*get_option('gmt_offset'));					
 					if ( !empty($data) ) {
 						if ($data->event_time == "00:00:00") {
 						echo '';
@@ -655,7 +288,7 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 							echo date("H:i",strtotime($data->event_time));
 						}
 					} else {
-						echo date_i18n("H:i",time());
+						echo date_i18n("H:i",time()+$offset);
 					}
 					?>" /> <?php _e('Optional, set blank if your event is an all-day event or does not happen at a specific time.','my-calendar'); ?> <?php _e('Current time difference from GMT is ','my-calendar'); echo get_option('gmt_offset'); _e(' hour(s)', 'my-calendar'); ?>
 			</p>
@@ -847,17 +480,21 @@ function jd_events_display_list($sortby='default',$sortdir='default') {
 		        </thead>
 		<?php
 		$class = '';
+		$sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE ;
+        $categories = $wpdb->get_results($sql);
+			
 		foreach ( $events as $event ) {
 			$class = ($class == 'alternate') ? '' : 'alternate';
 			$author = get_userdata($event->event_author); 
 			?>
 			<tr class="<?php echo $class; ?>">
 				<th scope="row"><?php echo $event->event_id; ?></th>
-				<td><?php echo htmlentities(stripslashes($event->event_title)); ?></td>
-				<td><?php echo htmlentities(stripslashes($event->event_link)); ?></td>
-				<td><?php echo htmlentities(stripslashes($event->event_label)); ?></td>
+				<td><?php echo stripslashes($event->event_title); ?></td>
+				<td><?php echo stripslashes($event->event_link); ?></td>
+				<td><?php echo stripslashes($event->event_label); ?></td>
 				<td><?php echo substr(strip_tags(stripslashes($event->event_desc)),0,60); ?>&hellip;</td>
-				<td><?php echo "$event->event_begin ($event->event_time)"; ?></td>
+				<?php if ($event->event_time != "00:00:00") { $eventTime = date_i18n(get_option('time_format'), strtotime($event->event_time)); } else { $eventTime = get_option('my_calendar_notime_text'); } ?>
+				<td><?php echo "$event->event_begin ($eventTime)"; ?></td>
 				<?php /* <td><?php echo $event->event_end; ?></td> */ ?>
 				<td>
 				<?php 
@@ -877,16 +514,20 @@ function jd_events_display_list($sortby='default',$sortdir='default') {
 				</td>
 				<td><?php echo $author->display_name; ?></td>
                                 <?php
-				$sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".$event->event_category;
-                                $this_cat = $wpdb->get_row($sql);
+								$this_category = $event->event_category;
+								foreach ($categories as $key=>$value) {
+									if ($value->category_id == $this_category) {
+										$this_cat = $categories[$key];
+									} 
+								}
                                 ?>
 				<td><div class="category-color" style="background-color:<?php echo $this_cat->category_color;?>;"> </div> <?php echo stripslashes($this_cat->category_name); ?></td>
 				<?php unset($this_cat); ?>
 				<td>
 				<?php if ( mc_can_edit_event( $event->event_author ) ) { ?>
-				<a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;action=edit&amp;event_id=<?php echo $event->event_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a> &middot; <a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;action=delete&amp;event_id=<?php echo $event->event_id;?>" class="delete"><?php echo __('Delete','my-calendar'); ?></a></td>
+				<a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;mode=edit&amp;event_id=<?php echo $event->event_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a> &middot; <a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;mode=delete&amp;event_id=<?php echo $event->event_id;?>" class="delete"><?php echo __('Delete','my-calendar'); ?></a></td>
 				<?php } else { echo "Not editable."; } ?>
-				</tr>
+			</tr>
 			<?php
 		}
 		?>
@@ -897,6 +538,239 @@ function jd_events_display_list($sortby='default',$sortdir='default') {
 		<p><?php _e("There are no events in the database!",'my-calendar')	?></p>
 		<?php	
 	}
+}
+
+function mc_check_data($action,$_POST) {
+global $wpdb, $current_user;
+if ( $action == 'add' || $action == 'edit' ) {
+	$title = !empty($_POST['event_title']) ? $_POST['event_title'] : '';
+	$desc = !empty($_POST['event_desc']) ? $_POST['event_desc'] : '';
+	$begin = !empty($_POST['event_begin']) ? $_POST['event_begin'] : '';
+	$end = !empty($_POST['event_end']) ? $_POST['event_end'] : $begin;
+	$time = !empty($_POST['event_time']) ? $_POST['event_time'] : '';
+	$endtime = !empty($_POST['event_endtime']) ? $_POST['event_endtime'] : '';
+	$recur = !empty($_POST['event_recur']) ? $_POST['event_recur'] : '';
+	$repeats = !empty($_POST['event_repeats']) ? $_POST['event_repeats'] : 0;
+	$category = !empty($_POST['event_category']) ? $_POST['event_category'] : '';
+    $linky = !empty($_POST['event_link']) ? $_POST['event_link'] : '';
+    $expires = !empty($_POST['event_link_expires']) ? $_POST['event_link_expires'] : '0';	
+	$location_preset = !empty($_POST['location_preset']) ? $_POST['location_preset'] : '';
+    $event_author = !empty($_POST['event_author']) ? $_POST['event_author'] : '';
+	// set location
+		if ($location_preset != 'none') {
+			$sql = "SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id = $location_preset";
+			$location = $wpdb->get_row($sql);
+			$event_label = $location->location_label;
+			$event_street = $location->location_street;
+			$event_street2 = $location->location_street2;
+			$event_city = $location->location_city;
+			$event_state = $location->location_state;
+			$event_postcode = $location->location_postcode;
+			$event_country = $location->location_country;
+			$event_longitude = $location->location_longitude;
+			$event_latitude = $location->location_latitude;
+			$event_zoom = $location->location_zoom;
+		} else {
+	    $event_label = !empty($_POST['event_label']) ? $_POST['event_label'] : '';
+	    $event_street = !empty($_POST['event_street']) ? $_POST['event_street'] : '';
+	    $event_street2 = !empty($_POST['event_street2']) ? $_POST['event_street2'] : '';
+	    $event_city = !empty($_POST['event_city']) ? $_POST['event_city'] : '';
+	    $event_state = !empty($_POST['event_state']) ? $_POST['event_state'] : '';
+	    $event_postcode = !empty($_POST['event_postcode']) ? $_POST['event_postcode'] : '';
+	    $event_country = !empty($_POST['event_country']) ? $_POST['event_country'] : '';
+		$event_longitude = !empty($_POST['event_longitude']) ? $_POST['event_longitude'] : '';	
+	    $event_latitude = !empty($_POST['event_latitude']) ? $_POST['event_latitude'] : '';	
+	    $event_zoom = !empty($_POST['event_zoom']) ? $_POST['event_zoom'] : '';	
+	    }
+	// Deal with those who have magic quotes turned on
+	if ( ini_get('magic_quotes_gpc') ) {
+		$title = stripslashes($title);
+		$desc = stripslashes($desc);
+		$begin = stripslashes($begin);
+		$end = stripslashes($end);
+		$time = stripslashes($time);
+		$endtime = stripslashes($endtime);
+		$recur = stripslashes($recur);
+		$repeats = stripslashes($repeats);
+		$category = stripslashes($category);
+		$linky = stripslashes($linky);	
+		$expires = stripslashes($expires);
+		$event_label = stripslashes($event_label);
+		$event_street = stripslashes($event_street);
+		$event_street2 = stripslashes($event_street2);
+		$event_city = stripslashes($event_city);
+		$event_state = stripslashes($event_state);
+		$event_postcode = stripslashes($event_postcode);
+		$event_country = stripslashes($event_country);	
+		$event_longitude = stripslashes($event_longitude);	
+		$event_latitude = stripslashes($event_latitude);	
+		$event_zoom = stripslashes($event_zoom);	
+	}	
+
+	// Perform some validation on the submitted dates - this checks for valid years and months
+	$date_format_one = '/^([0-9]{4})-([0][1-9])-([0-3][0-9])$/';
+    $date_format_two = '/^([0-9]{4})-([1][0-2])-([0-3][0-9])$/';
+	if ((preg_match($date_format_one,$begin) || preg_match($date_format_two,$begin)) && (preg_match($date_format_one,$end) || preg_match($date_format_two,$end))) {
+            // We know we have a valid year and month and valid integers for days so now we do a final check on the date
+        $begin_split = split('-',$begin);
+	    $begin_y = $begin_split[0]; 
+	    $begin_m = $begin_split[1];
+	    $begin_d = $begin_split[2];
+        $end_split = split('-',$end);
+	    $end_y = $end_split[0];
+	    $end_m = $end_split[1];
+	    $end_d = $end_split[2];
+            if (checkdate($begin_m,$begin_d,$begin_y) && checkdate($end_m,$end_d,$end_y)) {
+		       // Ok, now we know we have valid dates, we want to make sure that they are either equal or that the end date is later than the start date
+			       if (strtotime($end) >= strtotime($begin)) {
+				   $start_date_ok = 1;
+				   $end_date_ok = 1;
+					} else {
+				   ?>
+				   <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('Your event end date must be either after or the same as your event begin date','my-calendar'); ?></p></div>
+				   <?php
+					}
+		    } else {
+			?>
+	                <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('Your date formatting is correct but one or more of your dates is invalid. Check for number of days in month and leap year related errors.','my-calendar'); ?></p></div>
+	                <?php
+		    }
+	  }	else {
+	    ?>
+            <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('Both start and end dates must be in the format YYYY-MM-DD','my-calendar'); ?></p></div>
+            <?php
+	  }
+        // We check for a valid time, or an empty one
+        $time_format_one = '/^([0-1][0-9]):([0-5][0-9])$/';
+		$time_format_two = '/^([2][0-3]):([0-5][0-9])$/';
+        if (preg_match($time_format_one,$time) || preg_match($time_format_two,$time) || $time == '') {
+            $time_ok = 1;
+			if ( strlen($time) == 5 ) { $time = $time . ":00";	}
+			if ( strlen($time) == 0 ) { $time = "00:00:00"; }
+        } else {
+            ?>
+            <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The time field must either be blank or be entered in the format hh:mm','my-calendar'); ?></p></div>
+            <?php
+	    }
+        // We check for a valid end time, or an empty one
+        if (preg_match($time_format_one,$endtime) || preg_match($time_format_two,$endtime) || $endtime == '') {
+            $endtime_ok = 1;
+			if ( strlen($endtime) == 5 ) { $endtime = $endtime . ":00";	}
+			if ( strlen($endtime) == 0 ) { $endtime = "00:00:00"; }
+        } else {
+            ?>
+            <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The end time field must either be blank or be entered in the format hh:mm','my-calendar'); ?></p></div>
+            <?php
+	    }		
+	// We check to make sure the URL is alright                                                        
+	if (preg_match('/^(http)(s?)(:)\/\//',$linky) || $linky == '') {
+	    $url_ok = 1;
+	  }	else {
+              ?>
+              <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The URL entered must either be prefixed with http:// or be completely blank','my-calendar'); ?></p></div>
+              <?php
+	  }
+	// The title must be at least one character in length and no more than 255 - only basic punctuation is allowed
+	$title_length = strlen($title);
+	if ( $title_length > 1 && $title_length <= 255 ) {
+	    $title_ok =1;
+	  }	else {
+              ?>
+              <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The event title must be between 1 and 255 characters in length.','my-calendar'); ?></p></div>
+              <?php
+	  }
+	// We run some checks on recurrance                                                                        
+	if (($repeats == 0 && $recur == 'S') || (($repeats >= 0) && ($recur == 'W' || $recur == 'B' || $recur == 'M' || $recur == 'Y' || $recur == 'D'))) {
+	    $recurring_ok = 1;
+	  }	else {
+              ?>
+              <div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('The repetition value must be 0 unless a type of recurrance is selected.','my-calendar'); ?></p></div>
+              <?php
+	  }
+	if ($start_date_ok == 1 && $end_date_ok == 1 && $time_ok == 1 && $endtime_ok == 1 && $url_ok == 1 && $title_ok == 1 && $recurring_ok == 1) {
+		$proceed = true;
+		if ($action == 'add' ) {
+			$submit = array(
+				'event_begin'=>$begin, 
+				'event_end'=>$end, 
+				'event_title'=>$title, 
+				'event_desc'=>$desc, 			
+				'event_time'=>$time, 
+				'event_recur'=>$recur, 
+				'event_repeats'=>$repeats, 
+				'event_author'=>$current_user->ID,
+				'event_category'=>$category, 
+				'event_link'=>$linky,
+				'event_label'=>$event_label, 
+				'event_street'=>$event_street, 
+				'event_street2'=>$event_street2, 
+				'event_city'=>$event_city, 
+				'event_state'=>$event_state, 
+				'event_postcode'=>$event_postcode, 
+				'event_country'=>$event_country,
+				'event_endtime'=>$endtime, 								
+				'event_link_expires'=>$expires, 				
+				'event_longitude'=>$event_longitude,
+				'event_latitude'=>$event_latitude,
+				'event_zoom'=>$event_zoom);
+			
+		} else if ($action == 'edit') {
+			$submit = array(
+				'event_begin'=>$begin, 
+				'event_end'=>$end, 
+				'event_title'=>$title, 
+				'event_desc'=>$desc, 			
+				'event_time'=>$time, 
+				'event_recur'=>$recur, 
+				'event_repeats'=>$repeats, 
+				'event_category'=>$category, 
+				'event_link'=>$linky,
+				'event_label'=>$event_label, 
+				'event_street'=>$event_street, 
+				'event_street2'=>$event_street2, 
+				'event_city'=>$event_city, 
+				'event_state'=>$event_state, 
+				'event_postcode'=>$event_postcode, 
+				'event_country'=>$event_country,
+				'event_endtime'=>$endtime, 				
+				'event_link_expires'=>$expires, 				
+				'event_longitude'=>$event_longitude,
+				'event_latitude'=>$event_latitude,
+				'event_zoom'=>$event_zoom);			
+		}
+		
+		
+	} else {
+	    // The form is going to be rejected due to field validation issues, so we preserve the users entries here
+			$users_entries->event_title = $title;
+			$users_entries->event_desc = $desc;
+			$users_entries->event_begin = $begin;
+			$users_entries->event_end = $end;
+			$users_entries->event_time = $time;
+			$users_entries->event_endtime = $endtime;
+			$users_entries->event_recur = $recur;
+			$users_entries->event_repeats = $repeats;
+			$users_entries->event_category = $category;
+			$users_entries->event_link = $linky;
+			$users_entries->event_link_expires = $expires;
+			$users_entries->event_label = $event_label;
+			$users_entries->event_street = $event_street;
+			$users_entries->event_street2 = $event_street2;
+			$users_entries->event_city = $event_city;
+			$users_entries->event_state = $event_state;
+			$users_entries->event_postcode = $event_postcode;
+			$users_entries->event_country = $event_country;	
+			$users_entries->event_longitude = $event_longitude;		
+			$users_entries->event_latitude = $event_latitude;		
+			$users_entries->event_zoom = $event_zoom;
+			$users_entries->event_author = $event_author;
+			$proceed = false;
+	  }	
+	  
+	  
+	}
+	$data = array($proceed, $users_entries, $submit);
+	return $data;
 }
 
 ?>

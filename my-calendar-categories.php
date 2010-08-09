@@ -37,19 +37,58 @@ echo my_calendar_check_db();
   if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
       $sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_name='".mysql_real_escape_string($_POST['category_name'])."', category_color='".mysql_real_escape_string($_POST['category_color'])."', category_icon='".mysql_real_escape_string($_POST['category_icon'])."'";
       $wpdb->get_results($sql);
+	  if ( $results ) {
       echo "<div class=\"updated\"><p><strong>".__('Category added successfully','my-calendar')."</strong></p></div>";
+	  } else {
+      echo "<div class=\"error\"><p><strong>".__('Category addition failed.','my-calendar')."</strong></p></div>";	  
+	  }
     } else if (isset($_GET['mode']) && isset($_GET['category_id']) && $_GET['mode'] == 'delete') {
       $sql = "DELETE FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".mysql_real_escape_string($_GET['category_id']);
-      $wpdb->get_results($sql);
-      $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_category=1 WHERE event_category=".mysql_real_escape_string($_GET['category_id']);
-      $wpdb->get_results($sql);
-      echo "<div class=\"updated\"><p><strong>".__('Category deleted successfully','my-calendar')."</strong></p></div>";
+      $results = $wpdb->get_results($sql);
+	  if ($results) {
+	      $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_category=1 WHERE event_category=".mysql_real_escape_string($_GET['category_id']);
+	      $cal_results = $wpdb->get_results($sql);
+	  }
+	  if ($results && $cal_results) {
+      echo "<div class=\"updated\"><p><strong>".__('Category deleted successfully. Categories in calendar updated.','my-calendar')."</strong></p></div>";
+	  } else if ( $results && !$cal_results ) {
+      echo "<div class=\"updated\"><p><strong>".__('Category deleted successfully. Categories in calendar not updated.','my-calendar')."</strong></p></div>";	  
+	  } else if ( !$results && $cal_results ) {
+      echo "<div class=\"updated\"><p><strong>".__('Category not deleted. Categories in calendar updated.','my-calendar')."</strong></p></div>";	  
+	  }
     } else if (isset($_GET['mode']) && isset($_GET['category_id']) && $_GET['mode'] == 'edit' && !isset($_POST['mode'])) {
       $sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".mysql_real_escape_string($_GET['category_id']);
       $cur_cat = $wpdb->get_row($sql);
-      ?>
-   <h2><?php _e('Edit Category','my-calendar'); ?></h2>
+		mc_edit_category_form('edit',$cur_cat);
+      } else if (isset($_POST['mode']) && isset($_POST['category_id']) && isset($_POST['category_name']) && isset($_POST['category_color']) && $_POST['mode'] == 'edit') {
+      $sql = "UPDATE " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_name='".mysql_real_escape_string($_POST['category_name'])."', category_color='".mysql_real_escape_string($_POST['category_color'])."', category_icon='".mysql_real_escape_string($_POST['category_icon'])."' WHERE category_id=".mysql_real_escape_string($_POST['category_id']);
+      $wpdb->get_results($sql);
+      echo "<div class=\"updated\"><p><strong>".__('Category edited successfully','my-calendar')."</strong></p></div>";
+    }
 
+  if ($_GET['mode'] != 'edit' || $_POST['mode'] == 'edit') {
+	mc_edit_category_form('add');
+    } 
+?>
+</div>
+<?php
+}
+
+function mc_edit_category_form($view='edit',$cur_cat='') {
+global $path;
+if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
+		$directory = WP_PLUGIN_DIR . '/my-calendar-custom/';
+		$path = '/my-calendar-custom';
+	} else {
+		$directory = dirname(__FILE__).'/icons/';
+		$path = '/my-calendar/icons';
+    }
+?>
+<?php if ($view == 'add') { ?>
+    <h2><?php _e('Add Category','my-calendar'); ?></h2>
+<?php } else { ?>
+  <h2><?php _e('Edit Category','my-calendar'); ?></h2>
+<?php } ?>
 
 <?php jd_show_support_box(); ?>   
 <div id="poststuff" class="jd-my-calendar">
@@ -58,23 +97,23 @@ echo my_calendar_check_db();
 <h3><?php _e('Category Editor','my-calendar'); ?></h3>
 	<div class="inside">	   
     <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories">
+		<?php if ($view == 'add') { ?>	
+			<div>
+			<input type="hidden" name="mode" value="add" />
+            <input type="hidden" name="category_id" value="" />
+			</div>
+		<?php } else { ?>
 			<div>
 			<input type="hidden" name="mode" value="edit" />
             <input type="hidden" name="category_id" value="<?php echo $cur_cat->category_id ?>" />
-			</div>
+			</div>		
+		<?php } ?>
 			<fieldset>
 			<legend><?php _e('Edit Category','my-calendar'); ?></legend>
 				<label for="category_name"><?php _e('Category Name','my-calendar'); ?>:</label> <input type="text" id="category_name" name="category_name" class="input" size="30" value="<?php echo $cur_cat->category_name ?>" /><br />
 				<label for="category_color"><?php _e('Category Color (Hex format)','my-calendar'); ?>:</label> <input type="text" id="category_color" name="category_color" class="input" size="10" maxlength="7" value="<?php echo $cur_cat->category_color ?>" /><br />
 				<label for="category_icon"><?php _e('Category Icon','my-calendar'); ?>:</label> <select name="category_icon" id="category_icon">
 <?php
-if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
-		$directory = WP_PLUGIN_DIR . '/my-calendar-custom/';
-		$path = '/my-calendar-custom';
-	} else {
-		$directory = dirname(__FILE__).'/icons/';
-		$path = '/my-calendar/icons';
-    }
 $files = my_dirlist($directory);
 foreach ($files as $value) {
 if ($cur_cat->category_icon == $value) {
@@ -93,56 +132,15 @@ if ($cur_cat->category_icon == $value) {
     </form>
 </div>
 </div>
+<?php mc_manage_categories(); ?>
 </div>
-      <?php
-    } else if (isset($_POST['mode']) && isset($_POST['category_id']) && isset($_POST['category_name']) && isset($_POST['category_color']) && $_POST['mode'] == 'edit') {
-      $sql = "UPDATE " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_name='".mysql_real_escape_string($_POST['category_name'])."', category_color='".mysql_real_escape_string($_POST['category_color'])."', category_icon='".mysql_real_escape_string($_POST['category_icon'])."' WHERE category_id=".mysql_real_escape_string($_POST['category_id']);
-      $wpdb->get_results($sql);
-      echo "<div class=\"updated\"><p><strong>".__('Category edited successfully','my-calendar')."</strong></p></div>";
-    }
-
-  if ($_GET['mode'] != 'edit' || $_POST['mode'] == 'edit') {
-?>
-
-    <h2><?php _e('Add Category','my-calendar'); ?></h2>
-	<?php jd_show_support_box(); ?>   
-<div id="poststuff" class="jd-my-calendar">
-<div class="postbox">
-<h3><?php _e('Add New Category','my-calendar'); ?></h3>
-	<div class="inside">		
-    <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories">
-			<div>
-			<input type="hidden" name="mode" value="add" />
-            <input type="hidden" name="category_id" value="" />
-			</div>
-			<fieldset>
-			<legend><?php _e('Add Category'); ?></legend>
-				<label for="category_name"><?php _e('Category Name','my-calendar'); ?>:</label> <input type="text" id="category_name" name="category_name" class="input" size="30" value="" /><br />
-				<label for="category_color"><?php _e('Category Color (Hex format)','my-calendar'); ?>:</label> <input type="text" id="category_color" name="category_color" class="input" size="10" maxlength="7" value="#" /><br />
-				<label for="category_icon"><?php _e('Category Icon','my-calendar'); ?>:</label> <select name="category_icon" id="category_icon">
 <?php
-if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
-		$directory = WP_PLUGIN_DIR . '/my-calendar-custom/';
-		$path = '/my-calendar-custom';
-	} else {
-		$directory = dirname(__FILE__).'/icons/';
-		$path = '/my-calendar/icons';
-    }
-$files = my_dirlist($directory);
-foreach ($files as $value) {
-	echo "<option value='$value' style='background: url(".WP_PLUGIN_URL."$path/$value) no-repeat;'>$value</option>";
 }
-?>			
-				</select>			
-			</fieldset>
-			<p>
-                <input type="submit" name="save" class="button-primary" value="<?php _e('Add Category','my-calendar'); ?> &raquo;" />
-			</p>
-    </form>
-</div>
-</div>
-</div>
-    <h2><?php _e('Manage Categories','my-calendar'); ?></h2>
+
+function mc_manage_categories() {
+	global $wpdb, $path;
+?>
+ <h2><?php _e('Manage Categories','my-calendar'); ?></h2>
 <?php
     
     // We pull the categories from the database	
@@ -195,9 +193,4 @@ foreach ($files as $value) {
   </div>
 
 <?php
-      } 
-?>
-</div>
-<?php
 }
-?>

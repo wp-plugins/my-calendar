@@ -69,6 +69,18 @@ Languages available:
 
 == Changelog ==
 
+= 1.4.4 = 
+
+* Fixed a bug where event end times tags were not rendered when blank in widget templates
+* Fixed a bug with event adding and updating for Windows IIS
+* Fixed a bug with international characters
+* Reduced number of SQL queries made.
+* Moved JavaScript output to footer.
+* Improved error messages.
+* Significant edits to basic codebase to improve efficiency.
+* Fixed bug where full default styles didn't initially load on new installs.
+* Re-organized default styles to make it easier for users to customize colors.
+
 = 1.4.3 = 
 
 * Fixed a bug where event end times were displaying the start time instead when editing.
