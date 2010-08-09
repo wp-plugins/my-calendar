@@ -58,9 +58,82 @@ line-height: 1.5;
 color: #000;
 background: #fff;
 }
+
+#jd-calendar,#calendar-list {
+background: #fff; // general background color
+}
+
+#jd-calendar caption, #jd-calendar .my-calendar-date-switcher, 
+#jd-calendar .category-key, #jd-calendar .calendar-event .details, 
+#jd-calendar .calendar-events {
+background: #edf7ff; // very light blue background
+}
+
+#jd-calendar .category-key .no-icon {
+border: 1px solid #555; // border on category color if no icon
+}
+
+#jd-calendar caption, #jd-calendar .my-calendar-date-switcher, #jd-calendar .my-calendar-nav li a:hover, #jd-calendar .category-key {
+border: 1px solid #a9e3ff; // light blue border color
+}
+#jd-calendar .list-event .details, #jd-calendar td {
+border:1px solid #eee; // light gray border 
+}
+#jd-calendar .calendar-event .details, #jd-calendar .calendar-events {
+color:#000; // event details text color
+}
+
+#jd-calendar .my-calendar-nav li a, #jd-calendar .calendar-event .details, #jd-calendar .calendar-events  {
+border:1px solid #9b5; // light green border color
+}
+
+#jd-calendar .list-event .details, #jd-calendar .day-without-date {
+background:#fafafa; // light gray background
+}
+
+#jd-calendar #calendar-list .odd {
+background:#d3e3e3; // list format, odd event listings
+}
+
+#jd-calendar .odd .list-event .details {
+background:#e3f3f3; // details on odd event listings
+border:1px solid #c3d3d3; // border on odd event listings
+}
+
+#jd-calendar .current-day {
+background:#ffb; // current day highlight
+}
+#jd-calendar .current-day .mc-date {
+color: #000; // text color current date
+background: #eee; // background current date
+}
+#jd-calendar .weekend {
+background:#bd7; // weekend label background
+color: #000; // weekend label color
+}
+#jd-calendar .mc-date {
+background:#f6f6f6; // non-weekend date label background
+}
+#jd-calendar .my-calendar-nav li a {
+color: #243f82; // previous/next link color
+background:#fff; // previous/next link background
+
+}
+#jd-calendar .my-calendar-nav li a:hover {
+color:#000; // previous/next link hover color
+border: 1px solid #243f82; // previous/next link hover border color
+}
+#upcoming-events .past-event {
+color: #777; // text color, past events in upcoming events widget
+}
+#upcoming-events .today {
+color: #111; // text color, todays events in upcoming events widget
+}
+#upcoming-events .future-event {
+color: #555; // text color, future events in upcoming events widget
+}
+
 #jd-calendar caption, #jd-calendar .my-calendar-date-switcher  {
-background: #edf7ff;
-border: 1px solid #a9e3ff;
 margin: 2px 0;
 font-weight:700;
 padding:2px 0;
@@ -74,7 +147,6 @@ border-collapse:collapse;
 
 #jd-calendar td {
 vertical-align:top;
-border:1px solid #eee;
 text-align:left;
 width:13%;
 height:70px;
@@ -117,9 +189,6 @@ margin:0;
 #jd-calendar .calendar-event .details, #jd-calendar .calendar-events {
 position:absolute;
 width:50%;
-background: #edf7ff;
-color:#000;
-border:1px solid #9b5;
 -moz-border-radius:10px;
 -moz-box-shadow:3px 3px 6px #777;
 -webkit-box-shadow:3px 3px 6px #777;
@@ -137,14 +206,11 @@ width: 200px!important;
 left: 0px;
 }
 #jd-calendar .list-event .details {
-background:#fafafa;
-border:1px solid #eee;
 -moz-border-radius:5px;
 -webkit-border-radius:5px;
 border-radius:5px;
 margin:5px 0;
 padding:5px 5px 0;
-color: #333;
 }
 #jd-calendar #calendar-list {
 margin: 0;
@@ -156,43 +222,17 @@ list-style-type: none;
 margin: 0;
 }
 
-#jd-calendar #calendar-list .odd {
-background:#d3e3e3;
-}
-
-#jd-calendar .odd .list-event .details {
-background:#e3f3f3;
-border:1px solid #c3d3d3;
-}
-
-#jd-calendar .current-day {
-background:#ffb;
-}
-#jd-calendar .current-day .mc-date {
-color: #000;
-background: #eee;
-}
-
 #jd-calendar .mc-date {
 display:block;
-background:#f6f6f6;
 margin:-2px -2px 2px;
 padding:2px 4px;
 }
-
-#jd-calendar .weekend {
-background:#bd7;
-color: #000;
-}
-
 #jd-calendar th {
 font-size:.8em;
 text-transform:uppercase;
 padding:2px 4px 2px 0;
 }
 #jd-calendar .category-key {
-background: #edf7ff;
-border: 1px solid #a9e3ff;
 padding: 5px;
 margin: 5px 0;
 }
@@ -212,7 +252,6 @@ vertical-align:middle;
 width: 10px;
 height: 10px;
 display: inline-block;
-border: 1px solid #555;
 -moz-border-radius: 2px;
 -webkit-border-radius: 2px;
 border-radius: 2px;
@@ -232,6 +271,7 @@ margin-right:10px;
 margin-bottom:10px;
 font-weight:700;
 font-size:.9em;
+width: 6em;
 }
 
 #jd-calendar p {
@@ -251,11 +291,6 @@ margin:10px 0;
 
 #jd-calendar .calendar-event .vcard {
 margin:0 0 10px;
-}
-
-#jd-calendar,#calendar-list {
-clear:left;
-background: #fff;
 }
 #jd-calendar {
 position: relative;
@@ -289,20 +324,12 @@ content:'';
 }
 #jd-calendar .my-calendar-nav li a {
 display:block;
-background:#fff;
-border:1px solid #9b5;
 text-align:center;
 padding:1px 20px;
-color: #243f82;
 }
 .mini .my-calendar-nav li a {
 padding: 1px 3px!important;
 font-size: .7em;
-}
-#jd-calendar .my-calendar-nav li a:hover {
-background:#a9e3ff;
-color:#000;
-border: 1px solid #243f82;
 }
 #jd-calendar .my-calendar-next {
 margin-left: 4px;
@@ -324,18 +351,7 @@ border-bottom-right-radius: 8px;
 border-top-left-radius: 8px;
 border-bottom-left-radius: 8px;
 }
-#jd-calendar .day-without-date {
-background: #fafafa;
-}
-#upcoming-events .past-event {
-color: #777;
-}
-#upcoming-events .today {
-color: #111;
-}
-#upcoming-events .future-event {
-color: #555;
-}
+
 #jd-calendar.mini .my-calendar-date-switcher label {
 display: block;
 float: left;
