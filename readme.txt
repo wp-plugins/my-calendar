@@ -47,7 +47,7 @@ Languages available:
 * American English (Default)
 * Brazilian Portuguese ([Daniel Prata](daniel@grudaemmim.com.br))
 * Spanish ([Esteban Truelsegaard](http://www.netmdp.com))
-* Danish ([Jakob Smith](http://http://www.omkalfatring.dk/))
+* Danish ([Jakob Smith](http://www.omkalfatring.dk/))
 
 == Installation ==
 
