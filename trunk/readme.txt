@@ -47,6 +47,7 @@ Languages available:
 * American English (Default)
 * Brazilian Portuguese ([Daniel Prata](daniel@grudaemmim.com.br))
 * Spanish ([Esteban Truelsegaard](http://www.netmdp.com))
+* Danish ([Jakob Smith](http://http://www.omkalfatring.dk/))
 
 == Installation ==
 
@@ -68,6 +69,13 @@ Languages available:
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.4.5 = 
+
+* Fixed a bug with editing and adding locations
+* Fixed a bug with error messages when adding categories
+* Fixed a bug with identification of current day (again?)
+* Added Danish translation (Thanks to Jakob Smith)
 
 = 1.4.4 = 
 
