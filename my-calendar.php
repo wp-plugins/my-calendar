@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.4.4
+Version: 1.4.5
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -371,7 +371,7 @@ function check_my_calendar() {
 	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs, $mini_styles;
 	$current_version = get_option('my_calendar_version');
 	// If current version matches, don't bother running this.
-	if ($current_version == '1.4.4') {
+	if ($current_version == '1.4.5') {
 		return true;
 	}
 
@@ -404,7 +404,7 @@ function check_my_calendar() {
 	} 
 	
 	// having determined upgrade path, assign new version number
-	update_option( 'my_calendar_version' , '1.4.4' );
+	update_option( 'my_calendar_version' , '1.4.5' );
 
 	// Now we've determined what the current install is or isn't 
 	if ( $new_install == true ) {
@@ -643,7 +643,7 @@ function my_calendar_draw_event($event, $type="calendar") {
 			if ( $event->event_link_expires == 0 ) {
 				$event_link = $event->event_link;
 			} else {
-				if ( my_calendar_date_comp( $event->event_begin,date_i18n('Y-m-d',time() ) ) ) {
+				if ( my_calendar_date_comp( $event->event_begin,date_i18n('Y-m-d',time()+$offset ) ) ) {
 					$event_link = '';
 				} else {
 					$event_link = $event->event_link;		
@@ -698,7 +698,7 @@ function my_calendar_draw_event($event, $type="calendar") {
 	if ( $event->event_link_expires == 0 ) {
 		$event_link = $event->event_link;
 	} else {
-		if ( my_calendar_date_comp( $event->event_begin,date_i18n('Y-m-d',time() ) ) ) {
+		if ( my_calendar_date_comp( $event->event_begin,date_i18n('Y-m-d',time()+$offset ) ) ) {
 			$event_link = '';
 		} else {
 			$event_link = $event->event_link;		
@@ -1430,9 +1430,9 @@ if ( $format == "calendar" || $format == "mini" ) {
 						}
 					}
 				if (get_option('start_of_week') == 0) {
-				    $my_calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date_i18n("Ymd",time())?'current-day':'day-with-date').$events_class.'">'."\n	<$element class='mc-date ".($ii<6&&$ii>0?"$trigger":"weekend$trigger")."'>".$i++."</$element>\n		". my_calendar_draw_events($grabbed_events, $format) . "\n</td>\n";
+				    $my_calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date_i18n("Ymd",time()+$offset)?'current-day':'day-with-date').$events_class.'">'."\n	<$element class='mc-date ".($ii<6&&$ii>0?"$trigger":"weekend$trigger")."'>".$i++."</$element>\n		". my_calendar_draw_events($grabbed_events, $format) . "\n</td>\n";
 				} else {
-				    $my_calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date_i18n("Ymd",time())?'current-day':'day-with-date').$events_class.'">'."\n	<$element class='mc-date ".($ii<5?"$trigger":"weekend$trigger'")."'>".$i++."</$element>\n		". my_calendar_draw_events($grabbed_events, $format) . "\n</td>\n";
+				    $my_calendar_body .= '<td class="'.(date("Ymd", mktime (0,0,0,$c_month,$i,$c_year))==date_i18n("Ymd",time()+$offset)?'current-day':'day-with-date').$events_class.'">'."\n	<$element class='mc-date ".($ii<5?"$trigger":"weekend$trigger'")."'>".$i++."</$element>\n		". my_calendar_draw_events($grabbed_events, $format) . "\n</td>\n";
 				}
 	      } else {
 			$my_calendar_body .= "<td class='day-without-date'>&nbsp;</td>\n";

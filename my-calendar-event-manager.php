@@ -343,7 +343,7 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 			</fieldset>			
 			<?php if ( get_option( 'my_calendar_show_address' ) == 'true' || get_option( 'my_calendar_show_map' ) == 'true' ) { ?>
 			<fieldset>
-			<legend>Event Location</legend>
+			<legend><?php _e('Event Location','my-calendar'); ?></legend>
 			<p>
 			<?php _e('All location fields are optional: <em>insufficient information may result in an inaccurate map</em>.','my-calendar'); ?>
 			</p>

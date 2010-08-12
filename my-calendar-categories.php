@@ -36,7 +36,7 @@ echo my_calendar_check_db();
   // We do some checking to see what we're doing
   if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
       $sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_name='".mysql_real_escape_string($_POST['category_name'])."', category_color='".mysql_real_escape_string($_POST['category_color'])."', category_icon='".mysql_real_escape_string($_POST['category_icon'])."'";
-      $wpdb->get_results($sql);
+      $results = $wpdb->query($sql);
 	  if ( $results ) {
       echo "<div class=\"updated\"><p><strong>".__('Category added successfully','my-calendar')."</strong></p></div>";
 	  } else {
@@ -44,10 +44,10 @@ echo my_calendar_check_db();
 	  }
     } else if (isset($_GET['mode']) && isset($_GET['category_id']) && $_GET['mode'] == 'delete') {
       $sql = "DELETE FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".mysql_real_escape_string($_GET['category_id']);
-      $results = $wpdb->get_results($sql);
+      $results = $wpdb->query($sql);
 	  if ($results) {
 	      $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_category=1 WHERE event_category=".mysql_real_escape_string($_GET['category_id']);
-	      $cal_results = $wpdb->get_results($sql);
+	      $cal_results = $wpdb->query($sql);
 	  }
 	  if ($results && $cal_results) {
       echo "<div class=\"updated\"><p><strong>".__('Category deleted successfully. Categories in calendar updated.','my-calendar')."</strong></p></div>";

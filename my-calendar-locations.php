@@ -17,7 +17,7 @@ echo my_calendar_check_db();
   // We do some checking to see what we're doing
   if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
       $sql = "INSERT INTO " . MY_CALENDAR_LOCATIONS_TABLE . " SET location_label='".mysql_real_escape_string($_POST['location_label'])."', location_street='".mysql_real_escape_string($_POST['location_street'])."', location_street2='".mysql_real_escape_string($_POST['location_street2'])."', location_city='".mysql_real_escape_string($_POST['location_city'])."', location_state='".mysql_real_escape_string($_POST['location_state'])."', location_postcode='".mysql_real_escape_string($_POST['location_postcode'])."', location_country='".mysql_real_escape_string($_POST['location_country'])."', location_longitude='".mysql_real_escape_string($_POST['location_longitude'])."', location_latitude='".mysql_real_escape_string($_POST['location_latitude'])."', location_zoom='".mysql_real_escape_string($_POST['location_zoom'])."'";
-      $results = $wpdb->get_results($sql);
+      $results = $wpdb->query($sql);
 	  if ($results) {
       echo "<div class=\"updated\"><p><strong>".__('Location added successfully','my-calendar')."</strong></p></div>";
 	  } else {
@@ -25,7 +25,7 @@ echo my_calendar_check_db();
 	  }
     } else if (isset($_GET['mode']) && isset($_GET['location_id']) && $_GET['mode'] == 'delete') {
       $sql = "DELETE FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id=".mysql_real_escape_string($_GET['location_id']);
-      $results = $wpdb->get_results($sql);
+      $results = $wpdb->query($sql);
 	  if ($results) {
       echo "<div class=\"updated\"><p><strong>".__('Location deleted successfully','my-calendar')."</strong></p></div>";
 	  } else {
@@ -34,10 +34,12 @@ echo my_calendar_check_db();
     } else if (isset($_GET['mode']) && isset($_GET['location_id']) && $_GET['mode'] == 'edit' && !isset($_POST['mode'])) {
       $sql = "SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id=".mysql_real_escape_string($_GET['location_id']);
       $cur_loc = $wpdb->get_row($sql);
+	  
       mc_show_location_form('edit', $cur_loc);
     } else if (isset($_POST['mode']) && isset($_POST['location_id']) && isset($_POST['location_label']) && isset($_POST['location_street']) && $_POST['mode'] == 'edit') {
       $sql = "UPDATE " . MY_CALENDAR_LOCATIONS_TABLE . " SET location_label='".mysql_real_escape_string($_POST['location_label'])."', location_street='".mysql_real_escape_string($_POST['location_street'])."', location_street2='".mysql_real_escape_string($_POST['location_street2'])."', location_city='".mysql_real_escape_string($_POST['location_city'])."', location_state='".mysql_real_escape_string($_POST['location_state'])."', location_postcode='".mysql_real_escape_string($_POST['location_postcode'])."', location_country='".mysql_real_escape_string($_POST['location_country'])."', location_longitude='".mysql_real_escape_string($_POST['location_longitude'])."', location_latitude='".mysql_real_escape_string($_POST['location_latitude'])."', location_zoom='".mysql_real_escape_string($_POST['location_zoom'])."' WHERE location_id=".mysql_real_escape_string($_POST['location_id']);
-      $results = $wpdb->get_results($sql);
+	  $results = $wpdb->query($sql);
+	  echo $sql;
       if ( $results === false ) {
 	  echo "<div class=\"error\"><p><strong>".__('Location could not be edited.','my-calendar')."</strong></p></div>";
 	  } else if ( $results == 0 ) {
@@ -46,8 +48,10 @@ echo my_calendar_check_db();
 	  echo "<div class=\"updated\"><p><strong>".__('Location edited successfully','my-calendar')."</strong></p></div>";
 	  }
 	}
-  if ($_GET['mode'] != 'edit' || $_POST['mode'] == 'edit') {
-	mc_show_location_form('edit');
+	  echo $sql;
+
+	if ($_GET['mode'] != 'edit' || $_POST['mode'] == 'edit') {
+	mc_show_location_form('add');
   } 
 }
 
@@ -76,7 +80,7 @@ function mc_show_location_form($view='add',$cur_loc='') {
 		</div>
 		<?php } ?>
 			<fieldset>
-			<legend>Event Location</legend>
+			<legend><?php _e('Event Location','my-calendar'); ?></legend>
 			<p>
 			<?php _e('All location fields are optional: <em>insufficient information may result in an inaccurate map</em>.','my-calendar'); ?>
 			</p>
@@ -116,7 +120,7 @@ function mc_show_location_form($view='add',$cur_loc='') {
 			</p>			
 			</fieldset>
 			<p>
-                <input type="submit" name="save" class="button-primary" value="<?php _e('Save Changes','my-calendar'); ?> &raquo;" />
+                <input type="submit" name="save" class="button-primary" value="<?php if ($view == 'edit') { _e('Save Changes','my-calendar'); } else { _e('Add Location'); } ?> &raquo;" />
 			</p>
 			</fieldset>
 		</form>
@@ -157,7 +161,7 @@ global $wpdb;
 	     <th scope="row"><?php echo $location->location_id; ?></th>
 	     <td><?php echo stripslashes($location->location_label) . "<br />" . stripslashes($location->location_street) . "<br />" . stripslashes($location->location_street2) . "<br />" . stripslashes($location->location_city) . ", " . stripslashes($location->location_state) . " " . stripslashes($location->location_postcode); ?></td>
 	     <td><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-locations&amp;mode=edit&amp;location_id=<?php echo $location->location_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a></td>
-         <td><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-locations&amp;mode=delete&amp;location_id=<?php echo $category->location_id;?>" class="delete" onclick="return confirm('<?php echo __('Are you sure you want to delete this category?','my-calendar'); ?>')"><?php echo __('Delete','my-calendar'); ?></a></td>
+         <td><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-locations&amp;mode=delete&amp;location_id=<?php echo $location->location_id;?>" class="delete" onclick="return confirm('<?php echo __('Are you sure you want to delete this category?','my-calendar'); ?>')"><?php echo __('Delete','my-calendar'); ?></a></td>
          </tr>
                 <?php
           }

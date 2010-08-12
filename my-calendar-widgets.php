@@ -281,7 +281,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 
 // Widget todays events
 function my_calendar_todays_events($category='default',$template='default') {
-  global $wpdb;
+  global $wpdb, $offset;
 
   // This function cannot be called unless calendar is up to date
   check_my_calendar();
@@ -298,7 +298,7 @@ function my_calendar_todays_events($category='default',$template='default') {
 		$category = $category;
 	}  
   
-    $events = my_calendar_grab_events(date_i18n("Y"),date_i18n("m"),date_i18n("d"),$category);
+    $events = my_calendar_grab_events(date("Y"),date("m"),date("d"),$category);
 	if (count($events) != 0) {
 		$output = "<ul>";
 	}
@@ -307,9 +307,9 @@ function my_calendar_todays_events($category='default',$template='default') {
 		    $event_details = event_as_array($event);
 
 				if (get_option('my_calendar_date_format') != '') {
-				$date = date_i18n(get_option('my_calendar_date_format'),time());
+				$date = date_i18n(get_option('my_calendar_date_format'),time()+$offset);
 				} else {
-				$date = date_i18n(get_option('date_format'),time());
+				$date = date_i18n(get_option('date_format'),time()+$offset);
 				}	
 			// correct displayed time to today
 			$event_details['date'] = $date;
