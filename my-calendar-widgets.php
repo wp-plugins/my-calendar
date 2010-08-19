@@ -371,7 +371,7 @@ if ($event->event_country != "") {
 $hcard .= "</div>\n</div>";	
 
 $map_string = $event->event_street.' '.$event->event_street2.' '.$event->event_city.' '.$event->event_state.' '.$event->event_postcode.' '.$event->event_country;	
-if ( strlen($map_string) > 0 ) {
+if ( strlen( trim( $map_string ) ) > 0 ) {
 	$map_string = str_replace(" ","+",$map_string);
 	if ($event->event_label != "") {
 		$map_label = $event->event_label;
