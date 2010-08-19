@@ -70,6 +70,12 @@ Languages available:
 
 == Changelog ==
 
+= 1.4.6 = 
+
+* Fixed: Flash of unstyled content prevention scripts weren't disabled when other scripting was disabled.
+* Fixed: Categories which started with numerals couldn't have custom styles.
+* Fixed: Locations required valid 0 float value to save records on some servers; now supplied by default.
+
 = 1.4.5 = 
 
 * Fixed a bug with editing and adding locations
