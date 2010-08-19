@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.4.5
+Version: 1.4.6
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -84,11 +84,12 @@ function jd_show_support_box() {
 <li><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <div>
 <input type="hidden" name="cmd" value="_s-xclick" />
-<input type="hidden" name="hosted_button_id" value="8490399" />
-<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" name="submit" alt="Donate" />
-<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+<input type="hidden" name="hosted_button_id" value="UZBQUG2LKKMRW" />
+<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" name="submit" alt="Donate!" />
+<img alt="" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
 </div>
-</form></li>
+</form>
+</li>
 </ul>
 
 </div>
@@ -127,7 +128,7 @@ function my_calendar_wp_head() {
 // generate category colors
 $categories = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " ORDER BY category_id ASC");
 	foreach ( $categories as $category ) {
-			$class = sanitize_title($category->category_name);
+			$class = "mc_".sanitize_title($category->category_name);
 			$color = $category->category_color;
 		if ( get_option( 'mc_apply_color' ) == 'font' ) {
 			$type = 'color';
@@ -213,6 +214,8 @@ function my_calendar_add_display_javascript() {
 add_action('init','my_calendar_add_display_javascript');
 
 function my_calendar_fouc() {
+global $wp_query;
+
 	if ( get_option('calendar_javascript') != 1 || get_option('list_javascript') != 1 || get_option('mini_javascript') != 1 ) {
 		$scripting = "\n<script type='text/javascript'>\n";
 		$scripting .= "var \$mc = jQuery.noConflict();\n";
@@ -220,7 +223,21 @@ function my_calendar_fouc() {
 		$scripting .= "\$mc(document).ready(function() { \$mc('html').removeClass('js') });\n";
 		$scripting .= "</script>\n";
 	}
-	echo $scripting;
+	if ( get_option('calendar_javascript') != 1 || get_option('list_javascript') != 1 || get_option('mini_javascript') != 1 ) {
+		$this_post = $wp_query->get_queried_object();
+		if (is_object($this_post)) {
+			$id = $this_post->ID;
+		} 
+		if ( get_option( 'my_calendar_show_css' ) != '' ) {
+		$array = explode( ",",get_option( 'my_calendar_show_css' ) );
+			if (!is_array($array)) {
+				$array = array();
+			}
+		}
+		if ( @in_array( $id, $array ) || get_option( 'my_calendar_show_css' ) == '' ) {	
+		echo $scripting;
+		}
+	}
 }
 
 function my_calendar_calendar_javascript() {
@@ -371,7 +388,7 @@ function check_my_calendar() {
 	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs, $mini_styles;
 	$current_version = get_option('my_calendar_version');
 	// If current version matches, don't bother running this.
-	if ($current_version == '1.4.5') {
+	if ($current_version == '1.4.6') {
 		return true;
 	}
 
@@ -404,7 +421,7 @@ function check_my_calendar() {
 	} 
 	
 	// having determined upgrade path, assign new version number
-	update_option( 'my_calendar_version' , '1.4.5' );
+	update_option( 'my_calendar_version' , '1.4.6' );
 
 	// Now we've determined what the current install is or isn't 
 	if ( $new_install == true ) {
@@ -578,7 +595,7 @@ function my_calendar_draw_event($event, $type="calendar") {
 			$cat_details = $categories[$key];
 		} 
 	}  
-	$category = sanitize_title( $cat_details->category_name );
+	$category = "mc_".sanitize_title( $cat_details->category_name );
 	if ( get_option('my_calendar_hide_icons')=='true' ) {
 		$image = "";
 	} else {
