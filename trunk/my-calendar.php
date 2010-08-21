@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.4.6
+Version: 1.4.7
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -388,7 +388,7 @@ function check_my_calendar() {
 	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs, $mini_styles;
 	$current_version = get_option('my_calendar_version');
 	// If current version matches, don't bother running this.
-	if ($current_version == '1.4.6') {
+	if ($current_version == '1.4.7') {
 		return true;
 	}
 
@@ -418,10 +418,12 @@ function check_my_calendar() {
 		$upgrade_path[] = "1.3.8";
 	} else if ( version_compare( $current_version, "1.4.0", "<" ) ) {
 		$upgrade_path[] = "1.4.0";
-	} 
+	} else if ( version_compare( $current_version, "1.4.7", "<" ) ) {
+		$upgrade_path[] = "1.4.7";
+	}
 	
 	// having determined upgrade path, assign new version number
-	update_option( 'my_calendar_version' , '1.4.6' );
+	update_option( 'my_calendar_version' , '1.4.7' );
 
 	// Now we've determined what the current install is or isn't 
 	if ( $new_install == true ) {
@@ -453,6 +455,13 @@ function check_my_calendar() {
 				add_option( 'mini_javascript', 1);
 				upgrade_db();
 			break;
+			case '1.4.7':
+				add_option( 'mc_event_open', 'Registration is open' );
+				add_option( 'mc_event_closed', 'Registration is closed' );
+				add_option( 'mc_event_registration', 'false' );
+				add_option( 'mc_short', 'false' );
+				add_option( 'mc_desc', 'true' );
+				upgrade_db();
 			default:
 			break;
 		}
@@ -721,11 +730,33 @@ function my_calendar_draw_event($event, $type="calendar") {
 			$event_link = $event->event_link;		
 		}
 	}
+	
+	if ( get_option('mc_short') == 'true' ) {
+		$short = "<div class='longdesc'>".wpautop(stripcslashes($event->event_short),1)."</div>";	
+	}
+	if ( get_option('mc_desc') == 'true' ) {
+		$description = "<div class='shortdesc'>".wpautop(stripcslashes($event->event_desc),1)."</div>";
+	}
+	if ( get_option('mc_event_registration') == 'true' ) {
+		switch ($event->event_open) {
+			case '0':
+				$status = get_option('mc_event_closed');
+				break;
+			case '1':
+				$status = get_option('mc_event_open');
+				break;
+			case '2':
+				$status = '';
+				break;
+			default:
+				$status = '';
+		}
+	}
   
 	if ($event_link != '') {
-		$details = "\n". $header_details . '' . wpautop(stripcslashes($event->event_desc),1) . '<p><a href="'.$event_link.'" class="event-link">' . stripslashes($event->event_title) . '&raquo; </a></p>'."</div></div></div>\n";
+		$details = "\n". $header_details . '' . $description . $short . '<p>'.$status.'</p><p><a href="'.$event_link.'" class="event-link">' . stripslashes($event->event_title) . '&raquo; </a></p>'."</div></div></div>\n";
 	} else {
-		$details = "\n". $header_details . '' . wpautop(stripcslashes($event->event_desc),1) . "</div></div></div>\n";	
+		$details = "\n". $header_details . '' . $description . $short . '<p>'.$status."</p></div></div></div>\n";	
 	}
   return $details;
 }
@@ -857,7 +888,6 @@ global $wpdb;
 							$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
 							$nDays = get_option('display_past_events');
 							$fDays = get_option('display_upcoming_events');
-							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 	
 								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_days = $diff/(86400);
@@ -885,9 +915,6 @@ global $wpdb;
 									}
 								}
 							}
-							} else {
-								break;
-							}							
 						break;
 						
 						case "W":
@@ -895,9 +922,8 @@ global $wpdb;
 							$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
 							$nDays = get_option('display_past_events');
 							$fDays = get_option('display_upcoming_events');
-							
-							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 
-								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays*7),0,0) )) {
+				
+								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays*7),0,0) )	) {							
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_weeks = $diff/(86400*7);
 									$weeks = explode(".",$diff_weeks);
@@ -906,7 +932,8 @@ global $wpdb;
 
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
 									$this_date = my_calendar_add_date($event_begin,($realStart*7),0,0);
-										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
+									
+									if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
 											${$realStart} = clone($event);
 											${$realStart}->event_begin = $this_date;
 											$arr_events[] = ${$realStart};
@@ -924,9 +951,6 @@ global $wpdb;
 									}
 								}
 								}
-							} else {
-								break;
-							}						
 						break;
 						
 						case "B":
@@ -935,7 +959,6 @@ global $wpdb;
 							$nDays = get_option('display_past_events');
 							$fDays = get_option('display_upcoming_events');
 							
-							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 
 								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays*14),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_weeks = $diff/(86400*14);
@@ -963,9 +986,6 @@ global $wpdb;
 									}
 								}
 								}
-							} else {
-								break;
-							}						
 						break;
 						
 						case "M":
@@ -974,7 +994,6 @@ global $wpdb;
 							$nDays = get_option('display_past_events');
 							$fDays = get_option('display_upcoming_events');
 							
-							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 	
 								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_days = $diff/(86400*30);
@@ -1002,9 +1021,6 @@ global $wpdb;
 									}
 								}
 								}
-							} else {
-								break;
-							}						
 						break;
 						
 						case "Y":
@@ -1013,7 +1029,6 @@ global $wpdb;
 							$nDays = get_option('display_past_events');
 							$fDays = get_option('display_upcoming_events');
 								
-							if ( my_calendar_date_comp($event_begin, $today) ) { // compare first date against today's date 		
 								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_days = $diff/(86400*365);
@@ -1041,9 +1056,6 @@ global $wpdb;
 									}
 								}
 								}
-							} else {
-								break;
-							}
 						break;
 					}
 				}
@@ -1081,7 +1093,6 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
          }
      }
 
-// Fetch Annual Events
 	$events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'Y' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin)
 	UNION ALL
 	SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'M' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats = 0
@@ -1144,27 +1155,34 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 				    // Now we are going to check to see what day the original event
 				    // fell on and see if the current date is both after it and on 
 				    // the correct day. If it is, display the event!
-				    $day_start_event = date('D',strtotime($event->event_begin));
-				    $day_end_event = date('D',strtotime($event->event_end));
-				    $current_day = date('D',strtotime($date));
+				    $day_start_event = date('w',strtotime($event->event_begin));
+				    $day_end_event = date('w',strtotime($event->event_end));
+				    $current_day = date('w',strtotime($date));
 					$current_date = date('Y-m-d',strtotime($date));
 					$start_date = $event->event_begin;
 					
-					$plan = array("Mon"=>1,"Tue"=>2,"Wed"=>3,"Thu"=>4,"Fri"=>5,"Sat"=>6,"Sun"=>7);
-
+					if ($event->event_repeats != 0) {
 						for ($n=0;$n<=$event->event_repeats;$n++) {
 							if ( $current_date == my_calendar_add_date($start_date,(14*$n)) ) {
-							    if ($plan[$day_start_event] > $plan[$day_end_event]) {
-									if (($plan[$day_start_event] <= $plan[$current_day]) || ($plan[$current_day] <= $plan[$day_end_event]))	{
+							    if ($day_start_event > $day_end_event) {
+									if (($day_start_event <= $current_day) || ($current_day <= $day_end_event))	{
 									$arr_events[]=$event;
 							    	}
-							    } else if (($plan[$day_start_event] < $plan[$day_end_event]) || ($plan[$day_start_event]== $plan[$day_end_event])) {
-									if (($plan[$day_start_event] <= $plan[$current_day]) && ($plan[$current_day] <= $plan[$day_end_event]))	{
+							    } else if (($day_start_event < $day_end_event) || ($day_start_event == $day_end_event)) {
+									if (($day_start_event <= $current_day) && ($current_day <= $day_end_event))	{
 									$arr_events[]=$event;
 							    	}		
 							    }
 							}
-						}					
+						}	
+					} else {
+						// there's got to be a better way to do this, but I can't think of it right now. 
+						for ($n=0;$n<=52;$n++) {
+							if ( $current_date == my_calendar_add_date($start_date,(14*$n)) ) {
+								$arr_events[]=$event;
+							}
+						}
+					}
 					break;
 					case 'W':
 				    // Now we are going to check to see what day the original event

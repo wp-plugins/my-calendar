@@ -1,6 +1,25 @@
 <?php
 // The actual function called to render the manage events page and 
 // to deal with posts
+
+function jd_option_selected($field,$value,$type='checkbox') {
+	switch ($type) {
+		case 'radio':		
+		case 'checkbox':
+		$result = ' checked="checked"';
+		break;
+		case 'option':
+		$result = ' selected="selected"';
+		break;
+	}	
+	if ($field == $value) {
+		$output = $result;
+	} else {
+		$output = '';
+	}
+	return $output;
+}
+
 function edit_my_calendar() {
     global $current_user, $wpdb, $users_entries;
 
@@ -243,12 +262,18 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 		</div>
         <fieldset>
 		<legend><?php _e('Enter your Event Information','my-calendar'); ?></legend>
+
 		<p>
 		<label for="event_title"><?php _e('Event Title','my-calendar'); ?></label> <input type="text" id="event_title" name="event_title" class="input" size="60" value="<?php if ( !empty($data) ) echo htmlspecialchars(stripslashes($data->event_title)); ?>" />
 		</p>
 		<p>
-		<label for="event_desc"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><textarea id="event_desc" name="event_desc" class="input" rows="5" cols="50"><?php if ( !empty($data) ) echo htmlspecialchars(stripslashes($data->event_desc)); ?></textarea>
+		<label for="event_desc"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><textarea id="event_desc" name="event_desc" class="input" rows="6" cols="60"><?php if ( !empty($data) ) echo htmlspecialchars(stripslashes($data->event_desc)); ?></textarea>
 		</p>
+		<?php if ( get_option('mc_short') == 'true' ) { ?>
+		<p>
+		<label for="event_short"><?php _e('Event Short Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><textarea id="event_short" name="event_short" class="input" rows="3" cols="60"><?php if ( !empty($data) ) echo htmlspecialchars(stripslashes($data->event_short)); ?></textarea>
+		</p>
+		<?php } ?>
         <p>
 		<label for="event_category"><?php _e('Event Category','my-calendar'); ?></label>
 		<select id="event_category" name="event_category">
@@ -308,39 +333,29 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 			</p>			
 			</fieldset>
 			<fieldset>
-			<legend><?php _e('Recurring Events','my-calendar'); ?></legend> <?php
-					if ($data->event_repeats != NULL) {
-						$repeats = $data->event_repeats;
-					} else {
-						$repeats = 0;
-					}
-					if ($data->event_recur == "S") {
-						$selected_s = 'selected="selected"';
-					} else if ($data->event_recur == "D") {
-						$selected_d = 'selected="selected"';						
-					} else if ($data->event_recur == "W") {
-						$selected_w = 'selected="selected"';
-					} else if ($data->event_recur == "B") {
-						$selected_b = 'selected="selected"';						
-					} else if ($data->event_recur == "M")	{
-						$selected_m = 'selected="selected"';
-					} else if ($data->event_recur == "Y")	{
-						$selected_y = 'selected="selected"';
-					}
-					?>
+			<legend><?php _e('Recurring Events','my-calendar'); ?></legend> 
+			<?php if ($data->event_repeats != NULL) {	$repeats = $data->event_repeats;} else {$repeats = 0;} ?>
 			<p>
 			<label for="event_repeats"><?php _e('Repeats for','my-calendar'); ?></label> <input type="text" name="event_repeats" id="event_repeats" class="input" size="1" value="<?php echo $repeats; ?>" /> 
 			<label for="event_recur"><?php _e('Units','my-calendar'); ?></label> <select name="event_recur" class="input" id="event_recur">
-						<option class="input" <?php echo $selected_s; ?> value="S"><?php _e('Does not recur','my-calendar'); ?></option>
-						<option class="input" <?php echo $selected_d; ?> value="D"><?php _e('Daily','my-calendar'); ?></option>						
-						<option class="input" <?php echo $selected_w; ?> value="W"><?php _e('Weekly','my-calendar'); ?></option>
-						<option class="input" <?php echo $selected_b; ?> value="B"><?php _e('Bi-weekly','my-calendar'); ?></option>						
-						<option class="input" <?php echo $selected_m; ?> value="M"><?php _e('Monthly','my-calendar'); ?></option>
-						<option class="input" <?php echo $selected_y; ?> value="Y"><?php _e('Annually','my-calendar'); ?></option>
+						<option class="input" <?php echo jd_option_selected( $data->event_recur,'S','option'); ?> value="S"><?php _e('Does not recur','my-calendar'); ?></option>
+						<option class="input" <?php echo jd_option_selected( $data->event_recur,'D','option'); ?> value="D"><?php _e('Daily','my-calendar'); ?></option>						
+						<option class="input" <?php echo jd_option_selected( $data->event_recur,'W','option'); ?> value="W"><?php _e('Weekly','my-calendar'); ?></option>
+						<option class="input" <?php echo jd_option_selected( $data->event_recur,'B','option'); ?> value="B"><?php _e('Bi-weekly','my-calendar'); ?></option>						
+						<option class="input" <?php echo jd_option_selected( $data->event_recur,'M','option'); ?> value="M"><?php _e('Monthly','my-calendar'); ?></option>
+						<option class="input" <?php echo jd_option_selected( $data->event_recur,'Y','option'); ?> value="Y"><?php _e('Annually','my-calendar'); ?></option>
 			</select><br />
 					<?php _e('Entering 0 means forever, if a unit is selected. If the recurrance unit is left at "Does not recur," the event will not reoccur.','my-calendar'); ?>
 			</p>
-			</fieldset>			
+			</fieldset>		
+			<fieldset>
+			<legend><?php _e('Event Registration Status','my-calendar'); ?></legend>
+				<p>
+			    <input type="radio" id="event_open" name="event_open" value="1" <?php if (!empty($data)) { echo jd_option_selected( $data->event_open,'1'); } else { echo " checked='checked'"; } ?> /> <label for="event_open"><?php _e('Open','my-calendar'); ?></label> 
+			    <input type="radio" id="event_closed" name="event_open" value="0" <?php if (!empty($data)) {  echo jd_option_selected( $data->event_open,'0'); } ?> /> <label for="event_closed"><?php _e('Closed','my-calendar'); ?></label>
+				<input type="radio" id="event_none" name="event_open" value="2" <?php if (!empty($data)) { echo jd_option_selected( $data->event_open, '2' ); } ?> /> <label for="event_none"><?php _e('Does not apply','my-calendar'); ?></label>	
+				</p>		
+			</fieldset>
 			<?php if ( get_option( 'my_calendar_show_address' ) == 'true' || get_option( 'my_calendar_show_map' ) == 'true' ) { ?>
 			<fieldset>
 			<legend><?php _e('Event Location','my-calendar'); ?></legend>
@@ -545,6 +560,7 @@ global $wpdb, $current_user;
 if ( $action == 'add' || $action == 'edit' ) {
 	$title = !empty($_POST['event_title']) ? $_POST['event_title'] : '';
 	$desc = !empty($_POST['event_desc']) ? $_POST['event_desc'] : '';
+	$short = !empty($_POST['event_short']) ? $_POST['event_short'] : '';
 	$begin = !empty($_POST['event_begin']) ? $_POST['event_begin'] : '';
 	$end = !empty($_POST['event_end']) ? $_POST['event_end'] : $begin;
 	$time = !empty($_POST['event_time']) ? $_POST['event_time'] : '';
@@ -556,6 +572,7 @@ if ( $action == 'add' || $action == 'edit' ) {
     $expires = !empty($_POST['event_link_expires']) ? $_POST['event_link_expires'] : '0';	
 	$location_preset = !empty($_POST['location_preset']) ? $_POST['location_preset'] : '';
     $event_author = !empty($_POST['event_author']) ? $_POST['event_author'] : '';
+	$event_open = !empty($_POST['event_open']) ? $_POST['event_open'] : '2';
 	// set location
 		if ($location_preset != 'none') {
 			$sql = "SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id = $location_preset";
@@ -586,6 +603,7 @@ if ( $action == 'add' || $action == 'edit' ) {
 	if ( ini_get('magic_quotes_gpc') ) {
 		$title = stripslashes($title);
 		$desc = stripslashes($desc);
+		$short = stripslashes($short);
 		$begin = stripslashes($begin);
 		$end = stripslashes($end);
 		$time = stripslashes($time);
@@ -595,6 +613,7 @@ if ( $action == 'add' || $action == 'edit' ) {
 		$category = stripslashes($category);
 		$linky = stripslashes($linky);	
 		$expires = stripslashes($expires);
+		$event_open = stripslashes($event_open);
 		$event_label = stripslashes($event_label);
 		$event_street = stripslashes($event_street);
 		$event_street2 = stripslashes($event_street2);
@@ -712,7 +731,9 @@ if ( $action == 'add' || $action == 'edit' ) {
 				'event_link_expires'=>$expires, 				
 				'event_longitude'=>$event_longitude,
 				'event_latitude'=>$event_latitude,
-				'event_zoom'=>$event_zoom);
+				'event_zoom'=>$event_zoom,
+				'event_open'=>$event_open,
+				'event_short'=>$short);
 			
 		} else if ($action == 'edit') {
 			$submit = array(
@@ -736,7 +757,9 @@ if ( $action == 'add' || $action == 'edit' ) {
 				'event_link_expires'=>$expires, 				
 				'event_longitude'=>$event_longitude,
 				'event_latitude'=>$event_latitude,
-				'event_zoom'=>$event_zoom);			
+				'event_zoom'=>$event_zoom,
+				'event_open'=>$event_open,
+				'event_short'=>$short);			
 		}
 		
 		
@@ -764,6 +787,8 @@ if ( $action == 'add' || $action == 'edit' ) {
 			$users_entries->event_latitude = $event_latitude;		
 			$users_entries->event_zoom = $event_zoom;
 			$users_entries->event_author = $event_author;
+			$users_entries->event_open = $event_open;
+			$users_entries->event_short = $short;
 			$proceed = false;
 	  }	
 	  

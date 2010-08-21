@@ -70,6 +70,13 @@ Languages available:
 
 == Changelog ==
 
+= 1.4.7 =
+
+* Fixed: Bug where infinitely recurring events whose first occurrence was in the future were not rendered in upcoming events
+* Fixed: Bug where infinitely recurring bi-weekly events only rendered their first event in calendar view
+* Added: Option to indicate whether registration for an event is open or closed, with customizable text.
+* Added: Option to supply a short description alternative to the full description.
+
 = 1.4.6 = 
 
 * Fixed: Flash of unstyled content prevention scripts weren't disabled when other scripting was disabled.
