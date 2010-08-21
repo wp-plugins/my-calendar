@@ -7,7 +7,7 @@ if ( $_POST['upgrade'] == 'true' ) {
 	my_calendar_upgrade_db();
 }
 
-	if ( !isset( $row->event_longitude ) && isset( $row->event_id ) ) {
+	if ( !isset( $row->event_open ) && isset( $row->event_id ) ) {
 	?>
 
 	<div class='upgrade-db error'>
@@ -30,7 +30,7 @@ if ( $_POST['upgrade'] == 'true' ) {
 			<input type="hidden" name="upgrade" value="true" />
 		</div>
 		<p>
-		<?php _e('You haven\'t entered any events, so My Calendar can\'t tell whether your database needs to be updated. If you can\'t add events, upgrade your database!','my-calendar'); ?>
+		<?php _e('You haven\'t entered any events, so My Calendar can\'t tell whether your database is up to date. If you can\'t add events, upgrade your database!','my-calendar'); ?>
 		<input type="submit" value="<?php _e('Update now','my-calendar'); ?>" name="update-calendar" class="button-primary" />
 		</p>
 		</form>

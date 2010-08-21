@@ -437,6 +437,8 @@ $initial_db = "CREATE TABLE " . MY_CALENDAR_TABLE . " (
  event_end DATE NOT NULL,
  event_title VARCHAR(255) NOT NULL,
  event_desc TEXT NOT NULL,
+ event_short TEXT NOT NULL,
+ event_open INT(3) DEFAULT '2',
  event_time TIME,
  event_endtime TIME,
  event_recur CHAR(1),

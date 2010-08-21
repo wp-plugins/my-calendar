@@ -47,7 +47,6 @@ echo my_calendar_check_db();
 	  echo "<div class=\"updated\"><p><strong>".__('Location edited successfully','my-calendar')."</strong></p></div>";
 	  }
 	}
-	  echo $sql;
 
 	if ($_GET['mode'] != 'edit' || $_POST['mode'] == 'edit') {
 	mc_show_location_form('add');

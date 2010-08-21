@@ -107,6 +107,13 @@ function my_calendar_help() {
 
 <dt><code>{link_map}</code></dt>
 <dd><?php _e('Displays a link to a Google Map of the event, if sufficient address information is available. If not, will be empty.','my-calendar'); ?></dd>
+
+<dt><code>{event_open}</code></dt>
+<dd><?php _e('Displays text indicating whether registration for the event is currently open or closed; displays nothing if that choice is selected in the event.','my-calendar'); ?></dd>
+
+<dt><code>{shortdesc}</code></dt>
+<dd><?php _e('Displays the short version of the event description.','my-calendar'); ?></dd>
+
 </div>
 </div>
 </div>

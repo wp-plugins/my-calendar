@@ -421,6 +421,13 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 			$details['link'] = $event->event_link;
 		}
 	}
+	if ( $event->event_open == '1' ) {
+		$event_open = get_option( 'mc_event_open' );
+	} else if ( $event->event_open == '0' ) {
+		$event_open = get_option( 'mc_event_closed' );
+	} else {
+		$event_open = '';
+	}
 	$details['description'] = stripslashes($event->event_desc);
 	if ($details['link'] != '') {
 	$details['link_title'] = "<a href='".$event->event_link."'>".stripslashes($event->event_title)."</a>";
@@ -438,6 +445,8 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 	$details['country'] = stripslashes($event->event_country);
 	$details['hcard'] = stripslashes($hcard);
 	$details['link_map'] = $map;
+	$details['shortdesc'] = stripslashes($event->event_short);
+	$details['event_open'] = $event_open;
   
   return $details;
 }
