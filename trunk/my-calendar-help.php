@@ -29,7 +29,6 @@ function my_calendar_help() {
 </ul>
 </div>
 </div>
-</div>
 <div id="icons" class="jd-my-calendar">
 <div class="postbox">
 <h3><?php _e('Category Icons','my-calendar'); ?></h3>
@@ -117,6 +116,8 @@ function my_calendar_help() {
 
 </dl>
 </div>
+</div>
+
 </div>
 </div>
 </div>
