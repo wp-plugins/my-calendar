@@ -281,8 +281,8 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 
 // Widget todays events
 function my_calendar_todays_events($category='default',$template='default') {
-  global $wpdb, $offset;
-
+  global $wpdb;
+	$offset = (60*60*get_option('gmt_offset'));  
   // This function cannot be called unless calendar is up to date
   check_my_calendar();
 
@@ -297,8 +297,7 @@ function my_calendar_todays_events($category='default',$template='default') {
 	} else {
 		$category = $category;
 	}  
-  
-    $events = my_calendar_grab_events(date("Y"),date("m"),date("d"),$category);
+    $events = my_calendar_grab_events(date("Y",time()+$offset),date("m",time()+$offset),date("d",time()+$offset),$category);
 	if (count($events) != 0) {
 		$output = "<ul>";
 	}
@@ -415,7 +414,7 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 	if ( $event->event_link_expires == 0 ) {
 	$details['link'] = $event->event_link;
 	} else {
-		if ( my_calendar_date_comp( $event->event_begin, date_i18n('Y-m-d',time() ) ) ) {
+		if ( my_calendar_date_comp( $event->event_begin, date('Y-m-d',time()+$offset ) ) ) {
 			$details['link'] = '';
 		} else {
 			$details['link'] = $event->event_link;

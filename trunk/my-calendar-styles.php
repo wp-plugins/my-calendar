@@ -75,7 +75,7 @@ echo my_calendar_check_db();
 	<div class="inside">	
     <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-styles">
 	<p>
-	<label for="my_calendar_show_css"><?php _e('Show CSS & JavaScript only on these pages (comma separated page IDs)','my-calendar'); ?></label> <input type="text" id="my_calendar_show_css" name="my_calendar_show_css" value="<?php echo $my_calendar_show_css; ?>" />
+	<label for="my_calendar_show_css"><?php _e('Show CSS &amp; JavaScript only on these pages (comma separated page IDs)','my-calendar'); ?></label> <input type="text" id="my_calendar_show_css" name="my_calendar_show_css" value="<?php echo $my_calendar_show_css; ?>" />
 	</p>    
 	<fieldset>
     <legend><?php _e('CSS Style Options','my-calendar'); ?></legend>

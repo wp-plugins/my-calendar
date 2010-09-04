@@ -170,9 +170,9 @@ global $wpdb;
      echo '<p>'.__('There are no locations in the database yet!','my-calendar').'</p>';
    }
 ?>
-<p>
-<em><?php _e('Please note: editing or deleting locations stored for re-use will have no effect on any event previously scheduled at that location. The location database exists purely as a shorthand method to enter frequently used locations into event records.','my-calendar'); ?>
-</p>
+<p><em>
+<?php _e('Please note: editing or deleting locations stored for re-use will have no effect on any event previously scheduled at that location. The location database exists purely as a shorthand method to enter frequently used locations into event records.','my-calendar'); ?>
+</em></p>
   </div>
 <?php
 }
