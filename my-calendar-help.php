@@ -5,13 +5,14 @@ function my_calendar_help() {
 <div class="wrap">
 <h2><?php _e('How to use My Calendar','my-calendar'); ?></h2>
 <?php jd_show_support_box(); ?>
+<div id="poststuff" class="jd-my-calendar">
 
-<div id="shortcode" class="jd-my-calendar">
 <div class="postbox">
 	<h3><?php _e('Shortcode Syntax','my-calendar'); ?></h3>
 	<div class="inside">	
 <p>
 <?php _e('These shortcodes can be used in Posts, Pages, or in text widgets.','my-calendar'); ?>
+</p>
 <ul>
 <li><code>[my_calendar]</code><br />
 <?php _e('This basic shortcode will show the calendar on a post or page including all categories and the category key, in a traditional month-by-month format.','my-calendar'); ?>
@@ -114,6 +115,7 @@ function my_calendar_help() {
 <dt><code>{shortdesc}</code></dt>
 <dd><?php _e('Displays the short version of the event description.','my-calendar'); ?></dd>
 
+</dl>
 </div>
 </div>
 </div>

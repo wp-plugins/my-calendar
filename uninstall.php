@@ -50,7 +50,9 @@ delete_option('my_calendar_show_css');
 delete_option('mc_apply_color');
 delete_option('mc_next_events');
 delete_option('mc_previous_events');
-
+delete_option('mc_input_options');
+delete_option('mc_input_options_administrators');
+				
 add_option('my_calendar_uninstalled','true');
 }
 ?>

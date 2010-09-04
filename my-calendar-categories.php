@@ -109,7 +109,7 @@ if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
 			</div>		
 		<?php } ?>
 			<fieldset>
-			<legend><?php _e('Edit Category','my-calendar'); ?></legend>
+			<legend><?php if ($view == 'add') { _e('Add Category','my-calendar'); } else { _e('Edit Category','my-calendar'); } ?></legend>
 				<label for="category_name"><?php _e('Category Name','my-calendar'); ?>:</label> <input type="text" id="category_name" name="category_name" class="input" size="30" value="<?php echo $cur_cat->category_name ?>" /><br />
 				<label for="category_color"><?php _e('Category Color (Hex format)','my-calendar'); ?>:</label> <input type="text" id="category_color" name="category_color" class="input" size="10" maxlength="7" value="<?php echo $cur_cat->category_color ?>" /><br />
 				<label for="category_icon"><?php _e('Category Icon','my-calendar'); ?>:</label> <select name="category_icon" id="category_icon">
@@ -127,7 +127,7 @@ if ($cur_cat->category_icon == $value) {
 				</select>					
 			</fieldset>
 			<p>
-                <input type="submit" name="save" class="button-primary" value="<?php _e('Save Changes','my-calendar'); ?> &raquo;" />
+                <input type="submit" name="save" class="button-primary" value="<?php if ($view == 'add') {  _e('Add Category','my-calendar'); } else { _e('Save Changes','my-calendar'); } ?> &raquo;" />
 			</p>
     </form>
 </div>
@@ -190,7 +190,5 @@ function mc_manage_categories() {
      echo '<p>'.__('There are no categories in the database - something has gone wrong!','my-calendar').'</p>';
    }
 ?>
-  </div>
-
 <?php
 }

@@ -98,8 +98,17 @@ function edit_my_calendar_config() {
 
 	$my_calendar_show_months = (int) $_POST['my_calendar_show_months'];
 	$my_calendar_date_format = $_POST['my_calendar_date_format'];
-
-	
+	$mc_input_options_administrators = ($_POST['mc_input_options_administrators']=='on')?'true':'false';
+	$mc_input_options = array(
+			'event_short'=>$_POST['mci_event_short'],
+			'event_desc'=>$_POST['mci_event_desc'],
+			'event_category'=>$_POST['mci_event_category'],
+			'event_link'=>$_POST['mci_event_link'],
+			'event_recurs'=>$_POST['mci_event_recurs'],
+			'event_open'=>$_POST['mci_event_open'],
+			'event_location'=>$_POST['mci_event_location'],
+			'event_location_dropdown'=>$_POST['mci_event_location_dropdown']
+			);
 	$disp_author = ($_POST['display_author']=='on')?'true':'false';
 	$disp_jump = ($_POST['display_jump']=='on')?'true':'false';
 	$my_calendar_show_map = ($_POST['my_calendar_show_map']=='on')?'true':'false';
@@ -119,7 +128,7 @@ function edit_my_calendar_config() {
 	$my_calendar_caption = $_POST['my_calendar_caption'];
 	$my_calendar_event_link_expires = ($_POST['mc_event_link_expires']=='on')?'true':'false';
 	
-	  update_option('can_manage_events',$new_perms);
+	  update_option('can_manage_events',$new_perms);	  
 	  update_option('display_author',$disp_author);
 	  update_option('display_jump',$disp_jump);
 	  update_option('my_calendar_show_months',$my_calendar_show_months);
@@ -139,9 +148,10 @@ function edit_my_calendar_config() {
 	  update_option('mc_event_registration',$mc_event_registration);
 	  update_option('mc_short',$mc_short);
 	  update_option('mc_desc',$mc_desc);
-	  
+	  update_option('mc_input_options',$mc_input_options);
+	  update_option('mc_input_options_administrators',$mc_input_options_administrators);
       echo "<div class=\"updated\"><p><strong>".__('Settings saved','my-calendar').".</strong></p></div>";
-    }
+	}
 
   // Pull the values out of the database that we need for the form
   $allowed_group = get_option('can_manage_events');
@@ -188,52 +198,46 @@ echo my_calendar_check_db();
 	</select>
 	</p>
 	</fieldset>
+<fieldset>
+	<legend><?php _e('Calendar Options: Customize Text','my-calendar'); ?></legend>
+	<p>
+	<input type="checkbox" id="my_calendar_show_heading" name="my_calendar_show_heading" <?php jd_cal_checkCheckbox('my_calendar_show_heading','true'); ?> /> <label for="my_calendar_show_heading"><?php _e('Show Heading for Calendar','my-calendar'); ?></label>
+    </p>	
+	<p>
+	<label for="my_calendar_notime_text"><?php _e('Label for events without a specific time','my-calendar'); ?></label> <input type="text" id="my_calendar_notime_text" name="my_calendar_notime_text" value="<?php if ( get_option('my_calendar_notime_text') == "") { _e('N/A','my-calendar'); } else { echo stripslashes( get_option('my_calendar_notime_text') ); } ?>" />
+	</p>
+	<p>
+	<label for="mc_previous_events"><?php _e('Previous events link text','my-calendar'); ?></label> <input type="text" id="mc_previous_events" name="mc_previous_events" value="<?php if ( get_option('mc_previous_events') == "") { _e('Previous Events','my-calendar'); } else { echo stripslashes( get_option('mc_previous_events') ); } ?>" />
+	</p>
+	<p>
+	<label for="mc_next_events"><?php _e('Next events link text','my-calendar'); ?></label> <input type="text" id="mc_next_events" name="mc_next_events" value="<?php if ( get_option('mc_next_events') == "") { _e('Next Events','my-calendar'); } else { echo stripslashes( get_option('mc_next_events') ); } ?>" />
+	</p>
+	<p>
+	<label for="mc_event_open"><?php _e('Text when events are open','my-calendar'); ?></label> <input type="text" id="mc_event_open" name="mc_event_open" value="<?php if ( get_option('mc_event_open') == "") { _e('Registration is open','my-calendar'); } else { echo stripslashes( get_option('mc_event_open') ); } ?>" />
+	</p>
+	<p>
+	<label for="mc_event_closed"><?php _e('Text when events are closed','my-calendar'); ?></label> <input type="text" id="mc_event_closed" name="mc_event_closed" value="<?php if ( get_option('mc_event_closed') == "") { _e('Registration is closed','my-calendar'); } else { echo stripslashes( get_option('mc_event_closed') ); } ?>" />
+	</p>	
+	<p>
+	<label for="my_calendar_caption"><?php _e('Additional caption text','my-calendar'); ?></label> <input type="text" id="my_calendar_caption" name="my_calendar_caption" value="<?php echo stripslashes( get_option('my_calendar_caption') ); ?>" /><br /><small><?php _e('The calendar caption is the text containing the displayed month and year in either list or calendar format. This text will be displayed following that existing text.','my-calendar'); ?></small>
+	</p>
+	</fieldset>	
 	<fieldset>
 	<legend><?php _e('Calendar Options: Output','my-calendar'); ?></legend>
-	<p>
-    <label for="display_author"><?php _e('Do you want to display the author name on events?','my-calendar'); ?></label> <select id="display_author" name="display_author">
-		<option value="on" <?php jd_cal_checkSelect('display_author','true'); ?>><?php _e('Yes','my-calendar') ?></option>
-		<option value="off" <?php jd_cal_checkSelect('display_author','false'); ?>><?php _e('No','my-calendar') ?></option>
-	</select>
-	</p>
-
-	<p>
-	<label for="display_jump"><?php _e('Display a jumpbox for changing month and year quickly?','my-calendar'); ?></label> <select id="display_jump" name="display_jump">
-		 <option value="on" <?php jd_cal_checkSelect('display_jump','true'); ?>><?php _e('Yes','my-calendar') ?></option>
-		 <option value="off" <?php jd_cal_checkSelect('display_jump','false'); ?>><?php _e('No','my-calendar') ?></option>
-	</select>
-	</p>
 	<p>
 	<label for="my_calendar_show_months"><?php _e('In list mode, show how many months of events at a time:','my-calendar'); ?></label> <input type="text" size="3" id="my_calendar_show_months" name="my_calendar_show_months" value="<?php echo $my_calendar_show_months; ?>" />
 	</p>
 	<p>
 	<label for="my_calendar_date_format"><?php _e('Date format in list mode','my-calendar'); ?></label> <input type="text" id="my_calendar_date_format" name="my_calendar_date_format" value="<?php if ( get_option('my_calendar_date_format')  == "") { echo get_option('date_format'); } else { echo get_option( 'my_calendar_date_format'); } ?>" /> Current: <?php if ( get_option('my_calendar_date_format') == '') { echo date_i18n(get_option('date_format')); } else { echo date_i18n(get_option('my_calendar_date_format')); } ?><br />
-	<small><?php _e('Date format uses the same syntax as the <a href="http://php.net/date">PHP <code>date()</code> function</a>. Save option to update sample output.','my-calendar'); ?></small>
-	</p>
-	<fieldset>
-	<legend><?php _e('Text customizations','my-calendar'); ?></legend>
-	<p>
-	<input type="checkbox" id="my_calendar_show_heading" name="my_calendar_show_heading" <?php jd_cal_checkCheckbox('my_calendar_show_heading','true'); ?> /> <label for="my_calendar_show_heading"><?php _e('Show Heading for Calendar','my-calendar'); ?></label>
-    </p>	
-	<p>
-	<label for="my_calendar_notime_text"><?php _e('Label for events without a specific time'); ?></label> <input type="text" id="my_calendar_notime_text" name="my_calendar_notime_text" value="<?php if ( get_option('my_calendar_notime_text') == "") { _e('N/A','my-calendar'); } else { echo stripslashes( get_option('my_calendar_notime_text') ); } ?>" />
+	<small><?php _e('Date format uses the same syntax as the <a href="http://php.net/date">PHP <code>date()</code> function</a>. Save options to update sample output.','my-calendar'); ?></small>
 	</p>
 	<p>
-	<label for="mc_previous_events"><?php _e('Previous events link text'); ?></label> <input type="text" id="mc_previous_events" name="mc_previous_events" value="<?php if ( get_option('mc_previous_events') == "") { _e('Previous Events','my-calendar'); } else { echo stripslashes( get_option('mc_previous_events') ); } ?>" />
-	</p>
-	<p>
-	<label for="mc_next_events"><?php _e('Next events link text'); ?></label> <input type="text" id="mc_next_events" name="mc_next_events" value="<?php if ( get_option('mc_next_events') == "") { _e('Next Events','my-calendar'); } else { echo stripslashes( get_option('mc_next_events') ); } ?>" />
-	</p>
-	<p>
-	<label for="mc_event_open"><?php _e('Text when events are open'); ?></label> <input type="text" id="mc_event_open" name="mc_event_open" value="<?php if ( get_option('mc_event_open') == "") { _e('Registration is open','my-calendar'); } else { echo stripslashes( get_option('mc_event_open') ); } ?>" />
-	</p>
-	<p>
-	<label for="mc_event_closed"><?php _e('Text when events are closed'); ?></label> <input type="text" id="mc_event_closed" name="mc_event_closed" value="<?php if ( get_option('mc_event_closed') == "") { _e('Registration is closed','my-calendar'); } else { echo stripslashes( get_option('mc_event_closed') ); } ?>" />
+	<input type="checkbox" id="display_author" name="display_author" <?php jd_cal_checkCheckbox('display_author','true'); ?> /> <label for="display_jump"><?php _e('Do you want to display the author name on events?','my-calendar'); ?></label>
 	</p>	
 	<p>
-	<label for="my_calendar_caption"><?php _e('Additional caption text','my-calendar'); ?></label> <input type="text" id="my_calendar_caption" name="my_calendar_caption" value="<?php echo stripslashes( get_option('my_calendar_caption') ); ?>" /><br /><small><?php _e('The calendar caption is the text containing the displayed month and year in either list or calendar format. This text will be displayed following that existing text.'); ?></small>
-	</p>
-	</fieldset>
+	<input type="checkbox" id="display_jump" name="display_jump" <?php jd_cal_checkCheckbox('display_jump','true'); ?> /> <label for="display_jump"><?php _e('Display a jumpbox for changing month and year quickly?','my-calendar'); ?></label>
+	</p>	
+
 	<p>
 	<input type="checkbox" id="my_calendar_hide_icons" name="my_calendar_hide_icons" <?php jd_cal_checkCheckbox('my_calendar_hide_icons','true'); ?> /> <label for="my_calendar_hide_icons"><?php _e('Hide category icons in output','my-calendar'); ?></label>
 	</p>
@@ -254,7 +258,26 @@ echo my_calendar_check_db();
 	</p>
 	<p>
 	<input type="checkbox" id="mc_event_registration" name="mc_event_registration" <?php jd_cal_checkCheckbox('mc_event_registration','true'); ?> /> <label for="mc_event_registration"><?php _e('Show current availability status of events.','my-calendar'); ?></label>
-	</p>	
+	</p>
+	</fieldset>
+	<fieldset>
+	<legend><?php _e('Calendar Options: Input','my-calendar'); ?></legend>
+	<?php 
+		$input_options = get_option('mc_input_options');
+		$input_labels = array('event_location_dropdown'=>__('Show Event Location Dropdown Menu','my-calendar'),'event_short'=>__('Show Event Short Description field','my-calendar'),'event_desc'=>__('Show Event Description Field','my-calendar'),'event_category'=>__('Show Event Category field','my-calendar'),'event_link'=>__('Show Event Link field','my-calendar'),'event_recurs'=>__('Show Event Recurrance Options','my-calendar'),'event_open'=>__('Show event registration options','my-calendar'),'event_location'=>__('Show event location fields','my-calendar') );
+		$output = '';
+	foreach ($input_options as $key=>$value) {
+			$checked = ($value == 'on')?"checked='checked'":'';
+			$output .= "<p><input type=\"checkbox\" id=\"mci_$key\" name=\"mci_$key\" $checked /> <label for=\"mci_$key\">$input_labels[$key]</label></p>";
+		}
+		echo $output;
+	?>
+	<p>
+	<input type="checkbox" id="mc_input_options_administrators" name="mc_input_options_administrators" <?php jd_cal_checkCheckbox('mc_input_options_administrators','true'); ?> /> <label for="mc_input_options_administrators"><strong><?php _e('Administrators see all input options','my-calendar'); ?></strong></label>
+	</p>
+	</fieldset>
+	<fieldset>
+	<legend><?php _e('Calendar Options: Style','my-calendar'); ?></legend>	
 	<p>
     <input type="radio" id="mc_apply_color_default" name="mc_apply_color" value="default" <?php jd_cal_checkCheckbox('mc_apply_color','default'); ?> /> <label for="mc_apply_color_default"><?php _e('Default usage of category colors.','my-calendar'); ?></label><br />
     <input type="radio" id="mc_apply_color_to_titles" name="mc_apply_color" value="font"  <?php jd_cal_checkCheckbox('mc_apply_color','font'); ?> /> <label for="mc_apply_color_to_titles"><?php _e('Apply category colors to event titles as a font color.','my-calendar'); ?></label><br />

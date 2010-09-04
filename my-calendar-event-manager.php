@@ -54,6 +54,10 @@ if ($_GET['mode'] == 'edit') {
 	$action = "edit";
 	$event_id = (int) $_GET['event_id'];
 }
+if ($_GET['mode'] == 'copy') {
+	$action = "copy";
+	$event_id = (int) $_GET['event_id'];	
+}
 
 // Lets see if this is first run and create us a table if it is!
 check_my_calendar();
@@ -86,33 +90,29 @@ if ($_GET['mode'] == 'delete') {
 if ( isset( $_POST['action'] ) ) {
 $proceed = false;
 // Deal with adding an event to the database
-$event_author = (int) ($action == 'add')?($current_user->ID):($_POST['event_author']);
+$event_author = (int) ($action == 'add' || $action == 'copy')?($current_user->ID):($_POST['event_author']);
 
 $output = mc_check_data($action,$_POST);
 $proceed = $output[0];
  // end data checking and gathering
-	if ( $action == 'add' && $proceed == true ) {
+	if ( ( $action == 'add' || $action == 'copy' ) && $proceed == true ) {
 		$add = $output[2];
-		$formats = array('%s','%s','%s','%s','%s','%s','%d','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%f','%f','%d');
+		$formats = array( '%s','%s','%s','%s','%s','%s','%d','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%f','%f','%d','%s','%d','%d' );		
 		$result = $wpdb->insert( 
 				MY_CALENDAR_TABLE, 
 				$add, 
 				$formats 
 				);
 			if ( !$result ) {
-                ?>
-			<div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('I\'m sorry! I couldn\'d add that event to the database.','my-calendar'); ?></p></div>
-			<?php
-	      } else {
-		?>
-		<div class="updated"><p><?php _e('Event added. It will now show in your calendar.','my-calendar'); ?></p></div>
-		<?php
+				echo "<div class='error'><p><strong>". __('Error','my-calendar') .":</strong>". _e('I\'m sorry! I couldn\'d add that event to the database.','my-calendar') . "</p></div>";	      
+			} else {
+				echo "<div class='updated'><p>". __('Event added. It will now show in your calendar.','my-calendar') . "</p></div>";
 	      }
 	}
 	if ( $action == 'edit' && $proceed == true ) {
 		if ( mc_can_edit_event( $event_author ) ) {	
 			$update = $output[2];
-			$formats = array('%s','%s','%s','%s','%s','%s','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%f','%f','%d');
+			$formats = array('%s','%s','%s','%s','%s','%s','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%f','%f','%d','%s','%d','%d');
 			$result = $wpdb->update( 
 					MY_CALENDAR_TABLE, 
 					$update, 
@@ -187,8 +187,17 @@ my_calendar_check_db();
 		} else {
 			jd_events_edit_form('edit', $event_id);
 		}	
+	} else if ( $action == 'copy' || ($action == 'copy' && $error_with_saving == 1)) { ?>
+		<h2><?php _e('Copy Event','my-calendar'); ?></h2>
+		<?php jd_show_support_box(); ?>
+		<?php
+		if ( empty($event_id) ) {
+			echo "<div class=\"error\"><p>".__("You must provide an event id in order to edit it",'my-calendar')."</p></div>";
+		} else {
+			jd_events_edit_form('copy', $event_id);
+		}		
 	} else {
-		?>
+	?>	
 		<h2><?php _e('Add Event','my-calendar'); ?></h2>
 		<?php jd_show_support_box(); ?>
 		
@@ -248,11 +257,15 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 	}
 	global $user_ID;
 	get_currentuserinfo();
+	$user = get_userdata($user_ID);		
+	$mc_input_administrator = (get_option('mc_input_options_administrators')=='true' && current_user_can('manage_options'))?true:false;
+	$mc_input = get_option('mc_input_options');
+		
 	?>
 	
 <div id="poststuff" class="jd-my-calendar">
 <div class="postbox">
-	<h3><?php if ($mode == "add") { _e('Add an Event','my-calendar'); } else { _e('Edit Event'); } ?></h3>
+	<h3><?php if ($mode == "add") { _e('Add an Event','my-calendar'); } else if ($mode == "copy") { _e('Copy Event','my-calendar'); } else { _e('Edit Event'); } ?></h3>
 	<div class="inside">	
 	<form name="my-calendar" id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar">
 		<div>
@@ -266,14 +279,17 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 		<p>
 		<label for="event_title"><?php _e('Event Title','my-calendar'); ?></label> <input type="text" id="event_title" name="event_title" class="input" size="60" value="<?php if ( !empty($data) ) echo htmlspecialchars(stripslashes($data->event_title)); ?>" />
 		</p>
+		<?php if ($mc_input['event_desc'] == 'on' || $mc_input_administrator ) { ?>
 		<p>
 		<label for="event_desc"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><textarea id="event_desc" name="event_desc" class="input" rows="6" cols="60"><?php if ( !empty($data) ) echo htmlspecialchars(stripslashes($data->event_desc)); ?></textarea>
 		</p>
-		<?php if ( get_option('mc_short') == 'true' ) { ?>
+		<?php } ?>
+		<?php if ($mc_input['event_short'] == 'on') { ?>
 		<p>
 		<label for="event_short"><?php _e('Event Short Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><textarea id="event_short" name="event_short" class="input" rows="3" cols="60"><?php if ( !empty($data) ) echo htmlspecialchars(stripslashes($data->event_short)); ?></textarea>
 		</p>
 		<?php } ?>
+		<?php if ($mc_input['event_category'] == 'on') { ?>
         <p>
 		<label for="event_category"><?php _e('Event Category','my-calendar'); ?></label>
 		<select id="event_category" name="event_category">
@@ -291,11 +307,18 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 					echo '>'.$cat->category_name.'</option>';
 				}
 			?>
-            </select>
+			</select>
             </p>
+			<?php } else { ?>
+			<div>
+			<input type="hidden" name="event_category" value="1" />
+			</div>
+			<?php } ?>
+			<?php if ($mc_input['event_link'] == 'on') { ?>
 			<p>
 			<label for="event_link"><?php _e('Event Link (Optional)','my-calendar'); ?></label> <input type="text" id="event_link" name="event_link" class="input" size="40" value="<?php if ( !empty($data) ) echo htmlspecialchars($data->event_link); ?>" /> <input type="checkbox" value="1" id="event_link_expires" name="event_link_expires"<?php if ( !empty($data) && $data->event_link_expires == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_link_expires' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_link_expires"><?php _e('This link will expire when the event passes.','my-calendar'); ?></label>
 			</p>
+			<?php } ?>
 			<p>
 			<label for="event_begin"><?php _e('Start Date (YYYY-MM-DD)','my-calendar'); ?></label> <input type="text" id="event_begin" name="event_begin" class="calendar_input" size="12" value="<?php if ( !empty($data) ) { echo htmlspecialchars($data->event_begin);} else {echo date_i18n("Y-m-d");} ?>" />
 			</p>			
@@ -332,6 +355,7 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 					?>" /> <?php _e('Optional. End times will not be displayed on events where this is not set.','my-calendar'); ?>
 			</p>			
 			</fieldset>
+			<?php if ($mc_input['event_recur'] == 'on') { ?>
 			<fieldset>
 			<legend><?php _e('Recurring Events','my-calendar'); ?></legend> 
 			<?php if ($data->event_repeats != NULL) {	$repeats = $data->event_repeats;} else {$repeats = 0;} ?>
@@ -347,7 +371,17 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 			</select><br />
 					<?php _e('Entering 0 means forever, if a unit is selected. If the recurrance unit is left at "Does not recur," the event will not reoccur.','my-calendar'); ?>
 			</p>
-			</fieldset>		
+			<p>
+			<input type="checkbox" name="event_group" id="event_group" <?php echo jd_option_selected( $data->event_group,'1'); ?> /> <label for="event_group"><?php _e('Group this event as a single item','my-calendar'); ?></label>
+			</p>
+			</fieldset>	
+			<?php } else { ?>
+			<div>
+			<input type="hidden" name="event_repeats" value="0" />
+			<input type="hidden" name="event_recur" value="S" />
+			</div>
+			<?php } ?>
+			<?php if ($mc_input['event_open'] == 'on') { ?>			
 			<fieldset>
 			<legend><?php _e('Event Registration Status','my-calendar'); ?></legend>
 				<p>
@@ -356,12 +390,18 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 				<input type="radio" id="event_none" name="event_open" value="2" <?php if (!empty($data)) { echo jd_option_selected( $data->event_open, '2' ); } ?> /> <label for="event_none"><?php _e('Does not apply','my-calendar'); ?></label>	
 				</p>		
 			</fieldset>
-			<?php if ( get_option( 'my_calendar_show_address' ) == 'true' || get_option( 'my_calendar_show_map' ) == 'true' ) { ?>
+			<?php } else { ?>
+			<div>
+			<input type="hidden" name="event_open" value="2" />
+			</div>
+			<?php } ?>
+			<?php if ($mc_input['event_location'] == 'on' || $mc_input['event_location_dropdown'] == 'on') { ?>
 			<fieldset>
 			<legend><?php _e('Event Location','my-calendar'); ?></legend>
-			<p>
-			<?php _e('All location fields are optional: <em>insufficient information may result in an inaccurate map</em>.','my-calendar'); ?>
-			</p>
+			<?php } ?>
+			<?php if ($mc_input['event_location_dropdown'] == 'on') { ?>			
+
+
 			<?php $locations = $wpdb->get_results("SELECT location_id,location_label FROM " . MY_CALENDAR_LOCATIONS_TABLE . " ORDER BY location_id ASC");
 				if ( !empty($locations) ) {
 			?>				
@@ -383,7 +423,12 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 				<p><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-locations"><?php _e('Add recurring locations for later use.','my-calendar'); ?></a></p>
 				<?php
 				}
-			?>			
+			?>
+			<?php } ?>
+			<?php if ($mc_input['event_location'] == 'on') { ?>			
+			<p>
+			<?php _e('All location fields are optional: <em>insufficient information may result in an inaccurate map</em>.','my-calendar'); ?>
+			</p>	
 			<p>
 			<label for="event_label"><?php _e('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar'); ?></label> <input type="text" id="event_label" name="event_label" class="input" size="40" value="<?php if ( !empty($data) ) echo htmlspecialchars(stripslashes($data->event_label)); ?>" />
 			</p>
@@ -409,7 +454,7 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 				<option value="8"<?php if ( !empty( $data ) && ( $data->event_zoom == 8 ) ) { echo " selected=\"selected\""; } ?>><?php _e('State','my-calendar'); ?></option>
 				<option value="6"<?php if ( !empty( $data ) && ( $data->event_zoom == 6 ) ) { echo " selected=\"selected\""; } ?>><?php _e('Region','my-calendar'); ?></option>
 				</select>
-			</p>
+			</p>			
 			<fieldset>
 			<legend><?php _e('GPS Coordinates (optional)','my-calendar'); ?></legend>
 			<p>
@@ -418,7 +463,9 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 			<p>
 			<label for="event_longitude"><?php _e('Longitude','my-calendar'); ?></label> <input type="text" id="event_longitude" name="event_longitude" class="input" size="10" value="<?php if ( !empty( $data ) ) echo htmlspecialchars(stripslashes($data->event_longitude)); ?>" /> <label for="event_latitude"><?php _e('Latitude','my-calendar'); ?></label> <input type="text" id="event_latitude" name="event_latitude" class="input" size="10" value="<?php if ( !empty( $data ) ) echo htmlspecialchars(stripslashes($data->event_latitude)); ?>" />
 			</p>			
-			</fieldset>			
+			</fieldset>	
+			<?php } ?>
+			<?php if ($mc_input['event_location'] == 'on' || $mc_input['event_location_dropdown'] == 'on') { ?>
 			</fieldset>
 			<?php } ?>
 			<p>
@@ -486,7 +533,7 @@ function jd_events_display_list($sortby='default',$sortdir='default') {
 				<th class="manage-column" scope="col"><?php _e('Link','my-calendar') ?></th>
 				<th class="manage-column" scope="col"><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;sort=7<?php echo $sorting; ?>"><?php _e('Location','my-calendar') ?></a></th>
 				<th class="manage-column n8" scope="col"><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;sort=3<?php echo $sorting; ?>"><?php _e('Description','my-calendar') ?></a></th>
-				<th class="manage-column" scope="col"><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;sort=4<?php echo $sorting; ?>"><?php _e('Start Date','my-calendar') ?></a></th>
+				<th class="manage-column n5" scope="col"><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;sort=4<?php echo $sorting; ?>"><?php _e('Start Date','my-calendar') ?></a></th>
 				<th class="manage-column n6" scope="col"><?php _e('Recurs','my-calendar') ?></th>
 		        <th class="manage-column" scope="col"><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;sort=5<?php echo $sorting; ?>"><?php _e('Author','my-calendar') ?></a></th>
 		        <th class="manage-column" scope="col"><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;sort=6<?php echo $sorting; ?>"><?php _e('Category','my-calendar') ?></a></th>
@@ -509,7 +556,7 @@ function jd_events_display_list($sortby='default',$sortdir='default') {
 				<td><?php echo stripslashes($event->event_label); ?></td>
 				<td><?php echo substr(strip_tags(stripslashes($event->event_desc)),0,60); ?>&hellip;</td>
 				<?php if ($event->event_time != "00:00:00") { $eventTime = date_i18n(get_option('time_format'), strtotime($event->event_time)); } else { $eventTime = get_option('my_calendar_notime_text'); } ?>
-				<td><?php echo "$event->event_begin ($eventTime)"; ?></td>
+				<td><?php echo "$event->event_begin, $eventTime"; ?></td>
 				<?php /* <td><?php echo $event->event_end; ?></td> */ ?>
 				<td>
 				<?php 
@@ -539,9 +586,11 @@ function jd_events_display_list($sortby='default',$sortdir='default') {
 				<td><div class="category-color" style="background-color:<?php echo $this_cat->category_color;?>;"> </div> <?php echo stripslashes($this_cat->category_name); ?></td>
 				<?php unset($this_cat); ?>
 				<td>
+				<a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;mode=copy&amp;event_id=<?php echo $event->event_id;?>" class='copy'><?php echo __('Copy','my-calendar'); ?></a> &middot; 
 				<?php if ( mc_can_edit_event( $event->event_author ) ) { ?>
-				<a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;mode=edit&amp;event_id=<?php echo $event->event_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a> &middot; <a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;mode=delete&amp;event_id=<?php echo $event->event_id;?>" class="delete"><?php echo __('Delete','my-calendar'); ?></a></td>
+				<a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;mode=edit&amp;event_id=<?php echo $event->event_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a> &middot; <a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;mode=delete&amp;event_id=<?php echo $event->event_id;?>" class="delete"><?php echo __('Delete','my-calendar'); ?></a>
 				<?php } else { echo "Not editable."; } ?>
+				</td>
 			</tr>
 			<?php
 		}
@@ -557,7 +606,7 @@ function jd_events_display_list($sortby='default',$sortdir='default') {
 
 function mc_check_data($action,$_POST) {
 global $wpdb, $current_user;
-if ( $action == 'add' || $action == 'edit' ) {
+if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 	$title = !empty($_POST['event_title']) ? $_POST['event_title'] : '';
 	$desc = !empty($_POST['event_desc']) ? $_POST['event_desc'] : '';
 	$short = !empty($_POST['event_short']) ? $_POST['event_short'] : '';
@@ -573,6 +622,7 @@ if ( $action == 'add' || $action == 'edit' ) {
 	$location_preset = !empty($_POST['location_preset']) ? $_POST['location_preset'] : '';
     $event_author = !empty($_POST['event_author']) ? $_POST['event_author'] : '';
 	$event_open = !empty($_POST['event_open']) ? $_POST['event_open'] : '2';
+	$event_group = !empty($_POST['event_group']) ? 1 : 0;
 	// set location
 		if ($location_preset != 'none') {
 			$sql = "SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id = $location_preset";
@@ -623,7 +673,8 @@ if ( $action == 'add' || $action == 'edit' ) {
 		$event_country = stripslashes($event_country);	
 		$event_longitude = stripslashes($event_longitude);	
 		$event_latitude = stripslashes($event_latitude);	
-		$event_zoom = stripslashes($event_zoom);	
+		$event_zoom = stripslashes($event_zoom);
+		$event_group = stripslashes($event_group);		
 	}	
 
 	// Perform some validation on the submitted dates - this checks for valid years and months
@@ -708,7 +759,7 @@ if ( $action == 'add' || $action == 'edit' ) {
 	  }
 	if ($start_date_ok == 1 && $end_date_ok == 1 && $time_ok == 1 && $endtime_ok == 1 && $url_ok == 1 && $title_ok == 1 && $recurring_ok == 1) {
 		$proceed = true;
-		if ($action == 'add' ) {
+		if ($action == 'add' || $action == 'copy' ) {
 			$submit = array(
 				'event_begin'=>$begin, 
 				'event_end'=>$end, 
@@ -732,8 +783,9 @@ if ( $action == 'add' || $action == 'edit' ) {
 				'event_longitude'=>$event_longitude,
 				'event_latitude'=>$event_latitude,
 				'event_zoom'=>$event_zoom,
+				'event_short'=>$short,
 				'event_open'=>$event_open,
-				'event_short'=>$short);
+				'event_group'=>$event_group);
 			
 		} else if ($action == 'edit') {
 			$submit = array(
@@ -758,10 +810,10 @@ if ( $action == 'add' || $action == 'edit' ) {
 				'event_longitude'=>$event_longitude,
 				'event_latitude'=>$event_latitude,
 				'event_zoom'=>$event_zoom,
+				'event_short'=>$short,
 				'event_open'=>$event_open,
-				'event_short'=>$short);			
-		}
-		
+				'event_group'=>$event_group);			
+		}		
 		
 	} else {
 	    // The form is going to be rejected due to field validation issues, so we preserve the users entries here
@@ -789,6 +841,7 @@ if ( $action == 'add' || $action == 'edit' ) {
 			$users_entries->event_author = $event_author;
 			$users_entries->event_open = $event_open;
 			$users_entries->event_short = $short;
+			$users_entries->event_group = $event_group;
 			$proceed = false;
 	  }	
 	  

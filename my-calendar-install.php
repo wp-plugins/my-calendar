@@ -519,6 +519,8 @@ global $initial_style, $default_template, $initial_listjs, $initial_caljs, $init
 	add_option('my_calendar_hide_icons','false');	 
 	add_option('mc_event_link_expires','no');
 	add_option('mc_apply_color','default');
+	add_option('mc_input_options',array('event_short'=>'on','event_desc'=>'on','event_category'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'on','event_location'=>'on','event_location_dropdown'=>'on') );	
+	add_option('mc_input_options_administrators','false');
 	
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($initial_db);
