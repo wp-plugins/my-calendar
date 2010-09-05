@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.4.8
+Version: 1.4.9
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -320,7 +320,7 @@ function check_my_calendar() {
 	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs, $mini_styles;
 	$current_version = get_option('my_calendar_version');
 	// If current version matches, don't bother running this.
-	if ($current_version == '1.4.8') {
+	if ($current_version == '1.4.9') {
 		return true;
 	}
 
@@ -577,7 +577,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date) {
 					}	
 				$address .= "</div>";			
 			}
-			if ($display_map == 'true' && strlen($location_string) > 0 ) {
+			if ($display_map == 'true' && (strlen($location_string) > 0 || ( $event->event_longitude != '0.000000' && $event->event_latitude != '0.000000' ) ) ) {
 					$map_string = str_replace(" ","+",$map_string);
 					if ($event->event_label != "") {
 						$map_label = stripslashes($event->event_label);
@@ -585,9 +585,10 @@ function my_calendar_draw_event($event, $type="calendar", $process_date) {
 						$map_label = stripslashes($event->event_title);
 					}
 					$zoom = ($event->event_zoom != 0)?$event->event_zoom:'15';
+					$map_string_label = urlencode($map_label);
 					
 					if ($event->event_longitude != '0.000000' && $event->event_latitude != '0.000000') {
-						$map_string = "$event->event_longitude,$event->event_latitude";
+						$map_string = "$event->event_latitude,$event->event_longitude+($map_string_label)";
 					}
 					
 					$map = "<a href=\"http://maps.google.com/maps?f=q&amp;z=$zoom&amp;q=$map_string\">Map<span> to $map_label</span></a>";

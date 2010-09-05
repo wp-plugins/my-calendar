@@ -70,6 +70,13 @@ Languages available:
 
 == Changelog ==
 
+= 1.4.9 = 
+
+* Fixed: Bug where location edits couldn't be saved if location fields were on and dropdown was off
+* Fixed: Bug where latitude and longitude were switched on Google Maps links
+* Fixed: Bug where map link would not be provided if no location data was entered except Lat/Long coordinates.
+* 
+
 = 1.4.8 =
 
 * Added: Ability to copy events to create a new instance of that event
