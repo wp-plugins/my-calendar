@@ -380,7 +380,7 @@ if ( strlen( trim( $map_string ) ) > 0 ) {
 	$zoom = ($event->event_zoom != 0)?$event->event_zoom:'15';
 	
 	if ($event->event_longitude != '0.000000' && $event->event_latitude != '0.000000') {
-		$map_string = "$event->event_longitude,$event->event_latitude";
+		$map_string = "$event->event_latitude,$event->event_longitude";
 	}
 	
 	$map = "<a href=\"http://maps.google.com/maps?f=q&z=$zoom&q=$map_string\">Map<span> to $map_label</span></a>";

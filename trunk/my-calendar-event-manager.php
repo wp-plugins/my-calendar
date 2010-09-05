@@ -355,7 +355,7 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 					?>" /> <?php _e('Optional. End times will not be displayed on events where this is not set.','my-calendar'); ?>
 			</p>			
 			</fieldset>
-			<?php if ($mc_input['event_recur'] == 'on') { ?>
+			<?php if ($mc_input['event_recurs'] == 'on') { ?>
 			<fieldset>
 			<legend><?php _e('Recurring Events','my-calendar'); ?></legend> 
 			<?php if ($data->event_repeats != NULL) {	$repeats = $data->event_repeats;} else {$repeats = 0;} ?>
@@ -424,6 +424,8 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 				<?php
 				}
 			?>
+			<?php } else { ?>
+				<input type="hidden" name="location_preset" value="none" />			
 			<?php } ?>
 			<?php if ($mc_input['event_location'] == 'on') { ?>			
 			<p>
