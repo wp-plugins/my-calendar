@@ -70,12 +70,18 @@ Languages available:
 
 == Changelog ==
 
+= 1.4.10 =
+
+* Fixed: Failed to increment internal version pointer in previous version. 
+* Fixed: Invalid styles created if category color set to default.
+* Fixed: (Performance) Default calendar view attempted to select invalid category.
+* Updated: Danish translation.
+
 = 1.4.9 = 
 
 * Fixed: Bug where location edits couldn't be saved if location fields were on and dropdown was off
 * Fixed: Bug where latitude and longitude were switched on Google Maps links
 * Fixed: Bug where map link would not be provided if no location data was entered except Lat/Long coordinates.
-* 
 
 = 1.4.8 =
 
@@ -288,3 +294,5 @@ The widgets both use templates to determine what they'll display. You can edit t
 5. Settings page
 
 == Upgrade Notice ==
+
+Note: Important bug fix release.

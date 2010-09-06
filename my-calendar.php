@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.4.9
+Version: 1.4.10
 */
 /*  Copyright 2009  Joe Dolson (email : joe@joedolson.com)
 
@@ -136,7 +136,9 @@ $categories = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE
 		} else if ( get_option( 'mc_apply_color' ) == 'background' ) {
 			$type = 'background';
 		}
+		if ( get_option( 'mc_apply_color' )  == 'font' || get_option( 'mc_apply_color' ) == 'background' ) {
 		$category_styles .= "\n#jd-calendar .$class { $type: $color; }";
+		}
 	}	
 	
 echo "
@@ -320,7 +322,7 @@ function check_my_calendar() {
 	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs, $mini_styles;
 	$current_version = get_option('my_calendar_version');
 	// If current version matches, don't bother running this.
-	if ($current_version == '1.4.9') {
+	if ($current_version == '1.4.10') {
 		return true;
 	}
 
@@ -357,7 +359,7 @@ function check_my_calendar() {
 	}
 	
 	// having determined upgrade path, assign new version number
-	update_option( 'my_calendar_version' , '1.4.9' );
+	update_option( 'my_calendar_version' , '1.4.10' );
 
 	// Now we've determined what the current install is or isn't 
 	if ( $new_install == true ) {
@@ -709,7 +711,10 @@ function my_calendar_draw_event($event, $type="calendar", $process_date) {
 }
 function mc_select_category($category, $type='event') {
 global $wpdb;
-	if ( strpos( $category, "|" ) ) {
+	if ($category == 'all' ) {
+	 return '';
+	} else {
+ 	if ( strpos( $category, "|" ) ) {
 		$categories = explode( "|", $category );
 		$numcat = count($categories);
 		$i = 1;
@@ -755,6 +760,7 @@ global $wpdb;
 		}
 	}
 	return $select_category;
+	}
 }
 // used to generate upcoming events lists
 function mc_get_all_events($category) {

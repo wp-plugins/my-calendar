@@ -63,6 +63,7 @@ $initial_db = "CREATE TABLE " . MY_CALENDAR_TABLE . " (
  event_endtime TIME,
  event_recur CHAR(1),
  event_repeats INT(3),
+ event_status INT(1) NOT NULL DEFAULT '1',
  event_group INT(1) NOT NULL DEFAULT '0',
  event_author BIGINT(20) UNSIGNED,
  event_category BIGINT(20) UNSIGNED,
