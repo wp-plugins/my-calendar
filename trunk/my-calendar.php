@@ -357,7 +357,7 @@ function check_my_calendar() {
 	}
 	
 	// having determined upgrade path, assign new version number
-	update_option( 'my_calendar_version' , '1.4.8' );
+	update_option( 'my_calendar_version' , '1.4.9' );
 
 	// Now we've determined what the current install is or isn't 
 	if ( $new_install == true ) {
