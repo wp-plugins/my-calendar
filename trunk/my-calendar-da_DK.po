@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: My Calendar 1.4.3\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/my-calendar\n"
 "POT-Creation-Date: 2010-09-05 00:27+0000\n"
-"PO-Revision-Date: 2010-09-06 18:20+0100\n"
+"PO-Revision-Date: 2010-09-30 11:04+0100\n"
 "Last-Translator: Jakob Smith <jakob@omkalfatring.dk>\n"
 "Language-Team: omkalfatring.dk <jakob@omkalfatring.dk>\n"
 "MIME-Version: 1.0\n"
@@ -258,7 +258,7 @@ msgstr "Begivenheds kategori"
 
 #: my-calendar-event-manager.php:319
 msgid "Event Link (Optional)"
-msgstr "Begivenheds link (valgfri)"
+msgstr "Begivenhedslink (valgfri)"
 
 #: my-calendar-event-manager.php:319
 msgid "This link will expire when the event passes."
@@ -934,11 +934,11 @@ msgstr "Vis begivenhedssted i dropdownmenu"
 
 #: my-calendar-settings.php:267
 msgid "Show Event Short Description field"
-msgstr "Vis begivenhedsadresse i detaljer"
+msgstr "Vis feltet \"Kort beskrivelse af begivenhed\""
 
 #: my-calendar-settings.php:267
 msgid "Show Event Description Field"
-msgstr "Vis begivenhedsadresse i detaljer"
+msgstr "Vis feltet \"Beskrivelse af begivenhed\""
 
 #: my-calendar-settings.php:267
 msgid "Show Event Category field"
@@ -946,7 +946,7 @@ msgstr "Begivenheds kategori"
 
 #: my-calendar-settings.php:267
 msgid "Show Event Link field"
-msgstr "Vis begivenhedsadresse i detaljer"
+msgstr "Vis feltet \"Begivenhedslink\""
 
 #: my-calendar-settings.php:267
 msgid "Show Event Recurrance Options"
@@ -954,7 +954,7 @@ msgstr "Vis indstillinger for tilbagevendende begivenheder"
 
 #: my-calendar-settings.php:267
 msgid "Show event registration options"
-msgstr "Vis begivenhedsadresse i detaljer"
+msgstr "Vis indstillinger for tilmelding til begivenheder"
 
 #: my-calendar-settings.php:267
 msgid "Show event location fields"

@@ -7,7 +7,7 @@ if ( $_POST['upgrade'] == 'true' ) {
 	my_calendar_upgrade_db();
 }
 
-	if ( !isset( $row->event_group ) && isset( $row->event_id ) ) {
+	if ( !isset( $row->event_approved ) && isset( $row->event_id ) ) {
 	?>
 
 	<div class='upgrade-db error'>
@@ -79,6 +79,8 @@ $initial_db = "CREATE TABLE " . MY_CALENDAR_TABLE . " (
  event_longitude FLOAT(10,6) NOT NULL DEFAULT '0',
  event_latitude FLOAT(10,6) NOT NULL DEFAULT '0',
  event_zoom INT(2) NOT NULL DEFAULT '14',
+ event_group INT(1) NOT NULL DEFAULT '0',
+ event_approved INT(1) NOT NULL DEFAULT '1',
  PRIMARY KEY  (event_id),
  KEY event_recur (event_recur)
  );";
