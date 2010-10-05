@@ -48,6 +48,7 @@ Languages available:
 * Brazilian Portuguese ([Daniel Prata](daniel@grudaemmim.com.br))
 * Spanish ([Esteban Truelsegaard](http://www.netmdp.com))
 * Danish ([Jakob Smith](http://www.omkalfatring.dk/))
+* German ([Roland P])
 
 == Installation ==
 
@@ -69,6 +70,14 @@ Languages available:
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.5.0 =
+
+* Added: German translation.
+* Updated: Danish translation.
+* Added: Administrator notification by email feature [Contributions by Roland]
+* Added: Reservations and Approval system for events. [Contributions by Roland]
+* Added: Events can be recurring on x day of month, e.g. 3rd Monday of the month.
 
 = 1.4.10 =
 

@@ -158,7 +158,6 @@ function init_my_calendar_upcoming() {
 function my_calendar_upcoming_events($before='default',$after='default',$type='default',$category='default',$template='default') {
   global $wpdb;
 	$offset = (60*60*get_option('gmt_offset'));
-
   // This function cannot be called unless calendar is up to date
 	check_my_calendar();
 	$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
@@ -221,8 +220,16 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 			
 			$event_details['date'] = $date;
 			$event_details['date_end'] = $date_end;
-			
-			$output .= "<li>".jd_draw_widget_event($event_details,$template)."</li>";
+
+			// by Roland
+			if ( get_option( 'mc_event_approve' ) == 'true' ) {
+				if ( $event->event_approved != 0 ) {
+					$output .= "<li>".jd_draw_widget_event($event_details,$template)."</li>";
+				}
+			} else {
+				$output .= "<li>".jd_draw_widget_event($event_details,$template)."</li>";
+			}
+// by Roland end
           }
           $day_count = $day_count+1;
         }
@@ -265,7 +272,13 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 				if ( my_calendar_date_equal( $date,$today ) ) {
 					$class = "today";
 				}	
-			$output .= "<li class=\"$class\">".jd_draw_widget_event($event_details,$template)."</li>\n";
+			if ( get_option( 'mc_event_approve' ) == 'true' ) {
+				if ( $event->event_approved != 0 ) {				
+					$output .= "<li class=\"$class\">".jd_draw_widget_event($event_details,$template)."</li>\n";
+				}
+			} else {
+				$output .= "<li class=\"$class\">".jd_draw_widget_event($event_details,$template)."</li>\n";
+			}
           }
           $day_count = $day_count+1;
 		  } else {
@@ -277,6 +290,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 		$output .= "</ul>";
           return $output;
         }
+		
 }
 
 // Widget todays events
@@ -312,7 +326,13 @@ function my_calendar_todays_events($category='default',$template='default') {
 				}	
 			// correct displayed time to today
 			$event_details['date'] = $date;
-			$output .= "<li>".jd_draw_widget_event($event_details,$template)."</li>";
+			if ( get_option( 'mc_event_approve' ) == 'true' ) {
+				if ( $event->event_approved != 0 ) {			
+					$output .= "<li>".jd_draw_widget_event($event_details,$template)."</li>";
+				}
+			} else {
+				$output .= "<li>".jd_draw_widget_event($event_details,$template)."</li>";
+			}
         }
     if (count($events) != 0) {
 		$output .= "</ul>";
@@ -446,7 +466,12 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 	$details['link_map'] = $map;
 	$details['shortdesc'] = stripslashes($event->event_short);
 	$details['event_open'] = $event_open;
-  
+	if ($event->event_approve == 1 ) {
+		$details['event_status'] = __('Published','my-calendar');
+	} else {
+		$details['event_status'] = __('Reserved','my-calendar');
+	}
+	
   return $details;
 }
 

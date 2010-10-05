@@ -114,8 +114,12 @@ function my_calendar_help() {
 <dt><code>{shortdesc}</code></dt>
 <dd><?php _e('Displays the short version of the event description.','my-calendar'); ?></dd>
 
+<dt><code>{event_status}</code></dt>
+<dd><?php _e('Displays the current status of the event: either "Published" or "Reserved" - primary used in email templates.','my-calendar'); ?></dd>
+
 </dl>
 </div>
+
 </div>
 
 </div>

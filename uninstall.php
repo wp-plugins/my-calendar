@@ -52,7 +52,14 @@ delete_option('mc_next_events');
 delete_option('mc_previous_events');
 delete_option('mc_input_options');
 delete_option('mc_input_options_administrators');
-				
+delete_option('mc_event_mail','false');
+delete_option('mc_event_mail_subject');
+delete_option('mc_event_mail_to');
+delete_option('mc_event_mail_message');
+delete_option('mc_event_approve');		
+delete_option('mc_event_approve_perms');
+delete_option('mc_no_fifth_week');		
+
 add_option('my_calendar_uninstalled','true');
 }
 ?>
