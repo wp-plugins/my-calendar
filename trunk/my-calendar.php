@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.5.0
+Version: 1.5.1
 */
 /*  Copyright 2009-2010  Joe Dolson (email : joe@joedolson.com)
 
@@ -322,7 +322,7 @@ function check_my_calendar() {
 	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs, $mini_styles;
 	$current_version = get_option('my_calendar_version');
 	// If current version matches, don't bother running this.
-	if ($current_version == '1.5.0') {
+	if ($current_version == '1.5.1') {
 		return true;
 	}
 
@@ -361,7 +361,7 @@ function check_my_calendar() {
 	}
 	
 	// having determined upgrade path, assign new version number
-	update_option( 'my_calendar_version' , '1.5.0' );
+	update_option( 'my_calendar_version' , '1.5.1' );
 
 	// Now we've determined what the current install is or isn't 
 	if ( $new_install == true ) {
@@ -537,25 +537,21 @@ function my_calendar_draw_events($events, $type, $process_date) {
 }
 // Used to draw an event to the screen
 function my_calendar_draw_event($event, $type="calendar", $process_date) {
-	global $wpdb, $categories;
+	global $wpdb;
 	// My Calendar must be updated to run this function
 	check_my_calendar();						 
 	$display_author = get_option('display_author');
 	$display_map = get_option('my_calendar_show_map');
 	$display_address = get_option('my_calendar_show_address');
 	$this_category = $event->event_category; 
-	foreach ($categories as $key=>$value) {
-		if ($value->category_id == $this_category) {
-			$cat_details = $categories[$key];
-		} 
-	}  
-	$category = "mc_".sanitize_title( $cat_details->category_name );
+
+	$category = "mc_".sanitize_title( $event->category_name );
 	if ( get_option('my_calendar_hide_icons')=='true' ) {
 		$image = "";
 	} else {
-	    if ($cat_details->category_icon != "") {
+	    if ($event->category_icon != "") {
 			$path = ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) )?'/my-calendar-custom' : '/my-calendar/icons';
-			$image = '<img src="'.WP_PLUGIN_URL.$path.'/'.$cat_details->category_icon.'" alt="" class="category-icon" style="background:'.$cat_details->category_color.';" />';
+			$image = '<img src="'.WP_PLUGIN_URL.$path.'/'.$event->category_icon.'" alt="" class="category-icon" style="background:'.$event->category_color.';" />';
 		} else {
 			$image = "";
 		}
@@ -615,7 +611,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date) {
 			if ( $event->event_link_expires == 0 ) {
 				$event_link = $event->event_link;
 			} else {
-				if ( my_calendar_date_comp( $event->event_begin,date_i18n('Y-m-d',time()+$offset ) ) ) {
+				if ( my_calendar_date_comp( $event->event_end,date_i18n('Y-m-d',time()+$offset ) ) ) {
 					$event_link = '';
 				} else {
 					$event_link = $event->event_link;		
@@ -670,7 +666,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date) {
 	if ( $event->event_link_expires == 0 ) {
 		$event_link = $event->event_link;
 	} else {
-		if ( my_calendar_date_comp( $event->event_begin,date_i18n('Y-m-d',time()+$offset ) ) ) {
+		if ( my_calendar_date_comp( $event->event_end,date_i18n('Y-m-d',time()+$offset ) ) ) {
 			$event_link = '';
 		} else {
 			$event_link = $event->event_link;		
@@ -787,7 +783,7 @@ global $wpdb;
 	 } else {
 		$select_category = "";
 	 }
-    $events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . "$select_category");
+    $events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $select_category");
 	$offset = (60*60*get_option('gmt_offset'));
 	$date = date('Y', time()+($offset)).'-'.date('m', time()+($offset)).'-'.date('d', time()+($offset));
     if (!empty($events)) {
@@ -1123,34 +1119,36 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
      
      // First we check for conventional events. These will form the first instance of a recurring event
      // or the only instance of a one-off event
-     $events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_begin <= '$date' AND event_end >= '$date' AND event_recur = 'S' ORDER BY event_id");
+     $events = $wpdb->get_results("
+	 SELECT * FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category event_begin <= '$date' AND event_end >= '$date' AND event_recur = 'S' ORDER BY event_id");
      if (!empty($events)) {
          foreach($events as $event) {
 			$arr_events[]=$event;
          }
      }
 
-	$events = $wpdb->get_results("SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'Y' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin)
+	$events = $wpdb->get_results("
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category event_recur = 'Y' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin)
 	UNION ALL
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'M' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats = 0
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category event_recur = 'M' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats = 0
 	UNION ALL
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'M' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats != 0 AND (PERIOD_DIFF(EXTRACT(YEAR_MONTH FROM '$date'),EXTRACT(YEAR_MONTH FROM event_begin))) <= event_repeats
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category event_recur = 'M' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats != 0 AND (PERIOD_DIFF(EXTRACT(YEAR_MONTH FROM '$date'),EXTRACT(YEAR_MONTH FROM event_begin))) <= event_repeats
 	UNION ALL
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'U' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats = 0
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category event_recur = 'U' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats = 0
 	UNION ALL
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'U' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats != 0 AND (PERIOD_DIFF(EXTRACT(YEAR_MONTH FROM '$date'),EXTRACT(YEAR_MONTH FROM event_begin))) <= event_repeats
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category event_recur = 'U' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats != 0 AND (PERIOD_DIFF(EXTRACT(YEAR_MONTH FROM '$date'),EXTRACT(YEAR_MONTH FROM event_begin))) <= event_repeats
 	UNION ALL	
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'B' AND '$date' >= event_begin AND event_repeats = 0
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category event_recur = 'B' AND '$date' >= event_begin AND event_repeats = 0
 	UNION ALL
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'B' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*14) >= (TO_DAYS('$date') - TO_DAYS(event_end))
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category event_recur = 'B' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*14) >= (TO_DAYS('$date') - TO_DAYS(event_end))
 	UNION ALL
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'W' AND '$date' >= event_begin AND event_repeats = 0
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category event_recur = 'W' AND '$date' >= event_begin AND event_repeats = 0
 	UNION ALL
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'W' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*7) >= (TO_DAYS('$date') - TO_DAYS(event_end))	
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category event_recur = 'W' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*7) >= (TO_DAYS('$date') - TO_DAYS(event_end))	
 	UNION ALL
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'D' AND '$date' >= event_begin AND event_repeats = 0
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category event_recur = 'D' AND '$date' >= event_begin AND event_repeats = 0
 	UNION ALL
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " WHERE $select_category event_recur = 'D' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats) >= (TO_DAYS('$date') - TO_DAYS(event_end))	
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category event_recur = 'D' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats) >= (TO_DAYS('$date') - TO_DAYS(event_end))	
 	ORDER BY event_id");
 	
 	if (!empty($events)) {
@@ -1204,7 +1202,7 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 					$current_day = date('D',strtotime($date));
 					$current_date = date('d',strtotime($date));
 					$week_of_event = floor($date_of_event / 7);
-					$current_week = floor($current_date/7);
+					$current_week = floor(($current_date-1) / 7);
 					$day_diff = jd_date_diff($event->event_begin,$event->event_end);
 					for ($i=1;$i<=31;$i++) {
 						$string = date( 'Y',strtotime($date) ).'-'.date('m',strtotime($date)).'-'.$i;
@@ -1223,7 +1221,7 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 					}
 					//echo ("$event->event_title $day_of_event=$current_day, $date_of_event, $week_of_event=$current_week, <br />");
 					//echo ("$event->event_title $current_date>$date_of_event_this_month, $current_date<=$date_of_event_this_month+$day_diff, <br />");
-
+					if ( my_calendar_date_comp($event->event_begin,$date) ) {
 						if ( ($current_day == $day_of_event && $current_week == $week_of_event) || ($current_date > $date_of_event_this_month && $current_date <= $date_of_event_this_month+$day_diff && $date_of_event_this_month != '' ) ) {	
 							if ($month_begin == $month_end) {
 								if (true) {
@@ -1236,7 +1234,8 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 							}	
 						} else {
 							break;
-						}						
+						}
+					}						
 					break;					
 					case 'B':
 				    // Now we are going to check to see what day the original event
@@ -1385,11 +1384,7 @@ function mc_build_date_switcher() {
 // Compared to searching for and displaying events
 // this bit is really rather easy!
 function my_calendar($name,$format,$category,$showkey) {
-    global $wpdb,$categories;
-
-	$sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE ;
-    $categories = $wpdb->get_results($sql);
-	
+    global $wpdb;	
 	if ($category == "") {
 	$category=null;
 	}
