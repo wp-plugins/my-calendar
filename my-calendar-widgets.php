@@ -359,9 +359,18 @@ function event_as_array($event) {
   check_my_calendar();
 
 $offset = (60*60*get_option('gmt_offset'));  
-  
-$sql = "SELECT category_name FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".$event->event_category;
-$category_name = $wpdb->get_row($sql);
+
+$category_name = $event->category_name;
+$category_color = $event->category_color;
+$category_icon = $event->category_icon;
+
+		if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
+				$path = '/my-calendar-custom';
+			} else {
+				$path = '/my-calendar/icons';
+		    }
+		$category_icon = WP_PLUGIN_URL . $path . '/' . $category_icon;
+
 $e = get_userdata($event->event_author);
 
 $hcard = "<div class=\"address vcard\">";
@@ -434,7 +443,7 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 	if ( $event->event_link_expires == 0 ) {
 	$details['link'] = $event->event_link;
 	} else {
-		if ( my_calendar_date_comp( $event->event_begin, date('Y-m-d',time()+$offset ) ) ) {
+		if ( my_calendar_date_comp( $event->event_end, date('Y-m-d',time()+$offset ) ) ) {
 			$details['link'] = '';
 		} else {
 			$details['link'] = $event->event_link;
@@ -466,6 +475,8 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 	$details['link_map'] = $map;
 	$details['shortdesc'] = stripslashes($event->event_short);
 	$details['event_open'] = $event_open;
+	$details['icon'] = $category_icon;
+	$details['color'] = $category_color;
 	if ($event->event_approve == 1 ) {
 		$details['event_status'] = __('Published','my-calendar');
 	} else {

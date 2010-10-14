@@ -1,7 +1,7 @@
 === My Calendar ===
 Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
-Tags: calendar, dates, times, events, scheduling
+Tags: calendar, dates, times, events, scheduling, event manager
 Requires at least: 2.7
 Tested up to: 3.1-alpha
 Stable tag: trunk
@@ -10,37 +10,25 @@ Accessible WordPress event calendar plugin. Show events from multiple calendars 
 
 == Description ==
 
-My Calendar provides basic event management and provides numerous methods to display your events.
-
-This calendar is branched from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/). The output has been pretty much completely re-written, the settings methods have been revamped, and the widgets have been completely revamped. The information you can provide for an event has been expanded to include location information. The UI has been completely revamped.
-
-In short, there isn't actually much left of the original plugin.
+My Calendar provides basic event management and provides numerous methods to display your events. The plug-in can support individual calendars within WordPress Multi-User, or multiple calendars displaying different categories of events. 
 
 Features:
 
-*	Monthly view of events
-*	List view of events; multiple months can be viewed at once.
-*	Events can display their author (optional)
-*	Events can span more than one day
-*	Events can include location information
-*	Event listings can show address and/or a link to a Google Map with the address
-*	Locations can be shown in [hCard format](http://microformats.org/wiki/hcard).
-*	Multiple events per day possible
-*	Events can repeat on a daily, weekly, monthly or yearly basis
-*	Repeats can occur indefinitely or a limited number of times
-*	Easy to use events manager
+*	Standard calendar or list views of events in calendar
+* 	Mini-calendar view for compact displays
 *	Widget to show today's events
-*	Highly configurable widget to show upcoming events 
+*	Configurable widget to show upcoming or past events 
 *	Widget templating to control what information is displayed in widget output.
-*	Extensive settings panel for administration
 *	Edit or disable default CSS and default JavaScript from the style editor
-*	Optional drop down boxes to quickly change month and year
-*	User groups other than admin can be permitted to manage events
-*	Events can be placed into categories
+* 	Events can be configured to be added by any level of user; either directly to calendar or reserved for administrative approval
 *	Calendar can be displayed including a single category, all categories, or a selection of categories
-*	Events can be links pointing to a location of your choice
 *   Import method from Kieran's Calendar plugin
-* 	Help information within the plugin for shortcodes and widget templates.
+* 	Help information within the plugin for shortcode usage and widget templates.
+*	Editable CSS styles and JavaScript behaviors
+* 	Store and display the following information for each event: title, description, alternate description, event category, URL, start date, start time, end date, end time, registration status (open, closed or irrelevant), event location.
+
+This calendar is a branch from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/). You can import any previous scheduled events from Kieran's calendar into this one. 
+
 
 Languages available:
 
@@ -70,6 +58,15 @@ Languages available:
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.5.1 =
+
+* Fixed: Bug where events recurring monthly by days appeared on wrong date when month begins on Sunday.
+* Fixed: Bug where events recurring monthly by days appeared on dates prior to the scheduled event start.
+* Performance improvement: Added SQL join to incorporate category data in event object
+* Added quicktag to provide access to category color and icon in widget templates
+* Changed link expiration to be associated with the end date of events rather than the beginning date.
+* Updated readme plugin description, help files, and screenshots.
 
 = 1.5.0 =
 
@@ -301,7 +298,9 @@ The widgets both use templates to determine what they'll display. You can edit t
 3. Event management page
 4. Category management page
 5. Settings page
+6. Location management
+7. Style and behavior editing
 
 == Upgrade Notice ==
 
-Note: Important bug fix release.
+Minor bug fixes with recurring events.

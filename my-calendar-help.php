@@ -13,20 +13,21 @@ function my_calendar_help() {
 <p>
 <?php _e('These shortcodes can be used in Posts, Pages, or in text widgets.','my-calendar'); ?>
 </p>
-<ul>
-<li><code>[my_calendar]</code><br />
+<p>
+<code>[my_calendar]</code><br />
 <?php _e('This basic shortcode will show the calendar on a post or page including all categories and the category key, in a traditional month-by-month format.','my-calendar'); ?>
-</li>
-<li><code>[my_calendar category="General|Other" format="list" showkey="no"]</code><br />
-<?php _e('The shortcode supports three attributes, <code>category</code>, <code>format</code> and <code>showkey</code>. There two alternate option for <code>format</code> &mdash; <code>list</code> &mdash; which will show the calendar in a list format, skipping dates without any events, and <code>mini</code>, which will display the calendar in a form more suitable to being displayed in smaller spaces, such as the sidebar. The <code>category</code> attribute requires either the name of or ID number one of your event categories (the name is case-sensitive). This will show a calendar only including events in that category. Multiple categories can be specified by separating the category names or IDs using the pipe character: <code>|</code>. Setting <code>showkey</code> to <code>no</code> will prevent the category key from being displayed &mdash; this can be useful with single-category output.','my-calendar'); ?>
-</li>
-<li><code>[my_calendar_upcoming before="3" after="3" type="event" category="General" template="{title} {date}"]</code><br />
+</p>
+<p>
+<code>[my_calendar category="General|Other" format="list" showkey="no"]</code><br />
+<?php _e('The shortcode supports three attributes, <code>category</code>, <code>format</code> and <code>showkey</code>. There two alternate options for <code>format</code>: <code>list</code>, which will show the calendar in a list format, skipping dates without any events, and <code>mini</code>, which will display the calendar in a form more suitable to being displayed in smaller spaces, such as the sidebar. The <code>category</code> attribute requires either the name of or ID number one of your event categories (the name is case-sensitive). This will show a calendar only including events in that category. Multiple categories can be specified by separating the category names or IDs using the pipe character: <code>|</code>. Setting <code>showkey</code> to <code>no</code> will prevent the category key from being displayed &mdash; this can be useful with single-category output.','my-calendar'); ?>
+</p>
+<p>
+<code>[my_calendar_upcoming before="3" after="3" type="event" category="General" template="{title} {date}"]</code><br />
 	<?php _e('This shortcode displays the output of the Upcoming Events widget. Without attributes, it will display using the settings in your widget; the attributes are used to override the widget settings. The <code>before</code> and <code>after</code> attributes should be numbers; the <code>type</code> attribute can be either "event" or "days", and the <code>category</code> attribute works the same way as the category attribute on the main calendar shortcode. Templates work using the template codes listed below.','my-calendar'); ?>
-</li>
-<li><code>[my_calendar_today category="" template="{title} {date}"]</code><br />
+</p>
+<p><code>[my_calendar_today category="" template="{title} {date}"]</code><br />
 	<?php _e('Predictably enough, this shortcode displays the output of the Today\'s Events widget, with two configurable attributes: category and template.','my-calendar'); ?>
-</li>
-</ul>
+</p>
 </div>
 </div>
 <div id="icons" class="jd-my-calendar">
@@ -116,6 +117,12 @@ function my_calendar_help() {
 
 <dt><code>{event_status}</code></dt>
 <dd><?php _e('Displays the current status of the event: either "Published" or "Reserved" - primary used in email templates.','my-calendar'); ?></dd>
+
+<dt><code>{icon}</code></dt>
+<dd><?php _e('Produces the address of the current event\'s category icon.','my-calendar'); ?></dd>
+
+<dt><code>{color}</code></dt>
+<dd><?php _e('Produces the hex code for the current event\'s category color.','my-calendar'); ?></dd>
 
 </dl>
 </div>
