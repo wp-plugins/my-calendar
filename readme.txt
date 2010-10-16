@@ -59,6 +59,10 @@ Languages available:
 
 == Changelog ==
 
+= 1.5.2 =
+
+* Fixed: Bug where event data wasn't remembered if an error was triggered on submission.
+
 = 1.5.1 =
 
 * Fixed: Bug where events recurring monthly by days appeared on wrong date when month begins on Sunday.
