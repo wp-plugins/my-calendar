@@ -735,7 +735,7 @@ function jd_events_display_list($sortby='default',$sortdir='default',$status='al
 	}
 }
 function mc_check_data($action,$_POST) {
-global $wpdb, $current_user;
+global $wpdb, $current_user, $users_entries;
 if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 	$title = !empty($_POST['event_title']) ? trim($_POST['event_title']) : '';
 	$desc = !empty($_POST['event_desc']) ? trim($_POST['event_desc']) : '';

@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.5.1
+Version: 1.5.2
 */
 /*  Copyright 2009-2010  Joe Dolson (email : joe@joedolson.com)
 
@@ -322,7 +322,7 @@ function check_my_calendar() {
 	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs, $mini_styles;
 	$current_version = get_option('my_calendar_version');
 	// If current version matches, don't bother running this.
-	if ($current_version == '1.5.1') {
+	if ($current_version == '1.5.2') {
 		return true;
 	}
 
@@ -361,7 +361,7 @@ function check_my_calendar() {
 	}
 	
 	// having determined upgrade path, assign new version number
-	update_option( 'my_calendar_version' , '1.5.1' );
+	update_option( 'my_calendar_version' , '1.5.2' );
 
 	// Now we've determined what the current install is or isn't 
 	if ( $new_install == true ) {
