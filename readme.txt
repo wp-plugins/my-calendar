@@ -36,7 +36,8 @@ Languages available:
 * Brazilian Portuguese ([Daniel Prata](daniel@grudaemmim.com.br))
 * Spanish ([Esteban Truelsegaard](http://www.netmdp.com))
 * Danish ([Jakob Smith](http://www.omkalfatring.dk/))
-* German ([Roland P])
+* German (Roland P)
+* Dutch (Luud Heck)
 
 == Installation ==
 
