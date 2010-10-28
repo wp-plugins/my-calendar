@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.5.2
+Version: 1.5.3
 */
 /*  Copyright 2009-2010  Joe Dolson (email : joe@joedolson.com)
 
@@ -322,7 +322,7 @@ function check_my_calendar() {
 	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs, $mini_styles;
 	$current_version = get_option('my_calendar_version');
 	// If current version matches, don't bother running this.
-	if ($current_version == '1.5.2') {
+	if ($current_version == '1.5.3') {
 		return true;
 	}
 
@@ -361,7 +361,7 @@ function check_my_calendar() {
 	}
 	
 	// having determined upgrade path, assign new version number
-	update_option( 'my_calendar_version' , '1.5.2' );
+	update_option( 'my_calendar_version' , '1.5.3' );
 
 	// Now we've determined what the current install is or isn't 
 	if ( $new_install == true ) {
@@ -456,26 +456,30 @@ function my_calendar_permalink_prefix() {
   $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
   $real_link = $protocol.'://'.$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
 
-  // Now use all of that to get the correctly craft the My Calendar link prefix
+  // Now use all of that to get the My Calendar link prefix
   if (strstr($p_link, '?') && $p_link == $real_link) {
       $link_part = $p_link.'&';
     } else if ($p_link == $real_link) {
       $link_part = $p_link.'?';
     } else if (strstr($real_link, '?')) {
+	
 		if (isset($_GET['month']) && isset($_GET['yr'])) {
-			$new_tail = split("&", $real_link);
-			foreach ($new_tail as $item) {
-				if (!strstr($item, 'month') && !strstr($item, 'yr')) {
-					$link_part .= $item.'&amp;';
+			$link_part = '';
+			$new_base = split('\?', $real_link);
+			if(count($new_base) > 1) {
+				$new_tail = split('&', $new_base[1]);
+				foreach ($new_tail as $item) {
+					if (!strstr($item, 'month') && !strstr($item, 'yr')) {
+						$link_part .= $item.'&';
+					}
 				}
 			}
-			if (!strstr($link_part, '?')) {
-				$new_tail = split("month", $link_part);
-				$link_part = $new_tail[0].'?'.$new_tail[1];
-		    }
+			$link_part = $new_base[0] . ($link_part ? "?$link_part" : '?');
 		} else {
-		$link_part = $real_link.'&amp;';
+			$link_part = $real_link.'&';
 		}
+		
+		
     } else {
       $link_part = $real_link.'?';
     }
@@ -1201,12 +1205,19 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 					//$end_date_of_event = date( 'd',strtotime($event->event_end) );					
 					$current_day = date('D',strtotime($date));
 					$current_date = date('d',strtotime($date));
-					$week_of_event = floor($date_of_event / 7);
-					$current_week = floor(($current_date-1) / 7);
+					$week_of_event = week_of_month($date_of_event);
+					$current_week = week_of_month($current_date);
+					
 					$day_diff = jd_date_diff($event->event_begin,$event->event_end);
+
+					
+					
 					for ($i=1;$i<=31;$i++) {
 						$string = date( 'Y',strtotime($date) ).'-'.date('m',strtotime($date)).'-'.$i;
-						if ( date('D',strtotime($string)) == $day_of_event && floor($i/7) == $week_of_event ) {
+
+						$week = week_of_month($i);
+						
+						if ( date('D',strtotime($string)) == $day_of_event && $week == $week_of_event ) {
 							$date_of_event_this_month = $i;
 						}
 					}
@@ -1214,15 +1225,20 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 						$new_week_of_event = $week_of_event-1;
 						for ($i=1;$i<=31;$i++) {
 							$string = date( 'Y',strtotime($date) ).'-'.date('m',strtotime($date)).'-'.$i;
-							if ( date('D',strtotime($string)) == $day_of_event && floor($i/7) == $new_week_of_event ) {
+							if ( date('D',strtotime($string)) == $day_of_event && $week == $new_week_of_event ) {
 								$date_of_event_this_month = $i;
 							}
 						}					
 					}
-					//echo ("$event->event_title $day_of_event=$current_day, $date_of_event, $week_of_event=$current_week, <br />");
-					//echo ("$event->event_title $current_date>$date_of_event_this_month, $current_date<=$date_of_event_this_month+$day_diff, <br />");
+					
+				/*		
+				if ( $event->event_title == 'Every 3rd Thursday' ) {
+					echo ("$event->event_title $day_of_event=$current_day, $date_of_event, $week_of_event=$current_week, <br />");
+					echo ("$event->event_title $current_date>=$date_of_event_this_month, $current_date<=$date_of_event_this_month+$day_diff, <br />");
+				}
+						*/
 					if ( my_calendar_date_comp($event->event_begin,$date) ) {
-						if ( ($current_day == $day_of_event && $current_week == $week_of_event) || ($current_date > $date_of_event_this_month && $current_date <= $date_of_event_this_month+$day_diff && $date_of_event_this_month != '' ) ) {	
+						if ( ($current_day == $day_of_event && $current_week == $week_of_event) || ($current_date >= $date_of_event_this_month && $current_date <= $date_of_event_this_month+$day_diff && $date_of_event_this_month != '' ) ) {	
 							if ($month_begin == $month_end) {
 								if (true) {
 									$arr_events[]=$event;

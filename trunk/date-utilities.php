@@ -91,4 +91,24 @@ function jd_date_diff($start, $end="NOW") {
 		}
 }
 
+function week_of_month($date_of_event) {
+					switch ($date_of_event) {
+						case ($date_of_event>=1 && $date_of_event <8):
+						$week_of_event = 0;
+						break;
+						case ($date_of_event>=8 && $date_of_event <15):
+						$week_of_event = 1;
+						break;
+						case ($date_of_event>=15 && $date_of_event <22):
+						$week_of_event = 2;
+						break;
+						case ($date_of_event>=22 && $date_of_event <29):
+						$week_of_event = 3;
+						break;		
+						case ($date_of_event>=29):
+						$week_of_event = 4;
+						break;
+					}
+					return $week_of_event;
+}
 ?>
