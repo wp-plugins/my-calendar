@@ -427,7 +427,7 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 
 
     $details = array();
-	$details['category'] = stripslashes($category_name->category_name);
+	$details['category'] = stripslashes($event->category_name);
 	$details['title'] = stripslashes($event->event_title);
 	if ($event->event_time == '00:00:00' ) {
 	$details['time'] = get_option( 'my_calendar_notime_text' );

@@ -38,6 +38,7 @@ Languages available:
 * Danish ([Jakob Smith](http://www.omkalfatring.dk/))
 * German (Roland P)
 * Dutch (Luud Heck)
+* Japanese ([Daisuke Abe](http://www.alter-ego.jp/))
 
 == Installation ==
 
@@ -59,6 +60,13 @@ Languages available:
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.5.3 = 
+
+* Fixed: Bug which broke the {category} template tag
+* Fixed: Bug which moved extra parameters before the "?" in URLs
+* Fixed: Bug which produced an incorrect date with day/month recurring events on dates with no remainder
+* Added: Japanese translation by [Daisuke Abe](http://www.alter-ego.jp/)
 
 = 1.5.2 =
 
