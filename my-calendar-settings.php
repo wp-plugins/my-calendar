@@ -281,7 +281,7 @@ echo my_calendar_check_db();
 	</p>
 	<p>
 	<input type="checkbox" id="mc_no_fifth_week" name="mc_no_fifth_week" <?php jd_cal_checkCheckbox('mc_no_fifth_week','true'); ?> /> <label for="mc_no_fifth_week"><?php _e('If a recurring event is scheduled for a date which doesn\'t exist (such as the 5th Wednesday in February), move it back one week.','my-calendar'); ?></label>
-	<br /><small><?php _e('If this option is unchecked, recurring events which fall on dates which don\'t exist will simply not be shown on the calendar.','my-calendar'); ?>
+	<?php _e('If this option is unchecked, recurring events which fall on dates which don\'t exist will simply not be shown on the calendar.','my-calendar'); ?>
 	</p>
 	</fieldset>
 	<fieldset>

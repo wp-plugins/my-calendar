@@ -61,6 +61,10 @@ Languages available:
 
 == Changelog ==
 
+= 1.5.4 =
+
+* Fixed: Bug with permissions in event approval process.
+
 = 1.5.3 = 
 
 * Fixed: Bug which broke the {category} template tag
