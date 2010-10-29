@@ -102,7 +102,7 @@ if ( $_GET['mode'] == 'approve' ) {
 // Reject and hide an Event ...by Roland
 if ($_GET['mode'] == 'reject') {
 	if ( current_user_can( get_option( 'mc_event_approve_perms' ) ) ) {
-	    $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_approved = 0 WHERE event_id=" . (int) $_GET['event_id'];
+	    $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_approved = 2 WHERE event_id=" . (int) $_GET['event_id'];
 		$result = $wpdb->get_results( $sql, ARRAY_A );
 	} else {
 	?>
@@ -362,14 +362,19 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 		<legend><?php _e('Enter your Event Information','my-calendar'); ?></legend>
 		<p>
 		<label for="event_title"><?php _e('Event Title','my-calendar'); ?></label> <input type="text" id="event_title" name="event_title" class="input" size="60" value="<?php if ( !empty($data) ) echo htmlspecialchars(stripslashes($data->event_title)); ?>" />
-<?php if ( get_option( 'mc_event_approve' ) == 'true' && ($mode == 'edit' || current_user_can( get_option('mc_event_approve_perms') ) ) ) { ?>
-	<?php if ( current_user_can( get_option('mc_event_approve_perms') ) ) { // (Added by Roland P. ?>
-			<input type="checkbox" value="1" id="event_approved" name="event_approved"<?php if ( !empty($data) && $data->event_approved == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_approved == '0' ) { echo ""; } else if ( get_option( 'mc_event_approve' ) == 'true' ) { echo "checked=\"checked\""; } ?> /> <label for="event_approved"><?php _e('Publish','my-calendar'); ?><?php if ($event->event_approved != 1) { ?> <small>[<?php _e('You must approve this event to promote it to the calendar.','my-calendar'); ?>]</small> <?php } ?></label>
-	<?php } else { ?>
-			<p><input type="hidden" value="0" name="event_approved" /><?php _e('An administrator must approve your new event.','my-calendar'); ?></p>
-	<?php } ?> 
-<?php } else { ?>	
-			<div><input type="hidden" value="1" name="event_approved" /></div>
+<?php if ( $mode == 'edit' ) { ?>
+	<?php if ( get_option( 'mc_event_approve' ) == 'true' ) { ?>
+		<?php if ( current_user_can( get_option('mc_event_approve_perms') ) ) { // (Added by Roland P. ?>
+				<input type="checkbox" value="1" id="event_approved" name="event_approved"<?php if ( !empty($data) && $data->event_approved == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_approved == '0' ) { echo ""; } else if ( get_option( 'mc_event_approve' ) == 'true' ) { echo "checked=\"checked\""; } ?> /> <label for="event_approved"><?php _e('Publish','my-calendar'); ?><?php if ($event->event_approved != 1) { ?> <small>[<?php _e('You must approve this event to promote it to the calendar.','my-calendar'); ?>]</small> <?php } ?></label>
+		<?php } else { // case: editing, approval enabled, user cannot approve ?>
+				<p><input type="hidden" value="0" name="event_approved" /><?php _e('An administrator must approve your new event.','my-calendar'); ?></p>
+		<?php } ?> 
+	<?php } else { // Case: editing, approval system is disabled - auto approve ?>	
+				<p><input type="hidden" value="1" name="event_approved" /></p>
+	<?php } ?>
+<?php } else { // case: adding new event (if use can, then 1, else 0) ?>
+<?php if ( current_user_can( get_option('mc_event_approve_perms') ) ) { $dvalue = 1; } else { $dvalue = 0; } ?>
+			<div><input type="hidden" value="<?php echo $dvalue; ?>" name="event_approved" /></div>
 <?php } ?>
 		</p>
 		<?php if ($mc_input['event_desc'] == 'on' || $mc_input_administrator ) { ?>
@@ -716,8 +721,10 @@ function jd_events_display_list($sortby='default',$sortdir='default',$status='al
 							<?php	// by Roland 
 							if ( $event->event_approved == '1' )  { ?>
 								<?php echo __('Approved','my-calendar'); ?>
-							<?php } else { 	?>
-								<?php echo __('Rejected','my-calendar'); ?>		
+							<?php } else if ($event->event_approved == '2' ) { 	?>
+								<?php echo __('Rejected','my-calendar'); ?>							
+							<?php } else { ?>
+								<?php echo __('Awaiting Approval','my-calendar'); ?>		
 							<?php } ?>
 						<?php } ?>	
 				<?php } ?>					
