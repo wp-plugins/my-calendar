@@ -143,15 +143,17 @@ $proceed = $output[0];
 		if ( mc_can_edit_event( $event_author ) ) {	
 			$update = $output[2];
 			$formats = array('%s','%s','%s','%s','%s','%s','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%f','%f','%d','%s','%d','%d');
+			$wpdb->show_errors();
 			$result = $wpdb->update( 
 					MY_CALENDAR_TABLE, 
 					$update, 
 					array( 'event_id'=>$event_id ),
 					$formats, 
 					'%d' );
+			$wpdb->print_error();
 				if ( $result === false ) {
 					?>
-					<div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php echo _e('Your event was not updated.','my-calendar'); ?></p></div>
+					<div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('Your event was not updated.','my-calendar'); ?></p></div>
 					<?php
 				} else if ( $result === 0 ) {
 					?>
@@ -387,6 +389,38 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 		<label for="event_short"><?php _e('Event Short Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><textarea id="event_short" name="event_short" class="input" rows="2" cols="80"><?php if ( !empty($data) ) echo htmlspecialchars(stripslashes($data->event_short)); ?></textarea>
 		</p>
 		<?php } ?>
+		
+		<?php //Event host field added by Jeff Allen - http://jdadesign.net ?>
+		<?php
+		/*Function to get all users
+		 * Author: Jeff Allen
+		 */
+		 function my_calendar_getUsers() {
+			global $wpdb;
+			$authors = $wpdb->get_results( "SELECT ID, user_nicename, display_name from $wpdb->users ORDER BY display_name" );
+			return $authors;
+		 }
+		 ?>
+	<p>
+	<label for="event_host"><?php _e('Event Host','my-calendar'); ?></label>
+	<select id="event_host" name="event_host">
+		<?php 
+			 // Grab all the categories and list them
+			$userList = my_calendar_getUsers();				 
+			foreach($userList as $u) {
+			 echo '<option value="'.$u->ID.'"';
+					if ( $data->event_host == $u->ID ) {
+					 echo 'selected="selected"';
+					} else if( $u->ID == $user->ID ) {
+				    echo 'selected="selected"';
+					}
+				echo '>'.$u->display_name."</option>\n";
+			}
+		?>
+	</select>
+	</p>		
+		
+		
 		<?php if ($mc_input['event_category'] == 'on') { ?>
         <p>
 		<label for="event_category"><?php _e('Event Category','my-calendar'); ?></label>
@@ -753,6 +787,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 	$endtime = !empty($_POST['event_endtime']) ? trim($_POST['event_endtime']) : '';
 	$recur = !empty($_POST['event_recur']) ? trim($_POST['event_recur']) : '';
 	$repeats = !empty($_POST['event_repeats']) ? trim($_POST['event_repeats']) : 0;
+	$host = !empty($_POST['event_host']) ? $_POST['event_host'] : $current_user->ID;	
 	$category = !empty($_POST['event_category']) ? $_POST['event_category'] : '';
     $linky = !empty($_POST['event_link']) ? trim($_POST['event_link']) : '';
     $expires = !empty($_POST['event_link_expires']) ? $_POST['event_link_expires'] : '0';
@@ -909,6 +944,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 				'event_recur'=>$recur, 
 				'event_repeats'=>$repeats, 
 				'event_author'=>$current_user->ID,
+				'event_host'=>$host,				
 				'event_category'=>$category, 
 				'event_link'=>$linky,
 				'event_label'=>$event_label, 
@@ -937,6 +973,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 				'event_time'=>$time, 
 				'event_recur'=>$recur, 
 				'event_repeats'=>$repeats, 
+				'event_host'=>$host,				
 				'event_category'=>$category, 
 				'event_link'=>$linky,
 				'event_label'=>$event_label, 
@@ -967,6 +1004,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			$users_entries->event_endtime = $endtime;
 			$users_entries->event_recur = $recur;
 			$users_entries->event_repeats = $repeats;
+			$users_entries->event_host = $host;
 			$users_entries->event_category = $category;
 			$users_entries->event_link = $linky;
 			$users_entries->event_link_expires = $expires;

@@ -18,8 +18,8 @@ function my_calendar_help() {
 <?php _e('This basic shortcode will show the calendar on a post or page including all categories and the category key, in a traditional month-by-month format.','my-calendar'); ?>
 </p>
 <p>
-<code>[my_calendar category="General|Other" format="list" showkey="no"]</code><br />
-<?php _e('The shortcode supports three attributes, <code>category</code>, <code>format</code> and <code>showkey</code>. There two alternate options for <code>format</code>: <code>list</code>, which will show the calendar in a list format, skipping dates without any events, and <code>mini</code>, which will display the calendar in a form more suitable to being displayed in smaller spaces, such as the sidebar. The <code>category</code> attribute requires either the name of or ID number one of your event categories (the name is case-sensitive). This will show a calendar only including events in that category. Multiple categories can be specified by separating the category names or IDs using the pipe character: <code>|</code>. Setting <code>showkey</code> to <code>no</code> will prevent the category key from being displayed &mdash; this can be useful with single-category output.','my-calendar'); ?>
+<code>[my_calendar category="General|Other" format="list" showkey="yes" shownav="yes"]</code><br />
+<?php _e('The shortcode supports three attributes, <code>category</code>, <code>format</code> and <code>showkey</code>. There two alternate options for <code>format</code>: <code>list</code>, which will show the calendar in a list format, skipping dates without any events, and <code>mini</code>, which will display the calendar in a form more suitable to being displayed in smaller spaces, such as the sidebar. The <code>category</code> attribute requires either the name of or ID number one of your event categories (the name is case-sensitive). This will show a calendar only including events in that category. Multiple categories can be specified by separating the category names or IDs using the pipe character: <code>|</code>. Setting <code>showkey</code> to <code>no</code> will prevent the category key from being displayed &mdash; this can be useful with single-category output. Setting <code>shownav</code> to <code>no</code> will disable the Previous/Next links.','my-calendar'); ?>
 </p>
 <p>
 <code>[my_calendar_upcoming before="3" after="3" type="event" category="General" template="{title} {date}"]</code><br />
@@ -28,6 +28,9 @@ function my_calendar_help() {
 <p><code>[my_calendar_today category="" template="{title} {date}"]</code><br />
 	<?php _e('Predictably enough, this shortcode displays the output of the Today\'s Events widget, with two configurable attributes: category and template.','my-calendar'); ?>
 </p>
+<p><code>[my_calendar_locations show="list" type="saved" datatype="name"]</code><br />
+	<?php _e('This shortcode produces a list of event locations, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>, <code>type</code> is either <code>saved</code> (to show items from your stored locations), or <code>custom</code> (to show the options configured in your user settings). <code>datatype</code> must be the type of data your limits are choosing from: <code>name</code> (business name), <code>city</code>, <code>state</code>, <code>country</code>, or <code>zip</code> (postal code).','my-calendar'); ?>
+	</p>
 </div>
 </div>
 <div id="icons" class="jd-my-calendar">
@@ -60,6 +63,9 @@ function my_calendar_help() {
 
 <dt><code>{time}</code></dt>
 <dd><?php _e('Displays the start time for the event.','my-calendar'); ?></dd>
+
+<dt><code>{usertime}</code></dt>
+<dd><?php _e('Displays the start time for the event adjusted to the current user\'s time zone settings. Blank output if user settings are disabled or the user has not selected a preferred time zone.','my-calendar'); ?></dd>
 
 <dt><code>{date}</code></dt>
 <dd><?php _e('Displays the date on which the event begins.','my-calendar'); ?></dd>
