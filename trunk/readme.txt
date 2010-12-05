@@ -61,6 +61,14 @@ Languages available:
 
 == Changelog ==
 
+= 1.6.0 =
+
+* Feature: User profile defined time zone preference
+* Feature: User profile defined location preference
+* Feature: Define event host as separate from event author
+* Feature: Added ability to hide Prev/Next links as shortcode attribute
+* Change: Separated Style editing from JS editing
+
 = 1.5.4 =
 
 * Fixed: Bug with permissions in event approval process.

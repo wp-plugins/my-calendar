@@ -5,6 +5,18 @@ if ($_POST['import'] == 'true') {
 	my_calendar_import();
 }
 	
+function csv_to_array($csv, $delimiter = ',', $enclosure = '"', $escape = '\\', $terminator = "\n") {
+    $r = array();
+    $rows = explode($terminator,trim($csv));
+    foreach ($rows as $row) {
+        if (trim($row)) {
+            $values = explode($delimiter,$row);
+			$r[$values[0]] = $values[1];
+        }
+    }
+    return $r;
+}
+
 function my_calendar_import() {
 if ( get_option('ko_calendar_imported') != 'true' ) {
 global $wpdb;
@@ -86,7 +98,7 @@ function edit_my_calendar_config() {
 
   // We can't use this page unless My Calendar is installed/upgraded
   check_my_calendar();
-
+ 
   if (isset($_POST['permissions'])) {
   
 	$new_perms = $_POST['permissions'];
@@ -161,8 +173,16 @@ function edit_my_calendar_config() {
 	  update_option('mc_input_options',$mc_input_options);
 	  update_option('mc_input_options_administrators',$mc_input_options_administrators);
 	  update_option('mc_no_fifth_week',$mc_no_fifth_week);
+	$mc_user_settings_enabled = $_POST['mc_user_settings_enabled'];
+	  update_option('mc_user_settings_enabled',$mc_user_settings_enabled);
+	$mc_location_type = $_POST['mc_location_type'];
+	  update_option('mc_location_type',$mc_location_type);
+	$mc_user_settings = $_POST['mc_user_settings'];
+	$mc_user_settings['my_calendar_tz_default']['values'] = csv_to_array($mc_user_settings['my_calendar_tz_default']['values']);
+	$mc_user_settings['my_calendar_location_default']['values'] = csv_to_array($mc_user_settings['my_calendar_location_default']['values']);
+    update_option('mc_user_settings',$mc_user_settings);
 	  
-      echo "<div class=\"updated\"><p><strong>".__('Settings saved','my-calendar').".</strong></p></div>";
+    echo "<div class=\"updated\"><p><strong>".__('Settings saved','my-calendar').".</strong></p></div>";
 	}
 
   // Pull the values out of the database that we need for the form
@@ -336,7 +356,72 @@ echo my_calendar_check_db();
 <?php } ?>
 
 	</fieldset>
+	<fieldset>
+	<legend><?php _e('My Calendar: User Settings','my-calendar'); ?></legend>
+	<p>
+	
+	<input type="checkbox" id="mc_user_settings_enabled" name="mc_user_settings_enabled" value="true" <?php jd_cal_checkCheckbox('mc_user_settings_enabled','true'); ?> /> <label for="mc_user_settings_enabled"><?php _e('Enable Registered User\'s Customized Settings','my-calendar'); ?></label>
+	</p>
 
+<?php if ( get_option('mc_user_settings_enabled') == "true") { ?>
+<?php	$mc_user_settings = get_option('mc_user_settings'); ?>
+
+<fieldset>
+<legend><?php _e('Timezone Settings','my-calendar'); ?></legend>
+<p><?php _e('These settings provide registered users with the ability to select a time zone in their user profile. When they view your calendar, the times for events will display the time the event happens in their time zone as well as the entered value.','my-calendar'); ?></p>
+	<p>
+	<input type="checkbox" id="tz_enabled" name="mc_user_settings[my_calendar_tz_default][enabled]" <?php jd_cal_checkCheckbox('mc_user_settings','on','my_calendar_tz_default'); ?> /> <label for="tz_enabled"><?php _e('Enable Timezone','my-calendar'); ?></label>
+	</p>
+	<p>
+	<label for="tz_label"><?php _e('Select Timezone Label','my-calendar'); ?></label> <input type="text" name="mc_user_settings[my_calendar_tz_default][label]" id="tz_label" value="<?php echo $mc_user_settings['my_calendar_tz_default']['label']; ?>" size="40" />
+	</p>
+	<p>
+	<label for="tz_values"><?php _e('Timezone Options','my-calendar'); ?> (<?php _e('Value, Label; one per line','my-calendar'); ?>)</label><br />
+ 	<?php 
+	$timezones = '';
+foreach ( $mc_user_settings['my_calendar_tz_default']['values'] as $key=>$value ) {
+$timezones .= "$key,$value\n";
+}
+	?>	
+	<textarea name="mc_user_settings[my_calendar_tz_default][values]" id="tz_values" cols="40" rows="8"><?php echo trim($timezones); ?></textarea>
+	</p>
+</fieldset>
+
+<fieldset>
+<legend><?php _e('Location Settings','my-calendar'); ?></legend>
+<p><?php _e('These settings provide registered users with the ability to select a location in their user profile. When they view your calendar, their initial view will be limited to locations which include that location parameter.','my-calendar'); ?></p>
+	<p>
+	<input type="checkbox" id="loc_enabled" name="mc_user_settings[my_calendar_location_default][enabled]" <?php jd_cal_checkCheckbox('mc_user_settings','on','my_calendar_location_default'); ?> /> <label for="loc_enabled"><?php _e('Enable Location','my-calendar'); ?></label>
+	</p>
+	<p>
+	<label for="loc_label"><?php _e('Select Location Label','my-calendar'); ?></label> <input type="text" name="mc_user_settings[my_calendar_location_default][label]" id="loc_label" value="<?php echo $mc_user_settings['my_calendar_location_default']['label']; ?>" size="40" />
+	</p>
+	<p>
+	<label for="loc_values"><?php _e('Location Options','my-calendar'); ?> (<?php _e('Value, Label; one per line','my-calendar'); ?>)</label><br />
+	<?php 
+	$locations = '';
+foreach ( $mc_user_settings['my_calendar_location_default']['values'] as $key=>$value ) {
+$locations .= "$key,$value\n";
+}
+?>
+	<textarea name="mc_user_settings[my_calendar_location_default][values]" id="loc_values" cols="40" rows="8"><?php echo trim($locations); ?></textarea>
+	</p>
+	<p>
+	<label for="loc_type"><?php _e('Location Type','my-calendar'); ?></label><br />
+	<select id="loc_type" name="mc_location_type">
+	<option value="event_label" <?php jd_cal_checkSelect( 'mc_location_type','event_label' ); ?>><?php _e('Location Name','my-calendar'); ?></option>
+	<option value="event_city" <?php jd_cal_checkSelect( 'mc_location_type','event_city' ); ?>><?php _e('City','my-calendar'); ?></option>
+	<option value="event_state" <?php jd_cal_checkSelect( 'mc_location_type','event_state'); ?>><?php _e('State/Province','my-calendar'); ?></option>
+	<option value="event_country" <?php jd_cal_checkSelect( 'mc_location_type','event_country'); ?>><?php _e('Country','my-calendar'); ?></option>
+	<option value="event_postcode" <?php jd_cal_checkSelect( 'mc_location_type','event_postcode'); ?>><?php _e('Postal Code','my-calendar'); ?></option>
+	</select>
+	</p>
+
+</fieldset>
+
+<?php } ?>
+	
+	</fieldset>
 	<p>
 		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Settings','my-calendar'); ?> &raquo;" />
 	</p>
