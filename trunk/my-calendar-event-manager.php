@@ -123,7 +123,7 @@ $proceed = $output[0];
  // end data checking and gathering
 	if ( ( $action == 'add' || $action == 'copy' ) && $proceed == true ) {
 		$add = $output[2];
-		$formats = array( '%s','%s','%s','%s','%s','%s','%d','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%f','%f','%d','%s','%d','%d' );		
+		$formats = array( '%s','%s','%s','%s','%s','%s','%d','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%f','%f','%d','%s','%d','%d','%d','%d' );		
 		$result = $wpdb->insert( 
 				MY_CALENDAR_TABLE, 
 				$add, 
@@ -142,7 +142,7 @@ $proceed = $output[0];
 	if ( $action == 'edit' && $proceed == true ) {
 		if ( mc_can_edit_event( $event_author ) ) {	
 			$update = $output[2];
-			$formats = array('%s','%s','%s','%s','%s','%s','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%f','%f','%d','%s','%d','%d');
+			$formats = array('%s','%s','%s','%s','%s','%s','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%f','%f','%d','%s','%d','%d','%d','%d' );
 			$wpdb->show_errors();
 			$result = $wpdb->update( 
 					MY_CALENDAR_TABLE, 
@@ -309,7 +309,7 @@ my_calendar_check_db();
 
 // The event edit form for the manage events admin page
 function jd_events_edit_form($mode='add', $event_id=false) {
-	global $wpdb,$users_entries;
+	global $wpdb,$users_entries,$user_ID;
 	$data = false;
 	
 	if ( $event_id !== false ) {
@@ -410,9 +410,9 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 			foreach($userList as $u) {
 			 echo '<option value="'.$u->ID.'"';
 					if ( $data->event_host == $u->ID ) {
-					 echo 'selected="selected"';
-					} else if( $u->ID == $user->ID ) {
-				    echo 'selected="selected"';
+					 echo ' selected="selected"';
+					} else if( $u->ID == $user->ID && empty($data->event_host) ) {
+				    echo ' selected="selected"';
 					}
 				echo '>'.$u->display_name."</option>\n";
 			}
@@ -433,7 +433,7 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 				 echo '<option value="'.$cat->category_id.'"';
 					if (!empty($data)) {
 						if ($data->event_category == $cat->category_id){
-						 echo 'selected="selected"';
+						 echo ' selected="selected"';
 						}
 					}
 					echo '>'.$cat->category_name.'</option>';
@@ -944,7 +944,6 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 				'event_recur'=>$recur, 
 				'event_repeats'=>$repeats, 
 				'event_author'=>$current_user->ID,
-				'event_host'=>$host,				
 				'event_category'=>$category, 
 				'event_link'=>$linky,
 				'event_label'=>$event_label, 
@@ -962,7 +961,9 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 				'event_short'=>$short,
 				'event_open'=>$event_open,
 				'event_group'=>$event_group,
-				'event_approved'=>$approved);
+				'event_approved'=>$approved,
+				'event_host'=>$host
+				);
 			
 		} else if ($action == 'edit') {
 			$submit = array(
@@ -973,7 +974,6 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 				'event_time'=>$time, 
 				'event_recur'=>$recur, 
 				'event_repeats'=>$repeats, 
-				'event_host'=>$host,				
 				'event_category'=>$category, 
 				'event_link'=>$linky,
 				'event_label'=>$event_label, 
@@ -991,9 +991,10 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 				'event_short'=>$short,
 				'event_open'=>$event_open,
 				'event_group'=>$event_group,
-				'event_approved'=>$approved);		
-		}		
-		
+				'event_approved'=>$approved,
+				'event_host'=>$host
+				);		
+		}
 	} else {
 	    // The form is going to be rejected due to field validation issues, so we preserve the users entries here
 			$users_entries->event_title = $title;
@@ -1024,9 +1025,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			$users_entries->event_group = $event_group;
 			$users_entries->event_approved = $approved;
 			$proceed = false;
-	  }	
-	  
-	  
+		}	
 	}
 	$data = array($proceed, $users_entries, $submit);
 	return $data;
