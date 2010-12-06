@@ -61,6 +61,10 @@ Languages available:
 
 == Changelog ==
 
+= 1.6.1 =
+
+* Bug fix in event saving
+
 = 1.6.0 =
 
 * Feature: User profile defined time zone preference
