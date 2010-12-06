@@ -7,7 +7,8 @@ if ( $_POST['upgrade'] == 'true' ) {
 	my_calendar_upgrade_db();
 }
 
-	if ( !isset( $row->event_host ) && isset( $row->event_id ) ) {
+	if ( !isset( $row->event_status ) && isset( $row->event_id ) ) {
+	
 	?>
 
 	<div class='upgrade-db error'>
