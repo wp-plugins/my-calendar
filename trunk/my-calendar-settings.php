@@ -24,7 +24,7 @@ $wpdb->hide_errors();
 		define('KO_CALENDAR_TABLE', $wpdb->prefix . 'calendar');
 		define('KO_CALENDAR_CATS', $wpdb->prefix . 'calendar_categories');
 		$events = $wpdb->get_results("SELECT * FROM " . KO_CALENDAR_TABLE, 'ARRAY_A');
-		$wpdb->print_error();
+		//$wpdb->print_error();
 		$sql = "";
 		foreach ($events as $key) {
 			$title = mysql_real_escape_string($key['event_title']);
@@ -51,10 +51,10 @@ $wpdb->hide_errors();
 			event_link='".($linky)."';
 			";
 		$events_results = $wpdb->query($sql);		
-		$wpdb->print_error(); 				
+		//$wpdb->print_error(); 				
 		}	
 		$cats = $wpdb->get_results("SELECT * FROM " . KO_CALENDAR_CATS, 'ARRAY_A');
-		$wpdb->print_error(); 
+		//$wpdb->print_error(); 
 		
 		$catsql = "";
 		foreach ($cats as $key) {
@@ -71,7 +71,7 @@ $wpdb->hide_errors();
 				category_color='".$color."';
 				";	
 			$cats_results = $wpdb->query($catsql);
-			$wpdb->print_error(); 			
+			//$wpdb->print_error(); 			
 		}
 	 			
 
@@ -181,9 +181,6 @@ function edit_my_calendar_config() {
 	$mc_user_settings['my_calendar_tz_default']['values'] = csv_to_array($mc_user_settings['my_calendar_tz_default']['values']);
 	$mc_user_settings['my_calendar_location_default']['values'] = csv_to_array($mc_user_settings['my_calendar_location_default']['values']);
     update_option('mc_user_settings',$mc_user_settings);
-	  echo "<pre>";
-	  print_r($mc_user_settings);
-	  echo "</pre>";
 	  
     echo "<div class=\"updated\"><p><strong>".__('Settings saved','my-calendar').".</strong></p></div>";
 	}
