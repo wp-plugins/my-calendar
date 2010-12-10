@@ -61,6 +61,13 @@ Languages available:
 
 == Changelog ==
 
+= 1.6.2 = 
+
+* Fixed broken style editor. (The way it was broken was awfully weird...kinda wonder how I did it!)
+* Fixed missing div in calendar list output.
+* Removed debugging call which had been left from testing.
+* Fixed storage of initial settings for user settings (array did not store probably initially.)
+
 = 1.6.1 =
 
 * Bug fix in event saving

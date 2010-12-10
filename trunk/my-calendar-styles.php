@@ -1,18 +1,20 @@
 <?php
 // Display the admin configuration page
 
+
 function edit_my_calendar_styles() {
 	global $wpdb, $initial_style;
+	
 	// We can't use this page unless My Calendar is installed/upgraded
 	check_my_calendar();
+	$my_calendar_style = stripcslashes( get_option('my_calendar_style') );
+	$my_calendar_use_styles = get_option('my_calendar_use_styles');
+	$my_calendar_show_css = stripcslashes(get_option('my_calendar_show_css'));
+	
 	if ( isset($_POST['style'] ) ) {
 
 	$my_calendar_style = $_POST['style'];
 	$use_styles = ($_POST['use_styles']=='on')?'true':'false';
-
-	$my_calendar_style = stripcslashes(get_option('my_calendar_style'));
-	$my_calendar_use_styles = get_option('my_calendar_use_styles');
-	$my_calendar_show_css = stripcslashes(get_option('my_calendar_show_css'));
 	
 	update_option('my_calendar_style',$my_calendar_style);
 	update_option('my_calendar_use_styles',$use_styles);

@@ -388,7 +388,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav) {
 						</ul>
 	                    </div>';
 		} 
-		$my_calenadar_body .= '</div>';	
+		$my_calendar_body .= '</div>';	
 	}
     // If in calendar format, print the headings of the days of the week
 if ( $format == "calendar" || $format == "mini" ) {

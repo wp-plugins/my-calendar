@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.6.1
+Version: 1.6.2
 */
 /*  Copyright 2009-2010  Joe Dolson (email : joe@joedolson.com)
 
@@ -351,7 +351,7 @@ function check_my_calendar() {
 	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs, $mini_styles;
 	$current_version = get_option('my_calendar_version');
 	// If current version matches, don't bother running this.
-	if ($current_version == '1.6.1') {
+	if ($current_version == '1.6.2') {
 		return true;
 	}
 
@@ -389,10 +389,12 @@ function check_my_calendar() {
 		$upgrade_path[] = "1.5.0";
 	} else if ( version_compare( $current_version, "1.6.0", "<" ) ) {
 		$upgrade_path[] = "1.6.0";
+	} else if ( version_compare( $current_version, "1.6.2", "<" ) ) {
+		$upgrade_path[] = "1.6.2";
 	}
 	
 	// having determined upgrade path, assign new version number
-	update_option( 'my_calendar_version' , '1.6.1' );
+	update_option( 'my_calendar_version' , '1.6.2' );
 
 	// Now we've determined what the current install is or isn't 
 	if ( $new_install == true ) {
@@ -447,10 +449,16 @@ function check_my_calendar() {
 				upgrade_db();
 			break;
 			case '1.6.0':
+				add_option('mc_user_settings_enabled',false);
+				add_option('mc_user_location_type','state');
+				add_option('my_calendar_show_js',get_option('my_calendar_show_css') );   
+				upgrade_db();			
+			break;
+			case '1.6.2':
 				$mc_user_settings = array(
 				'my_calendar_tz_default'=>array(
 					'enabled'=>'on',
-					'label'=>__('My Calendar Default Timezone','my-calendar'),
+					'label'=>'My Calendar Default Timezone',
 					'values'=>array(
 							"-12" => "(GMT -12:00) Eniwetok, Kwajalein",
 							"-11" => "(GMT -11:00) Midway Island, Samoa",
@@ -495,7 +503,7 @@ function check_my_calendar() {
 					),
 				'my_calendar_location_default'=>array(
 					'enabled'=>'on',
-					'label'=>__('My Calendar Default Location','my-calendar'),
+					'label'=>'My Calendar Default Location',
 					'values'=>array(
 								'AL'=>"Alabama",
 								'AK'=>"Alaska", 
@@ -548,13 +556,9 @@ function check_my_calendar() {
 								'WV'=>"West Virginia", 
 								'WI'=>"Wisconsin", 
 								'WY'=>"Wyoming"),
-					)				
+					)			
 				);			
-				add_option('mc_user_settings',$mc_user_settings);
-				add_option('mc_user_settings_enabled',false);
-				add_option('mc_user_location_type','state');
-				add_option('my_calendar_show_js',get_option('my_calendar_show_css') );   
-				upgrade_db();			
+				update_option('mc_user_settings',$mc_user_settings);			
 			break;
 			default:
 			break;
@@ -1077,7 +1081,7 @@ global $user_ID;
 			$tz = '';
 		}
 	 }
-	 if ($tz == get_option('gmt_offset') || $tz == 'none' ) {
+	 if ($tz == get_option('gmt_offset') || $tz == 'none' || $tz == '' ) {
 		$gtz = '';
 	 } else if ( $tz < get_option('gmt_offset') ) {
 		$gtz = -(abs( get_option('gmt_offset') - $tz ) );

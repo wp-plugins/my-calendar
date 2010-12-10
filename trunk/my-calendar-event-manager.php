@@ -150,7 +150,7 @@ $proceed = $output[0];
 					array( 'event_id'=>$event_id ),
 					$formats, 
 					'%d' );
-			$wpdb->print_error();
+			//$wpdb->print_error();
 				if ( $result === false ) {
 					?>
 					<div class="error"><p><strong><?php _e('Error','my-calendar'); ?>:</strong> <?php _e('Your event was not updated.','my-calendar'); ?></p></div>
