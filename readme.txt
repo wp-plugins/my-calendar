@@ -39,6 +39,7 @@ Languages available:
 * German (Roland P)
 * Dutch (Luud Heck)
 * Japanese ([Daisuke Abe](http://www.alter-ego.jp/))
+* Italian ([Sabir Musta](http://mustaphasabir.altervista.org))
 
 == Installation ==
 
@@ -67,6 +68,7 @@ Languages available:
 * Fixed missing div in calendar list output.
 * Removed debugging call which had been left from testing.
 * Fixed storage of initial settings for user settings (array did not store probably initially.)
+* Added Italian translation by [Sabir Musta](http://mustaphasabir.altervista.org)
 
 = 1.6.1 =
 
