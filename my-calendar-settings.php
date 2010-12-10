@@ -181,6 +181,9 @@ function edit_my_calendar_config() {
 	$mc_user_settings['my_calendar_tz_default']['values'] = csv_to_array($mc_user_settings['my_calendar_tz_default']['values']);
 	$mc_user_settings['my_calendar_location_default']['values'] = csv_to_array($mc_user_settings['my_calendar_location_default']['values']);
     update_option('mc_user_settings',$mc_user_settings);
+	  echo "<pre>";
+	  print_r($mc_user_settings);
+	  echo "</pre>";
 	  
     echo "<div class=\"updated\"><p><strong>".__('Settings saved','my-calendar').".</strong></p></div>";
 	}
@@ -383,7 +386,7 @@ foreach ( $mc_user_settings['my_calendar_tz_default']['values'] as $key=>$value 
 $timezones .= "$key,$value\n";
 }
 	?>	
-	<textarea name="mc_user_settings[my_calendar_tz_default][values]" id="tz_values" cols="40" rows="8"><?php echo trim($timezones); ?></textarea>
+	<textarea name="mc_user_settings[my_calendar_tz_default][values]" id="tz_values" cols="60" rows="8"><?php echo trim($timezones); ?></textarea>
 	</p>
 </fieldset>
 
@@ -404,7 +407,7 @@ foreach ( $mc_user_settings['my_calendar_location_default']['values'] as $key=>$
 $locations .= "$key,$value\n";
 }
 ?>
-	<textarea name="mc_user_settings[my_calendar_location_default][values]" id="loc_values" cols="40" rows="8"><?php echo trim($locations); ?></textarea>
+	<textarea name="mc_user_settings[my_calendar_location_default][values]" id="loc_values" cols="60" rows="8"><?php echo trim($locations); ?></textarea>
 	</p>
 	<p>
 	<label for="loc_type"><?php _e('Location Type','my-calendar'); ?></label><br />
