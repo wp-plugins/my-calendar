@@ -81,25 +81,12 @@ function my_calendar_draw_event($event, $type="calendar", $process_date) {
 	}
 
     $header_details .=  "\n<div class='$type-event'>\n";
-		if ( get_option('mc_show_link_on_title') == 'true' ) { // this doesn't exist yet.
-			if ( $event->event_link_expires == 0 ) {
-				$event_link = $event->event_link;
-			} else {
-				if ( my_calendar_date_comp( $event->event_end,date_i18n('Y-m-d',time()+$offset ) ) ) {
-					$event_link = '';
-				} else {
-					$event_link = $event->event_link;		
-				}
-			}  
-			if ($event_link != '') {
-				$mytitle = '<a href="'.$event_link.'" class="my-link">'.stripslashes($event->event_title).' &raquo; </a>';
-			} else {
-				$mytitle = stripslashes($event->event_title);	
-			}	
-		} else {
-			$mytitle = stripslashes($event->event_title);
-		}
-	if ($type == 'calendar') { 
+	$array = event_as_array($event);
+	$templates = get_option('my_calendar_templates');
+	$title_template = ($templates['title'] == '' )?'{title}':$templates['title'];
+	$mytitle = jd_draw_template($array,$title_template);
+	//$mytitle = stripslashes($event->event_title); // turn this into a template
+	if ($type == 'calendar') {
 		$toggle = " <a href='#' class='mc-toggle mc-expand'><img src='".MY_CALENDAR_DIRECTORY."/images/event-details.png' alt='".__('Event Details','my-calendar')."' /></a>";
 	} else {
 		$toggle = "";
@@ -263,7 +250,7 @@ function mc_build_date_switcher() {
 // Actually do the printing of the calendar
 // Compared to searching for and displaying events
 // this bit is really rather easy!
-function my_calendar($name,$format,$category,$showkey,$shownav) {
+function my_calendar($name,$format,$category,$showkey,$shownav,$month='',$yr='') {
     global $wpdb;	
 	if ($category == "") {
 	$category=null;
@@ -302,24 +289,21 @@ function my_calendar($name,$format,$category,$showkey,$shownav) {
     $name_months = array(1=>__('January','my-calendar'),__('February','my-calendar'),__('March','my-calendar'),__('April','my-calendar'),__('May','my-calendar'),__('June','my-calendar'),__('July','my-calendar'),__('August','my-calendar'),__('September','my-calendar'),__('October','my-calendar'),__('November','my-calendar'),__('December','my-calendar'));
 	$offset = (60*60*get_option('gmt_offset'));
     // If we don't pass arguments we want a calendar that is relevant to today
-    if (empty($_GET['month']) || empty($_GET['yr'])) {
+    $c_day = date("d",time()+($offset));	
+    if (empty($_GET['month']) || empty($_GET['yr']) && ($month == '' || $yr == '')) {
         $c_year = date("Y",time()+($offset));
         $c_month = date("m",time()+($offset));
-        $c_day = date("d",time()+($offset));
-    }
+    } else {
+		if ( isset($_GET['month']) && isset($_GET['yr']) ) {
+		$c_year = $_GET['yr'];
+		$c_month = $_GET['month'];
+		} else {
+		$c_year = $yr;
+		$c_month = $month;
+		}
+	}
     // Years get funny if we exceed 3000, so we use this check
-    if ($_GET['yr'] <= 3000 && $_GET['yr'] >= 0) {
- 
-        if ( isset($_GET['month']) ) {
-               $c_year = (int) $_GET['yr'];
-               $c_month = (int) $_GET['month'];
-               $c_day = date("d",time()+($offset));
-        } else {
-		// No valid month causes the calendar to default to today			
-               $c_year = date("Y",time()+($offset));
-               $c_month = date("m",time()+($offset));
-               $c_day = date("d",time()+($offset));
-        }
+    if ( $year <= 3000 && $year >= 0) {
     } else {
 		// No valid year causes the calendar to default to today	
         $c_year = date("Y",time()+($offset));
@@ -342,6 +326,9 @@ function my_calendar($name,$format,$category,$showkey,$shownav) {
 	} else {
 		$category_label = "";
 	}
+		$pLink = my_calendar_prev_link($c_year,$c_month,$format);
+		$nLink = my_calendar_next_link($c_year,$c_month,$format);
+
     // Start the calendar and add header and navigation
 		$my_calendar_body .= "<div id=\"jd-calendar\" class=\"$format\">";
 		// Add the calendar table and heading
@@ -357,12 +344,13 @@ function my_calendar($name,$format,$category,$showkey,$shownav) {
 			$my_calendar_body .= mc_build_date_switcher();
 		}
 	    // The header of the calendar table and the links. Note calls to link functions
+		
 		if ($shownav == 'yes') {
 	    $my_calendar_body .= '
 						<div class="my-calendar-nav">
 						<ul>
-						<li class="my-calendar-prev">' . my_calendar_prev_link($c_year,$c_month,$format) . '</li>
-	                    <li class="my-calendar-next">' . my_calendar_next_link($c_year,$c_month,$format) . '</li>
+						<li class="my-calendar-prev"><a id="prevMonth" href="' . my_calendar_permalink_prefix() . 'month='.$pLink['month'].'&amp;yr=' . $pLink['yr'] . '#jd-calendar" rel="nofollow">'.$pLink['label'].' &raquo;</a></li>
+	                    <li class="my-calendar-next"><a id="nextMonth" href="' . my_calendar_permalink_prefix() . 'month='.$nLink['month'].'&amp;yr=' . $nLink['yr'] . '#jd-calendar" rel="nofollow">'.$nLink['label'].' &raquo;</a></li>
 						</ul>
 	                    </div>';
 		}
@@ -374,8 +362,10 @@ function my_calendar($name,$format,$category,$showkey,$shownav) {
 				$my_calendar_body .= "\n<h2 class=\"my-calendar-heading\">$category_label".__('Calendar','my-calendar')."</h2>\n";
 			}
 		// determine which header text to show depending on number of months displayed;
-		$my_calendar_body .= (get_option('my_calendar_show_months') <= 1)?'<h3 class="my-calendar-month">'.__('Events in','my-calendar').' '.$name_months[(int)$c_month].' '.$c_year.$caption_text."</h3>\n":'<h3 class="my-calendar-month">'.$name_months[(int)$c_month].'&thinsp;&ndash;&thinsp;'.$name_months[(int)$c_month+$num_months-1].' '.$c_year.$caption_text."</h3>\n";
-		$my_calendar_body .= '<div class="my-calendar-header">';
+		$num_months = get_option('my_calendar_show_months');
+		$my_calendar_body .= ($num_months <= 1)?'<h3 class="my-calendar-month">'.__('Events in','my-calendar').' '.$name_months[(int)$c_month].' '.$c_year.$caption_text."</h3>\n":
+		'<h3 class="my-calendar-month">'.$name_months[(int)$c_month].'&thinsp;&ndash;&thinsp;'.$name_months[(int)($nLink['month']-1)].' '.$nLink['yr'].$caption_text."</h3>\n";
+		$my_calendar_body .= '<div class="my-calendar-header">'; // this needs work
 	    // We want to know if we should display the date switcher
 		$my_calendar_body .= ( get_option('display_jump') == 'true' )?mc_build_date_switcher():'';
 
@@ -383,8 +373,8 @@ function my_calendar($name,$format,$category,$showkey,$shownav) {
 	    $my_calendar_body .= '
 						<div class="my-calendar-nav">
 						<ul>
-						<li class="my-calendar-prev">' . my_calendar_prev_link($c_year,$c_month,$format) . '</li>
-	                    <li class="my-calendar-next">' . my_calendar_next_link($c_year,$c_month,$format) . '</li>
+						<li class="my-calendar-prev"><a id="prevMonth" href="' . my_calendar_permalink_prefix() . 'month='.$pLink['month'].'&amp;yr=' . $pLink['yr'] . '#jd-calendar" rel="nofollow">'.$pLink['label'].' &raquo;</a></li>
+	                    <li class="my-calendar-next"><a id="nextMonth" href="' . my_calendar_permalink_prefix() . 'month='.$nLink['month'].'&amp;yr=' . $nLink['yr'] . '#jd-calendar" rel="nofollow">'.$nLink['label'].' &raquo;</a></li>
 						</ul>
 	                    </div>';
 		} 
@@ -456,6 +446,10 @@ if ( $format == "calendar" || $format == "mini" ) {
 			$add_month = 1;
 		}
 		$c_month = (int) $c_month + $add_month;
+		if ($c_month > 12) {
+			$c_month = $c_month - 12;
+			$c_year = $c_year + 1;
+		}
 	    for ($i=1; $i<=31; $i++) {
 		$process_date = date_i18n('Y-m-d',mktime(0,0,0,$c_month,$i,$c_year));
 			$grabbed_events = my_calendar_grab_events($c_year,$c_month,$i,$category);
@@ -515,19 +509,25 @@ function my_calendar_next_link($cur_year,$cur_month,$format) {
   $num_months = get_option('my_calendar_show_months');
   if ($num_months <= 1 || $format=="calendar") {  
 	  if ($cur_month == 12) {
-	      return '<a href="' . my_calendar_permalink_prefix() . 'month=1&amp;yr=' . $next_year . '#jd-calendar" rel="nofollow">'.$next_events.' &raquo;</a>';
+			$nMonth = 1;
+			$nYr = $next_year;
 	    } else {
 	      $next_month = $cur_month + 1;
-	      return '<a href="' . my_calendar_permalink_prefix() . 'month='.$next_month.'&amp;yr=' . $cur_year . '#jd-calendar" rel="nofollow">'.$next_events.' &raquo;</a>';
+		  $nMonth = $next_month;
+		  $nYr = $cur_year;
 	    }
 	} else {
 		$next_month = (($cur_month + $num_months) > 12)?(($cur_month + $num_months) - 12):($cur_month + $num_months);
-		if ($cur_month >= (12-$num_months)) {	  
-		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$next_month.'&amp;yr=' . $next_year . '#jd-calendar" rel="nofollow">'.$next_events.' &raquo;</a>';
+		if ($cur_month >= (12-$num_months)) {	 
+			$nMonth = $next_month;
+			$nYr = $next_year;
 		} else {
-		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$next_month.'&amp;yr=' . $cur_year . '#jd-calendar" rel="nofollow">'.$next_events.' &raquo;</a>';
+			$nMonth = $next_month;
+			$nYr = $cur_year;		
 		}	
 	}
+	$output = array('month'=>$nMonth,'yr'=>$nYr,'label'=>$next_events);
+	return $output;
 }
 
 // Configure the "Previous" link in the calendar
@@ -537,19 +537,25 @@ function my_calendar_prev_link($cur_year,$cur_month,$format) {
   $num_months = get_option('my_calendar_show_months');
   if ($num_months <= 1 || $format=="calendar") {  
 		if ($cur_month == 1) {
-	      return '<a href="' . my_calendar_permalink_prefix() . 'month=12&amp;yr='. $last_year .'#jd-calendar" rel="nofollow">&laquo; '.$previous_events.'</a>';
+			$pMonth = 12;
+			$pYr = $last_year;
 	    } else {
 	      $next_month = $cur_month - 1;
-	      return '<a href="' . my_calendar_permalink_prefix() . 'month='.$next_month.'&amp;yr=' . $cur_year . '#jd-calendar" rel="nofollow">&laquo; '.$previous_events.'</a>';
+		  $pMonth = $next_month;
+		  $pYr = $cur_year;
 	    }
 	} else {
 		$next_month = ($cur_month > $num_months)?($cur_month - $num_months):(($cur_month - $num_months) + 12);
-		if ($cur_month <= $num_months) {	  
-		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$next_month.'&amp;yr=' . $last_year . '#jd-calendar" rel="nofollow">&laquo; '.$previous_events.'</a>';
+		if ($cur_month <= $num_months) {
+			$pMonth = $next_month;
+			$pYr = $last_year;
 		} else {
-		  return '<a href="' . my_calendar_permalink_prefix() . 'month='.$next_month.'&amp;yr=' . $cur_year . '#jd-calendar" rel="nofollow">&laquo; '.$previous_events.'</a>';
+			$pMonth = $next_month;
+			$pYr = $cur_year;		
 		}	
-	}	
+	}
+	$output = array('month'=>$pMonth,'yr'=>$pYr,'label'=>$previous_events);
+	return $output;
 }
 
 
@@ -593,7 +599,7 @@ if (strpos($current_url,"/&")!==false || strpos($current_url,".php&")!==false) {
 }
 
 	if ($type == 'saved') {
-		$locations = $wpdb->get_results("SELECT $data FROM " . MY_CALENDAR_LOCATIONS_TABLE . " ORDER BY location_id ASC", ARRAY_A );
+		$locations = $wpdb->get_results("SELECT DISTINCT $data FROM " . MY_CALENDAR_LOCATIONS_TABLE . " ORDER BY $data ASC", ARRAY_A );
 	} else {
 		$data = get_option( 'mc_user_settings' );
 		$locations = $data['my_calendar_location_default']['values'];

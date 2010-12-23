@@ -35,12 +35,13 @@ function mc_user_profile() {
 		}
 		
 		?>
-		
+		<?php if ( get_option('mc_user_settings_enabled') == 'true' ) { ?>
 		<h3><?php _e('My Calendar User Settings', 'my-calendar'); ?></h3>
 		
 		<table class="form-table">
 		<?php echo $form; ?>	
 		</table>
+		<?php } ?>
 		
 <?php
 }

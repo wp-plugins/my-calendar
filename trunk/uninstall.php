@@ -59,6 +59,19 @@ delete_option('mc_event_mail_message');
 delete_option('mc_event_approve');		
 delete_option('mc_event_approve_perms');
 delete_option('mc_no_fifth_week');		
+delete_option('mc_user_settings');
+delete_option( 'my_calendar_ajaxjs' );
+delete_option( 'ajax_javascript' );
+delete_option( 'my_calendar_templates');
+delete_option( 'mc_user_settings_enabled');
+delete_option( 'mc_user_location_type'); 
+delete_option( 'my_calendar_show_js');
+delete_option( 'mc_event_open');
+delete_option( 'mc_event_closed');
+delete_option( 'mc_event_registration');
+delete_option( 'mc_short');
+delete_option( 'mc_desc');
+delete_option( 'mc_location_type');
 
 add_option('my_calendar_uninstalled','true');
 }
