@@ -164,7 +164,7 @@ echo "
 <style type=\"text/css\">
 <!--
 .js #jd-calendar .details { display: none; }
-// Styles from My Calendar - Joseph C Dolson http://www.joedolson.com/
+// Styles from My Calendar 1.6.3 - Joseph C Dolson http://www.joedolson.com/
 $styles
 
 $category_styles
