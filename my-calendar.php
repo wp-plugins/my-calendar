@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.6.2
+Version: 1.6.3
 */
 /*  Copyright 2009-2010  Joe Dolson (email : joe@joedolson.com)
 
@@ -78,6 +78,18 @@ include(dirname(__FILE__).'/my-calendar-upgrade-db.php' );
 include(dirname(__FILE__).'/my-calendar-user.php' );
 include(dirname(__FILE__).'/my-calendar-output.php' );
 include(dirname(__FILE__).'/my-calendar-templates.php' );
+
+if ( version_compare( get_bloginfo( 'version' ) , '3.0' , '<' ) && is_ssl() ) {
+	$wp_content_url = str_replace( 'http://' , 'https://' , get_option( 'siteurl' ) );
+} else {
+	$wp_content_url = get_option( 'siteurl' );
+}
+$wp_content_url .= '/wp-content';
+$wp_content_dir = ABSPATH . 'wp-content';
+$wp_plugin_url = $wp_content_url . '/plugins';
+$wp_plugin_dir = $wp_content_dir . '/plugins';
+$wpmu_plugin_url = $wp_content_url . '/mu-plugins';
+$wpmu_plugin_dir = $wp_content_dir . '/mu-plugins';
 
 // Before we get on with the functions, we need to define the initial style used for My Calendar
 
@@ -156,6 +168,10 @@ echo "
 $styles
 
 $category_styles
+
+.mc-event-visible {
+display: block!important;
+}
 -->
 </style>";
 
@@ -224,13 +240,13 @@ function my_calendar_add_display_javascript() {
 }
 add_action('init','my_calendar_add_display_javascript');
 
+
 function my_calendar_fouc() {
 global $wp_query;
 	if ( get_option('calendar_javascript') != 1 || get_option('list_javascript') != 1 || get_option('mini_javascript') != 1 ) {
 		$scripting = "\n<script type='text/javascript'>\n";
-		$scripting .= "var \$mc = jQuery.noConflict();\n";
-		$scripting .= "\$mc('html').addClass('js');\n";
-		$scripting .= "\$mc(document).ready(function() { \$mc('html').removeClass('js') });\n";
+		$scripting .= "jQuery('html').addClass('js');\n";
+		$scripting .= "jQuery(document).ready(function($) { \$('html').removeClass('js') });\n";
 		$scripting .= "</script>\n";
 		$this_post = $wp_query->get_queried_object();
 		if (is_object($this_post)) {
@@ -245,18 +261,19 @@ global $wp_query;
 		if ( @in_array( $id, $array ) || trim ( get_option( 'my_calendar_show_js' ) ) == '' ) {	
 			echo $scripting;
 		}
-	} 
+	}
 }
 
 function my_calendar_calendar_javascript() {
-  global $wpdb, $wp_query;
+  global $wpdb, $wp_query, $wp_plugin_url;
 
-	if ( get_option('calendar_javascript') != 1 || get_option('list_javascript') != 1 || get_option('mini_javascript') != 1 ) {
+	if ( get_option('calendar_javascript') != 1 || get_option('list_javascript') != 1 || get_option('mini_javascript') != 1 || get_option('ajax_javascript') != 1 ) {
 	  
 	$list_js = stripcslashes( get_option( 'my_calendar_listjs' ) );
 	$cal_js = stripcslashes( get_option( 'my_calendar_caljs' ) );
 	$mini_js = stripcslashes( get_option( 'my_calendar_minijs' ) );
-
+    $ajax_js = stripcslashes( get_option( 'my_calendar_ajaxjs' ) );
+	
 		$this_post = $wp_query->get_queried_object();
 		if (is_object($this_post)) {
 			$id = $this_post->ID;
@@ -272,6 +289,7 @@ function my_calendar_calendar_javascript() {
 			if ( get_option('calendar_javascript') != 1 ) {	$scripting .= "\n".$cal_js; }
 			if ( get_option('list_javascript') != 1 ) {	$scripting .= "\n".$list_js; }
 			if ( get_option('mini_javascript') != 1 ) {	$scripting .= "\n".$mini_js; }
+			if ( get_option('ajax_javascript') != 1 ) { $scripting .= "\n".$ajax_js; }
 			$scripting .= "</script>";
 			echo $scripting;
 		}
@@ -326,7 +344,7 @@ function my_calendar_locations($atts) {
 				'type' => 'saved',
 				'datatype' => 'name'
 			), $atts));
-	return my_calendar_locations_list($show,$type);
+	return my_calendar_locations_list($show,$type,$datatype);
 }
 
 function get_current_url() {
@@ -348,10 +366,10 @@ add_shortcode('my_calendar_locations','my_calendar_locations');
 
 // Function to check what version of My Calendar is installed and install if needed
 function check_my_calendar() {
-	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs, $mini_styles;
+	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $mini_styles;
 	$current_version = get_option('my_calendar_version');
 	// If current version matches, don't bother running this.
-	if ($current_version == '1.6.2') {
+	if ($current_version == '1.6.3') {
 		return true;
 	}
 
@@ -391,10 +409,12 @@ function check_my_calendar() {
 		$upgrade_path[] = "1.6.0";
 	} else if ( version_compare( $current_version, "1.6.2", "<" ) ) {
 		$upgrade_path[] = "1.6.2";
+	} else if ( version_compare( $current_version, "1.6.3", "<" ) ) {
+		$upgrade_path[] = "1.6.3";
 	}
 	
 	// having determined upgrade path, assign new version number
-	update_option( 'my_calendar_version' , '1.6.2' );
+	update_option( 'my_calendar_version' , '1.6.3' );
 
 	// Now we've determined what the current install is or isn't 
 	if ( $new_install == true ) {
@@ -556,10 +576,17 @@ function check_my_calendar() {
 								'WV'=>"West Virginia", 
 								'WI'=>"Wisconsin", 
 								'WY'=>"Wyoming"),
-					)			
+					)
 				);			
 				update_option('mc_user_settings',$mc_user_settings);			
 			break;
+			case '1.6.3':
+				add_option( 'my_calendar_ajaxjs',$initial_ajaxjs );
+				add_option( 'ajax_javascript', 1 );
+				add_option( 'my_calendar_templates', array(
+					'title'=>'{title}'
+				));
+			break;			
 			default:
 			break;
 		}
@@ -1121,7 +1148,6 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 		}
     }
 	
-
 	$events = $wpdb->get_results("
 	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string event_recur = 'Y' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin)
 	UNION ALL
@@ -1145,7 +1171,7 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 	UNION ALL
 	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string event_recur = 'D' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats) >= (TO_DAYS('$date') - TO_DAYS(event_end))	
 	ORDER BY event_id");
-	
+				
 	if (!empty($events)) {
 			foreach($events as $event) {
 				switch ($event->event_recur) {

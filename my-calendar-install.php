@@ -1,53 +1,73 @@
 <?php
 
 // define global variables;
-global $initial_listjs, $initial_caljs, $initial_minijs, $initial_style, $initial_db, $initial_loc_db, $initial_cat_db, $default_template, $mini_styles;
+global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_style, $initial_db, $initial_loc_db, $initial_cat_db, $default_template, $mini_styles;
+
+$initial_ajaxjs = "jQuery(document).ready(function(){
+
+	jQuery('.calendar .my-calendar-nav a').live('click', function(e){
+		e.preventDefault();
+
+		var link = jQuery(this).attr('href');
+
+		jQuery('#jd-calendar.calendar').html('Loading...');
+		jQuery('#jd-calendar.calendar').load(link+' #jd-calendar.calendar > *', function() {
+			jQuery('.calendar-event').children().not('h3').hide();		
+		});
+		
+	});	
+	
+	jQuery('.mini .my-calendar-nav a').live('click', function(e){
+		e.preventDefault();
+
+		var link = jQuery(this).attr('href');
+
+		jQuery('#jd-calendar.mini').html('Loading...');
+		jQuery('#jd-calendar.mini').load(link+' #jd-calendar.mini > *', function() {
+			jQuery('.mini .has-events').children().not('.trigger').hide();		
+		});
+		
+	});	
+
+	jQuery('.list .my-calendar-nav a').live('click', function(e){
+		e.preventDefault();
+
+		var link = jQuery(this).attr('href');
+
+		jQuery('#jd-calendar.list').html('Loading...');
+		jQuery('#jd-calendar.list').load(link+' #jd-calendar.list > *', function() {
+			jQuery('#calendar-list li').children().not('.event-date').hide();	
+			jQuery('#calendar-list li.current-day').children().show();
+		});
+		
+	});		
+	
+});";
 
   // defaults will go into the options table on a new install
-$initial_listjs = 'var $j = jQuery.noConflict();
-
-$j(document).ready(function() {
-  $j("#calendar-list li").children().not(".event-date").hide();
-  $j("#calendar-list li.current-day").children().show();
-  $j(".event-date").toggle(
+$initial_listjs = 'jQuery(document).ready(function($) {
+  $("#calendar-list li").children().not(".event-date").hide();
+  $("#calendar-list li.current-day").children().show();
+  $(".event-date").live("click",
      function() {
-     $j("#calendar-list li").children().not(".event-date").hide();
-	 $j(this).parent().children().not(".event-date").show("fast");
-     }, 
-     function() { 
-     $j("#calendar-list li").children().not(".event-date").hide("fast");
-     }
-     );
+	 $(this).parent().children().not(".event-date").toggleClass("mc-event-visible");
+     });
 });';  
   
-$initial_caljs = 'var $j = jQuery.noConflict();
-
-$j(document).ready(function() {
-  $j(".calendar-event").children().not("h3").hide();
-  $j(".calendar-event h3").toggle(
+$initial_caljs = 'jQuery(document).ready(function($) {
+  $(".calendar-event").children().not("h3").hide();
+  $(".calendar-event h3").live("click",
      function() {
-     $j(".calendar-event").children().not("h3").hide();
-	 $j(this).parent().children().not("h3").show("fast");
-     }, 
-     function() { 
-     $j(".calendar-event").children().not("h3").hide("fast");
-     }
-     );
+	 $(this).parent().children().not("h3").toggleClass("mc-event-visible");
+	 });
 });';  
 
-$initial_minijs = 'var $j = jQuery.noConflict();
-
-$j(document).ready(function() {
-  $j(".mini .has-events").children().not(".trigger").hide();
-  $j(".has-events .trigger").toggle(
+$initial_minijs = 'jQuery(document).ready(function($) {
+  $(".mini .has-events").children().not(".trigger").hide();
+  $(".mini .has-events .trigger").live("click",
      function() {
-     $j(".mini .has-events").children().not(".trigger").hide();
-	 $j(this).parent().children().not(".trigger").show("fast");
-     }, 
-     function() { 
-     $j(".mini .has-events").children().not(".trigger").hide("fast");
-     }
-     );
+	 $(this).parent().children().not(".trigger").toggleClass("mc-event-visible"); 
+	 });
 });';
   
 $initial_style = "
@@ -490,7 +510,7 @@ $initial_loc_db = "CREATE TABLE " . MY_CALENDAR_LOCATIONS_TABLE . " (
  
  
 function mc_default_settings( ) {
-global $initial_style, $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_db, $initial_loc_db, $initial_cat_db;
+global $initial_style, $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db;
 // no arguments
 	add_option('can_manage_events','edit_posts');
 	add_option('my_calendar_style',"$initial_style");
@@ -515,9 +535,11 @@ global $initial_style, $default_template, $initial_listjs, $initial_caljs, $init
 	add_option('calendar_javascript',0);
 	add_option('list_javascript',0);
 	add_option('mini_javascript',0);
+	add_option('ajax_javascript',1);	
 	add_option('my_calendar_minijs',$initial_minijs);
 	add_option('my_calendar_listjs',$initial_listjs);
 	add_option('my_calendar_caljs',$initial_caljs);
+	add_option('my_calendar_ajaxjs',$initial_ajaxjs);
 	add_option('my_calendar_notime_text','N/A');
 	add_option('my_calendar_hide_icons','false');	 
 	add_option('mc_event_link_expires','no');
@@ -525,6 +547,8 @@ global $initial_style, $default_template, $initial_listjs, $initial_caljs, $init
 	add_option('mc_input_options',array('event_short'=>'on','event_desc'=>'on','event_category'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'on','event_location'=>'on','event_location_dropdown'=>'on') );	
 	add_option('mc_input_options_administrators','false');
 	add_option('mc_event_mail','false');
+	add_option('mc_desc','true');
+	add_option('mc_short','false');
 	add_option('mc_event_mail_subject','');
 	add_option('mc_event_mail_to','');
 	add_option('mc_event_mail_message','');
@@ -639,6 +663,9 @@ global $initial_style, $default_template, $initial_listjs, $initial_caljs, $init
 	add_option('mc_user_location_type','state');
 	add_option( 'my_calendar_show_js','' );   
 	add_option( 'my_calendar_show_css','' );   
+	add_option( 'my_calendar_templates', array(
+		'title'=>'{title}'
+	));	
 	
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($initial_db);

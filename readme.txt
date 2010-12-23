@@ -62,6 +62,16 @@ Languages available:
 
 == Changelog ==
 
+= 1.6.3 =
+
+* Updated jQuery to fix conflicts in previous versions and so behaviors would work with AJAX navigation. Not updated by upgrade; use Behaviors reset to apply. 
+* Incorporated option to enable AJAX navigation for next/previous navigation.
+* Fixed bug with multi-month display in list format where January could not be displayed.
+* Revised settings page for clarity. 
+* Fixed some default settings issues.
+* Fixed a bug where the locations lists didn't respect the datatype parameter.
+* Added templating to event titles for calendar grid or list output.
+
 = 1.6.2 = 
 
 * Fixed broken style editor. (The way it was broken was awfully weird...kinda wonder how I did it!)

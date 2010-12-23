@@ -1,4 +1,5 @@
 <?php
+
 // Display the admin configuration page
 
 if ($_POST['import'] == 'true') {
@@ -101,10 +102,57 @@ function edit_my_calendar_config() {
  
   if (isset($_POST['permissions'])) {
   
+  // management
 	$new_perms = $_POST['permissions'];
+	  update_option('can_manage_events',$new_perms);	  	
+	$mc_event_approve = ($_POST['mc_event_approve']=='on')?'true':'false';
+	  update_option('mc_event_approve',$mc_event_approve);
+	$mc_event_approve_perms = $_POST['mc_event_approve_perms'];
+	  update_option('mc_event_approve_perms',$mc_event_approve_perms);
+    echo "<div class=\"updated\"><p><strong>".__('Permissions Settings saved','my-calendar').".</strong></p></div>";
+	
+	}
+ // output
+	if (isset($_POST['my_calendar_show_months']) ) {
 	$my_calendar_show_months = (int) $_POST['my_calendar_show_months'];
 	$my_calendar_date_format = $_POST['my_calendar_date_format'];
-	$mc_input_options_administrators = ($_POST['mc_input_options_administrators']=='on')?'true':'false';
+	$disp_author = ($_POST['display_author']=='on')?'true':'false';
+	$disp_jump = ($_POST['display_jump']=='on')?'true':'false';
+	$my_calendar_show_map = ($_POST['my_calendar_show_map']=='on')?'true':'false';
+	$my_calendar_show_address = ($_POST['my_calendar_show_address']=='on')?'true':'false';
+	$my_calendar_show_heading = ($_POST['my_calendar_show_heading']=='on')?'true':'false';
+	$mc_event_registration = ($_POST['mc_event_registration']=='on')?'true':'false';
+	$mc_short = ($_POST['mc_short']=='on')?'true':'false';
+	$mc_desc = ($_POST['mc_desc']=='on')?'true':'false';	
+	$my_calendar_hide_icons = ($_POST['my_calendar_hide_icons']=='on')?'true':'false';
+	$mc_no_fifth_week = $_POST['mc_no_fifth_week'];
+	$my_calendar_event_link_expires = ($_POST['mc_event_link_expires']=='on')?'true':'false'; 
+	$mc_apply_color = $_POST['mc_apply_color'];	
+	$mc_title_template = $_POST['mc_title_template'];
+	$templates = get_option('my_calendar_templates');
+	$templates['title'] = $mc_title_template;
+	  update_option('my_calendar_templates',$templates);
+	  update_option('display_author',$disp_author);
+	  update_option('display_jump',$disp_jump);
+	  update_option('my_calendar_show_months',$my_calendar_show_months);
+	  update_option('my_calendar_date_format',$my_calendar_date_format);
+	  update_option('my_calendar_show_map',$my_calendar_show_map);
+	  update_option('my_calendar_show_address',$my_calendar_show_address); 
+	  update_option('my_calendar_show_heading',$my_calendar_show_heading);	
+	  update_option('my_calendar_hide_icons',$my_calendar_hide_icons);
+	  update_option('mc_event_link_expires',$my_calendar_event_link_expires);
+	  update_option('mc_apply_color',$mc_apply_color);
+	  update_option('mc_event_registration',$mc_event_registration);
+	  update_option('mc_short',$mc_short);
+	  update_option('mc_desc',$mc_desc);	 
+	  update_option('mc_no_fifth_week',$mc_no_fifth_week);
+
+  // styles (output)
+    echo "<div class=\"updated\"><p><strong>".__('Output Settings saved','my-calendar').".</strong></p></div>";
+}	
+ // input
+ if (isset($_POST['mc_input'])) {
+	$mc_input_options_administrators = ($_POST['mc_input_options_administrators']=='on')?'true':'false'; 
 	$mc_input_options = array(
 			'event_short'=>$_POST['mci_event_short'],
 			'event_desc'=>$_POST['mci_event_desc'],
@@ -115,27 +163,29 @@ function edit_my_calendar_config() {
 			'event_location'=>$_POST['mci_event_location'],
 			'event_location_dropdown'=>$_POST['mci_event_location_dropdown']
 			);
-	$disp_author = ($_POST['display_author']=='on')?'true':'false';
-	$disp_jump = ($_POST['display_jump']=='on')?'true':'false';
-	$my_calendar_show_map = ($_POST['my_calendar_show_map']=='on')?'true':'false';
-	$my_calendar_show_address = ($_POST['my_calendar_show_address']=='on')?'true':'false';
-	$my_calendar_show_heading = ($_POST['my_calendar_show_heading']=='on')?'true':'false';
+	  update_option('mc_input_options',$mc_input_options);
+	  update_option('mc_input_options_administrators',$mc_input_options_administrators);	
+    echo "<div class=\"updated\"><p><strong>".__('Input Settings saved','my-calendar').".</strong></p></div>";
+	  }	  
+  // custom text
+  if (isset( $_POST['mc_previous_events'] ) ) {
 	$my_calendar_notime_text = $_POST['my_calendar_notime_text'];
 	$mc_previous_events = $_POST['mc_previous_events'];
 	$mc_next_events = $_POST['mc_next_events'];
 	$mc_event_open = $_POST['mc_event_open'];
 	$mc_event_closed = $_POST['mc_event_closed'];
-	$mc_event_registration = ($_POST['mc_event_registration']=='on')?'true':'false';
-	$mc_short = ($_POST['mc_short']=='on')?'true':'false';
-	$mc_desc = ($_POST['mc_desc']=='on')?'true':'false';
-	$my_calendar_hide_icons = ($_POST['my_calendar_hide_icons']=='on')?'true':'false';
-	$mc_apply_color = $_POST['mc_apply_color'];
-	$mc_no_fifth_week = $_POST['mc_no_fifth_week'];
 	$my_calendar_caption = $_POST['my_calendar_caption'];
-	$my_calendar_event_link_expires = ($_POST['mc_event_link_expires']=='on')?'true':'false';
-
+	  update_option('my_calendar_notime_text',$my_calendar_notime_text);
+	  update_option('mc_next_events',$mc_next_events);
+	  update_option('mc_previous_events',$mc_previous_events);	
+	  update_option('my_calendar_caption',$my_calendar_caption);
+	  update_option('mc_event_open',$mc_event_open);
+	  update_option('mc_event_closed',$mc_event_closed);
+    echo "<div class=\"updated\"><p><strong>".__('Custom text settings saved','my-calendar').".</strong></p></div>";
+	 
+	 }
 // Mail function by Roland
-
+	if (isset($_POST['mc_email']) ) {
 	$mc_event_mail = ($_POST['mc_event_mail']=='on')?'true':'false';
 	$mc_event_mail_to = $_POST['mc_event_mail_to'];
 	$mc_event_mail_subject = $_POST['mc_event_mail_subject'];
@@ -144,45 +194,21 @@ function edit_my_calendar_config() {
 	  update_option('mc_event_mail_subject',$mc_event_mail_subject);
 	  update_option('mc_event_mail_message',$mc_event_mail_message);
 	  update_option('mc_event_mail',$mc_event_mail);
+    echo "<div class=\"updated\"><p><strong>".__('Email notice settings saved','my-calendar').".</strong></p></div>";
 
-// approve feature by Roland
-	$mc_event_approve = ($_POST['mc_event_approve']=='on')?'true':'false';
-	  update_option('mc_event_approve',$mc_event_approve);
-	$mc_event_approve_perms = $_POST['mc_event_approve_perms'];
-	  update_option('mc_event_approve_perms',$mc_event_approve_perms);
-	  update_option('can_manage_events',$new_perms);	  
-	  update_option('display_author',$disp_author);
-	  update_option('display_jump',$disp_jump);
-	  update_option('my_calendar_show_months',$my_calendar_show_months);
-	  update_option('my_calendar_date_format',$my_calendar_date_format);
-	  update_option('my_calendar_show_map',$my_calendar_show_map);
-	  update_option('my_calendar_show_address',$my_calendar_show_address); 
-	  update_option('my_calendar_show_heading',$my_calendar_show_heading);
-	  update_option('my_calendar_notime_text',$my_calendar_notime_text);
-	  update_option('mc_next_events',$mc_next_events);
-	  update_option('mc_previous_events',$mc_previous_events);	  
-	  update_option('my_calendar_hide_icons',$my_calendar_hide_icons);
-	  update_option('my_calendar_caption',$my_calendar_caption);
-	  update_option('mc_event_link_expires',$my_calendar_event_link_expires);
-	  update_option('mc_apply_color',$mc_apply_color);
-	  update_option('mc_event_open',$mc_event_open);
-	  update_option('mc_event_closed',$mc_event_closed);
-	  update_option('mc_event_registration',$mc_event_registration);
-	  update_option('mc_short',$mc_short);
-	  update_option('mc_desc',$mc_desc);
-	  update_option('mc_input_options',$mc_input_options);
-	  update_option('mc_input_options_administrators',$mc_input_options_administrators);
-	  update_option('mc_no_fifth_week',$mc_no_fifth_week);
-	$mc_user_settings_enabled = $_POST['mc_user_settings_enabled'];
+	  }
+// Custom User Settings
+	if (isset($_POST['mc_user'])) {
+	  $mc_user_settings_enabled = $_POST['mc_user_settings_enabled'];
 	  update_option('mc_user_settings_enabled',$mc_user_settings_enabled);
 	$mc_location_type = $_POST['mc_location_type'];
 	  update_option('mc_location_type',$mc_location_type);
 	$mc_user_settings = $_POST['mc_user_settings'];
 	$mc_user_settings['my_calendar_tz_default']['values'] = csv_to_array($mc_user_settings['my_calendar_tz_default']['values']);
 	$mc_user_settings['my_calendar_location_default']['values'] = csv_to_array($mc_user_settings['my_calendar_location_default']['values']);
-    update_option('mc_user_settings',$mc_user_settings);
+    update_option('mc_user_settings',$mc_user_settings);  
 	  
-    echo "<div class=\"updated\"><p><strong>".__('Settings saved','my-calendar').".</strong></p></div>";
+    echo "<div class=\"updated\"><p><strong>".__('User custom settings saved','my-calendar').".</strong></p></div>";
 	}
 
   // Pull the values out of the database that we need for the form
@@ -200,6 +226,8 @@ function edit_my_calendar_config() {
   $mc_event_approve_perms = get_option('mc_event_approve_perms');
   $disp_jump = get_option('display_jump');
   $mc_no_fifth_week = get_option('mc_no_fifth_week');
+  $templates = get_option('my_calendar_templates');
+  $mc_title_template = $templates['title'];
 ?>
     <div class="wrap">
 <?php 
@@ -208,13 +236,11 @@ echo my_calendar_check_db();
     <h2><?php _e('My Calendar Options','my-calendar'); ?></h2>
     <?php jd_show_support_box(); ?>
 <div id="poststuff" class="jd-my-calendar">
-
-
-
+<h2><?php _e('Calendar Settings','my-calendar'); ?></h2>
 <div class="postbox">
-	<h3><?php _e('Calendar Settings','my-calendar'); ?></h3>
+	<h3><?php _e('Calendar Management Settings','my-calendar'); ?></h3>
 	<div class="inside">	
-    <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
+    <form name="my-calendar"  id="my-calendar-manage" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
     <fieldset>
     <legend><?php _e('Calendar Options: Management','my-calendar'); ?></legend>
     <p>
@@ -239,11 +265,18 @@ echo my_calendar_check_db();
 	<input type="checkbox" id="mc_event_approve" name="mc_event_approve" <?php jd_cal_checkCheckbox('mc_event_approve','true'); ?> /> <label for="mc_event_approve"><?php _e('Enable approval options.','my-calendar'); ?></label>
 	</p>
 	</fieldset>
+		<p>
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Approval Settings','my-calendar'); ?> &raquo;" />
+	</p>
+	</form>
+	</div>
+</div>
+<div class="postbox">
+	<h3><?php _e('Calendar Text Settings','my-calendar'); ?></h3>
+	<div class="inside">
+	    <form name="my-calendar"  id="my-calendar-text" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
 <fieldset>
 	<legend><?php _e('Calendar Options: Customize Text','my-calendar'); ?></legend>
-	<p>
-	<input type="checkbox" id="my_calendar_show_heading" name="my_calendar_show_heading" <?php jd_cal_checkCheckbox('my_calendar_show_heading','true'); ?> /> <label for="my_calendar_show_heading"><?php _e('Show Heading for Calendar','my-calendar'); ?></label>
-    </p>	
 	<p>
 	<label for="my_calendar_notime_text"><?php _e('Label for events without a specific time','my-calendar'); ?></label> <input type="text" id="my_calendar_notime_text" name="my_calendar_notime_text" value="<?php if ( get_option('my_calendar_notime_text') == "") { _e('N/A','my-calendar'); } else { echo stripslashes( get_option('my_calendar_notime_text') ); } ?>" />
 	</p>
@@ -263,8 +296,26 @@ echo my_calendar_check_db();
 	<label for="my_calendar_caption"><?php _e('Additional caption text','my-calendar'); ?></label> <input type="text" id="my_calendar_caption" name="my_calendar_caption" value="<?php echo stripslashes( get_option('my_calendar_caption') ); ?>" /><br /><small><?php _e('The calendar caption is the text containing the displayed month and year in either list or calendar format. This text will be displayed following that existing text.','my-calendar'); ?></small>
 	</p>
 	</fieldset>	
+		<p>
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Custom Text Settings','my-calendar'); ?> &raquo;" />
+	</p>
+	</form>
+</div>
+</div>
+<div class="postbox">
+	<h3><?php _e('Calendar Output Settings','my-calendar'); ?></h3>
+	<div class="inside">
+ <form name="my-calendar"  id="my-calendar-output" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
 	<fieldset>
 	<legend><?php _e('Calendar Options: Output','my-calendar'); ?></legend>
+	<p>
+	<label for="mc_title_template"><?php _e('Event title template','my-calendar'); ?></label> 
+	<input type="text" name="mc_title_template" id="mc_title_template" size="30" value="<?php echo $mc_title_template; ?>" /><br />
+	<a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-help#templates"><?php _e("Shortcode Help",'my-calendar'); ?></a> <?php _e('All template shortcodes are available.','my-calendar'); ?>
+	</p>
+	<p>
+	<input type="checkbox" id="my_calendar_show_heading" name="my_calendar_show_heading" <?php jd_cal_checkCheckbox('my_calendar_show_heading','true'); ?> /> <label for="my_calendar_show_heading"><?php _e('Show Heading for Calendar','my-calendar'); ?></label>
+    </p>	
 	<p>
 	<label for="my_calendar_show_months"><?php _e('In list mode, show how many months of events at a time:','my-calendar'); ?></label> <input type="text" size="3" id="my_calendar_show_months" name="my_calendar_show_months" value="<?php echo $my_calendar_show_months; ?>" />
 	</p>
@@ -300,12 +351,32 @@ echo my_calendar_check_db();
 	<input type="checkbox" id="mc_event_registration" name="mc_event_registration" <?php jd_cal_checkCheckbox('mc_event_registration','true'); ?> /> <label for="mc_event_registration"><?php _e('Show current availability status of events.','my-calendar'); ?></label>
 	</p>
 	<p>
-	<input type="checkbox" id="mc_no_fifth_week" name="mc_no_fifth_week" <?php jd_cal_checkCheckbox('mc_no_fifth_week','true'); ?> /> <label for="mc_no_fifth_week"><?php _e('If a recurring event is scheduled for a date which doesn\'t exist (such as the 5th Wednesday in February), move it back one week.','my-calendar'); ?></label>
+	<input type="checkbox" id="mc_no_fifth_week" name="mc_no_fifth_week" value="true" <?php jd_cal_checkCheckbox('mc_no_fifth_week','true'); ?> /> <label for="mc_no_fifth_week"><?php _e('If a recurring event is scheduled for a date which doesn\'t exist (such as the 5th Wednesday in February), move it back one week.','my-calendar'); ?></label>
 	<?php _e('If this option is unchecked, recurring events which fall on dates which don\'t exist will simply not be shown on the calendar.','my-calendar'); ?>
 	</p>
 	</fieldset>
 	<fieldset>
+	<legend><?php _e('Calendar Options: Style','my-calendar'); ?></legend>	
+	<p>
+    <input type="radio" id="mc_apply_color_default" name="mc_apply_color" value="default" <?php jd_cal_checkCheckbox('mc_apply_color','default'); ?> /> <label for="mc_apply_color_default"><?php _e('Default usage of category colors.','my-calendar'); ?></label><br />
+    <input type="radio" id="mc_apply_color_to_titles" name="mc_apply_color" value="font"  <?php jd_cal_checkCheckbox('mc_apply_color','font'); ?> /> <label for="mc_apply_color_to_titles"><?php _e('Apply category colors to event titles as a font color.','my-calendar'); ?></label><br />
+	<input type="radio" id="mc_apply_bgcolor_to_titles" name="mc_apply_color" value="background"  <?php jd_cal_checkCheckbox('mc_apply_color','background'); ?> /> <label for="mc_apply_bgcolor_to_titles"><?php _e('Apply category colors to event titles as a background color.','my-calendar'); ?></label>	
+	</p>
+	</fieldset>
+		<p>
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Output Settings','my-calendar'); ?> &raquo;" />
+	</p>
+</form>
+</div>
+</div>
+<div class="postbox">
+	<h3><?php _e('Calendar Input Settings','my-calendar'); ?></h3>
+	<div class="inside">
+<form name="my-calendar"  id="my-calendar-input" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
+	<fieldset>
 	<legend><?php _e('Calendar Options: Input','my-calendar'); ?></legend>
+	<div><input type='hidden' name='mc_input' value='true' /></div>
+
 	<?php 
 		$input_options = get_option('mc_input_options');
 		$input_labels = array('event_location_dropdown'=>__('Show Event Location Dropdown Menu','my-calendar'),'event_short'=>__('Show Event Short Description field','my-calendar'),'event_desc'=>__('Show Event Description Field','my-calendar'),'event_category'=>__('Show Event Category field','my-calendar'),'event_link'=>__('Show Event Link field','my-calendar'),'event_recurs'=>__('Show Event Recurrence Options','my-calendar'),'event_open'=>__('Show event registration options','my-calendar'),'event_location'=>__('Show event location fields','my-calendar') );
@@ -320,25 +391,23 @@ echo my_calendar_check_db();
 	<input type="checkbox" id="mc_input_options_administrators" name="mc_input_options_administrators" <?php jd_cal_checkCheckbox('mc_input_options_administrators','true'); ?> /> <label for="mc_input_options_administrators"><strong><?php _e('Administrators see all input options','my-calendar'); ?></strong></label>
 	</p>
 	</fieldset>
-	<fieldset>
-	<legend><?php _e('Calendar Options: Style','my-calendar'); ?></legend>	
-	<p>
-    <input type="radio" id="mc_apply_color_default" name="mc_apply_color" value="default" <?php jd_cal_checkCheckbox('mc_apply_color','default'); ?> /> <label for="mc_apply_color_default"><?php _e('Default usage of category colors.','my-calendar'); ?></label><br />
-    <input type="radio" id="mc_apply_color_to_titles" name="mc_apply_color" value="font"  <?php jd_cal_checkCheckbox('mc_apply_color','font'); ?> /> <label for="mc_apply_color_to_titles"><?php _e('Apply category colors to event titles as a font color.','my-calendar'); ?></label><br />
-	<input type="radio" id="mc_apply_bgcolor_to_titles" name="mc_apply_color" value="background"  <?php jd_cal_checkCheckbox('mc_apply_color','background'); ?> /> <label for="mc_apply_bgcolor_to_titles"><?php _e('Apply category colors to event titles as a background color.','my-calendar'); ?></label>	
+		<p>
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Input Settings','my-calendar'); ?> &raquo;" />
 	</p>
-	</fieldset>
-
+</form>
+</div>
+</div>
+<div class="postbox">
+	<h3><?php _e('Calendar Email Settings','my-calendar'); ?></h3>
+	<div class="inside">
+<form name="my-calendar"  id="my-calendar-email" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
 	<fieldset>
 	<legend><?php _e('Calendar Options: Email Notifications','my-calendar'); ?></legend>
-
+<div><input type='hidden' name='mc_email' value='true' /></div>
 	<p>
 	
-	<input type="checkbox" id="mc_event_mail" name="mc_event_mail" <?php jd_cal_checkCheckbox('mc_event_mail','true'); ?> /> <label for="mc_event_mail"><?php _e('Send Email Notifications when new events are scheduled or reserved.','my-calendar'); ?></label>
+	<input type="checkbox" id="mc_event_mail" name="mc_event_mail" <?php jd_cal_checkCheckbox('mc_event_mail','true'); ?> /> <label for="mc_event_mail"><strong><?php _e('Send Email Notifications when new events are scheduled or reserved.','my-calendar'); ?></strong></label>
 	</p>
-
-<?php if ( get_option('mc_event_mail') == "true") { ?>
-
 	<p>
 	<label for="mc_event_mail_to"><?php _e('Notification messages are sent to: ','my-calendar'); ?></label> <input type="text" id="mc_event_mail_to" name="mc_event_mail_to" size="40"  value="<?php if ( get_option('mc_event_mail_to') == "") { bloginfo('admin_email'); } else { echo stripslashes( get_option('mc_event_mail_to') ); } ?>" />
 	</p>	
@@ -348,24 +417,32 @@ echo my_calendar_check_db();
 	</p>
 
 	<p>
-	<label for="mc_event_mail_message"><?php _e('Message Body','my-calendar'); ?></label><br> <textarea rows="6" cols="80"  id="mc_event_mail_message" name="mc_event_mail_message"/><?php if ( get_option('mc_event_mail_message') == "") { _e('New Event:','my-calendar'); echo "\n{title}: {date}, {time} - {event_status}"; } else { echo stripcslashes( get_option('mc_event_mail_message') ); } ?></textarea><br />
+	<label for="mc_event_mail_message"><?php _e('Message Body','my-calendar'); ?></label><br /> <textarea rows="6" cols="80"  id="mc_event_mail_message" name="mc_event_mail_message"><?php if ( get_option('mc_event_mail_message') == "") { _e('New Event:','my-calendar'); echo "\n{title}: {date}, {time} - {event_status}"; } else { echo stripcslashes( get_option('mc_event_mail_message') ); } ?></textarea><br />
 	<a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-help#templates"><?php _e("Shortcode Help",'my-calendar'); ?></a> <?php _e('All template shortcodes are available.','my-calendar'); ?>
 	</p>
-<?php } else { ?>
-
-<?php } ?>
-
 	</fieldset>
+		<p>
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Email Settings','my-calendar'); ?> &raquo;" />
+	</p>
+</form>
+</div>
+</div>
+<div class="postbox">
+	<h3><?php _e('Calendar User Settings','my-calendar'); ?></h3>
+	<div class="inside">
+<form name="my-calendar"  id="my-calendar-user" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
+<div><input type='hidden' name='mc_user' value='true' /></div>
+
 	<fieldset>
 	<legend><?php _e('My Calendar: User Settings','my-calendar'); ?></legend>
 	<p>
 	
-	<input type="checkbox" id="mc_user_settings_enabled" name="mc_user_settings_enabled" value="true" <?php jd_cal_checkCheckbox('mc_user_settings_enabled','true'); ?> /> <label for="mc_user_settings_enabled"><?php _e('Enable Registered User\'s Customized Settings','my-calendar'); ?></label>
+	<input type="checkbox" id="mc_user_settings_enabled" name="mc_user_settings_enabled" value="true" <?php jd_cal_checkCheckbox('mc_user_settings_enabled','true'); ?> /> <label for="mc_user_settings_enabled"><strong><?php _e('Allow registered users to provide timezone or location presets in their user profiles.','my-calendar'); ?></strong></label>
 	</p>
 
-<?php if ( get_option('mc_user_settings_enabled') == "true") { ?>
-<?php	$mc_user_settings = get_option('mc_user_settings'); ?>
-
+<?php	
+$mc_user_settings = get_option('mc_user_settings'); 
+?>
 <fieldset>
 <legend><?php _e('Timezone Settings','my-calendar'); ?></legend>
 <p><?php _e('These settings provide registered users with the ability to select a time zone in their user profile. When they view your calendar, the times for events will display the time the event happens in their time zone as well as the entered value.','my-calendar'); ?></p>
@@ -419,11 +496,9 @@ $locations .= "$key,$value\n";
 
 </fieldset>
 
-<?php } ?>
-	
 	</fieldset>
 	<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Settings','my-calendar'); ?> &raquo;" />
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save User Settings','my-calendar'); ?> &raquo;" />
 	</p>
   </form>
   <?php
