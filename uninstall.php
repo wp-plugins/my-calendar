@@ -72,7 +72,16 @@ delete_option( 'mc_event_registration');
 delete_option( 'mc_short');
 delete_option( 'mc_desc');
 delete_option( 'mc_location_type');
-
+delete_option( 'mc_skip_holidays_category');
+delete_option( 'mc_skip_holidays');
+delete_option( 'mc_event_edit_perms');
+delete_option( 'my_calendar_widgets_defaults');
+delete_option( 'my_calendar_css_file');
+delete_option( 'mc_db_version');
+delete_option( 'my_calendar_stored_styles');
+delete_option('mc_show_rss');
+delete_option('mc_show_ical');	
 add_option('my_calendar_uninstalled','true');
+
 }
 ?>

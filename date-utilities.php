@@ -90,7 +90,8 @@ function jd_date_diff($start, $end="NOW") {
 			return $preday[0];
 		}
 }
-
+// @param integer $date_of_event The current month's date;
+// @return integer $week_of_event The week of the month this date falls in;
 function week_of_month($date_of_event) {
 					switch ($date_of_event) {
 						case ($date_of_event>=1 && $date_of_event <8):
@@ -111,4 +112,25 @@ function week_of_month($date_of_event) {
 					}
 					return $week_of_event;
 }
+
+/**
+ * Function to find the start date of a week in a year
+ * @param integer $week The week number of the year
+ * @param integer $year The year of the week we need to calculate on
+ * @param string  $start_of_week The start day of the week you want returned
+ * @return integer The unix timestamp of the date is returned
+ */
+function get_week_date( $week, $year, $start_of_week=0 ) {
+   // Get the target week of the year with reference to the starting day of
+   // the year
+   $target_week = strtotime("$week week", strtotime("1 January $year"));
+   $date_info = getdate($target_week);
+   $day_of_week = $date_info['wday'];
+   // normal start day of the week is Monday
+    $adjusted_date = $day_of_week - $start_of_week;
+   // Get the timestamp of that day
+   $first_day = strtotime("-$adjusted_date day",$target_week);
+   return $first_day;
+}
+
 ?>

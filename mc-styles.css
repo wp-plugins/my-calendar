@@ -49,11 +49,8 @@ border: 1px solid #aaa;
 border-radius: 5px;
 margin: 15px 0;
 }
-.n4 {width: 32px;}
-.n5 {width: 130px;}
-.n6 {width: 64px;}
-.n7 {width: 130px;}
-.n8 {width: 256px;}
+.n4 {width: 42px;}
+
 .category-color {
 width: 1.2em;
 height: 1.2em;
@@ -74,4 +71,8 @@ ul.links li {
 float: left;
 margin: 0 5px 10px;
 font-size: .9em;
+}
+#my_calendar_old_styles {
+float: right;
+margin-left: 660px;
 }

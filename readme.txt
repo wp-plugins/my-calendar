@@ -2,8 +2,8 @@
 Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager
-Requires at least: 2.7
-Tested up to: 3.1-alpha
+Requires at least: 2.9.2
+Tested up to: 3.1-RC2
 Stable tag: trunk
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
@@ -40,6 +40,7 @@ Languages available:
 * Dutch (Luud Heck)
 * Japanese ([Daisuke Abe](http://www.alter-ego.jp/))
 * Italian ([Sabir Musta](http://mustaphasabir.altervista.org))
+* Czech ([Jan Rybarik](http://janrybarik.cz))
 
 == Installation ==
 
@@ -61,6 +62,26 @@ Languages available:
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.7.0 =
+
+* Fix in AJAX navigation for IE
+* Fix in JavaScript to re-activate close button
+* Fixed bug with locations list not registering current location type in form mode
+* Fixed bug with upcoming events and today's events output when regions limits were set
+* Fixed bug with upcoming events producing incorrect dates for events recurring on a specific day of the month.
+* Revision of Widgeting setup to offer multi-widget support (will require you to re-setup your widgets)
+* Revision of style editor to use external stylesheets. 
+* Revision of style support to add option for custom stylesheets stored outside of plugin directory
+* Added: multiple base stylesheets
+* Added: Event markup in hCal format
+* Added Weekly mode for list and grid view
+* Added RSS and iCal exports for upcoming events (enable and disable in settings)
+* Added option to block display of an event if there is an event that day which is in a designated 'Holiday' category.
+* Added permission setting to allow non-administrators to edit or delete any event.
+* Added Czech translation (to 1.6.3)
+* Updated Italian and Danish translations
+* Security: Implemented nonces
 
 = 1.6.3 =
 
@@ -351,4 +372,4 @@ The widgets both use templates to determine what they'll display. You can edit t
 
 == Upgrade Notice ==
 
-Minor bug fixes with recurring events.
+Upgrading to version 1.6.4 will require you to re-configure your upcoming events and today's events widgets.

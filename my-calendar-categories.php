@@ -10,8 +10,9 @@ function my_dirlist($directory) {
     while ($file = readdir($handler)) {
         // if $file isn't this directory or its parent, 
         // add it to the results array
-        if ($file != '.' && $file != '..')
+        if ( $file != '.' && $file != '..' && (exif_imagetype($directory.'/'.$file) == IMAGETYPE_GIF ||  exif_imagetype($directory.'/'.$file) == IMAGETYPE_PNG ||  exif_imagetype($directory.'/'.$file) == IMAGETYPE_JPEG ) ) {
             $results[] = $file;
+		}
     }
     // tidy up: close the handler
     closedir($handler);
@@ -20,6 +21,39 @@ function my_dirlist($directory) {
     return $results;
 }
 
+function my_csslist($directory) {
+    // create an array to hold directory list
+    $results = array();
+    // create a handler for the directory
+    $handler = opendir($directory);
+    // keep going until all files in directory have been read
+    while ($file = readdir($handler)) {
+        // if $file isn't this directory or its parent, 
+        // add it to the results array
+        if ( $file != '.' && $file != '..' ) {
+            $results[] = $file;
+		}
+    }
+    // tidy up: close the handler
+    closedir($handler);
+    // done!
+	sort($results,SORT_STRING);
+    return $results;
+}
+
+function is_custom_icon() {
+	global $wp_plugin_dir;
+	if (file_exists( $wp_plugin_dir . '/my-calendar-custom/' ) ) {
+		$results = my_dirlist( $wp_plugin_dir . '/my-calendar-custom/' );
+		if ( empty($results) ) {
+			return false;
+		} else {
+			return true;
+		}
+	} else {
+		return false;
+	}
+}
 
 function my_calendar_manage_categories() {
   global $wpdb;
@@ -34,6 +68,11 @@ echo my_calendar_check_db();
 ?>
 <?php
   // We do some checking to see what we're doing
+  if (!empty($_POST) ) {
+	$nonce=$_REQUEST['_wpnonce'];
+    if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
+  }
+  
   if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
       $sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_name='".mysql_real_escape_string($_POST['category_name'])."', category_color='".mysql_real_escape_string($_POST['category_color'])."', category_icon='".mysql_real_escape_string($_POST['category_icon'])."'";
       $results = $wpdb->query($sql);
@@ -75,14 +114,17 @@ echo my_calendar_check_db();
 }
 
 function mc_edit_category_form($view='edit',$cur_cat='') {
-global $path;
-if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
-		$directory = WP_PLUGIN_DIR . '/my-calendar-custom/';
+global $path, $wp_plugin_dir,$wp_plugin_url;
+	if ( is_custom_icon() ) {
+		$directory = $wp_plugin_dir . '/my-calendar-custom/';
 		$path = '/my-calendar-custom';
+		$iconlist = my_dirlist($directory);
 	} else {
 		$directory = dirname(__FILE__).'/icons/';
-		$path = '/my-calendar/icons';
+		$path = '/'.dirname(plugin_basename(__FILE__)).'/icons';
+		$iconlist = my_dirlist($directory);
     }
+
 ?>
 <?php if ($view == 'add') { ?>
     <h2><?php _e('Add Category','my-calendar'); ?></h2>
@@ -97,6 +139,7 @@ if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
 <h3><?php _e('Category Editor','my-calendar'); ?></h3>
 	<div class="inside">	   
     <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories">
+		<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>
 		<?php if ($view == 'add') { ?>	
 			<div>
 			<input type="hidden" name="mode" value="add" />
@@ -114,14 +157,13 @@ if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
 				<label for="category_color"><?php _e('Category Color (Hex format)','my-calendar'); ?>:</label> <input type="text" id="category_color" name="category_color" class="input" size="10" maxlength="7" value="<?php echo $cur_cat->category_color ?>" /><br />
 				<label for="category_icon"><?php _e('Category Icon','my-calendar'); ?>:</label> <select name="category_icon" id="category_icon">
 <?php
-$files = my_dirlist($directory);
-foreach ($files as $value) {
+foreach ($iconlist as $value) {
 if ($cur_cat->category_icon == $value) {
 	$selected = " selected='selected'";
 } else {
 	$selected = "";
 }
-	echo "<option value='$value'$selected style='background: url(".WP_PLUGIN_URL."$path/$value) left 50% no-repeat;'>$value</option>";
+	echo "<option value='$value'$selected style='background: url(".$wp_plugin_url."$path/$value) left 50% no-repeat;'>$value</option>";
 }
 ?>			
 				</select>					
@@ -138,7 +180,7 @@ if ($cur_cat->category_icon == $value) {
 }
 
 function mc_manage_categories() {
-	global $wpdb, $path;
+	global $wpdb, $path, $wp_plugin_url;
 ?>
  <h2><?php _e('Manage Categories','my-calendar'); ?></h2>
 <?php
@@ -169,7 +211,7 @@ function mc_manage_categories() {
 	     <th scope="row"><?php echo $category->category_id; ?></th>
 	     <td><?php echo $category->category_name; ?></td>
 	     <td style="background-color:<?php echo $category->category_color; ?>;">&nbsp;</td>
-	     <td style="background-color:<?php echo $category->category_color; ?>;"><img src="<?php echo WP_PLUGIN_URL . $path; ?>/<?php echo $category->category_icon; ?>" alt="" /></td>		 
+	     <td style="background-color:<?php echo $category->category_color; ?>;"><img src="<?php echo $wp_plugin_url . $path; ?>/<?php echo $category->category_icon; ?>" alt="" /></td>		 
 	     <td><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories&amp;mode=edit&amp;category_id=<?php echo $category->category_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a></td>
 	     <?php
 		       if ($category->category_id == 1) {

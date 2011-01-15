@@ -1,18 +1,24 @@
 <?php
 
-function jd_draw_template($array,$template) {
+function jd_draw_template($array,$template,$type='list') {
 	//1st argument: array of details
 	//2nd argument: template to print details into
 	foreach ($array as $key=>$value) {
 	    $search = "{".$key."}";
+		if ($type == 'list') {
+			if ($key == 'link' && $value == '') { $value = get_bloginfo('url'); }
+		}
 		$template = stripcslashes(str_replace($search,$value,$template));
+		$rss_search = "{rss_$key}";
+		$value = utf8_encode(htmlentities( $value,ENT_COMPAT,get_bloginfo('charset') ) );
+		$template = stripcslashes(str_replace($rss_search,$value,$template));
 	}
 	return $template;
 }
 
 // Draw an event but customise the HTML for use in the widget
 function event_as_array($event) {
-  global $wpdb;
+  global $wpdb,$wp_plugin_dir,$wp_plugin_url;
   // My Calendar must be updated to run this function
   check_my_calendar();
 
@@ -22,12 +28,12 @@ $category_name = $event->category_name;
 $category_color = $event->category_color;
 $category_icon = $event->category_icon;
 
-		if ( file_exists( WP_PLUGIN_DIR . '/my-calendar-custom/' ) ) {
+		if ( file_exists( $wp_plugin_dir . '/my-calendar-custom/' ) ) {
 				$path = '/my-calendar-custom';
 			} else {
-				$path = '/my-calendar/icons';
+				$path = '/'.dirname(plugin_basename(__FILE__)).'/icons';
 		    }
-		$category_icon = WP_PLUGIN_URL . $path . '/' . $category_icon;
+		$category_icon = $wp_plugin_url . $path . '/' . $category_icon;
 
 $e = get_userdata($event->event_author);
 $host = get_userdata($event->event_host);
@@ -109,7 +115,10 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 	$details['endtime'] = date( get_option('time_format'),strtotime($event->event_endtime));
 	}
 	$details['author'] = $e->display_name;
-	$details['host'] = $host->display_name;	
+	$details['host'] = $host->display_name;
+	$details['host_email'] = $host->user_email;
+	if ($host->display_name == '') { $details['host'] = $e->display_name; }
+	if ($host->user_email == '') { $details['host_email'] = $e->user_email; }	
 	if ( $event->event_link_expires == 0 ) {
 	$details['link'] = $event->event_link;
 	} else {
@@ -147,6 +156,34 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 	$details['event_open'] = $event_open;
 	$details['icon'] = $category_icon;
 	$details['color'] = $category_color;
+	$details['guid'] = sanitize_title($event->event_title).'-'.rand(100000000,999999999);
+	$details['rssdate'] = date( 'D, d M Y H:i:s +0000', strtotime( $date .' '. $details['time'] ) );
+	$details['ical_description'] = str_replace( "\r", "=0D=0A=", $event->event_desc );
+
+	$details['ical_location'] = $event->event_label .' '. $event->event_street .' '. $event->event_street2 .' '. $event->event_city .' '. $event->event_state .' '. $event->event_postcode;
+	
+		/* ical format */
+		$ical_description = mc_newline_replace(strip_tags($event->event_desc));
+
+		
+		$offset = get_option('gmt_offset');
+		$negative = ($offset < 0)?'true':'false';
+		$offset = str_pad( abs( $offset ),'0',STR_PAD_LEFT );
+		$offset = ($negative = 'true')?'-':'+' . $offset;
+		$offset = str_pad( $offset,5,'0',STR_PAD_RIGHT );
+		
+		if ($event->event_endtime == '00:00:00') {
+			$endtime = '23:59:00';
+		} else {
+			$endtime = $event->event_endtime;
+		}
+		
+		$dtstart = date("Ymd\THi00", strtotime($event->event_begin .' '. $event->event_time) ).'Z'; 
+		$dtend = date("Ymd\THi00", strtotime($event->event_end .' '. $endtime ) ).'Z';	
+	
+	$details['ical_desc'] = $ical_description;
+	$details['ical_start'] = $dtstart;
+	$details['ical_end'] = $dtend;
 	if ($event->event_approve == 1 ) {
 		$details['event_status'] = __('Published','my-calendar');
 	} else {
@@ -154,5 +191,8 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 	}
 	
   return $details;
+}
+function mc_newline_replace($string) {
+  return (string)str_replace(array("\r", "\r\n", "\n"), '', $string);
 }
 ?>
