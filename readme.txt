@@ -33,10 +33,11 @@ This calendar is a branch from [Kieran O'Shea's Calendar plugin](http://wordpres
 Languages available:
 
 * American English (Default)
-* Brazilian Portuguese ([Daniel Prata](daniel@grudaemmim.com.br))
+* Brazilian Portuguese (Leonardo Kfoury)
 * Spanish ([Esteban Truelsegaard](http://www.netmdp.com))
 * Danish ([Jakob Smith](http://www.omkalfatring.dk/))
 * German (Roland P)
+* Finnish (Ilpo Puhakka)
 * Dutch (Luud Heck)
 * Japanese ([Daisuke Abe](http://www.alter-ego.jp/))
 * Italian ([Sabir Musta](http://mustaphasabir.altervista.org))
