@@ -7,7 +7,8 @@ function edit_my_calendar_behaviors() {
   check_my_calendar();
 
   if ( isset($_POST['my_calendar_caljs'] ) ) {
-
+    $nonce=$_REQUEST['_wpnonce'];
+    if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
 	$my_calendar_caljs = $_POST['my_calendar_caljs'];
 	$my_calendar_listjs = $_POST['my_calendar_listjs'];
 	$my_calendar_minijs = $_POST['my_calendar_minijs'];
@@ -66,6 +67,7 @@ echo my_calendar_check_db();
 	<h3><?php _e('Calendar Behavior Settings','my-calendar'); ?></h3>
 	<div class="inside">	
     <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-behaviors">
+	<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>
 	<p>
 	<label for="my_calendar_show_js"><?php _e('Apply JavaScript only on these pages (comma separated page IDs)','my-calendar'); ?></label> <input type="text" id="my_calendar_show_js" name="my_calendar_show_js" value="<?php echo $my_calendar_show_js; ?>" />
 	</p>    
@@ -108,7 +110,7 @@ echo my_calendar_check_db();
     <fieldset>
 	<legend><?php _e('Calendar Behaviors: AJAX Navigation','my-calendar'); ?></legend>
 	<p>
-	<input type="checkbox" id="reset_ajaxjs" name="reset_ajaxjs" /> <label for="reset_ajaxjs"><?php _e('Reset the My Calendar AJAX Javascript','my-calendar'); ?></label> <input type="checkbox" id="ajax_javascript" name="ajax_javascript" value="1" <?php jd_cal_checkCheckbox('ajax_javascript',1); ?> /> <label for="ajax_javascript"><?php _e('Disable List Javascript Effects','my-calendar'); ?></label> 
+	<input type="checkbox" id="reset_ajaxjs" name="reset_ajaxjs" /> <label for="reset_ajaxjs"><?php _e('Reset the My Calendar AJAX Javascript','my-calendar'); ?></label> <input type="checkbox" id="ajax_javascript" name="ajax_javascript" value="1" <?php jd_cal_checkCheckbox('ajax_javascript',1); ?> /> <label for="ajax_javascript"><?php _e('Disable AJAX Effects','my-calendar'); ?></label> 
 	</p>
 	<p>
 	<label for="ajax-javascript"><?php _e('Edit the jQuery scripts for My Calendar AJAX navigation','my-calendar'); ?></label><br /><textarea id="ajax-javascript" name="my_calendar_ajaxjs" rows="8" cols="80"><?php echo $my_calendar_ajaxjs; ?></textarea>

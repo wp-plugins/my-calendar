@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.6.3
+Version: 1.7.0
 */
 /*  Copyright 2009-2010  Joe Dolson (email : joe@joedolson.com)
 
@@ -23,7 +23,7 @@ Version: 1.6.3
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
+$mc_version = '1.7.0';
 // Enable internationalisation
 $plugin_dir = basename(dirname(__FILE__));
 load_plugin_textdomain( 'my-calendar','wp-content/plugins/'.$plugin_dir, $plugin_dir);
@@ -44,16 +44,48 @@ add_action('wp_head', 'my_calendar_wp_head');
 // Add the function that deals with deleted users
 add_action('delete_user', 'mc_deal_with_deleted_user');
 // Add the widgets if we are using version 2.8
-add_action('widgets_init', 'init_my_calendar_today');
-add_action('widgets_init', 'init_my_calendar_upcoming');
+add_action('widgets_init', create_function('', 'return register_widget("my_calendar_today_widget");'));
+add_action('widgets_init', create_function('', 'return register_widget("my_calendar_upcoming_widget");'));
 // custom user actions
 add_action( 'show_user_profile', 'mc_user_profile' );
 add_action( 'edit_user_profile', 'mc_user_profile' );
 add_action( 'profile_update', 'mc_user_save_profile');
 
+add_action( 'init', 'my_calendar_add_feed' );
+function my_calendar_add_feed() {
+	add_feed( 'my-calendar-rss', 'my_calendar_rss' );
+	add_feed( 'my-calendar-ics', 'my_calendar_ical' );
+}
+
 register_activation_hook( __FILE__, 'check_my_calendar' );
 // add filters to text widgets which will process shortcodes
 add_filter( 'widget_text', 'do_shortcode', 9 );
+
+if ( ! function_exists( 'is_ssl' ) ) {
+	function is_ssl() {
+		if ( isset($_SERVER['HTTPS']) ) {
+		if ( 'on' == strtolower($_SERVER['HTTPS']) )
+		 return true;
+		if ( '1' == $_SERVER['HTTPS'] )
+		 return true;
+		} elseif ( isset($_SERVER['SERVER_PORT']) && ( '443' == $_SERVER['SERVER_PORT'] ) ) {
+		return true;
+		}
+	return false;
+	}
+}
+
+if ( version_compare( get_bloginfo( 'version' ) , '3.0' , '<' ) && is_ssl() ) {
+	$wp_content_url = str_replace( 'http://' , 'https://' , get_option( 'siteurl' ) );
+} else {
+	$wp_content_url = get_option( 'siteurl' );
+}
+$wp_content_url .= '/wp-content';
+$wp_content_dir = ABSPATH . 'wp-content';
+$wp_plugin_url = $wp_content_url . '/plugins';
+$wp_plugin_dir = $wp_content_dir . '/plugins';
+$wpmu_plugin_url = $wp_content_url . '/mu-plugins';
+$wpmu_plugin_dir = $wp_content_dir . '/mu-plugins';
 
 function jd_calendar_plugin_action($links, $file) {
 	if ($file == plugin_basename(dirname(__FILE__).'/my-calendar.php')) {
@@ -78,20 +110,11 @@ include(dirname(__FILE__).'/my-calendar-upgrade-db.php' );
 include(dirname(__FILE__).'/my-calendar-user.php' );
 include(dirname(__FILE__).'/my-calendar-output.php' );
 include(dirname(__FILE__).'/my-calendar-templates.php' );
+//include(dirname(__FILE__).'/my-calendar-export.php' );
+include(dirname(__FILE__).'/my-calendar-rss.php' );
+include(dirname(__FILE__).'/my-calendar-ical.php' );
 
-if ( version_compare( get_bloginfo( 'version' ) , '3.0' , '<' ) && is_ssl() ) {
-	$wp_content_url = str_replace( 'http://' , 'https://' , get_option( 'siteurl' ) );
-} else {
-	$wp_content_url = get_option( 'siteurl' );
-}
-$wp_content_url .= '/wp-content';
-$wp_content_dir = ABSPATH . 'wp-content';
-$wp_plugin_url = $wp_content_url . '/plugins';
-$wp_plugin_dir = $wp_content_dir . '/plugins';
-$wpmu_plugin_url = $wp_content_url . '/mu-plugins';
-$wpmu_plugin_dir = $wp_content_dir . '/mu-plugins';
-
-// Before we get on with the functions, we need to define the initial style used for My Calendar
+//include(dirname(__FILE__).'/my-calendar-postevent.php' );
 
 function jd_show_support_box() {
 ?>
@@ -130,7 +153,7 @@ function my_calendar_wp_head() {
   global $wpdb, $wp_query;
   // If the calendar isn't installed or upgraded this won't work
   check_my_calendar();
-  $styles = stripcslashes(get_option('my_calendar_style'));
+  $styles = mc_get_style_path( get_option( 'my_calendar_css_file' ),'url' );
 	if ( get_option('my_calendar_use_styles') != 'true' ) {
 	
 		$this_post = $wp_query->get_queried_object();
@@ -146,6 +169,7 @@ function my_calendar_wp_head() {
 		if ( @in_array( $id, $array ) || get_option( 'my_calendar_show_css' ) == '' ) {
 	
 // generate category colors
+$category_styles = '';
 $categories = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " ORDER BY category_id ASC");
 	foreach ( $categories as $category ) {
 			$class = "mc_".sanitize_title($category->category_name);
@@ -156,19 +180,17 @@ $categories = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE
 			$type = 'background';
 		}
 		if ( get_option( 'mc_apply_color' )  == 'font' || get_option( 'mc_apply_color' ) == 'background' ) {
-		$category_styles .= "\n#jd-calendar .$class { $type: $color; }";
+		$category_styles .= "\n#jd-calendar .$class .event-title { $type: $color; }";
 		}
 	}	
 	
 echo "
+<link rel=\"stylesheet\" href=\"$styles\" type=\"text/css\" media=\"all\" />
 <style type=\"text/css\">
 <!--
 .js #jd-calendar .details { display: none; }
-// Styles from My Calendar 1.6.3 - Joseph C Dolson http://www.joedolson.com/
-$styles
-
+// Styles from My Calendar - Joseph C Dolson http://www.joedolson.com/
 $category_styles
-
 .mc-event-visible {
 display: block!important;
 }
@@ -211,8 +233,9 @@ add_action( "admin_menu", 'my_calendar_add_javascript' );
 
 // Function to add the javascript to the admin header
 function my_calendar_add_javascript() { 
+global $wp_plugin_url;
 	if ($_GET['page'] == 'my-calendar') {
-		wp_enqueue_script('jquery-ui-datepicker',WP_PLUGIN_URL . '/my-calendar/js/ui.datepicker.js', array('jquery','jquery-ui-core') );
+		wp_enqueue_script('jquery-ui-datepicker',$wp_plugin_url . '/my-calendar/js/ui.datepicker.js', array('jquery','jquery-ui-core') );
 	}
 }
 function my_calendar_write_js() {
@@ -239,7 +262,6 @@ function my_calendar_add_display_javascript() {
 	wp_enqueue_script('jquery');
 }
 add_action('init','my_calendar_add_display_javascript');
-
 
 function my_calendar_fouc() {
 global $wp_query;
@@ -299,9 +321,10 @@ add_action('wp_footer','my_calendar_calendar_javascript');
 add_action('wp_head','my_calendar_fouc');
 
 function my_calendar_add_styles() {
+global $wp_plugin_url;
 	if ($_GET['page'] == 'my-calendar' || $_GET['page'] == 'my-calendar-categories' || $_GET['page'] == 'my-calendar-locations' || $_GET['page'] == 'my-calendar-config' || $_GET['page'] == 'my-calendar-styles' || $_GET['page'] == 'my-calendar-help' || $_GET['page'] == 'my-calendar-behaviors' ) {
-	echo '<link type="text/css" rel="stylesheet" href="'.WP_PLUGIN_URL.'/my-calendar/js/ui.datepicker.css" />';
-	echo '<link type="text/css" rel="stylesheet" href="'.WP_PLUGIN_URL.'/my-calendar/mc-styles.css" />';
+	echo '<link type="text/css" rel="stylesheet" href="'.$wp_plugin_url.'/my-calendar/js/ui.datepicker.css" />';
+	echo '<link type="text/css" rel="stylesheet" href="'.$wp_plugin_url.'/my-calendar/mc-styles.css" />';
 	}
 }
 
@@ -311,12 +334,13 @@ function my_calendar_insert($atts) {
 				'format' => 'calendar',
 				'category' => 'all',
 				'showkey' => 'yes',
-				'shownav' => 'yes'
+				'shownav' => 'yes',
+				'time' => 'month'
 			), $atts));
 	if ( isset($_GET['format']) ) {
 		$format = mysql_real_escape_string($_GET['format']);
-	}
-	return my_calendar($name,$format,$category,$showkey,$shownav);
+	}	
+	return my_calendar($name,$format,$category,$showkey,$shownav,$time);
 }
 
 function my_calendar_insert_upcoming($atts) {
@@ -352,9 +376,9 @@ function get_current_url() {
 	if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
 		$pageURL .= "://";
 		if ($_SERVER["SERVER_PORT"] != "80") {
-			$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+			$pageURL .= $_SERVER["HTTP_HOST"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
 		} else {
-			$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+			$pageURL .= $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
 		}
 	return $pageURL;
 }
@@ -366,10 +390,11 @@ add_shortcode('my_calendar_locations','my_calendar_locations');
 
 // Function to check what version of My Calendar is installed and install if needed
 function check_my_calendar() {
-	global $wpdb, $initial_style, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $mini_styles;
+	global $wpdb, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $mc_version,$stored_styles;
 	$current_version = get_option('my_calendar_version');
 	// If current version matches, don't bother running this.
-	if ($current_version == '1.6.3') {
+
+	if ($current_version == $mc_version) {
 		return true;
 	}
 
@@ -411,19 +436,19 @@ function check_my_calendar() {
 		$upgrade_path[] = "1.6.2";
 	} else if ( version_compare( $current_version, "1.6.3", "<" ) ) {
 		$upgrade_path[] = "1.6.3";
+	} else if ( version_compare( $current_version, "1.7.0", "<" ) ) { 
+		$upgrade_path[] = "1.7.0";
 	}
 	
 	// having determined upgrade path, assign new version number
-	update_option( 'my_calendar_version' , '1.6.3' );
+	update_option( 'my_calendar_version' , $mc_version );
 
 	// Now we've determined what the current install is or isn't 
 	if ( $new_install == true ) {
 		  //add default settings
 		mc_default_settings();
-		$sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_category=1";
-		$wpdb->get_results($sql);
 		$sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_color='#ffffff', category_icon='event.png'";
-		$wpdb->get_results($sql);
+		$wpdb->query($sql);
     } 
 			
 // switch for different upgrade paths
@@ -586,7 +611,73 @@ function check_my_calendar() {
 				add_option( 'my_calendar_templates', array(
 					'title'=>'{title}'
 				));
-			break;			
+			break;	
+			case '1.7.0': 
+				update_option('mc_db_version','1.7.0');
+				add_option('mc_show_rss','false');
+				add_option('mc_show_ical','false');					
+				add_option('mc_skip_holidays','false');	
+				add_option('mc_event_edit_perms','manage_options');
+				$original_styles = get_option('my_calendar_style');
+				if ($original_styles != '') {
+				$stylefile = mc_get_style_path('my-calendar.css');
+					if ( mc_write_styles( $stylefile, $original_styles ) ) {
+						delete_option('my_calendar_style');
+					} else {
+						add_option('my_calendar_file_permissions','false');
+					}
+				}
+				add_option('my_calendar_stored_styles',$stored_styles);
+				update_option('my_calendar_css_file','my-calendar.css');				
+				// convert old widget settings into new defaults
+				$type = get_option('display_upcoming_type');
+				if ($type == 'events') {
+					$before = get_option('display_upcoming_events');
+					$after = get_option('display_past_events');
+				} else {
+					$before = get_option('display_upcoming_days');
+					$after = get_option('display_past_days');
+				}
+				$category = get_option('display_in_category');
+				$today_template = get_option('my_calendar_today_template'); 
+				$upcoming_template = get_option('my_calendar_upcoming_template');
+				$today_title = get_option('my_calendar_today_title');
+				$today_text = get_option('my_calendar_no_events_text');
+				$upcoming_title = get_option('my_calendar_upcoming_title');
+
+				$defaults = array(
+					'upcoming'=>array(	
+						'type'=>$type,
+						'before'=>$before,
+						'after'=>$after,
+						'template'=>$upcoming_template,
+						'category'=>$category,
+						'text'=>'',
+						'title'=>$upcoming_title
+					),
+					'today'=>array(
+						'template'=>$today_template,
+						'category'=>'',
+						'title'=>$today_title,
+						'text'=>$today_text
+					)
+				);
+				add_option('my_calendar_widget_defaults',$defaults);
+				delete_option('display_upcoming_type');
+				delete_option('display_upcoming_events');
+				delete_option('display_past_events');
+				delete_option('display_upcoming_days');
+				delete_option('display_todays','true');
+				delete_option('display_upcoming','true');
+				delete_option('display_upcoming_days',7);				
+				delete_option('display_past_days');
+				delete_option('display_in_category');
+				delete_option('my_calendar_today_template'); 
+				delete_option('my_calendar_upcoming_template');
+				delete_option('my_calendar_today_title');
+				delete_option('my_calendar_no_events_text');
+				delete_option('my_calendar_upcoming_title');			
+			break;
 			default:
 			break;
 		}
@@ -599,11 +690,6 @@ function check_my_calendar() {
 		mc_default_settings();	
 		update_option( 'mc_db_version', '1.4.0' );
 	}
-	// check whether mini version styles exist in current styles, if not, add them
-	if (strpos(get_option('my_calendar_style'),"mini-event") === false) {
-		$cur_styles = get_option('my_calendar_style')."\n".$mini_styles;
-		update_option('my_calendar_style',$cur_styles);
-	}	
 }
 
 function jd_cal_checkCheckbox( $theFieldname,$theValue,$theArray='' ){
@@ -635,12 +721,7 @@ function jd_cal_checkSelect( $theFieldname,$theValue,$theArray='' ){
 function my_calendar_permalink_prefix() {
   // Get the permalink structure from WordPress
   $p_link = get_permalink();
-
-  // Work out what the real URL we are viewing is
-  $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : ""; 
-  $protocol = substr(strtolower($_SERVER["SERVER_PROTOCOL"]), 0, strpos(strtolower($_SERVER["SERVER_PROTOCOL"]), "/")).$s;
-  $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
-  $real_link = $protocol.'://'.$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
+  $real_link = get_current_url();
 
   // Now use all of that to get the My Calendar link prefix
   if (strstr($p_link, '?') && $p_link == $real_link) {
@@ -649,15 +730,22 @@ function my_calendar_permalink_prefix() {
       $link_part = $p_link.'?';
     } else if (strstr($real_link, '?')) {
 	
-		if (isset($_GET['month']) && isset($_GET['yr'])) {
+		if ( isset($_GET['month']) || isset($_GET['yr']) || isset($_GET['week']) ) {
 			$link_part = '';
 			$new_base = split('\?', $real_link);
 			if(count($new_base) > 1) {
 				$new_tail = split('&', $new_base[1]);
 				foreach ($new_tail as $item) {
-					if (!strstr($item, 'month') && !strstr($item, 'yr')) {
-						$link_part .= $item.'&';
-					}
+					if ( isset($_GET['month']) && isset($_GET['yr']) ) {
+						if (!strstr($item, 'month') && !strstr($item, 'yr')) {
+							$link_part .= $item.'&';
+						}
+					} 
+					if ( isset($_GET['week']) && isset($_GET['yr']) ) {
+						if (!strstr($item, 'week') && !strstr($item, 'yr')) {
+							$link_part .= $item.'&';
+						}
+					} 
 				}
 			}
 			$link_part = $new_base[0] . ($link_part ? "?$link_part" : '?');
@@ -734,8 +822,15 @@ global $wpdb;
 		$select_category = "";
 	}
 	$limit_string = mc_limit_string('all');
-	 
-    $events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $select_category $limit_string");
+	if ($select_category != '' && $limit_string != '') {
+	$join = ' AND ';
+	} else if ($select_category == '' && $limit_string != '' ) {
+	$join = ' WHERE ';
+	} else {
+	$join = '';
+	}
+	$limits = $select_category . $join . $limit_string;
+    $events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $limits");
 	$offset = (60*60*get_option('gmt_offset'));
 	$date = date('Y', time()+($offset)).'-'.date('m', time()+($offset)).'-'.date('d', time()+($offset));
     if (!empty($events)) {
@@ -792,19 +887,50 @@ global $wpdb;
 							for ($i=$numback;$i<=$numforward;$i++) {
 								$approxbegin = my_calendar_add_date($orig_begin,0,$i,0);
 								$approxend = my_calendar_add_date($orig_end,0,$i,0);
-								for ($n=-6;$n<=6;$n++) {
-									$beginday = date('D',strtotime(my_calendar_add_date($approxbegin,$n,0,0)));
-									if ($beginday == date('D',strtotime($orig_begin)) && floor(date('d',strtotime($orig_begin))/7) == floor(date('d',strtotime($approxbegin))/7) ) {
-										$begin = my_calendar_add_date($approxbegin,$n,0,0);
-										$end = my_calendar_add_date($approxend,$n,0,0);
-										//$i=4;
-										${$i} = clone($event);
-										${$i}->event_begin = $begin;
-										${$i}->event_end = $end;							
-										$arr_events[]=${$i};										
-									} 
-								}
-							}						
+								$day_of_event = date('D',strtotime($event->event_begin) );
+								$week_of_event = week_of_month( date('d',strtotime($event->event_begin) ) );
+								for ($n=-6;$n<=6;$n++) {								
+									$timestamp = strtotime(my_calendar_add_date($approxbegin,$n,0,0));
+									$current_day = date('D',$timestamp);
+									if ($current_day == $day_of_event) {
+									$current_week = week_of_month( date( 'd',$timestamp));
+									$current_date = date( 'd',$timestamp);
+										if ($current_day == $day_of_event && $current_week == $week_of_event) {
+											$date_of_event_this_month == $current_date;
+											//echo "Principle<br />";
+										} else {
+											//echo "Busted<br />";
+											for ($s = 1;$s<=31;$s++) {
+												$string = date( 'Y', $timestamp ).'-'.date( 'm', $timestamp).'-'.$s;
+												$week = week_of_month($s);
+													if ( date('D',strtotime($string)) == $day_of_event && $week == $week_of_event ) {
+														$date_of_event_this_month = $s;	
+														break;
+													}
+											}
+											if ( get_option('mc_no_fifth_week') == 'true' && $date_of_event_this_month == '' ) {
+												$new_week_of_event = $week_of_event-1;
+												for ($s=1;$s<=31;$s++) {
+													$string = date( 'Y', $timestamp ).'-'.date('m', $timestamp).'-'.$s;
+													if ( date('D',strtotime($string)) == $day_of_event && $week == $new_week_of_event ) {
+														$date_of_event_this_month = $s;
+														break;
+													}
+												}
+											}
+										}
+										if ( ($current_day == $day_of_event && $current_week == $week_of_event) || ($current_date >= $date_of_event_this_month && $current_date <= $date_of_event_this_month+$day_diff && $date_of_event_this_month != '' ) ) {	
+											$begin = my_calendar_add_date($approxbegin,$n,0,0);
+											$end = my_calendar_add_date($approxend,$n,0,0);
+											//$i=4;
+											${$i} = clone($event);
+											${$i}->event_begin = $begin;
+											${$i}->event_end = $end;
+											$arr_events[]=${$i};
+										}
+									}
+								} 
+							}
 						break;
 						case "Y":
 							for ($i=$numback;$i<=$numforward;$i++) {
@@ -822,8 +948,8 @@ global $wpdb;
 						case "D":
 							$event_begin = $event->event_begin;
 							$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
-							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_upcoming_events');
+							$nDays = 30;
+							$fDays = 30;
 								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_days = $diff/(86400);
@@ -838,9 +964,8 @@ global $wpdb;
 											${$realStart}->event_begin = $this_date;
 											$arr_events[] = ${$realStart};
 										}
-									}								
-								
-								} else {							
+									}
+								} else {
 							$realDays = -($nDays);
 								for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
 								$this_date = my_calendar_add_date($event_begin,$realDays,0,0);
@@ -852,12 +977,11 @@ global $wpdb;
 								}
 							}
 						break;
-						
 						case "W":
 							$event_begin = $event->event_begin;
 							$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
-							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_upcoming_events');
+							$nDays = 6;
+							$fDays = 6;
 				
 								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays*7),0,0) )	) {							
 									$diff = jd_date_diff_precise(strtotime($event_begin));
@@ -888,12 +1012,11 @@ global $wpdb;
 								}
 								}
 						break;
-						
 						case "B":
 							$event_begin = $event->event_begin;
 							$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
-							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_upcoming_events');
+							$nDays = 6;
+							$fDays = 6;
 							
 								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays*14),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
@@ -927,8 +1050,8 @@ global $wpdb;
 						case "M":
 							$event_begin = $event->event_begin;
 							$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
-							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_upcoming_events');
+							$nDays = 5;
+							$fDays = 5;
 							
 								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
@@ -958,15 +1081,19 @@ global $wpdb;
 								}
 								}
 						break;
-						
+						// "U" is month by day
 						case "U":
 							$event_begin = $event->event_begin;
 							$event_end = $event->event_end;
 							$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
-							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_upcoming_events');
-														
+							$nDays = 5;
+							$fDays = 5;
+							$day_of_event = date( 'D', strtotime($event->event_begin) );
+							$week_of_event = week_of_month( date( 'd', strtotime($event->event_begin) ) );
+							$day_diff = jd_date_diff($event_begin, $event_end);
+							
 								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays),0,0) )) {
+									// this doesn't need to be precise; it only effects what dates will be checked.
 									$diff = jd_date_diff_precise(strtotime($event_begin));
 									$diff_days = floor($diff/(86400*30));
 									$realStart = $diff_days - $nDays;
@@ -976,17 +1103,45 @@ global $wpdb;
 										$approxbegin = my_calendar_add_date($event_begin,0,$realStart,0);
 										$approxend = my_calendar_add_date($event_end,0,$realStart,0);
 										for ($n=-6;$n<=6;$n++) {
-											$beginday = date('D',strtotime(my_calendar_add_date($approxbegin,$n,0,0)));
-											if ($beginday == date('D',strtotime($event_begin)) && floor(date('d',strtotime($event_begin))/7) == floor(date('d',strtotime($approxbegin))/7) ) {
-												$begin = my_calendar_add_date($approxbegin,$n,0,0);
-												$end = my_calendar_add_date($approxend,$n,0,0);
-												${$realStart} = clone($event);
-												${$realStart}->event_begin = $begin;
-												${$realStart}->event_end = $end;							
-												$arr_events[]=${$realStart};										
-											} 
+											$timestamp = strtotime(my_calendar_add_date($approxbegin,$n,0,0));
+											$current_day = date('D',$timestamp);
+											if ($current_day == $day_of_event) {
+												$current_week = week_of_month( date( 'd',$timestamp));
+												$current_date = date( 'd',$timestamp);
+												if ($current_day == $day_of_event && $current_week == $week_of_event) {
+													$date_of_event_this_month = $current_date;
+												} else {
+													for ($i = 1;$i<=31;$i++) {
+													$string = date( 'Y', $timestamp ).'-'.date( 'm', $timestamp).'-'.$n;
+													$week = week_of_month($i);
+														if ( date('D',strtotime($string)) == $day_of_event && $week == $week_of_event ) {
+															$date_of_event_this_month = $i;
+															break;
+														}											
+													}
+													if ( get_option('mc_no_fifth_week') == 'true' && $date_of_event_this_month == '' ) {
+														$new_week_of_event = $week_of_event-1;
+														for ($i=1;$i<=31;$i++) {
+															$string = date( 'Y', $timestamp ).'-'.date('m', $timestamp).'-'.$i;
+															if ( date('D',strtotime($string)) == $day_of_event && $week == $new_week_of_event ) {
+																$date_of_event_this_month = $i;
+																break;
+															}
+														}
+													}
+												}
+												if ( ($current_day == $day_of_event && $current_week == $week_of_event) || ($current_date >= $date_of_event_this_month && $current_date <= $date_of_event_this_month+$day_diff && $date_of_event_this_month != '' ) ) {
+													$begin = my_calendar_add_date($approxbegin,$n,0,0);
+													$end = my_calendar_add_date($approxend,$n,0,0);
+													${$realStart} = clone($event);
+													${$realStart}->event_begin = $begin;
+													${$realStart}->event_end = $end;							
+													$arr_events[]=${$realStart};	
+													break;
+												}
+											}
 										}
-									}								
+									}									
 								
 								} else {							
 								$realDays = -($nDays);
@@ -994,25 +1149,46 @@ global $wpdb;
 										$approxbegin = my_calendar_add_date($event_begin,0,$realDays,0);
 										$approxend = my_calendar_add_date($event_end,0,$realDays,0);
 										for ($n=-6;$n<=6;$n++) {
-											$beginday = date('D',strtotime(my_calendar_add_date($approxbegin,$n,0,0)));
-											if ($beginday == date('D',strtotime($event_begin)) && floor(date('d',strtotime($event_begin))/7) == floor(date('d',strtotime($approxbegin))/7) ) {
+											$timestamp = strtotime(my_calendar_add_date($approxbegin,$n,0,0));										
+											$current_day = date('D',$timestamp);
+											$current_week = week_of_month( date( 'd',$timestamp));
+											$current_date = date( 'd',$timestamp);
+											for ($i = 1;$i<=31;$i++) {
+											$string = date( 'Y', $timestamp ).'-'.date( 'm', $timestamp).'-'.$n;
+											$week = week_of_month($i);
+												if ( date('D',strtotime($string)) == $day_of_event && $week == $week_of_event ) {
+													$date_of_event_this_month = $i;
+													break;
+												}											
+											}
+											if ( get_option('mc_no_fifth_week') == 'true' && $date_of_event_this_month == '' ) {
+												$new_week_of_event = $week_of_event-1;
+												for ($i=1;$i<=31;$i++) {
+													$string = date( 'Y', $timestamp ).'-'.date('m', $timestamp).'-'.$i;
+													if ( date('D',strtotime($string)) == $day_of_event && $week == $new_week_of_event ) {
+														$date_of_event_this_month = $i;
+														break;
+													}
+												}					
+											}											
+											if ( ($current_day == $day_of_event && $current_week == $week_of_event) || ($current_date >= $date_of_event_this_month && $current_date <= $date_of_event_this_month+$day_diff && $date_of_event_this_month != '' ) ) {											
 												$begin = my_calendar_add_date($approxbegin,$n,0,0);
 												$end = my_calendar_add_date($approxend,$n,0,0);
 												${$realDays} = clone($event);
 												${$realDays}->event_begin = $begin;
 												${$realDays}->event_end = $end;							
-												$arr_events[]=${$realDays};										
+												$arr_events[]=${$realDays};
+												break;
 											} 
 										}
-								}
+									}
 								}
 						break;
-						
 						case "Y":
 							$event_begin = $event->event_begin;
 							$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
-							$nDays = get_option('display_past_events');
-							$fDays = get_option('display_upcoming_events');
+							$nDays = 3;
+							$fDays = 3;
 								
 								if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays),0,0) )) {
 									$diff = jd_date_diff_precise(strtotime($event_begin));
@@ -1029,7 +1205,6 @@ global $wpdb;
 											$arr_events[] = ${$realStart};
 										}
 									}								
-								
 								} else {							
 								$realDays = -($nDays);
 								for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
@@ -1144,6 +1319,10 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 	SELECT * FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string event_begin <= '$date' AND event_end >= '$date' AND event_recur = 'S' ORDER BY event_id"); 
 	if (!empty($events)) {
 		foreach($events as $event) {
+			$this_event_start = strtotime("$event->event_begin $event->event_time");
+			$this_event_end = strtotime("$event->event_end $event->event_endtime");
+			$event->event_start_ts = $this_event_start;
+			$event->event_end_ts = $this_event_end;
 			$arr_events[]=$event;
 		}
     }
@@ -1174,6 +1353,11 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 				
 	if (!empty($events)) {
 			foreach($events as $event) {
+			// add timestamps for start and end
+				$this_event_start = strtotime("$date $event->event_time");
+				$this_event_end = strtotime("$date $event->event_endtime");
+				$event->event_start_ts = $this_event_start;
+				$event->event_end_ts = $this_event_end;			
 				switch ($event->event_recur) {
 					case 'Y':
 				// Technically we don't care about the years, but we need to find out if the 
@@ -1225,17 +1409,14 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 					$week_of_event = week_of_month($date_of_event);
 					$current_week = week_of_month($current_date);
 					
-					$day_diff = jd_date_diff($event->event_begin,$event->event_end);
-
-					
+					$day_diff = jd_date_diff($event->event_begin,$event->event_end);				
 					
 					for ($i=1;$i<=31;$i++) {
 						$string = date( 'Y',strtotime($date) ).'-'.date('m',strtotime($date)).'-'.$i;
-
 						$week = week_of_month($i);
-						
 						if ( date('D',strtotime($string)) == $day_of_event && $week == $week_of_event ) {
 							$date_of_event_this_month = $i;
+							break;
 						}
 					}
 					if ( get_option('mc_no_fifth_week') == 'true' && $date_of_event_this_month == '' ) {
@@ -1244,6 +1425,7 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 							$string = date( 'Y',strtotime($date) ).'-'.date('m',strtotime($date)).'-'.$i;
 							if ( date('D',strtotime($string)) == $day_of_event && $week == $new_week_of_event ) {
 								$date_of_event_this_month = $i;
+								break;
 							}
 						}					
 					}
@@ -1289,8 +1471,12 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 							}
 						}	
 					} else {
-						// there's got to be a better way to do this, but I can't think of it right now. 
-						for ($n=0;$n<=52;$n++) {
+						// get difference between today and event start date in biweekly periods; grab enough events to fill max poss.
+						$diffdays = jd_date_diff($start_date,$current_date);
+						$diffper = floor($diffdays/14) - 2;
+						$advanceper = get_option('my_calendar_show_months') * 3;
+						$diffend = $diffper + $advanceper;
+						for ($n=$diffper;$n<=$diffend;$n++) {
 							if ( $current_date == my_calendar_add_date($start_date,(14*$n)) ) {
 								$arr_events[]=$event;
 							}
@@ -1361,7 +1547,7 @@ function mc_can_edit_event($author_id) {
 	get_currentuserinfo();
 	$user = get_userdata($user_ID);	
 	
-	if ( current_user_can('manage_options') ) {
+	if ( current_user_can( get_option('mc_event_edit_perms') ) ) {
 			return true;
 		} elseif ( $user_ID == $author_id ) {
 			return true;
