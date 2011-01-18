@@ -10,11 +10,12 @@ if ( $_POST['upgrade'] == 'true' ) {
 	if ( !isset( $row->event_status ) && isset( $row->event_id ) ) {
 	
 	?>
-
+    <?php if ( $_GET['page'] == 'my-calendar-config' ) { ?>
 	<div class='upgrade-db error'>
 		<form method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
 		<div>
-			<input type="hidden" name="upgrade" value="true" />
+		<?php wp_nonce_field('my-calendar-nonce'); ?>
+		<input type="hidden" name="upgrade" value="true" />
 		</div>
 		<p>
 		<?php _e('The My Calendar database needs to be updated.','my-calendar'); ?>
@@ -22,6 +23,13 @@ if ( $_POST['upgrade'] == 'true' ) {
 		</p>
 		</form>
 	</div>
+	<?php } else { ?>
+	<div class='upgrade-db error'>
+		<p>
+		<?php _e('The My Calendar database needs to be updated.','my-calendar'); ?> <a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config"><?php _e('Upgrade now.','my-calendar'); ?></a>
+		</p>
+	</div>	
+	<?php } ?>
 <?php
 	} elseif ( !isset ( $row->event_id ) ) {
 ?>

@@ -50,7 +50,7 @@ function form($instance) {
 	function update($new_instance,$old_instance) {
 		$instance = $old_instance;
 		$instance['my_calendar_today_title'] = strip_tags($new_instance['my_calendar_today_title']);
-		$instance['my_calendar_today_template'] = strip_tags($new_instance['my_calendar_today_template']);
+		$instance['my_calendar_today_template'] = $new_instance['my_calendar_today_template'];
 		$instance['my_calendar_no_events_text'] = strip_tags($new_instance['my_calendar_no_events_text']);
 		$instance['my_calendar_today_category'] = strip_tags($new_instance['my_calendar_today_category']);		
 		return $instance;		
@@ -130,7 +130,7 @@ function form($instance) {
 	function update($new_instance,$old_instance) {
 		$instance = $old_instance;
 		$instance['my_calendar_upcoming_title'] = strip_tags($new_instance['my_calendar_upcoming_title']);
-		$instance['my_calendar_upcoming_template'] = strip_tags($new_instance['my_calendar_upcoming_template']);
+		$instance['my_calendar_upcoming_template'] = $new_instance['my_calendar_upcoming_template'];
 		$instance['my_calendar_no_events_text'] = strip_tags($new_instance['my_calendar_no_events_text']);
 		$instance['my_calendar_upcoming_category'] = strip_tags($new_instance['my_calendar_upcoming_category']);		
 		$instance['my_calendar_upcoming_before'] = strip_tags($new_instance['my_calendar_upcoming_before']);
@@ -154,6 +154,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 	$before = ($before == 'default')?$defaults['upcoming']['before']:$before;
 	$category = ($category == 'default')?$defaults['upcoming']['category']:$category;
 	$template = ($template == 'default')?$defaults['upcoming']['template']:$template;
+	$no_event_text = ($substitute == '')?$defaults['upcoming']['text']:$substitute;
   
     $day_count = -($before);
 	$output = "<ul>";
@@ -200,7 +201,6 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
         $events = mc_get_all_events($category);		 // grab all events WITHIN reasonable proximity		 	 
 		$output .= mc_produce_upcoming_events( $events,$template,$before,$after );
 	}
-	$no_event_text = ($substitute = '')?$defaults['upcoming']['text']:$substitute;
 	if ($output != '<ul>') {
 		$output .= "</ul>";
 		return $output;

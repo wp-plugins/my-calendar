@@ -64,6 +64,18 @@ Languages available:
 
 == Changelog ==
 
+= 1.7.1 =
+
+* Default setting for custom user location type not set
+* Reset for inherit.css styles missing
+* Widget shortcodes stripped HTML
+* Added a fallback function for exif_imagetype 'cuz some servers don't have it available by default.
+* Nonce missing in database upgrade
+* Ability to edit text for shortcode fallback (No events text) lost.
+* Widget defaults not installed on new installation
+* Mini and List jQuery did not prevent default link action
+* Changed install action to default User settings to off.
+
 = 1.7.0 =
 
 * Fix in AJAX navigation for IE

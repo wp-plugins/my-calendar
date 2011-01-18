@@ -62,7 +62,8 @@ $initial_listjs = 'jQuery(document).ready(function($) {
   $("#calendar-list li").children().not(".event-date").hide();
   $("#calendar-list li.current-day").children().show();
   $(".event-date").live("click",
-     function() {
+     function(e) {
+	 e.preventDefault();
 	 $(this).parent().children().not(".event-date").toggle();
      });
 });';  
@@ -70,7 +71,8 @@ $initial_listjs = 'jQuery(document).ready(function($) {
 $initial_minijs = 'jQuery(document).ready(function($) {
   $(".mini .has-events").children().not(".trigger").hide();
   $(".mini .has-events .trigger").live("click",
-     function() {
+     function(e) {
+	 e.preventDefault();	 
 	 $(this).parent().children().not(".trigger").toggle(); 
 	 });
 });';
@@ -136,7 +138,7 @@ $initial_loc_db = "CREATE TABLE " . MY_CALENDAR_LOCATIONS_TABLE . " (
 
 $default_user_settings = array(
 	'my_calendar_tz_default'=>array(
-		'enabled'=>'on',
+		'enabled'=>'off',
 		'label'=>__('My Calendar Default Timezone','my-calendar'),
 		'values'=>array(
 			"-12" => "(GMT -12:00) Eniwetok, Kwajalein",
@@ -181,7 +183,7 @@ $default_user_settings = array(
 			),
 		),
 		'my_calendar_location_default'=>array(
-		'enabled'=>'on',
+		'enabled'=>'off',
 		'label'=>__('My Calendar Default Location','my-calendar'),
 		'values'=>array(
 			'AL'=>"Alabama",
@@ -279,6 +281,7 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option('mc_no_fifth_week','true');
 	$mc_user_settings = $default_user_settings;	
 	add_option('mc_user_settings',$mc_user_settings);
+	add_option('mc_location_type','event_state');
 	add_option('mc_user_settings_enabled',false);
 	add_option('mc_user_location_type','state');
 	add_option('my_calendar_show_js','' );   
@@ -291,6 +294,24 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option('my_calendar_css_file','my-calendar.css');
 	add_option('mc_show_rss','false');
 	add_option('mc_show_ical','false');	
+		$defaults = array(
+			'upcoming'=>array(	
+				'type'=>'event',
+				'before'=>3,
+				'after'=>3,
+				'template'=>$default_template,
+				'category'=>'',
+				'text'=>'',
+				'title'=>'Upcoming Events'
+			),
+			'today'=>array(
+				'template'=>$default_template,
+				'category'=>'',
+				'title'=>'Today\'s Events',
+				'text'=>''
+			)
+		);
+	add_option('my_calendar_widget_defaults',$defaults);	
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($initial_db);
 	dbDelta($initial_cat_db);
@@ -1375,7 +1396,7 @@ height: 2em!important;
 padding: 1px 3px!important;
 font-size: .7em;
 }',
-	'minimal.css'=>'/* These styles provide a minimal degree of styling, allowing most theme defaults to be dominant. */
+	'inherit.css'=>'/* These styles provide a minimal degree of styling, allowing most theme defaults to be dominant. */
 #jd-calendar .details {
 background: #fff;
 border: 1px solid #000;
