@@ -8,8 +8,8 @@ function my_calendar_today_widget() {
 function widget($args, $instance) {
 	extract($args);
 	$the_title = apply_filters('widget_title',$instance['my_calendar_today_title']);
-	$the_template = esc_attr($instance['my_calendar_today_template']);
-	$the_substitute = esc_attr($instance['my_calendar_no_events_text']);
+	$the_template = $instance['my_calendar_today_template'];
+	$the_substitute = $instance['my_calendar_no_events_text'];
 	$the_category = ($instance['my_calendar_today_category']=='')?'default':esc_attr($instance['my_calendar_today_category']);
 	$widget_title = empty($the_title) ? __('Today\'s Events','my-calendar') : $the_title;
 	$the_events = my_calendar_todays_events($the_category,$the_template,$the_substitute);
@@ -67,8 +67,8 @@ function my_calendar_upcoming_widget() {
 function widget($args, $instance) {
 	extract($args);
 	$the_title = apply_filters('widget_title',$instance['my_calendar_upcoming_title']);
-	$the_template = esc_attr($instance['my_calendar_upcoming_template']);
-	$the_substitute = esc_attr($instance['my_calendar_no_events_text']);
+	$the_template = $instance['my_calendar_upcoming_template'];
+	$the_substitute = $instance['my_calendar_no_events_text'];
 	$before = esc_attr($instance['my_calendar_upcoming_before']);
 	$after = esc_attr($instance['my_calendar_upcoming_after']);
 	$type = esc_attr($instance['my_calendar_upcoming_type']);
