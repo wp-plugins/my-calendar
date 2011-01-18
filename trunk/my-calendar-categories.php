@@ -1,6 +1,16 @@
 <?php
 // Function to handle the management of categories
 
+// This is a hack for people who don't have PHP installed with exif_imagetype
+if (!function_exists('exif_imagetype') ) {
+    function exif_imagetype ( $filename ) {
+        if ( ( list($width, $height, $type, $attr) = getimagesize( $filename ) ) !== false ) {
+            return $type;
+        }
+    return false;
+    }	
+}
+
 function my_dirlist($directory) {
     // create an array to hold directory list
     $results = array();

@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.7.0
+Version: 1.7.1
 */
 /*  Copyright 2009-2010  Joe Dolson (email : joe@joedolson.com)
 
@@ -23,7 +23,7 @@ Version: 1.7.0
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-$mc_version = '1.7.0';
+$mc_version = '1.7.1';
 // Enable internationalisation
 $plugin_dir = basename(dirname(__FILE__));
 load_plugin_textdomain( 'my-calendar','wp-content/plugins/'.$plugin_dir, $plugin_dir);
@@ -349,17 +349,19 @@ function my_calendar_insert_upcoming($atts) {
 				'after' => 'default',
 				'type' => 'default',
 				'category' => 'default',
-				'template' => 'default'
+				'template' => 'default',
+				'fallback' => '',
 			), $atts));
-	return my_calendar_upcoming_events($before, $after, $type, $category, $template);
+	return my_calendar_upcoming_events($before, $after, $type, $category, $template, $fallback);
 }
 
 function my_calendar_insert_today($atts) {
 	extract(shortcode_atts(array(
 				'category' => 'default',
-				'template' => 'default'
+				'template' => 'default',
+				'fallback' => '',
 			), $atts));
-	return my_calendar_todays_events($category, $template);
+	return my_calendar_todays_events($category, $template, $fallback);
 }
 
 function my_calendar_locations($atts) {
@@ -438,6 +440,8 @@ function check_my_calendar() {
 		$upgrade_path[] = "1.6.3";
 	} else if ( version_compare( $current_version, "1.7.0", "<" ) ) { 
 		$upgrade_path[] = "1.7.0";
+	} else if ( version_compare( $current_version, "1.7.1", "<" ) ) { 
+		$upgrade_path[] = "1.7.1";
 	}
 	
 	// having determined upgrade path, assign new version number
@@ -502,7 +506,7 @@ function check_my_calendar() {
 			case '1.6.2':
 				$mc_user_settings = array(
 				'my_calendar_tz_default'=>array(
-					'enabled'=>'on',
+					'enabled'=>'off',
 					'label'=>'My Calendar Default Timezone',
 					'values'=>array(
 							"-12" => "(GMT -12:00) Eniwetok, Kwajalein",
@@ -547,7 +551,7 @@ function check_my_calendar() {
 							),
 					),
 				'my_calendar_location_default'=>array(
-					'enabled'=>'on',
+					'enabled'=>'off',
 					'label'=>'My Calendar Default Location',
 					'values'=>array(
 								'AL'=>"Alabama",
@@ -677,6 +681,11 @@ function check_my_calendar() {
 				delete_option('my_calendar_today_title');
 				delete_option('my_calendar_no_events_text');
 				delete_option('my_calendar_upcoming_title');			
+			break;
+			case '1.7.1':
+				if (get_option('mc_location_type') == '') {
+					update_option('mc_location_type','event_state');
+				}
 			break;
 			default:
 			break;
