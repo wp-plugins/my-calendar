@@ -29,7 +29,7 @@ function edit_my_calendar() {
 		echo "</p>";
 		?>
 			<form method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
-			<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>
+			<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 			<div>			
 			<input type="hidden" name="import" value="true" />
 			<input type="submit" value="<?php _e('Import from Calendar','my-calendar'); ?>" name="import-calendar" class="button-primary" />
@@ -98,7 +98,7 @@ if ($_GET['mode'] == 'delete') {
 		<p><strong><?php _e('Delete Event','my-calendar'); ?>:</strong> <?php _e('Are you sure you want to delete this event?','my-calendar'); ?></p>
 		<form action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar" method="post">
 		<div>
-		<?php wp_nonce_field('my-calendar-nonce'); ?>		
+		<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />		
 		<input type="hidden" value="delete" name="event_action" />
 		<input type="hidden" value="<?php echo (int) $_GET['event_id']; ?>" name="event_id" />
 		<input type="submit" name="submit" class="button-primary" value="<?php _e('Delete','my-calendar'); echo " &quot;".$result[0]['event_title']."&quot;"; ?>" />
@@ -349,7 +349,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id,$context='' ) {
 	$mc_input = get_option('mc_input_options');
 ?>
 <div>
-<?php wp_nonce_field('my-calendar-nonce'); ?>
+<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />
 <input type="hidden" name="event_action" value="<?php echo $mode; ?>" />
 <input type="hidden" name="event_id" value="<?php echo $event_id; ?>" />
 <input type="hidden" name="event_author" value="<?php echo $user_ID; ?>" />
@@ -451,8 +451,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id,$context='' ) {
 <div class="inside">
 			<fieldset><legend><?php _e('Event Date and Time','my-calendar'); ?></legend>
 			<p>
-			<?php _e('Enter the beginning and ending information for the first occurrence of this event.','my-calendar'); ?>
-			<p>
+			<?php _e('Enter the beginning and ending information for the first occurrence of this event.','my-calendar'); ?><br />
 			<label for="event_begin"><?php _e('Start Date (YYYY-MM-DD)','my-calendar'); ?> <span><?php _e('(required)','my-calendar'); ?></span></label> <input type="text" id="event_begin" name="event_begin" class="calendar_input" size="12" value="<?php if ( !empty($data) ) { esc_attr_e($data->event_begin);} else { echo date_i18n("Y-m-d");} ?>" /> <label for="event_time"><?php _e('Time (hh:mm)','my-calendar'); ?></label> <input type="text" id="event_time" name="event_time" class="input" size="12"	value="<?php 
 					$offset = (60*60*get_option('gmt_offset'));
 					if ( !empty($data) ) {
@@ -661,7 +660,7 @@ function jd_events_display_list($sortby='default',$sortdir='default',$status='al
 		?>
 		<form action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar" method="post">
 		<div>
-		<?php wp_nonce_field('my-calendar-nonce'); ?>
+		<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />
 		</div>
 <table class="widefat page fixed" id="my-calendar-admin-table" summary="<?php _e('Table of Calendar Events','my-calendar'); ?>">
 	<thead>
@@ -759,6 +758,7 @@ function jd_events_display_list($sortby='default',$sortdir='default',$status='al
 		</table>
 		<p>
 		<input type="submit" class="button-primary delete" value="Delete checked events" />
+		</p>
 		</form>
 <?php
 	} else {

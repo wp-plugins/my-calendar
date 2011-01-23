@@ -1,13 +1,4 @@
 /* A light-colored theme almost entirely in whites and light grays with black text. */
-
-#jd-calendar * {
-margin: 0;
-padding: 0;
-line-height: 1.5;
-color: #000;
-background: #fff;
-}
-
 #jd-calendar,#calendar-list {
 background: #fff; 
 }

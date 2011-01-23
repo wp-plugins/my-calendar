@@ -64,6 +64,12 @@ Languages available:
 
 == Changelog ==
 
+= 1.7.2 =
+
+* Bug fix: Fixed import from Calendar feature.
+* Bug fixed: Upcoming events widget default text fixed
+* Italian translation updated to 1.7.0
+
 = 1.7.1 =
 
 * Default setting for custom user location type not set

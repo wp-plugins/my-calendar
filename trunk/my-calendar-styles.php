@@ -104,7 +104,7 @@ function edit_my_calendar_styles() {
 	<h3><?php _e('Calendar Style Settings','my-calendar'); ?></h3>
 	<div class="inside">	
     <form name="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-styles">
-	<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>
+	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<div><input type="hidden" value="true" name="mc_choose_style" /></div>
 	<fieldset>	
 	<p>
@@ -139,7 +139,7 @@ function edit_my_calendar_styles() {
 	</form>
 	
     <form name="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-styles">
-	<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>
+	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<div><input type="hidden" value="true" name="mc_edit_style" />
 	<input type="hidden" name="my_calendar_css_file" value="<?php echo get_option('my_calendar_css_file'); ?>" />
 	</div>

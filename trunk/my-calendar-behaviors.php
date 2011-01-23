@@ -67,7 +67,7 @@ echo my_calendar_check_db();
 	<h3><?php _e('Calendar Behavior Settings','my-calendar'); ?></h3>
 	<div class="inside">	
     <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-behaviors">
-	<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>
+	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<p>
 	<label for="my_calendar_show_js"><?php _e('Apply JavaScript only on these pages (comma separated page IDs)','my-calendar'); ?></label> <input type="text" id="my_calendar_show_js" name="my_calendar_show_js" value="<?php echo $my_calendar_show_js; ?>" />
 	</p>    
