@@ -2,12 +2,6 @@
 
 // Display the admin configuration page
 
-if (isset($_POST['import']) && $_POST['import'] == 'true') {
-	$nonce=$_REQUEST['_wpnonce'];
-    if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
-	my_calendar_import();
-}
-	
 function csv_to_array($csv, $delimiter = ',', $enclosure = '"', $escape = '\\', $terminator = "\n") {
     $r = array();
     $rows = explode($terminator,trim($csv));
@@ -260,7 +254,7 @@ echo my_calendar_check_db();
 	<h3><?php _e('Calendar Management Settings','my-calendar'); ?></h3>
 	<div class="inside">	
     <form name="my-calendar"  id="my-calendar-manage" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
-	<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>    
+	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>    
 	<fieldset>
     <legend><?php _e('Calendar Options: Management','my-calendar'); ?></legend>
     <p>
@@ -301,7 +295,7 @@ echo my_calendar_check_db();
 	<h3><?php _e('Calendar Text Settings','my-calendar'); ?></h3>
 	<div class="inside">
 	    <form name="my-calendar"  id="my-calendar-text" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
-	<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>		
+	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>		
 <fieldset>
 	<legend><?php _e('Calendar Options: Customize Text','my-calendar'); ?></legend>
 	<p>
@@ -333,7 +327,7 @@ echo my_calendar_check_db();
 	<h3><?php _e('Calendar Output Settings','my-calendar'); ?></h3>
 	<div class="inside">
  <form name="my-calendar"  id="my-calendar-output" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
-	<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>
+	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<fieldset>
 	<legend><?php _e('Calendar Options: Output','my-calendar'); ?></legend>
 	<p>
@@ -427,7 +421,7 @@ echo my_calendar_check_db();
 	<h3><?php _e('Calendar Input Settings','my-calendar'); ?></h3>
 	<div class="inside">
 <form name="my-calendar"  id="my-calendar-input" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
-	<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>
+	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<fieldset>
 	<legend><?php _e('Calendar Options: Input','my-calendar'); ?></legend>
 	<div><input type='hidden' name='mc_input' value='true' /></div>
@@ -460,7 +454,7 @@ echo my_calendar_check_db();
 	<h3><?php _e('Calendar Email Settings','my-calendar'); ?></h3>
 	<div class="inside">
 <form name="my-calendar"  id="my-calendar-email" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
-	<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>
+	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<fieldset>
 	<legend><?php _e('Calendar Options: Email Notifications','my-calendar'); ?></legend>
 <div><input type='hidden' name='mc_email' value='true' /></div>
@@ -491,7 +485,7 @@ echo my_calendar_check_db();
 	<h3><?php _e('Calendar User Settings','my-calendar'); ?></h3>
 	<div class="inside">
 <form name="my-calendar"  id="my-calendar-user" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
-<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>
+<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 <div><input type='hidden' name='mc_user' value='true' /></div>
 
 	<fieldset>
@@ -569,6 +563,12 @@ $locations .= "$key,$value\n";
   </form>
   <?php
 //update_option( 'ko_calendar_imported','false' );
+
+if (isset($_POST['import']) && $_POST['import'] == 'true') {
+	$nonce=$_REQUEST['_wpnonce'];
+    if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
+	my_calendar_import();
+}
     
 if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
   	if (function_exists('check_calendar')) {
@@ -578,7 +578,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	echo "</p>";
 	?>
 		<form method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
-		<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>		
+		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>		
 		<div>
 		<input type="hidden" name="import" value="true" />
 		<input type="submit" value="<?php _e('Import from Calendar','my-calendar'); ?>" name="import-calendar" class="button-primary" />

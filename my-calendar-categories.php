@@ -149,7 +149,7 @@ global $path, $wp_plugin_dir,$wp_plugin_url;
 <h3><?php _e('Category Editor','my-calendar'); ?></h3>
 	<div class="inside">	   
     <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories">
-		<div><?php wp_nonce_field('my-calendar-nonce'); ?></div>
+		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 		<?php if ($view == 'add') { ?>	
 			<div>
 			<input type="hidden" name="mode" value="add" />

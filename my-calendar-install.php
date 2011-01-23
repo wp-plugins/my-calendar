@@ -405,14 +405,7 @@ add_filter('upgrader_pre_install', 'my_calendar_backup', 10, 2);
 add_filter('upgrader_post_install', 'my_calendar_recover', 10, 2);
 
 $stored_styles = array(
-'my-calendar.css'=>'#jd-calendar * {
-margin: 0;
-padding: 0;
-line-height: 1.5;
-color: #000;
-background: #fff;
-}
-
+'my-calendar.css'=>'
 #jd-calendar,#calendar-list {
 background: #fff;
 }
@@ -1097,14 +1090,6 @@ padding: 1px 3px!important;
 font-size: .7em;
 }',
 	'light.css'=>'/* A light-colored theme almost entirely in whites and light grays with black text. */
-
-#jd-calendar * {
-margin: 0;
-padding: 0;
-line-height: 1.5;
-color: #000;
-background: #fff;
-}
 
 #jd-calendar,#calendar-list {
 background: #fff; 
