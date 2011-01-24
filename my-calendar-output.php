@@ -422,7 +422,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$time='month',$we
 		// determine which header text to show depending on number of months displayed;
 		if ( $time != 'week' ) {
 			$num_months = get_option('my_calendar_show_months');
-			$list_heading = ($num_months <= 1)?__('Events in','my-calendar').' '.$name_months[(int)$c_month].' '.$c_year.$caption_text."</h3>\n":$name_months[(int)$c_month].'&thinsp;&ndash;&thinsp;'.$name_months[(int)($nLink['month']-1)].' '.$nLink['yr'].$caption_text;
+			$list_heading = ($num_months <= 1)?__('Events in','my-calendar').' '.$name_months[(int)$c_month].' '.$c_year.$caption_text."\n":$name_months[(int)$c_month].'&thinsp;&ndash;&thinsp;'.$name_months[(int)($nLink['month']-1)].' '.$nLink['yr'].$caption_text;
 		} else {
 			$list_heading = __('This week\'s events','my-calendar');
 		}
@@ -508,7 +508,7 @@ if ( $format == "calendar" || $format == "mini" ) {
 					$class = ($ii<6&&$ii>0?"$trigger":"weekend$trigger");
 					$i++;
 				} else {
-					$class = ($ii<5)?"$trigger":"weekend$trigger'";
+					$class = ($ii<5)?"$trigger":"weekend$trigger";
 					$i++;
 				}
 				$week_date_format = date('M j, \'y',strtotime( "$c_year-$c_month-$thisday" ) );				
