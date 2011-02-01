@@ -288,7 +288,7 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 				} else {
 					$prepend = $append = '';
 				}				
-					$output .= "$prepend".jd_draw_template($details,$template)."$append";		  				
+					$output .= "$prepend".jd_draw_template($details,$template,$type)."$append";		  				
 				}
 			} else {
 				// By default, skip no events.
@@ -319,10 +319,10 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 				foreach($temp_array as $details) {
 					if ($skipping == true) {
 						if ($details['cat_id'] == get_option('mc_skip_holidays_category') ) {
-							$output .= "$prepend".jd_draw_template($details,$template)."$append";		  
+							$output .= "$prepend".jd_draw_template($details,$template,$type)."$append";		  
 						}
 					} else {
-						$output .= "$prepend".jd_draw_template($details,$template)."$append";		  
+						$output .= "$prepend".jd_draw_template($details,$template,$type)."$append";		  
 					}
 				}		  
 			}		

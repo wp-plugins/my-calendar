@@ -5,7 +5,7 @@ function jd_draw_template($array,$template,$type='list') {
 	//2nd argument: template to print details into
 	foreach ($array as $key=>$value) {
 	    $search = "{".$key."}";
-		if ($type == 'list') {
+		if ($type != 'list') {
 			if ($key == 'link' && $value == '') { $value = get_bloginfo('url'); }
 			$value = htmlentities($value);
 		}
