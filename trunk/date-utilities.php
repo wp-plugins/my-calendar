@@ -133,4 +133,18 @@ function get_week_date( $week, $year, $start_of_week=0 ) {
    return $first_day;
 }
 
+function add_days_to_date( $givendate,$day=0 ) {
+    $cd = strtotime($givendate);
+    $newdate = date('Y-m-d h:i:s',
+		mktime(
+			date('h',$cd),
+			date('i',$cd), 
+			date('s',$cd), 
+			date('m',$cd),
+			date('d',$cd)+$day, 
+			date('Y',$cd)
+		) );
+      return $newdate;
+}
+
 ?>

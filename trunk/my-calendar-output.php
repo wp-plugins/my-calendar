@@ -3,16 +3,38 @@
 function my_calendar_draw_events($events, $type, $process_date) {
   // We need to sort arrays of objects by time
   usort($events, "my_calendar_time_cmp");
+ $temp_array = array();
+ $output_array = array();
+  
 	if ($type == "mini" && count($events) > 0) { $output .= "<div class='calendar-events'>"; }
 	foreach($events as $event) { 
 		if ( get_option('mc_skip_holidays') == 'false' ) {
 		// if we're not skipping holidays, just add 'em all.
 		$output_array[] = my_calendar_draw_event($event, $type, $process_date); 
-		} else if ( $event->event_category == get_option('mc_skip_holidays_category') ) {
-		// if we ARE skipping holidays, only add events in the holiday category
-		$output_array[] = my_calendar_draw_event($event, $type, $process_date);
+		} else {
+			$temp_array[] = $event;
 		} 
 	}
+	// By default, skip no events.
+	$skipping = false;
+	foreach($temp_array as $event) {
+		// if any event this date is in the holiday category, we are skipping
+		if ( $event->event_category == get_option('mc_skip_holidays_category') ) {
+			$skipping = true;
+			break;
+		}
+	}
+	// check each event, if we're skipping, only include the holiday events.
+	foreach($temp_array as $event) {
+		if ($skipping == true) {
+			if ($event->event_category == get_option('mc_skip_holidays_category') ) {
+				$output_array[] = my_calendar_draw_event($event, $type, $process_date);
+			}
+		} else {
+			$output_array[] = my_calendar_draw_event($event, $type, $process_date);
+		}
+	}
+
 	if ( is_array($output_array) ) {
 		foreach ($output_array as $value) {
 			$output .= $value;
@@ -42,7 +64,8 @@ function my_calendar_draw_event($event, $type="calendar", $process_date) {
 			} else {
 				$path = $wp_plugin_url . '/my-calendar/icons/';
 			}
-		$image = '<img src="'.$path.'/'.$event->category_icon.'" alt="" class="category-icon" style="background:'.$event->category_color.';" />';
+			$hex = (strpos($cur_cat->category_color,'#') !== 0)?'#':'';
+		$image = '<img src="'.$path.'/'.$event->category_icon.'" alt="" class="category-icon" style="background:'.$hex.$event->category_color.';" />';
 		} else {
 			$image = "";
 		}
@@ -474,7 +497,9 @@ if ( $format == "calendar" || $format == "mini" ) {
 				$go = FALSE;
 			}
             if ($go) {
+			$addclass = "";
 				if ($i > $days_in_month) {
+					$addclass = " nextmonth";
 					$thisday = $useday;
 					if ($inc_month == false) {
 						if ($c_month == 12) {
@@ -491,11 +516,11 @@ if ( $format == "calendar" || $format == "mini" ) {
 				$grabbed_events = my_calendar_grab_events($c_year,$c_month,$thisday,$category);
 				$events_class = '';
 					if (!count($grabbed_events)) {
-						$events_class = ' no-events';
+						$events_class = " no-events$addclass";
 						$element = 'span';
 						$trigger = '';
 					} else {
-						$events_class = ' has-events';
+						$events_class = " has-events$addclass";
 						if ($format == 'mini') {
 							$element = 'a href="#"';
 							$trigger = ' trigger';
@@ -608,11 +633,13 @@ if ( $format == "calendar" || $format == "mini" ) {
 			$path = $wp_plugin_url . '/my-calendar/icons/';
 		}
         foreach($cat_details as $cat_detail) {
+			$hex = (strpos($cat_detail->category_color,'#') !== 0)?'#':'';
+		
 			$title_class = sanitize_title($cat_detail->category_name);
 			if ($cat_detail->category_icon != "" && get_option('my_calendar_hide_icons')!='true') {
-			$my_calendar_body .= '<li class="cat_'.$title_class.'"><span class="category-color-sample"><img src="'.$path.'/'.$cat_detail->category_icon.'" alt="" style="background:'.$cat_detail->category_color.';" /></span>'.$cat_detail->category_name."</li>\n";
+			$my_calendar_body .= '<li class="cat_'.$title_class.'"><span class="category-color-sample"><img src="'.$path.'/'.$cat_detail->category_icon.'" alt="" style="background:'.$hex.$cat_detail->category_color.';" /></span>'.$cat_detail->category_name."</li>\n";
 			} else {
-			$my_calendar_body .= '<li class="cat_'.$title_class.'"><span class="category-color-sample no-icon" style="background:'.$cat_detail->category_color.';"> &nbsp; </span>'.$cat_detail->category_name."</li>\n";			
+			$my_calendar_body .= '<li class="cat_'.$title_class.'"><span class="category-color-sample no-icon" style="background:'.$hex.$cat_detail->category_color.';"> &nbsp; </span>'.$cat_detail->category_name."</li>\n";			
 			}
 		}
         $my_calendar_body .= "</ul>\n</div>";

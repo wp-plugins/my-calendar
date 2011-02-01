@@ -143,17 +143,21 @@ function form($instance) {
 
 // Widget upcoming events
 function my_calendar_upcoming_events($before='default',$after='default',$type='default',$category='default',$template='default',$substitute='') {
-  global $wpdb;
+  global $wpdb,$default_template;
   // This function cannot be called unless calendar is up to date
 	check_my_calendar();
     $defaults = get_option('my_calendar_widget_defaults');
 	$display_upcoming_type = ($type == 'default')?$defaults['upcoming']['type']:$type;
+	if ($display_upcoming_type == '') { $display_upcoming_type = 'event'; }
     // Get number of units we should go into the future
 	$after = ($after == 'default')?$defaults['upcoming']['after']:$after;
+	if ($after == '') { $after = 10; }
 	// Get number of units we should go into the past
 	$before = ($before == 'default')?$defaults['upcoming']['before']:$before;
-	$category = ($category == 'default')?$defaults['upcoming']['category']:$category;
+	if ($before == '') { $before = 0; }
+	$category = ($category == 'default')?'':$category;
 	$template = ($template == 'default')?$defaults['upcoming']['template']:$template;
+	if ($template == '' ) { $template = "$default_template"; };
 	$no_event_text = ($substitute == '')?$defaults['upcoming']['text']:$substitute;
   
     $day_count = -($before);
@@ -180,25 +184,43 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 			$event_details['date'] = $date;
 			$event_details['date_end'] = $date_end;
 			
-			if ( get_option('mc_skip_holidays') == 'false' ) {
-				if ( get_option( 'mc_event_approve' ) == 'true' ) {
-					if ( $event->event_approved != 0 ) {$output .= "<li>".jd_draw_template($event_details,$template)."</li>";}
-				} else {
-					$output .= "<li>".jd_draw_template($event_details,$template)."</li>";
-				}
-			} else if ( $event->event_category == get_option('mc_skip_holidays_category') ) {
-				if ( get_option( 'mc_event_approve' ) == 'true' ) {
-					if ( $event->event_approved != 0 ) {$output .= "<li>".jd_draw_template($event_details,$template)."</li>";}
-				} else {
-					$output .= "<li>".jd_draw_template($event_details,$template)."</li>";
-				}
+			if ( get_option( 'mc_event_approve' ) == 'true' ) {
+				if ( $event->event_approved != 0 ) {$temp_array[] = $event_details;}
+			} else {
+				$temp_array[] = $event_details;
 			}
 			// by Roland end
           }
-          $day_count = $day_count+1;
+			
+			if ( get_option('mc_skip_holidays') == 'false') {
+				foreach ($temp_array as $details) {
+					$output .= "<li>".jd_draw_template($details,$template)."</li>";		  				
+				}
+			} else {
+				// By default, skip no events.
+				$skipping = false;
+				foreach($temp_array as $details) {
+					// if any event this date is in the holiday category, we are skipping
+					if ( $details['cat_id'] == get_option('mc_skip_holidays_category') ) {
+						$skipping = true;
+						break;
+					}
+				}
+				// check each event, if we're skipping, only include the holiday events.
+				foreach($temp_array as $details) {
+					if ($skipping == true) {
+						if ($details['cat_id'] == get_option('mc_skip_holidays_category') ) {
+							$output .= "<li>".jd_draw_template($details,$template)."</li>";		  
+						}
+					} else {
+						$output .= "<li>".jd_draw_template($details,$template)."</li>";		  
+					}
+				}		  
+			}
+            $day_count = $day_count+1;
         }
 	} else {
-        $events = mc_get_all_events($category);		 // grab all events WITHIN reasonable proximity		 	 
+        $events = mc_get_all_events($category);		 // grab all events within reasonable proximity		 	 
 		$output .= mc_produce_upcoming_events( $events,$template,$before,$after );
 	}
 	if ($output != '<ul>') {
@@ -242,7 +264,16 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 		if ( is_array( $events ) ) {
           foreach( $events as $event ) {
 		    $event_details = event_as_array( $event );
-				$date = date('Y-m-d',strtotime($event_details['date']));
+				if ( get_option( 'mc_event_approve' ) == 'true' ) {
+					if ( $event->event_approved != 0 ) {$temp_array[] = $event_details; }
+				} else {
+					$temp_array[] = $event_details;
+				}		
+        }
+		
+			if ( get_option('mc_skip_holidays') == 'false') {
+				foreach ($temp_array as $details) {
+				$date = date('Y-m-d',strtotime($details['date']));
 				if (my_calendar_date_comp( $date,$today )===true) {
 					$class = "past-event";
 				} else {
@@ -256,30 +287,49 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 					$append = "</li>\n";
 				} else {
 					$prepend = $append = '';
+				}				
+					$output .= "$prepend".jd_draw_template($details,$template)."$append";		  				
 				}
-			if ( get_option('mc_skip_holidays') == 'false' ) {
-				if ( get_option( 'mc_event_approve' ) == 'true' ) {
-					if ( $event->event_approved != 0 ) {$output .= $prepend.jd_draw_template($event_details,$template).$append;}
+			} else {
+				// By default, skip no events.
+				$skipping = false;
+				foreach($temp_array as $details) {
+				$date = date('Y-m-d',strtotime($details['date']));
+				if (my_calendar_date_comp( $date,$today )===true) {
+					$class = "past-event";
 				} else {
-					$output .= $prepend . jd_draw_template($event_details,$template) . $append;
+					$class = "future-event";
 				}
-			} else if ( $event->event_category == get_option('mc_skip_holidays_category') ) {
-				if ( get_option( 'mc_event_approve' ) == 'true' ) {
-					if ( $event->event_approved != 0 ) {$output .= $prepend.jd_draw_template($event_details,$template).$append;}
+				if ( my_calendar_date_equal( $date,$today ) ) {
+					$class = "today";
+				}
+				if ($type == 'list') {
+					$prepend = "<li class=\"$class\">";
+					$append = "</li>\n";
 				} else {
-					$output .= $prepend.jd_draw_template($event_details,$template).$append;
+					$prepend = $append = '';
+				}				
+					// if any event this date is in the holiday category, we are skipping
+					if ( $details['cat_id'] == get_option('mc_skip_holidays_category') ) {
+						$skipping = true;
+						break;
+					}
 				}
-			}				
-        }
+				// check each event, if we're skipping, only include the holiday events.
+				foreach($temp_array as $details) {
+					if ($skipping == true) {
+						if ($details['cat_id'] == get_option('mc_skip_holidays_category') ) {
+							$output .= "$prepend".jd_draw_template($details,$template)."$append";		  
+						}
+					} else {
+						$output .= "$prepend".jd_draw_template($details,$template)."$append";		  
+					}
+				}		  
+			}		
+		
         $day_count = $day_count+1;
 		} else {
-			if ( $type == 'list' ) {
-				$prepend = "<li class=\"no-events\">";
-				$append = "</li>\n";
-			} else {
-					$prepend = $append = '';
-			}
-			$output .= $prepend.__('There are no events currently scheduled.','my-calendar').$append;
+			$output .= '';
 		}
 	return $output;
 }
@@ -293,7 +343,7 @@ function my_calendar_todays_events($category='default',$template='default',$subs
     $defaults = get_option('my_calendar_widget_defaults');
 	$template = ($template == 'default')?$defaults['today']['template']:$template;
 	$category = ($category == 'default')?$defaults['today']['category']:$category;
-	$no_event_text = ($substitute = '')?$defaults['today']['text']:$substitute;
+	$no_event_text = ($substitute == '')?$defaults['today']['text']:$substitute;
 
     $events = my_calendar_grab_events(date("Y",time()+$offset),date("m",time()+$offset),date("d",time()+$offset),$category);
 	if (count($events) != 0) { $output = "<ul>"; }

@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.7.2
+Version: 1.7.3
 */
 /*  Copyright 2009-2010  Joe Dolson (email : joe@joedolson.com)
 
@@ -23,7 +23,8 @@ Version: 1.7.2
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-$mc_version = '1.7.2';
+global $mc_version;
+$mc_version = '1.7.3';
 // Enable internationalisation
 $plugin_dir = basename(dirname(__FILE__));
 load_plugin_textdomain( 'my-calendar','wp-content/plugins/'.$plugin_dir, $plugin_dir);
@@ -173,7 +174,9 @@ $category_styles = '';
 $categories = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " ORDER BY category_id ASC");
 	foreach ( $categories as $category ) {
 			$class = "mc_".sanitize_title($category->category_name);
-			$color = $category->category_color;
+			$hex = (strpos($category->category_color,'#') !== 0)?'#':'';
+			$color = $hex.$category->category_color;
+			
 		if ( get_option( 'mc_apply_color' ) == 'font' ) {
 			$type = 'color';
 		} else if ( get_option( 'mc_apply_color' ) == 'background' ) {
@@ -250,9 +253,12 @@ function my_calendar_write_js() {
 		});
 	    $("#event_end").datepicker({
 			numberOfMonths: 2,
-			dateFormat: "yy-mm-dd"
+			dateFormat: "yy-mm-dd",
 		});
+	var prevDate = $("#event_begin").datepicker( "getDate" );
+	$("#event_end").datepicker( "option","defaultDate", prevDate );
 	});
+
 	//]]>	 
 	</script>
 	';
@@ -392,10 +398,9 @@ add_shortcode('my_calendar_locations','my_calendar_locations');
 
 // Function to check what version of My Calendar is installed and install if needed
 function check_my_calendar() {
-	global $wpdb, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $mc_version,$stored_styles;
+	global $wpdb, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs,$mc_version,$stored_styles;
 	$current_version = get_option('my_calendar_version');
 	// If current version matches, don't bother running this.
-
 	if ($current_version == $mc_version) {
 		return true;
 	}
@@ -839,7 +844,7 @@ global $wpdb;
 	$join = '';
 	}
 	$limits = $select_category . $join . $limit_string;
-    $events = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $limits");
+    $events = $wpdb->get_results("SELECT *,event_begin as event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $limits");
 	$offset = (60*60*get_option('gmt_offset'));
 	$date = date('Y', time()+($offset)).'-'.date('m', time()+($offset)).'-'.date('d', time()+($offset));
     if (!empty($events)) {
@@ -1321,7 +1326,7 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 
 	 $limit_string = mc_limit_string();
 
-	echo $current_settings['my_calendar_location_default'];
+	// echo $current_settings['my_calendar_location_default'];
     // First we check for conventional events. These will form the first instance of a recurring event
     // or the only instance of a one-off event
      $events = $wpdb->get_results("

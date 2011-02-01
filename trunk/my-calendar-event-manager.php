@@ -491,7 +491,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id,$context='' ) {
 				<option class="input" <?php echo jd_option_selected( $data->event_recur,'U','option'); ?> value="U"><?php _e('Day of Month (e.g., the 3rd Monday of each month)','my-calendar'); ?></option>
 				<option class="input" <?php echo jd_option_selected( $data->event_recur,'Y','option'); ?> value="Y"><?php _e('Annually','my-calendar'); ?></option>
 			</select><br />
-					<?php _e('Enter "0" if the event should recur indefinitely.','my-calendar'); ?>
+					<?php _e('Enter "0" if the event should recur indefinitely. Your entry is the number of events after the first occurrence of the event: a recurrence of <em>2</em> means the event will happen three times.','my-calendar'); ?>
 			</p>
 			</fieldset>	
 </div>
@@ -544,7 +544,8 @@ function my_calendar_print_form_fields( $data,$mode,$event_id,$context='' ) {
 				<option value="none"> -- </option>
 				<?php
 				foreach ( $locations as $location ) {
-					echo "<option value=\"".$location->location_id."\">".stripslashes($location->location_label)."</option>";
+					$selected = ($data->event_label == $location->location_label)?" selected='selected'":'';
+					echo "<option value=\"".$location->location_id."\"$selected>".stripslashes($location->location_label)."</option>";
 				}
 ?>
 			</select>
@@ -723,7 +724,7 @@ function jd_events_display_list($sortby='default',$sortdir='default',$status='al
 									} 
 								}
                                 ?>
-				<td><div class="category-color" style="background-color:<?php echo $this_cat->category_color;?>;"> </div> <?php echo stripslashes($this_cat->category_name); ?></td>
+				<td><div class="category-color" style="background-color:<?php echo (strpos($this_cat->category_color,'#') !== 0)?'#':''; echo $this_cat->category_color;?>;"> </div> <?php echo stripslashes($this_cat->category_name); ?></td>
 				<?php unset($this_cat); ?>
 				<td>
 				<a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;mode=copy&amp;event_id=<?php echo $event->event_id;?>" class='copy'><?php echo __('Copy','my-calendar'); ?></a> &middot; 
