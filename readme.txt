@@ -72,6 +72,9 @@ New or updated translations are always appreciated. The translation file is incl
    with shortcode options or widget configuration.
 
 == Changelog ==
+= 1.7.4 =
+
+* Bug fix: Upcoming events templates ran htmlentities on output
 
 = 1.7.3 = 
 
