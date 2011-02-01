@@ -7,6 +7,7 @@ function jd_draw_template($array,$template,$type='list') {
 	    $search = "{".$key."}";
 		if ($type == 'list') {
 			if ($key == 'link' && $value == '') { $value = get_bloginfo('url'); }
+			$value = htmlentities($value);
 		}
 		$template = stripcslashes(str_replace($search,$value,$template));
 		$rss_search = "{rss_$key}";
@@ -82,16 +83,28 @@ if ( strlen( trim( $map_string ) ) > 0 ) {
 	$map = "";
 }
 
+$date_diff_o = jd_date_diff_precise($event->event_original_begin,$event->event_end);
+$date_diff_n = jd_date_diff_precise($event->event_begin,$event->event_end);
+
+if ( $date_diff_o != $date_diff_n ) {
+	$real_diff = jd_date_diff($event->event_original_begin,$event->event_begin);
+	$real_end_date = add_days_to_date( $event->event_end, $real_diff );
+} else {
+	$real_end_date = strtotime($event->event_end);
+}
+
+
 if (get_option('my_calendar_date_format') != '') {
 $date = date_i18n(get_option('my_calendar_date_format'),strtotime($event->event_begin));
-$date_end = date_i18n(get_option('my_calendar_date_format'),strtotime($event->event_end));
+$date_end = date_i18n(get_option('my_calendar_date_format'),strtotime($real_end_date) );
 } else {
 $date = date_i18n(get_option('date_format'),strtotime($event->event_begin));
-$date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
+$date_end = date_i18n(get_option('date_format'),strtotime($real_end_date) );
 }
 
 
     $details = array();
+	$details['cat_id'] = $event->event_category;
 	$details['category'] = stripslashes($event->category_name);
 	$details['title'] = stripslashes($event->event_title);
 	if ($event->event_time == '00:00:00' ) {
@@ -122,7 +135,7 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 	if ( $event->event_link_expires == 0 ) {
 	$details['link'] = $event->event_link;
 	} else {
-		if ( my_calendar_date_comp( $event->event_end, date('Y-m-d',time()+$offset ) ) ) {
+		if ( my_calendar_date_comp( date('Y-m-d',$real_end_date), date('Y-m-d',time()+$offset ) ) ) {
 			$details['link'] = '';
 		} else {
 			$details['link'] = $event->event_link;
@@ -167,10 +180,6 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 
 		
 		$offset = get_option('gmt_offset');
-		$negative = ($offset < 0)?'true':'false';
-		$offset = str_pad( abs( $offset ),'0',STR_PAD_LEFT );
-		$offset = ($negative = 'true')?'-':'+' . $offset;
-		$offset = str_pad( $offset,5,'0',STR_PAD_RIGHT );
 		
 		if ($event->event_endtime == '00:00:00') {
 			$endtime = '23:59:00';
@@ -178,8 +187,11 @@ $date_end = date_i18n(get_option('date_format'),strtotime($event->event_end));
 			$endtime = $event->event_endtime;
 		}
 		
-		$dtstart = date("Ymd\THi00", strtotime($event->event_begin .' '. $event->event_time) ).'Z'; 
-		$dtend = date("Ymd\THi00", strtotime($event->event_end .' '. $endtime ) ).'Z';	
+		$os = strtotime($event->event_begin .' '. $event->event_time);
+		$oe = strtotime($real_end_date  .' '. $endtime );
+		
+		$dtstart = date("Ymd\THi00", mktime(date('h',$os)+$offset,date('i',$os), date('s',$os), date('m',$os),date('d',$os), date('Y',$os) ) ).'Z'; 
+		$dtend = date("Ymd\THi00", mktime(date('h',$oe)+$offset,date('i',$oe), date('s',$oe), date('m',$oe),date('d',$oe), date('Y',$oe) ) ).'Z';
 	
 	$details['ical_desc'] = $ical_description;
 	$details['ical_start'] = $dtstart;

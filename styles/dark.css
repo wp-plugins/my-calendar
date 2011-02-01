@@ -56,6 +56,10 @@ background:#151515;
 border:1px solid #353535; 
 }
 
+#jd-calendar .nextmonth, #jd-calendar .nextmonth .weekend {
+color: #999;
+}
+
 #jd-calendar .current-day {
 background:#224; 
 }

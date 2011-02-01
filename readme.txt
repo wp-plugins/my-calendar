@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager
 Requires at least: 2.9.2
-Tested up to: 3.1-RC2
+Tested up to: 3.1-RC3
 Stable tag: trunk
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
@@ -12,36 +12,44 @@ Accessible WordPress event calendar plugin. Show events from multiple calendars 
 
 My Calendar provides basic event management and provides numerous methods to display your events. The plug-in can support individual calendars within WordPress Multi-User, or multiple calendars displaying different categories of events. 
 
-Features:
+Basic Features:
 
 *	Standard calendar or list views of events in calendar
+* 	Show events by week or by month
 * 	Mini-calendar view for compact displays
 *	Widget to show today's events
 *	Configurable widget to show upcoming or past events 
 *	Widget templating to control what information is displayed in widget output.
-*	Edit or disable default CSS and default JavaScript from the style editor
-* 	Events can be configured to be added by any level of user; either directly to calendar or reserved for administrative approval
 *	Calendar can be displayed including a single category, all categories, or a selection of categories
-*   Import method from Kieran's Calendar plugin
-* 	Help information within the plugin for shortcode usage and widget templates.
+*	Disable default CSS and default JavaScript or display only on specific Pages/Posts
 *	Editable CSS styles and JavaScript behaviors
+* 	Events can be configured to be added by any level of user; directly to calendar or reserved for administrative approval
+* 	Help information within the plugin for shortcode usage and widget templates.
 * 	Store and display the following information for each event: title, description, alternate description, event category, URL, start date, start time, end date, end time, registration status (open, closed or irrelevant), event location.
+* 	Email notification to administrator when events are scheduled or reserved
+*	Location Manager for storing frequently used venues
+*   Import method from Kieran O'Shea's Calendar plugin
+* 	Integrated Help file to guide in use of shortcodes and template tags
 
 This calendar is a branch from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/). You can import any previous scheduled events from Kieran's calendar into this one. 
-
 
 Languages available:
 
 * American English (Default)
-* Brazilian Portuguese (Leonardo Kfoury)
+* Japanese ([Daisuke Abe](http://www.alter-ego.jp/)) - to 1.7.1
+* Danish ([Jakob Smith](http://www.omkalfatring.dk/)) - to 1.7.0
+* Italian ([Sabir Musta](http://mustaphasabir.altervista.org)) - to 1.7.0
+* Czech ([Jan Rybarik](http://janrybarik.cz)) - to 1.6.3
+* Brazilian Portuguese (Leonardo Kfoury) - to 1.6.0?
+* German (Roland P) - to 1.5.0
+* Dutch (Luud Heck) - to 1.4.9
+
+Older translations
+
 * Spanish ([Esteban Truelsegaard](http://www.netmdp.com))
-* Danish ([Jakob Smith](http://www.omkalfatring.dk/))
-* German (Roland P)
 * Finnish (Ilpo Puhakka)
-* Dutch (Luud Heck)
-* Japanese ([Daisuke Abe](http://www.alter-ego.jp/))
-* Italian ([Sabir Musta](http://mustaphasabir.altervista.org))
-* Czech ([Jan Rybarik](http://janrybarik.cz))
+
+New or updated translations are always appreciated. The translation file is included in the download. 
 
 == Installation ==
 
@@ -56,6 +64,7 @@ Languages available:
    My Calendar -> Manage Locations
    My Calendar -> Settings   
    My Calendar -> Style Editor
+   My Calendar -> Behavior Editor
 
    
 4. Edit or create a page on your blog which includes the shortcode [my_calendar] and visit
@@ -63,6 +72,22 @@ Languages available:
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.7.3 = 
+
+* Bug fix: upcoming events substitute text still not appearing in some contexts. 
+* Bug fix: Today's event substitute text had assignment in place of comparison
+* Bug fix: Event location not saved properly on edit if Location Fields are disabled on input
+* Bug fix: Fixed date and time issues in iCal output
+* Bug fix: Fixed character set issue in RSS output
+* Bug fix: Major problem with Holiday category event delimiting
+* Danish translation updated to 1.7.0
+* Japanese translation updated to 1.7.1
+* Minor documentation and readme.txt updates
+* Added additional fallback settings for widgets
+* Fixed minor installation issue with version detection.
+* Added CSS hook .nextmonth on dates occurring past the end of the currently displayed month.
+* Added check for '#' symbol on hex colors in category management.
 
 = 1.7.2 =
 
@@ -365,19 +390,9 @@ Languages available:
 
 == Frequently Asked Questions ==
 
-= This looks terrible with my template! You suck! =
+= Hey! Why don't you have any Frequently Asked Questions here! =
 
-Hey, give me a break. I'm only going to release this with one default CSS - it works pretty well with Kubrick or Twenty Ten, and should be usable in many other themes. However, I'm not about to make any guarantees that it'll work with your theme. If you want it to look a particular way, you'll need to do some customization.
-
-= Why are past events showing up in my upcoming events widget? =
-
-The upcoming events widget has a number of options, including the choice to display any number of past or future events. The default settings allow for both, so if you only want future events to be shown you'll need to change the settings.
-
-= I don't want to show event categories in my widgets. How can I change that? =
-
-The widgets both use templates to determine what they'll display. You can edit those templates to show whatever you need within your list of events. The available shortcodes can be found on the plugin's Help page.
-
-
+Because the majority of users end up on my web site asking for help anyway -- and it's simply more difficult to maintain two copies of my Frequently Asked Questions. Please visit [my web site FAQ](http://www.joedolson.com/articles/my-calendar/faq/) to read my Frequently Asked Questions!
 
 == Screenshots ==
 
@@ -391,4 +406,4 @@ The widgets both use templates to determine what they'll display. You can edit t
 
 == Upgrade Notice ==
 
-Upgrading to version 1.6.4 will require you to re-configure your upcoming events and today's events widgets.
+Upgrading from version 1.6.3 or below will require you to re-configure your upcoming events and today's events widgets.

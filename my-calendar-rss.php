@@ -33,7 +33,7 @@ function my_calendar_rss() {
 	<guid isPermaLink='false'>{guid}</guid>
   </item>\n";
 // add RSS headers
-$output = '<?xml version="1.0" encoding="UTF-8"?>
+$output = '<?xml version="1.0" encoding="'.get_bloginfo('charset').'"?>
 <rss version="2.0"
 	xmlns:content="http://purl.org/rss/1.0/modules/content/"
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -57,7 +57,7 @@ $output = '<?xml version="1.0" encoding="UTF-8"?>
 	$output .= mc_produce_upcoming_events( $events,$template,$before,$after,'rss' );
 $output .= '</channel>
 </rss>';
-header('Content-type: text/xml');
+header('Content-type: application/rss+xml');
 header("Pragma: no-cache");
 header("Expires: 0");	
 echo $output;

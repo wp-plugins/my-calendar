@@ -31,6 +31,10 @@ border:1px solid #bbb;
 background:#fafafa;
 }
 
+#jd-calendar .nextmonth, #jd-calendar .nextmonth .weekend {
+color: #777;
+}
+
 #jd-calendar #calendar-list .odd {
 background:#e3e3e3; 
 }
@@ -39,6 +43,7 @@ background:#e3e3e3;
 background:#f3f3f3;
 border:1px solid #d3d3d3;
 }
+
 
 #jd-calendar .current-day {
 background:#ffd; 

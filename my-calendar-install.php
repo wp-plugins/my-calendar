@@ -438,6 +438,10 @@ border:1px solid #9b5;
 background:#fafafa;
 }
 
+#jd-calendar .nextmonth, #jd-calendar .nextmonth .weekend {
+color: #777;
+}
+
 #jd-calendar #calendar-list .odd {
 background:#d3e3e3;
 }
@@ -815,6 +819,10 @@ background:#252525;
 color: #eee;
 }
 
+#jd-calendar .nextmonth, #jd-calendar .nextmonth .weekend {
+color: #999;
+}
+
 #jd-calendar #calendar-list .odd {
 background:#353535;
 }
@@ -1122,7 +1130,9 @@ border:1px solid #bbb;
 #jd-calendar .list-event .details, #jd-calendar .day-without-date {
 background:#fafafa;
 }
-
+#jd-calendar .nextmonth, #jd-calendar .nextmonth .weekend {
+color: #777;
+}
 #jd-calendar #calendar-list .odd {
 background:#e3e3e3; 
 }
