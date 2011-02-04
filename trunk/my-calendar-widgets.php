@@ -146,6 +146,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
   global $wpdb,$default_template;
   // This function cannot be called unless calendar is up to date
 	check_my_calendar();
+	$offset = (60*60*get_option('gmt_offset'));	
     $defaults = get_option('my_calendar_widget_defaults');
 	$display_upcoming_type = ($type == 'default')?$defaults['upcoming']['type']:$type;
 	if ($display_upcoming_type == '') { $display_upcoming_type = 'event'; }
@@ -165,7 +166,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 	  
 	if ($display_upcoming_type == "days") {
       while ($day_count < $after+1) {
-          list($y,$m,$d) = split("-",date("Y-m-d",mktime($day_count*24,0,0,date("m"),date("d"),date("Y"))));
+          list($y,$m,$d) = split("-",date("Y-m-d",mktime($day_count*24,0,0,date("m",time()+$offset),date("d",time()+$offset),date("Y",time()+$offset))));
           $events = my_calendar_grab_events( $y,$m,$d,$category );
 			$current_date = "$y-$m-$d";
           @usort($events, "my_calendar_time_cmp");
