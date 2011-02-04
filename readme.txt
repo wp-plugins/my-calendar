@@ -72,6 +72,13 @@ New or updated translations are always appreciated. The translation file is incl
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.7.5 = 
+
+* Bug fix: Error with upcoming events when selected by dates and holiday skipping enabled.
+* Bug fix: Upcoming Events widget title defaulted to 'Today's Events'
+* Change: Reversed order of Latitude/Longitude on forms to match Google's implementation.
+
 = 1.7.4 =
 
 * Bug fix: Upcoming events templates ran htmlentities on output

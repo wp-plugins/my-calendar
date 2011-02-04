@@ -73,7 +73,7 @@ function widget($args, $instance) {
 	$after = esc_attr($instance['my_calendar_upcoming_after']);
 	$type = esc_attr($instance['my_calendar_upcoming_type']);
 	$the_category = ($instance['my_calendar_upcoming_category']=='')?'default':esc_attr($instance['my_calendar_upcoming_category']);
-	$widget_title = empty($the_title) ? __('Today\'s Events','my-calendar') : $the_title;
+	$widget_title = empty($the_title) ? __('Upcoming Events','my-calendar') : $the_title;
 	$the_events = my_calendar_upcoming_events($before,$after,$type,$the_category,$the_template,$the_substitute);
 		if ($the_events != '') {
 		  echo $before_widget;
@@ -191,34 +191,33 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 			}
 			// by Roland end
           }
-			
-			if ( get_option('mc_skip_holidays') == 'false') {
-				foreach ($temp_array as $details) {
-					$output .= "<li>".jd_draw_template($details,$template)."</li>";		  				
+          $day_count = $day_count+1;
+        }
+		if ( get_option('mc_skip_holidays') == 'false') {
+			foreach ($temp_array as $details) {
+				$output .= "<li>".jd_draw_template($details,$template)."</li>";		  				
+			}
+		} else {
+			// By default, skip no events.
+			$skipping = false;
+			foreach($temp_array as $details) {
+				// if any event this date is in the holiday category, we are skipping
+				if ( $details['cat_id'] == get_option('mc_skip_holidays_category') ) {
+					$skipping = true;
+					break;
 				}
-			} else {
-				// By default, skip no events.
-				$skipping = false;
-				foreach($temp_array as $details) {
-					// if any event this date is in the holiday category, we are skipping
-					if ( $details['cat_id'] == get_option('mc_skip_holidays_category') ) {
-						$skipping = true;
-						break;
-					}
-				}
-				// check each event, if we're skipping, only include the holiday events.
-				foreach($temp_array as $details) {
-					if ($skipping == true) {
-						if ($details['cat_id'] == get_option('mc_skip_holidays_category') ) {
-							$output .= "<li>".jd_draw_template($details,$template)."</li>";		  
-						}
-					} else {
+			}
+			// check each event, if we're skipping, only include the holiday events.
+			foreach($temp_array as $details) {
+				if ($skipping == true) {
+					if ($details['cat_id'] == get_option('mc_skip_holidays_category') ) {
 						$output .= "<li>".jd_draw_template($details,$template)."</li>";		  
 					}
-				}		  
-			}
-            $day_count = $day_count+1;
-        }
+				} else {
+					$output .= "<li>".jd_draw_template($details,$template)."</li>";		  
+				}
+			}		  
+		}		
 	} else {
         $events = mc_get_all_events($category);		 // grab all events within reasonable proximity		 	 
 		$output .= mc_produce_upcoming_events( $events,$template,$before,$after );

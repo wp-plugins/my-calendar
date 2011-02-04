@@ -120,7 +120,8 @@ function mc_show_location_form($view='add',$cur_loc='') {
 			<small><?php _e('If you supply GPS coordinates for your location, they will be used in place of any other address information to pinpoint your location.','my-calendar'); ?></small>
 			</p>
 			<p>
-			<label for="location_longitude"><?php _e('Longitude','my-calendar'); ?></label> <input type="text" id="location_longitude" name="location_longitude" class="input" size="10" value="<?php if ( !empty( $cur_loc ) ) { echo htmlspecialchars(stripslashes($cur_loc->location_longitude)); } else { echo '0.000000'; } ?>" /> <label for="location_latitude"><?php _e('Latitude','my-calendar'); ?></label> <input type="text" id="location_latitude" name="location_latitude" class="input" size="10" value="<?php if ( !empty( $cur_loc ) ) { echo htmlspecialchars(stripslashes($cur_loc->location_latitude)); } else { echo '0.000000'; } ?>" />
+			 <label for="location_latitude"><?php _e('Latitude','my-calendar'); ?></label> <input type="text" id="location_latitude" name="location_latitude" class="input" size="10" value="<?php if ( !empty( $cur_loc ) ) { echo htmlspecialchars(stripslashes($cur_loc->location_latitude)); } else { echo '0.000000'; } ?>" />
+			 <label for="location_longitude"><?php _e('Longitude','my-calendar'); ?></label> <input type="text" id="location_longitude" name="location_longitude" class="input" size="10" value="<?php if ( !empty( $cur_loc ) ) { echo htmlspecialchars(stripslashes($cur_loc->location_longitude)); } else { echo '0.000000'; } ?>" />
 			</p>			
 			</fieldset>
 			<p>
