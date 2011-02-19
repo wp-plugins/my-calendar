@@ -73,7 +73,18 @@ New or updated translations are always appreciated. The translation file is incl
 
 == Changelog ==
 
-= 1.7.5 = 
+= 1.7.6 = 
+
+* Bug fix: Upcoming Events widget in days mode was not offsetting time using GMT reference. (Committed silently in 1.7.5)
+* Bug fix: Default template not rendered in Today's Events when template left blank
+* Bug fix: Slashes not stripped in category key.
+* Bug fix: Upcoming Events widget if no upcoming events
+* Bug fix: Error with retrieval of Author's ID
+* Fixed some non-translatable text strings
+* Logic change: Upcoming Events now bases choice on time rather than date (events happening later today are future, rather than only events happening tomorrow or later.)
+* Enhancement: respects custom wp-content location definitions
+
+= 1.7.5 =
 
 * Bug fix: Error with upcoming events when selected by dates and holiday skipping enabled.
 * Bug fix: Upcoming Events widget title defaulted to 'Today's Events'

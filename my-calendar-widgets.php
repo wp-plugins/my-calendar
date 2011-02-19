@@ -170,28 +170,32 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
           $events = my_calendar_grab_events( $y,$m,$d,$category );
 			$current_date = "$y-$m-$d";
           @usort($events, "my_calendar_time_cmp");
-          foreach($events as $event) {
-		    $event_details = event_as_array($event);
-			$date_diff = jd_date_diff($event_details['date'],$event_details['date_end']);
-			
-			if (get_option('my_calendar_date_format') != '') {
-				$date = date_i18n(get_option('my_calendar_date_format'),strtotime($current_date));
-				$date_end = date_i18n(get_option('my_calendar_date_format'),strtotime(my_calendar_add_date($current_date,$datediff)));
+		  if (count($events) != 0) {
+			  foreach($events as $event) {
+				$event_details = event_as_array($event);
+				$date_diff = jd_date_diff($event_details['date'],$event_details['date_end']);
+				
+				if (get_option('my_calendar_date_format') != '') {
+					$date = date_i18n(get_option('my_calendar_date_format'),strtotime($current_date));
+					$date_end = date_i18n(get_option('my_calendar_date_format'),strtotime(my_calendar_add_date($current_date,$datediff)));
+				} else {
+					$date = date_i18n(get_option('date_format'),strtotime($current_date));
+					$date_end = date_i18n(get_option('date_format'),strtotime(my_calendar_add_date($current_date,$datediff)));
+				}
+				
+				$event_details['date'] = $date;
+				$event_details['date_end'] = $date_end;
+				
+				if ( get_option( 'mc_event_approve' ) == 'true' ) {
+					if ( $event->event_approved != 0 ) {$temp_array[] = $event_details;}
+				} else {
+					$temp_array[] = $event_details;
+				}
+				// by Roland end
+			  }
 			} else {
-				$date = date_i18n(get_option('date_format'),strtotime($current_date));
-				$date_end = date_i18n(get_option('date_format'),strtotime(my_calendar_add_date($current_date,$datediff)));
+				return stripcslashes( $no_event_text );
 			}
-			
-			$event_details['date'] = $date;
-			$event_details['date_end'] = $date_end;
-			
-			if ( get_option( 'mc_event_approve' ) == 'true' ) {
-				if ( $event->event_approved != 0 ) {$temp_array[] = $event_details;}
-			} else {
-				$temp_array[] = $event_details;
-			}
-			// by Roland end
-          }
           $day_count = $day_count+1;
         }
 		if ( get_option('mc_skip_holidays') == 'false') {
@@ -230,7 +234,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 		return stripcslashes( $no_event_text );
 	}	
 }
-
+// make this function time-sensitive, not date-sensitive.
 function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type='list') {
 		$past = 1;
 		$future = 1;
@@ -239,17 +243,19 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
          @usort( $events, "my_calendar_timediff_cmp" );// sort all events by proximity to current date
 	     $count = count($events);
 			for ( $i=0;$i<=$count;$i++ ) {
+					$beginning = $events[$i]->event_begin . ' ' . $events[$i]->event_time;
+					$current = date('Y-m-d H:i',time()+$offset);			
 				if ($events[$i]) {
 					if ( ( $past<=$before && $future<=$after ) ) {
 						$near_events[] = $events[$i]; // if neither limit is reached, split off freely
-					} else if ( $past <= $before && ( my_calendar_date_comp( $events[$i]->event_begin,$today ) ) ) {
+					} else if ( $past <= $before && ( my_calendar_date_comp( $beginning,$current ) ) ) {
 						$near_events[] = $events[$i]; // split off another past event
-					} else if ( $future <= $after && ( !my_calendar_date_comp( $events[$i]->event_begin,$today ) ) ) {
+					} else if ( $future <= $after && ( !my_calendar_date_comp( $beginning,$current ) ) ) {
 						$near_events[] = $events[$i]; // split off another future event
 					}				
-					if ( my_calendar_date_comp( $events[$i]->event_begin,$today ) ) {
+					if ( my_calendar_date_comp( $beginning,$current ) ) {
 						$past++;
-					} elseif  ( my_calendar_date_equal( $events[$i]->event_begin,$today ) ) {
+					} elseif  ( my_calendar_date_equal( $beginning,$current ) ) {
 						$present = 1;
 					} else {
 						$future++;
@@ -336,12 +342,13 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 
 // Widget todays events
 function my_calendar_todays_events($category='default',$template='default',$substitute='') {
-	global $wpdb;
+	global $wpdb, $default_template;
 	$offset = (60*60*get_option('gmt_offset'));  
 	// This function cannot be called unless calendar is up to date
 	check_my_calendar();
     $defaults = get_option('my_calendar_widget_defaults');
 	$template = ($template == 'default')?$defaults['today']['template']:$template;
+	if ($template == '' ) { $template = "$default_template"; };	
 	$category = ($category == 'default')?$defaults['today']['category']:$category;
 	$no_event_text = ($substitute == '')?$defaults['today']['text']:$substitute;
 
