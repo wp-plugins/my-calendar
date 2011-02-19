@@ -637,9 +637,9 @@ if ( $format == "calendar" || $format == "mini" ) {
 		
 			$title_class = sanitize_title($cat_detail->category_name);
 			if ($cat_detail->category_icon != "" && get_option('my_calendar_hide_icons')!='true') {
-			$my_calendar_body .= '<li class="cat_'.$title_class.'"><span class="category-color-sample"><img src="'.$path.'/'.$cat_detail->category_icon.'" alt="" style="background:'.$hex.$cat_detail->category_color.';" /></span>'.$cat_detail->category_name."</li>\n";
+			$my_calendar_body .= '<li class="cat_'.$title_class.'"><span class="category-color-sample"><img src="'.$path.'/'.$cat_detail->category_icon.'" alt="" style="background:'.$hex.$cat_detail->category_color.';" /></span>'.stripcslashes($cat_detail->category_name)."</li>\n";
 			} else {
-			$my_calendar_body .= '<li class="cat_'.$title_class.'"><span class="category-color-sample no-icon" style="background:'.$hex.$cat_detail->category_color.';"> &nbsp; </span>'.$cat_detail->category_name."</li>\n";			
+			$my_calendar_body .= '<li class="cat_'.$title_class.'"><span class="category-color-sample no-icon" style="background:'.$hex.$cat_detail->category_color.';"> &nbsp; </span>'.stripcslashes($cat_detail->category_name)."</li>\n";			
 			}
 		}
         $my_calendar_body .= "</ul>\n</div>";
@@ -799,7 +799,7 @@ if (strpos($current_url,"/&")!==false || strpos($current_url,".php&")!==false) {
 	}
 	if ($show == 'list') {
 		$output .= "<ul id='mc-locations-list'>
-		<li><a href='$current_url$char"."loc=none&amp;ltype=none'>Show all</a></li>\n";
+		<li><a href='$current_url$char"."loc=none&amp;ltype=none'>".__('Show all','my-calendar')."</a></li>\n";
 	} else {
 		$ltype = ($_GET['ltype']=='')?$datatype:$_GET['ltype'];
 		$output .= "

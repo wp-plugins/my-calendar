@@ -148,7 +148,6 @@ if ( isset( $_POST['event_action'] ) ) {
 	$nonce=$_REQUEST['_wpnonce'];
     if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
 	$proceed = false;
-	$event_author = (int) ($action == 'add' || $action == 'copy')?($current_user->ID):($_POST['event_author']);
 	$output = mc_check_data($action,$_POST);
 	if ($action == 'add' || $action == 'copy' ) {
 		$response = my_calendar_save($action,$output);
@@ -226,7 +225,7 @@ my_calendar_check_db();
 
 
 function my_calendar_save( $action,$output,$event_id=false ) {
-global $wpdb;
+global $wpdb,$event_author;
 	$proceed = $output[0];
 
 	if ( ( $action == 'add' || $action == 'copy' ) && $proceed == true ) {
@@ -248,6 +247,7 @@ global $wpdb;
 		}
 	}
 	if ( $action == 'edit' && $proceed == true ) {
+		$event_author = (int) ($_POST['event_author']);
 		if ( mc_can_edit_event( $event_author ) ) {	
 			$update = $output[2];
 			$formats = array('%s','%s','%s','%s','%s','%s','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%f','%f','%d','%s','%d','%d','%d','%d' );
@@ -792,7 +792,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
     $expires = !empty($_POST['event_link_expires']) ? $_POST['event_link_expires'] : '0';
     $approved = !empty($_POST['event_approved']) ? $_POST['event_approved'] : '0';
 	$location_preset = !empty($_POST['location_preset']) ? $_POST['location_preset'] : '';
-    $event_author = !empty($_POST['event_author']) ? $_POST['event_author'] : '';
+    $event_author = !empty($_POST['event_author']) ? $_POST['event_author'] : $current_user->ID;
 	$event_open = !empty($_POST['event_open']) ? $_POST['event_open'] : '2';
 	$event_group = !empty($_POST['event_group']) ? 1 : 0;
 	// set location

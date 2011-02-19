@@ -5,9 +5,9 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.7.5
+Version: 1.7.6
 */
-/*  Copyright 2009-2010  Joe Dolson (email : joe@joedolson.com)
+/*  Copyright 2009-2011  Joe Dolson (email : joe@joedolson.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,10 +24,10 @@ Version: 1.7.5
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 global $mc_version;
-$mc_version = '1.7.5';
+$mc_version = '1.7.6';
 // Enable internationalisation
 $plugin_dir = basename(dirname(__FILE__));
-load_plugin_textdomain( 'my-calendar','wp-content/plugins/'.$plugin_dir, $plugin_dir);
+load_plugin_textdomain( 'my-calendar',false, dirname( plugin_basename( __FILE__ ) ) ); 
 global $wpdb;
 // Define the tables used in My Calendar
 define('MY_CALENDAR_TABLE', $wpdb->prefix . 'my_calendar');
@@ -83,6 +83,13 @@ if ( version_compare( get_bloginfo( 'version' ) , '3.0' , '<' ) && is_ssl() ) {
 }
 $wp_content_url .= '/wp-content';
 $wp_content_dir = ABSPATH . 'wp-content';
+if ( defined('WP_CONTENT_URL') ) {
+	$wp_content_url = constant('WP_CONTENT_URL');
+}
+if ( defined('WP_CONTENT_DIR') ) {
+	$wp_content_dir = constant('WP_CONTENT_DIR');
+}
+
 $wp_plugin_url = $wp_content_url . '/plugins';
 $wp_plugin_dir = $wp_content_dir . '/plugins';
 $wpmu_plugin_url = $wp_content_url . '/mu-plugins';
