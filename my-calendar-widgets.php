@@ -163,41 +163,41 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
   
     $day_count = -($before);
 	$output = "<ul>";
-	  
 	if ($display_upcoming_type == "days") {
-      while ($day_count < $after+1) {
-          list($y,$m,$d) = split("-",date("Y-m-d",mktime($day_count*24,0,0,date("m",time()+$offset),date("d",time()+$offset),date("Y",time()+$offset))));
-          $events = my_calendar_grab_events( $y,$m,$d,$category );
+		$temp_array = array();
+		while ($day_count < $after+1) {
+			list($y,$m,$d) = split("-",date("Y-m-d",mktime($day_count*24,0,0,date("m",time()+$offset),date("d",time()+$offset),date("Y",time()+$offset))));
+			$events = my_calendar_grab_events( $y,$m,$d,$category );
 			$current_date = "$y-$m-$d";
-          @usort($events, "my_calendar_time_cmp");
-		  if (count($events) != 0) {
-			  foreach($events as $event) {
-				$event_details = event_as_array($event);
-				$date_diff = jd_date_diff($event_details['date'],$event_details['date_end']);
-				
-				if (get_option('my_calendar_date_format') != '') {
-					$date = date_i18n(get_option('my_calendar_date_format'),strtotime($current_date));
-					$date_end = date_i18n(get_option('my_calendar_date_format'),strtotime(my_calendar_add_date($current_date,$datediff)));
-				} else {
-					$date = date_i18n(get_option('date_format'),strtotime($current_date));
-					$date_end = date_i18n(get_option('date_format'),strtotime(my_calendar_add_date($current_date,$datediff)));
-				}
-				
-				$event_details['date'] = $date;
-				$event_details['date_end'] = $date_end;
-				
-				if ( get_option( 'mc_event_approve' ) == 'true' ) {
-					if ( $event->event_approved != 0 ) {$temp_array[] = $event_details;}
-				} else {
-					$temp_array[] = $event_details;
-				}
-				// by Roland end
-			  }
-			} else {
-				return stripcslashes( $no_event_text );
-			}
-          $day_count = $day_count+1;
-        }
+			@usort($events, "my_calendar_time_cmp");
+			if (count($events) != 0) {
+				foreach($events as $event) {
+					$event_details = event_as_array($event);
+					$date_diff = jd_date_diff($event_details['date'],$event_details['date_end']);
+					
+					if (get_option('my_calendar_date_format') != '') {
+						$date = date_i18n(get_option('my_calendar_date_format'),strtotime($current_date));
+						$date_end = date_i18n(get_option('my_calendar_date_format'),strtotime(my_calendar_add_date($current_date,$datediff)));
+					} else {
+						$date = date_i18n(get_option('date_format'),strtotime($current_date));
+						$date_end = date_i18n(get_option('date_format'),strtotime(my_calendar_add_date($current_date,$datediff)));
+					}
+					
+					$event_details['date'] = $date;
+					$event_details['date_end'] = $date_end;
+					
+					if ( get_option( 'mc_event_approve' ) == 'true' ) {
+						if ( $event->event_approved != 0 ) {$temp_array[] = $event_details;}
+					} else {
+						$temp_array[] = $event_details;
+					}
+					// by Roland end
+				}			  
+			} 
+            $day_count = $day_count+1;
+     
+		}
+
 		if ( get_option('mc_skip_holidays') == 'false') {
 			foreach ($temp_array as $details) {
 				$output .= "<li>".jd_draw_template($details,$template)."</li>";		  				
