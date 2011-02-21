@@ -73,6 +73,10 @@ New or updated translations are always appreciated. The translation file is incl
 
 == Changelog ==
 
+= 1.7.7 =
+
+* Bug fix: Upcoming Events widget fault in 'dates' mode.
+
 = 1.7.6 = 
 
 * Bug fix: Upcoming Events widget in days mode was not offsetting time using GMT reference. (Committed silently in 1.7.5)
