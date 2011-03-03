@@ -24,7 +24,9 @@ function edit_my_calendar_behaviors() {
 	  update_option('my_calendar_caljs',$my_calendar_caljs);
 	  update_option('my_calendar_ajaxjs',$my_calendar_ajaxjs);
 	  
-	  
+	$my_calendar_show_js = ($_POST['my_calendar_show_js']=='')?'':$_POST['my_calendar_show_js'];
+	update_option('my_calendar_show_js',$my_calendar_show_js);   
+	
 		if ( $_POST['reset_caljs'] == 'on') {
 			update_option('my_calendar_caljs',$initial_caljs);
 		}
@@ -51,9 +53,9 @@ function edit_my_calendar_behaviors() {
 
 	$my_calendar_ajaxjs = stripcslashes(get_option('my_calendar_ajaxjs'));
 	$ajax_javascript = get_option('ajax_javascript'); 
-		
-	$my_calendar_show_js = ($_POST['my_calendar_show_js']=='')?'':$_POST['my_calendar_show_js'];
-	update_option('my_calendar_show_js',$my_calendar_show_js);   
+	
+	$my_calendar_showjs = stripcslashes(get_option('my_calendar_showjs'));
+
   // Now we render the form
   ?>
     <div class="wrap">
