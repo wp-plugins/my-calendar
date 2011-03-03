@@ -1,3 +1,4 @@
+
 === My Calendar ===
 Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
@@ -72,6 +73,14 @@ New or updated translations are always appreciated. The translation file is incl
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.7.8 =
+
+* Bug fix: Behaviors page limits lost on settings refresh
+* Bug fix: Fix {enddate} shortcode output.
+* Bug fix: iCal output improvements
+* Modification: RSS and iCal output are disabled entirely when turned off, rather than just hidden.
+* Modification: Added styles for days out of current month
 
 = 1.7.7 =
 

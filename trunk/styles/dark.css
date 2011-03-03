@@ -334,3 +334,29 @@ height: 2em!important;
 padding: 1px 3px!important;
 font-size: .7em;
 }
+#jd-calendar .nextmonth {
+background: #f6f6f6;
+color: #888;
+}
+#jd-calendar .nextmonth .event-title {
+opacity: .7;
+}
+#jd-calendar .nextmonth .mc-date {
+background: #eee;
+}
+#jd-calendar .nextmonth .weekend {
+color: #888;
+}
+#jd-calendar .nextmonth {
+background: #000;
+color: #666!important;
+}
+#jd-calendar .nextmonth .event-title {
+opacity: .7;
+}
+#jd-calendar .nextmonth .mc-date {
+background: #161616;
+}
+#jd-calendar .nextmonth .weekend {
+background: #161616!important;
+}

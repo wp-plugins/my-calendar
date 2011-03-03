@@ -1,6 +1,6 @@
 <?php
 // define global variables;
-global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_template,$default_user_settings;
+global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_template,$default_user_settings,$stored_styles;
 
 $initial_ajaxjs = "jQuery(document).ready(function(){
 
@@ -539,7 +539,8 @@ margin:0;
 }
 #jd-calendar .calendar-event .details, #jd-calendar .calendar-events {
 position:absolute;
-width:50%;
+left:15%;
+width:70%;
 -moz-border-radius:10px;
 -moz-box-shadow:3px 3px 6px #777;
 -webkit-box-shadow:3px 3px 6px #777;
@@ -694,50 +695,6 @@ border-top-left-radius: 8px;
 border-bottom-left-radius: 8px;
 }
 
-#jd-calendar.mini .my-calendar-date-switcher label {
-display: block;
-float: left;
-width: 6em;
-}
-#jd-calendar.mini .my-calendar-date-switcher {
-padding: 4px;
-}
-#jd-calendar.mini td .category-icon {
-display: none;
-}
-#jd-calendar.mini h3 {
-font-size: 1.1em;
-}
-
-#jd-calendar.mini .day-with-date span, #jd-calendar.mini .day-with-date a {
-font-family: Arial, Verdana, sans-serif;
-font-size: .9em;
-padding:1px;
-}
-#jd-calendar .mini-event .sub-details {
-margin: 0;
-border-bottom: 1px solid #ccc;
-padding: 2px 0 0;
-margin-bottom: 5px;
-}
-#jd-calendar.mini .day-with-date a {
-display: block;
-margin: -2px;
-font-weight: 700;
-text-decoration: underline;
-}";
-
-$mini_styles = ".mini td {
-height: auto!important;
-}
-
-.mini .my-calendar-nav ul {
-height: 2em!important;
-}
-.mini .my-calendar-nav li a {
-padding: 1px 3px!important;
-font-size: .7em;
-}
 #jd-calendar.mini .my-calendar-date-switcher label {
 display: block;
 float: left;

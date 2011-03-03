@@ -173,18 +173,18 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 			if (count($events) != 0) {
 				foreach($events as $event) {
 					$event_details = event_as_array($event);
-					$date_diff = jd_date_diff($event_details['date'],$event_details['date_end']);
+					$date_diff = jd_date_diff( strtotime($event_details['date']),strtotime($event_details['enddate']));
 					
 					if (get_option('my_calendar_date_format') != '') {
 						$date = date_i18n(get_option('my_calendar_date_format'),strtotime($current_date));
-						$date_end = date_i18n(get_option('my_calendar_date_format'),strtotime(my_calendar_add_date($current_date,$datediff)));
-					} else {
+						$date_end = date_i18n(get_option('my_calendar_date_format'),strtotime(my_calendar_add_date($current_date,$date_diff)));
+					} else { 
 						$date = date_i18n(get_option('date_format'),strtotime($current_date));
-						$date_end = date_i18n(get_option('date_format'),strtotime(my_calendar_add_date($current_date,$datediff)));
+						$date_end = date_i18n(get_option('date_format'),strtotime(my_calendar_add_date($current_date,$date_diff)));
 					}
 					
 					$event_details['date'] = $date;
-					$event_details['date_end'] = $date_end;
+					$event_details['enddate'] = $date_end;
 					
 					if ( get_option( 'mc_event_approve' ) == 'true' ) {
 						if ( $event->event_approved != 0 ) {$temp_array[] = $event_details;}
