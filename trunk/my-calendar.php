@@ -61,8 +61,7 @@ include(dirname(__FILE__).'/my-calendar-detect-mobile.php' );
 register_activation_hook( __FILE__, 'check_my_calendar' );
 
 // Enable internationalisation
-$plugin_dir = basename(dirname(__FILE__));
-load_plugin_textdomain( 'my-calendar',false, dirname( plugin_basename( __FILE__ ) . '/lang/' ) ); 
+load_plugin_textdomain( 'my-calendar',false, dirname( plugin_basename( __FILE__ ) ) . '/lang' ); 
 
 if ( version_compare( get_bloginfo( 'version' ) , '3.0' , '<' ) && is_ssl() ) {
 	$wp_content_url = str_replace( 'http://' , 'https://' , get_option( 'siteurl' ) );
