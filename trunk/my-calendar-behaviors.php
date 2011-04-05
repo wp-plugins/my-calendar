@@ -54,13 +54,13 @@ function edit_my_calendar_behaviors() {
 	$my_calendar_ajaxjs = stripcslashes(get_option('my_calendar_ajaxjs'));
 	$ajax_javascript = get_option('ajax_javascript'); 
 	
-	$my_calendar_showjs = stripcslashes(get_option('my_calendar_showjs'));
+	$my_calendar_show_js = stripcslashes(get_option('my_calendar_show_js'));
 
   // Now we render the form
   ?>
     <div class="wrap">
-	<?php 
-echo my_calendar_check_db();
+<?php 
+my_calendar_check_db();
 ?>
     <h2><?php _e('My Calendar Behaviors','my-calendar'); ?></h2>
     <?php jd_show_support_box(); ?>
@@ -68,7 +68,7 @@ echo my_calendar_check_db();
 <div class="postbox">
 	<h3><?php _e('Calendar Behavior Settings','my-calendar'); ?></h3>
 	<div class="inside">	
-    <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-behaviors">
+    <form id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-behaviors">
 	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<p>
 	<label for="my_calendar_show_js"><?php _e('Apply JavaScript only on these pages (comma separated page IDs)','my-calendar'); ?></label> <input type="text" id="my_calendar_show_js" name="my_calendar_show_js" value="<?php echo $my_calendar_show_js; ?>" />

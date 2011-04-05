@@ -1,54 +1,40 @@
 <?php
 // define global variables;
-global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_template,$default_user_settings,$stored_styles;
+global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_template,$default_user_settings,$stored_styles, $wpdb;
 
 $initial_ajaxjs = "jQuery(document).ready(function(){
-
 	jQuery('.calendar .my-calendar-nav a').live('click', function(e){
 		e.preventDefault();
-
 		var link = jQuery(this).attr('href');
-
 		jQuery('#jd-calendar.calendar').html('Loading...');
 		jQuery('#jd-calendar.calendar').load(link+' #jd-calendar.calendar > *', function() {
-			jQuery('.calendar-event').children().not('h3').hide();		
+			jQuery('.calendar-event').children().not('h3').hide();
 		});
-		
 	});	
-	
 	jQuery('.mini .my-calendar-nav a').live('click', function(e){
 		e.preventDefault();
-
 		var link = jQuery(this).attr('href');
-
 		jQuery('#jd-calendar.mini').html('Loading...');
 		jQuery('#jd-calendar.mini').load(link+' #jd-calendar.mini > *', function() {
-			jQuery('.mini .has-events').children().not('.trigger').hide();		
+			jQuery('.mini .has-events').children().not('.trigger').hide();
 		});
-		
 	});	
-
 	jQuery('.list .my-calendar-nav a').live('click', function(e){
 		e.preventDefault();
-
 		var link = jQuery(this).attr('href');
-
 		jQuery('#jd-calendar.list').html('Loading...');
 		jQuery('#jd-calendar.list').load(link+' #jd-calendar.list > *', function() {
-			jQuery('#calendar-list li').children().not('.event-date').hide();	
+			jQuery('#calendar-list li').children().not('.event-date').hide();
 			jQuery('#calendar-list li.current-day').children().show();
 		});
-		
-	});		
-	
+	});	
 });";
-
-  // defaults will go into the options table on a new install
+// defaults will go into the options table on a new install
 $initial_caljs = 'jQuery(document).ready(function($) {
   $(".calendar-event").children().not(".event-title").hide();
   $(".calendar-event .event-title").live("click",
      function(e) {
-         e.preventDefault(); // remove this line if you are using a link in the event title
+         e.preventDefault(); // remove line if you are using a link in the event title
 	 $(this).parent().children().not(".event-title").toggle();
 	 });
   $(".calendar-event .close").live("click",
@@ -79,6 +65,13 @@ $initial_minijs = 'jQuery(document).ready(function($) {
 
 $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{time}, {category}</span>";
 
+if ( ! empty($wpdb->charset) ) {
+	$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+}
+if ( ! empty($wpdb->collate) ) {
+	$charset_collate .= " COLLATE $wpdb->collate";
+}
+
 $initial_db = "CREATE TABLE " . MY_CALENDAR_TABLE . " ( 
  event_id INT(11) NOT NULL AUTO_INCREMENT,
  event_begin DATE NOT NULL,
@@ -103,15 +96,17 @@ $initial_db = "CREATE TABLE " . MY_CALENDAR_TABLE . " (
  event_city VARCHAR(60) NOT NULL,
  event_state VARCHAR(60) NOT NULL,
  event_postcode VARCHAR(10) NOT NULL,
+ event_region VARCHAR(255) NOT NULL,
  event_country VARCHAR(60) NOT NULL,
  event_longitude FLOAT(10,6) NOT NULL DEFAULT '0',
  event_latitude FLOAT(10,6) NOT NULL DEFAULT '0',
  event_zoom INT(2) NOT NULL DEFAULT '14',
  event_group INT(1) NOT NULL DEFAULT '0',
  event_approved INT(1) NOT NULL DEFAULT '1',
+ event_flagged INT(1) NOT NULL DEFAULT '0',
  PRIMARY KEY  (event_id),
  KEY event_recur (event_recur)
- );";
+ ) $charset_collate;";
 
 $initial_cat_db = "CREATE TABLE " . MY_CALENDAR_CATEGORIES_TABLE . " ( 
  category_id INT(11) NOT NULL AUTO_INCREMENT, 
@@ -119,7 +114,7 @@ $initial_cat_db = "CREATE TABLE " . MY_CALENDAR_CATEGORIES_TABLE . " (
  category_color VARCHAR(7) NOT NULL, 
  category_icon VARCHAR(128) NOT NULL,
  PRIMARY KEY  (category_id) 
- );";
+ ) $charset_collate;";
  
 $initial_loc_db = "CREATE TABLE " . MY_CALENDAR_LOCATIONS_TABLE . " ( 
  location_id INT(11) NOT NULL AUTO_INCREMENT, 
@@ -129,12 +124,13 @@ $initial_loc_db = "CREATE TABLE " . MY_CALENDAR_LOCATIONS_TABLE . " (
  location_city VARCHAR(60) NOT NULL,
  location_state VARCHAR(60) NOT NULL,
  location_postcode VARCHAR(10) NOT NULL,
+ location_region VARCHAR(255) NOT NULL,
  location_country VARCHAR(60) NOT NULL,
  location_longitude FLOAT(10,6) NOT NULL DEFAULT '0',
  location_latitude FLOAT(10,6) NOT NULL DEFAULT '0',
  location_zoom INT(2) NOT NULL DEFAULT '14',
  PRIMARY KEY  (location_id) 
- );";
+ ) $charset_collate;";
 
 $default_user_settings = array(
 	'my_calendar_tz_default'=>array(
@@ -243,7 +239,6 @@ $default_user_settings = array(
 function mc_default_settings( ) {
 global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_user_settings,$stored_styles;
 // no arguments
-	add_option('my_calendar_stored_styles',$stored_styles);
 	add_option('can_manage_events','edit_posts');
 	add_option('display_author','false');
 	add_option('display_jump','false');
@@ -268,7 +263,7 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option('my_calendar_hide_icons','false');	 
 	add_option('mc_event_link_expires','no');
 	add_option('mc_apply_color','default');
-	add_option('mc_input_options',array('event_short'=>'on','event_desc'=>'on','event_category'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'on','event_location'=>'on','event_location_dropdown'=>'on') );	
+	add_option('mc_input_options',array('event_short'=>'on','event_desc'=>'on','event_category'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'on','event_location'=>'on','event_location_dropdown'=>'on','event_use_editor'=>'off') );	
 	add_option('mc_input_options_administrators','false');
 	add_option('mc_event_mail','false');
 	add_option('mc_desc','true');
@@ -311,7 +306,9 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 				'text'=>''
 			)
 		);
-	add_option('my_calendar_widget_defaults',$defaults);	
+	add_option('my_calendar_widget_defaults',$defaults);
+	add_option( 'mc_show_weekends','true' );
+	add_option( 'mc_uri','' );	
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($initial_db);
 	dbDelta($initial_cat_db);
@@ -328,6 +325,10 @@ global $initial_db, $initial_loc_db, $initial_cat_db;
 }
 
 function my_calendar_copyr($source, $dest) {
+	// Sanity check
+	if ( !file_exists($source) ) {
+		return false;
+	}
     // Check for symlinks
     if (is_link($source)) {
         return symlink(readlink($source), $dest);
@@ -341,17 +342,17 @@ function my_calendar_copyr($source, $dest) {
         @mkdir($dest);
     }
     // Loop through the folder
-    $dir = dir($source);
-    while (false !== $entry = $dir->read()) {
-        // Skip pointers
-        if ($entry == '.' || $entry == '..') {
-            continue;
-        }
-        // Deep copy directories
-        my_calendar_copyr("$source/$entry", "$dest/$entry");
-    }
-    // Clean up
-    $dir->close();
+	$dir = dir($source);
+	while (false !== $entry = $dir->read()) {
+		// Skip pointers
+		if ($entry == '.' || $entry == '..') {
+			continue;
+		}
+		// Deep copy directories
+		my_calendar_copyr("$source/$entry", "$dest/$entry");
+	}
+	// Clean up
+	$dir->close();
     return true;
 }
 function my_calendar_rmdirr($dirname) {

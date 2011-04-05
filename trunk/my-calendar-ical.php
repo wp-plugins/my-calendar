@@ -2,7 +2,7 @@
 function my_calendar_ical() {
 global $mc_version;
 // establish template
-	$template = "BEGIN:VEVENT
+	$template = "\nBEGIN:VEVENT
 UID:{guid}
 LOCATION:{ical_location}
 SUMMARY:{title}
@@ -20,7 +20,6 @@ METHOD:PUBLISH
 X-WR-CALNAME: '. get_bloginfo('name') .' Calendar
 PRODID:-//Accessible Web Design//My Calendar//http://www.mywpcal.com//v'.$mc_version.'//EN';
 	
-	$template = trim($template);
 	$events = mc_get_all_events($category);
 	$before = 0;
 	$after = 15;
@@ -28,6 +27,8 @@ PRODID:-//Accessible Web Design//My Calendar//http://www.mywpcal.com//v'.$mc_ver
 $output .= "\nEND:VCALENDAR";
 $output = preg_replace("~(?<!\r)\n~","\r\n",$output);
 	header("Content-Type: text/calendar");
+	header("Pragma: no-cache");
+	header("Expires: 0");		
 	header("Content-Disposition: inline; filename=my-calendar.ics");
 	echo $output;
 }

@@ -5,7 +5,7 @@ function mc_user_profile() {
 		if ( isset($_GET['user_id']) ) { 
 			$user_ID = (int) $_GET['user_id']; 
 		} 
-			$mc_us = get_usermeta( $user_ID, 'my_calendar_user_settings' );
+			$mc_us = get_user_meta( $user_ID, 'my_calendar_user_settings' );
 			$options = get_option('mc_user_settings');
 		
 		foreach ($options as $key=>$value) {
@@ -52,6 +52,6 @@ function mc_user_save_profile() {
 	if ( isset($_POST['user_id']) ) { 
 		$user_ID = (int) $_POST['user_id']; 
 	} 
-	update_usermeta($user_ID ,'my_calendar_user_settings' , $_POST['my_calendar_user_settings'] );
+	update_user_meta($user_ID ,'my_calendar_user_settings' , $_POST['my_calendar_user_settings'] );
 }
 ?>

@@ -7,7 +7,7 @@ if ( $_POST['upgrade'] == 'true' ) {
 	my_calendar_upgrade_db();
 }
 
-	if ( !isset( $row->event_status ) && isset( $row->event_id ) ) {
+	if ( !isset( $row->event_region ) && isset( $row->event_id ) ) {
 	
 	?>
     <?php if ( $_GET['page'] == 'my-calendar-config' ) { ?>
