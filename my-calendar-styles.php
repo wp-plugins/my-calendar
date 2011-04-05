@@ -32,7 +32,7 @@ function mc_write_styles($stylefile, $my_calendar_style) {
 }
 
 function edit_my_calendar_styles() {
-	global $wpdb,$wp_plugin_dir;
+	global $wpdb,$wp_plugin_dir, $stored_styles;
 	// We can't use this page unless My Calendar is installed/upgraded
 	check_my_calendar();
 	if ( isset( $_POST['mc_edit_style'] ) ) {
@@ -59,7 +59,6 @@ function edit_my_calendar_styles() {
 		if ( $_POST['reset_styles'] == 'on') {
 			$my_calendar_css_file = get_option('my_calendar_css_file');
 			$stylefile = mc_get_style_path($my_calendar_css_file);
-			$stored_styles = get_option('my_calendar_stored_styles');
 			$styles = $stored_styles[$my_calendar_css_file];
 			$wrote_styles = mc_write_styles($stylefile, $styles);
 		}
@@ -95,7 +94,7 @@ function edit_my_calendar_styles() {
 ?>
 <div class="wrap">
 <?php 
-	echo my_calendar_check_db();
+my_calendar_check_db();
 ?>
 <h2><?php _e('My Calendar Styles','my-calendar'); ?></h2>
     <?php jd_show_support_box(); ?>
@@ -103,7 +102,7 @@ function edit_my_calendar_styles() {
 <div class="postbox">
 	<h3><?php _e('Calendar Style Settings','my-calendar'); ?></h3>
 	<div class="inside">	
-    <form name="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-styles">
+    <form method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-styles">
 	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<div><input type="hidden" value="true" name="mc_choose_style" /></div>
 	<fieldset>	
@@ -138,7 +137,7 @@ function edit_my_calendar_styles() {
 	</fieldset>
 	</form>
 	
-    <form name="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-styles">
+    <form method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-styles">
 	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<div><input type="hidden" value="true" name="mc_edit_style" />
 	<input type="hidden" name="my_calendar_css_file" value="<?php echo get_option('my_calendar_css_file'); ?>" />

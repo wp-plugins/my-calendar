@@ -80,8 +80,10 @@ delete_option( 'my_calendar_css_file');
 delete_option( 'mc_db_version');
 delete_option( 'my_calendar_stored_styles');
 delete_option('mc_show_rss');
-delete_option('mc_show_ical');	
-add_option('my_calendar_uninstalled','true');
+delete_option('mc_show_ical');
+delete_option( 'mc_show_weekends' );
+delete_option( 'mc_uri' );
+add_option( 'my_calendar_uninstalled','true' );
 
 }
 ?>

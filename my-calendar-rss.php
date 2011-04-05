@@ -57,9 +57,9 @@ $output = '<?xml version="1.0" encoding="'.get_bloginfo('charset').'"?>
 	$output .= mc_produce_upcoming_events( $events,$template,$before,$after,'rss' );
 $output .= '</channel>
 </rss>';
-header('Content-type: application/rss+xml');
-header("Pragma: no-cache");
-header("Expires: 0");	
+	header('Content-type: application/rss+xml');
+	header("Pragma: no-cache");
+	header("Expires: 0");	
 echo $output;
 }
 ?>

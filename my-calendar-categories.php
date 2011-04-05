@@ -1,10 +1,13 @@
 <?php
+if (!empty($_SERVER['SCRIPT_FILENAME']) && 'my-calendar-categories.php' == basename($_SERVER['SCRIPT_FILENAME'])) {
+	die ('Please do not load this page directly. Thanks!');
+}
 // Function to handle the management of categories
 
 // This is a hack for people who don't have PHP installed with exif_imagetype
 if (!function_exists('exif_imagetype') ) {
     function exif_imagetype ( $filename ) {
-        if ( ( list($width, $height, $type, $attr) = getimagesize( $filename ) ) !== false ) {
+        if ( !is_dir( $filename ) && ( list($width, $height, $type, $attr) = getimagesize( $filename ) ) !== false ) {
             return $type;
         }
     return false;
@@ -54,7 +57,7 @@ function my_csslist($directory) {
 function is_custom_icon() {
 	global $wp_plugin_dir;
 	if (file_exists( $wp_plugin_dir . '/my-calendar-custom/' ) ) {
-		$results = my_dirlist( $wp_plugin_dir . '/my-calendar-custom/' );
+		$results = my_dirlist( $wp_plugin_dir . '/my-calendar-custom' );
 		if ( empty($results) ) {
 			return false;
 		} else {
@@ -74,7 +77,7 @@ function my_calendar_manage_categories() {
 ?>
 <div class="wrap">
 <?php 
-echo my_calendar_check_db();
+my_calendar_check_db();
 ?>
 <?php
   // We do some checking to see what we're doing
@@ -148,7 +151,7 @@ global $path, $wp_plugin_dir,$wp_plugin_url;
 
 <h3><?php _e('Category Editor','my-calendar'); ?></h3>
 	<div class="inside">	   
-    <form name="my-calendar"  id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories">
+    <form id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories">
 		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 		<?php if ($view == 'add') { ?>	
 			<div>
@@ -198,20 +201,19 @@ function mc_manage_categories() {
     // We pull the categories from the database	
     $categories = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " ORDER BY category_id ASC");
 
- if ( !empty($categories) )
-   {
-     ?>
-     <table class="widefat page fixed" id="my-calendar-category-listing" summary="Manage Categories Listing">
-       <thead> 
-       <tr>
-         <th class="manage-column" scope="col"><?php _e('ID','my-calendar') ?></th>
-	 <th class="manage-column" scope="col"><?php _e('Category Name','my-calendar') ?></th>
-	 <th class="manage-column" scope="col"><?php _e('Category Color','my-calendar') ?></th>
-	 <th class="manage-column" scope="col"><?php _e('Category Icon','my-calendar'); ?></th>
-	 <th class="manage-column" scope="col"><?php _e('Edit','my-calendar') ?></th>
-	 <th class="manage-column" scope="col"><?php _e('Delete','my-calendar') ?></th>
-       </tr>
-       </thead>
+	if ( !empty($categories) ) {
+?>
+	<table class="widefat page fixed" id="my-calendar-admin-table" summary="Manage Categories Listing">
+	<thead> 
+		<tr>
+			<th class="manage-column" scope="col"><?php _e('ID','my-calendar') ?></th>
+			<th class="manage-column" scope="col"><?php _e('Category Name','my-calendar') ?></th>
+			<th class="manage-column" scope="col"><?php _e('Category Color','my-calendar') ?></th>
+			<th class="manage-column" scope="col"><?php _e('Category Icon','my-calendar'); ?></th>
+			<th class="manage-column" scope="col"><?php _e('Edit','my-calendar') ?></th>
+			<th class="manage-column" scope="col"><?php _e('Delete','my-calendar') ?></th>
+		</tr>
+	</thead>
        <?php
        $class = '';
        foreach ( $categories as $category ) {

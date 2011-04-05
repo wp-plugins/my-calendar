@@ -4,7 +4,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager
 Requires at least: 2.9.2
-Tested up to: 3.1-RC5
+Tested up to: 3.1.1
 Stable tag: trunk
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
@@ -32,17 +32,18 @@ Basic Features:
 *   Import method from Kieran O'Shea's Calendar plugin
 * 	Integrated Help file to guide in use of shortcodes and template tags
 
-This calendar is a branch from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/). You can import any previous scheduled events from Kieran's calendar into this one. 
+This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/) in April 2010. You can import any previous scheduled events from Kieran's calendar into My Calendar. 
 
 Languages available:
 
 * American English (Default)
+* German (Uwe Jonas) - to 1.7.8
+* Swedish (Efva Nyberg) - to 1.7.8
 * Japanese ([Daisuke Abe](http://www.alter-ego.jp/)) - to 1.7.1
 * Danish ([Jakob Smith](http://www.omkalfatring.dk/)) - to 1.7.0
 * Italian ([Sabir Musta](http://mustaphasabir.altervista.org)) - to 1.7.0
 * Czech ([Jan Rybarik](http://janrybarik.cz)) - to 1.6.3
 * Brazilian Portuguese (Leonardo Kfoury) - to 1.6.0?
-* German (Roland P) - to 1.5.0
 * Dutch (Luud Heck) - to 1.4.9
 
 Older translations
@@ -50,7 +51,7 @@ Older translations
 * Spanish ([Esteban Truelsegaard](http://www.netmdp.com))
 * Finnish (Ilpo Puhakka)
 
-New or updated translations are always appreciated. The translation file is included in the download. 
+New or updated translations are always appreciated. The translation files are included in the download. 
 
 == Installation ==
 
@@ -66,13 +67,50 @@ New or updated translations are always appreciated. The translation file is incl
    My Calendar -> Settings   
    My Calendar -> Style Editor
    My Calendar -> Behavior Editor
-
    
 4. Edit or create a page on your blog which includes the shortcode [my_calendar] and visit
    the page you have edited or created. You should see your calendar. Visit My Calendar -> Help for assistance
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.8.0 =
+
+* Added event region as a location field
+* Added time selector and altered calendar range selector.
+* Added visual editor for event description textarea.
+* Added templating tag to add a link to the single event view.
+* Added option to not display weekends in grid format.
+* Added unique ID for each event in calendar.
+* Added default sort order option for admin events list.
+* Added admin events list to screen while editing or copying event.
+* Added shortcode generator for Page and Post editor.
+* Added spam protection: New events are now checked through Akismet if installed and configured.
+* Added category selection shortcode.
+* Added mini calendar widget.
+* Added external link class.
+* Added list/grid view toggle.
+* Added mobile detection so mobile devices receive list format without JavaScript for easier reading.
+* Added Upcoming Events widget sort order option.
+* Added Option to link widget title to main calendar page.
+* Change: Minor reorganization of settings page.
+* Change: Altered time input to use non-military format time, added JavaScript time input.
+* Change: Moved My Calendar menu items into the content menu.
+* Change: When calendar is limited by categories, only the displayed categories are listed in the category key.
+* Change: If widget title is left blank, widget will have no title.
+* Change: Moved translation files into a subdirectory (/lang/)
+* Bug fix: hcal dates
+* Bug fix: problem where restoring styles referenced out of date styles
+* Bug fix: error in primary stylesheet
+* Bug fix: issue with month-by-day recurring events when recurrance set at 0
+* Bug fix: issue with end dates when recurrance set at 0
+* Bug fix: DB installed to match WPDB chararacter set and collation.
+* Bug fix: turn-of-year page navigation in week view.
+* Bug fix: entries not remembered in error condition post
+* Updated German Translation to version 1.7.0 (Christopher Schauer)
+* Updated German Translation to version 1.7.8 (Uwe Jonas)
+* Note: during this update cycle, I received two German translations, and am using the most up to date version.
+* Added Swedish Translation to version 1.7.8
 
 = 1.7.8 =
 
