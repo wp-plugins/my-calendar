@@ -307,10 +307,18 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 		$current_url = get_current_url();
 		switch ($format) {
 			case 'list':
-				$format_toggle .= "<a href='$current_url?format=grid'>".__('View as Grid','my-calendar')."</a>";			
+				$_GET['format'] = 'calendar';
+				$query = build_query( $_GET );
+				$query = ($query == '')?'format=calendar':$query;
+				$current_url = str_replace('?format=list','',$current_url);
+				$format_toggle .= "<a href='$current_url?$query'>".__('View as Grid','my-calendar')."</a>";			
 			break;
 			default:
-				$format_toggle .= "<a href='$current_url?format=list'>".__('View as List','my-calendar')."</a>";
+				$_GET['format'] = 'list';
+				$query = build_query( $_GET );	
+				$query = ($query == '')?'format=list':$query;
+				$current_url = str_replace('?format=calendar','',$current_url);
+				$format_toggle .= "<a href='$current_url?$query'>".__('View as List','my-calendar')."</a>";
 			break;
 		}
 		$format_toggle .= "</div>";
@@ -486,7 +494,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 		if ( $time != 'week' ) {
 			$my_calendar_body .= ( get_option('display_jump') == 'true' )?mc_build_date_switcher():'';
 		}
-		$my_calendar_body .= "$mc_nav\n</div>";	
+		$my_calendar_body .= "$mc_nav\n$format_toggle\n</div>";	
 	}
     // If in a calendar format, print the headings of the days of the week
 if ( $format == "calendar" || $format == "mini" ) {

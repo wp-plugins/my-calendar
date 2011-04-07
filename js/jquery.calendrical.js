@@ -1,5 +1,4 @@
-(function( $ ) { 
-
+(function($) { 
     var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'];
         
@@ -73,15 +72,13 @@
 		return (date.getFullYear() + '-' + month + '-' + day );
     }
     
-    function parseDate(date, usa)
+    function parseDate(date)
     {
-        if (usa) return new Date(date);
         a = date.split(/[\.\-\/]/);
-        var day = a.shift();
-        var month = a.shift();
-        a.unshift(day);
-        a.unshift(month);
-        return new Date(a.join('-'));
+        var year = a.shift();
+        var month = a.shift()-1;
+		var day = a.shift();
+        return new Date( year, month, day );
     }
     
     function formatTime(hour, minute)
@@ -112,6 +109,56 @@
         }
     }
     
+  /**
+     * Generates calendar header, with month name, << and >> controls, and
+     * initials for days of the week.
+     */
+    function renderCalendarHeader(element, year, month, options)
+    {
+        //Prepare thead element
+        var thead = $('<thead />');
+        var titleRow = $('<tr />').appendTo(thead);
+        
+        //Generate << (back a month) link
+        $('<th />').addClass('monthCell').append(
+          $('<a href="javascript:;">&laquo;</a>')
+                  .addClass('prevMonth')
+                  .mousedown(function(e) {
+                      renderCalendarPage(element,
+                          month == 0 ? (year - 1) : year,
+                          month == 0 ? 11 : (month - 1), options
+                      );
+                      e.preventDefault();
+                  })
+        ).appendTo(titleRow);
+        
+        //Generate month title
+        $('<th />').addClass('monthCell').attr('colSpan', 5).append(
+            $('<a href="javascript:;">' + monthNames[month] + ' ' +
+                year + '</a>').addClass('monthName')
+        ).appendTo(titleRow);
+        
+        //Generate >> (forward a month) link
+        $('<th />').addClass('monthCell').append(
+            $('<a href="javascript:;">&raquo;</a>')
+                .addClass('nextMonth')
+                .mousedown(function() {
+                    renderCalendarPage(element,
+                        month == 11 ? (year + 1) : year,
+                        month == 11 ? 0 : (month + 1), options
+                    );
+                })
+        ).appendTo(titleRow);
+        
+        //Generate weekday initials row
+        var dayNames = $('<tr />').appendTo(thead);
+        $.each(String('SMTWTFS').split(''), function(k, v) {
+            $('<td />').addClass('dayName').append(v).appendTo(dayNames);
+        });
+        
+        return thead;
+    }
+    
     function renderCalendarPage(element, year, month, options)
     {
         options = options || {};
@@ -127,32 +174,8 @@
         for (var i = 0; i < ff; i++) endDate = dayAfter(endDate);
         
         var table = $('<table />');
-        var thead = $('<thead />').appendTo(table);
-        $('<th />').addClass('monthCell').attr('colspan', 7).append(
-            $('<a href="javascript:;">&laquo;</a>')
-                .addClass('prevMonth')
-                .mousedown(function(e) {
-                    renderCalendarPage(element,
-                        month == 0 ? (year - 1) : year,
-                        month == 0 ? 11 : (month - 1), options
-                    );
-                    e.preventDefault();
-                }),
-            $('<a href="javascript:;">' + monthNames[date.getMonth()] + ' ' +
-                date.getFullYear() + '</a>').addClass('monthName'),
-            $('<a href="javascript:;">&raquo;</a>')
-                .addClass('nextMonth')
-                .mousedown(function() {
-                    renderCalendarPage(element,
-                        month == 11 ? (year + 1) : year,
-                        month == 11 ? 0 : (month + 1), options
-                    );
-                })
-        ).appendTo(thead);
-        var dayNames = $('<tr />').appendTo(thead);
-        $.each(String('SMTWTFS').split(''), function(k, v) {
-            $('<td />').addClass('dayName').append(v).appendTo(dayNames);
-        });
+        renderCalendarHeader(element, year, month, options).appendTo(table);
+        
         var tbody = $('<tbody />').appendTo(table);
         var row = $('<tr />');
 
@@ -217,11 +240,12 @@
         var startTime = options.startTime &&
             (options.startTime.hour * 60 + options.startTime.minute);
         
+        var scrollTo;   //Element to scroll the dropdown box to when shown
         var ul = $('<ul />');
         for (var hour = 0; hour < 24; hour++) {
             for (var minute = 0; minute < 60; minute += 15) {
                 if (startTime && startTime > (hour * 60 + minute)) continue;
-                
+
                 (function() {
                     var timeText = formatTime(hour, minute);
                     var fullText = timeText;
@@ -246,17 +270,38 @@
                             $('li.selected', ul).removeClass('selected');
                         })
                     ).appendTo(ul);
+                    
+                    //Set to scroll to the default hour, unless already set
+                    if (!scrollTo && hour == options.defaultHour) {
+                        scrollTo = li;
+                    }
+                    
                     if (selection &&
                         selection.hour == hour &&
                         selection.minute == minute)
                     {
+                        //Highlight selected item
                         li.addClass('selected');
-                        setTimeout(function() {
-                            element[0].scrollTop = li[0].offsetTop - li.height() * 2;
-                        }, 0)
+                        //Set to scroll to the selected hour
+                        //
+                        //This is set even if scrollTo is already set, since
+                        //scrolling to selected hour is more important than
+                        //scrolling to default hour
+                        scrollTo = li;
                     }
                 })();
             }
+        }
+        if (scrollTo) {
+            //Set timeout of zero so code runs immediately after any calling
+            //functions are finished (this is needed, since box hasn't been
+            //added to the DOM yet)
+            setTimeout(function() {
+                //Scroll the dropdown box so that scrollTo item is in
+                //the middle
+                element[0].scrollTop =
+                    scrollTo[0].offsetTop - scrollTo.height() * 2;
+            }, 0);
         }
         element.empty().append(ul);
     }
@@ -269,6 +314,7 @@
         return this.each(function() {
             var element = $(this);
             var div;
+            var within = false;
             
             element.bind('focus click', function() {
                 if (div) return;
@@ -276,6 +322,8 @@
                 var padding = element.css('padding-left');
                 div = $('<div />')
 					.addClass('calendricalDatePopup')
+                    .mouseenter(function() { within = true; })
+                    .mouseleave(function() { within = false; })
                     .mousedown(function(e) {
                         e.preventDefault();
                     })
@@ -286,7 +334,7 @@
                     });
                 element.after(div); 
                 
-                var selected = parseDate(element.val(), options.usa);
+                var selected = parseDate(element.val());
                 if (!selected.getFullYear()) selected = getToday();
                 
                 renderCalendarPage(
@@ -295,12 +343,13 @@
                     selected.getMonth(), {
                         selected: selected,
                         selectDate: function(date) {
-                            element.val(formatDate(date, options.usa));
+							within = false;
+                            element.val(formatDate(date));
                             div.remove();
                             div = null;
                             if (options.endDate) {
                                 var endDate = parseDate(
-                                    options.endDate.val(), options.usa
+                                    options.endDate.val()
                                 );
                                 if (endDate >= selected) {
                                     options.endDate.val(formatDate(
@@ -316,6 +365,10 @@
                     }
                 );
             }).blur(function() {
+                if (within){
+                    if (div) element.focus();
+                    return;
+                }
                 if (!div) return;
                 div.remove();
                 div = null;
@@ -342,6 +395,7 @@
         return this.each(function() {
             var element = $(this);
             var div;
+            var within = false;
             
             element.bind('focus click', function() {
                 if (div) return;
@@ -351,12 +405,14 @@
                     if (options.startDate && options.endDate &&
                         !areDatesEqual(parseDate(options.startDate.val()),
                             parseDate(options.endDate.val())))
-                        useStartTime = false;
+                        useStartTime = true;
                 }
 
                 var offset = element.position();
                 div = $('<div />')
                     .addClass('calendricalTimePopup')
+                    .mouseenter(function() { within = true; })
+                    .mouseleave(function() { within = false; })
                     .mousedown(function(e) {
                         e.preventDefault();
                     })
@@ -374,10 +430,13 @@
                 var opts = {
                     selection: element.val(),
                     selectTime: function(time) {
+                        within = false;
                         element.val(time);
                         div.remove();
                         div = null;
-                    }
+                    },
+                    defaultHour: (options.defaultHour != null) ?
+                                    options.defaultHour : 8
                 };
                 
                 if (useStartTime) {
@@ -386,6 +445,10 @@
                 
                 renderTimeSelect(div, opts);
             }).blur(function() {
+				if (within){
+                    if (div) element.focus();
+                    return;
+                }
                 if (!div) return;
                 div.remove();
                 div = null;
