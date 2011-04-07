@@ -438,7 +438,7 @@ function my_calendar_get_event($date,$id) {
     $event = $wpdb->get_row("SELECT * FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE event_id=$id"); 
 	if ($event) {
 		$value = "	<div id='mc_event'>
-			".my_calendar_draw_event( $event,'single',$date )."
+			".my_calendar_draw_event( $event,'single',"$y-$m-$d" )."
 		</div>\n";
 	}
 	return $value;

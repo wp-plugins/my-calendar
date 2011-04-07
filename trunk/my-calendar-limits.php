@@ -3,6 +3,8 @@
 
 function mc_select_category($category, $type='event', $group='events') {
 global $wpdb;
+	$data = ($group=='category')?'category_id':'event_category';
+
 	if ( isset ($_GET['cat']) ) { $category = (int) $_GET['cat']; }
 	
 	if ( $category == 'all' || strpos( $category, "all" ) !== false ) {
@@ -16,7 +18,6 @@ global $wpdb;
 		}
 		$numcat = count($categories);
 		$i = 1;
-		$data = ($group=='category')?'category_id':'event_category';
 		foreach ($categories as $key) {
 			if ( is_numeric($key) ) {
 				if ($i == 1) {
@@ -95,7 +96,7 @@ global $user_ID;
 						break;
 					}			
 			}
-			if ($current_location != 'none') {
+			if ($current_location != 'none' && $current_location != '') {
 				if ($select_category == "") {
 					$limit_string = "$location_type='$current_location'";
 					$limit_string .= ($type=='all')?' AND':"";

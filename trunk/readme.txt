@@ -74,6 +74,15 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.8.1 =
+
+* Fixed bug with region saving on edit of location
+* Fixed bug with single-event view receiving date as array
+* Fixed bug with {icon} template tag
+* Fixed bug with calendar output if user settings are enabled but not applied by user
+* Fixed bug with list/grid format toggle
+* Fixed bug with upcoming events limited by category names
+
 = 1.8.0 =
 
 * Added event region as a location field

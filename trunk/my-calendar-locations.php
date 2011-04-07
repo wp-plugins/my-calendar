@@ -43,8 +43,8 @@ my_calendar_check_db();
 		} else {
 			echo "<div class=\"error\"><p><strong>".__('Location could not be added to database','my-calendar')."</strong></p></div>";
 		}
-    } else if (isset($_GET['mode']) && isset($_GET['location_id']) && $_GET['mode'] == 'delete') {
-		$sql = "DELETE FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id=".mysql_real_escape_string($_GET['location_id']);
+    } else if ( isset($_GET['location_id']) && $_GET['mode'] == 'delete') {
+		$sql = "DELETE FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id=".(int)($_GET['location_id']);
 		$results = $wpdb->query($sql);
 		if ($results) {
 			echo "<div class=\"updated\"><p><strong>".__('Location deleted successfully','my-calendar')."</strong></p></div>";
@@ -52,10 +52,10 @@ my_calendar_check_db();
 			echo "<div class=\"error\"><p><strong>".__('Location could not be deleted','my-calendar')."</strong></p></div>";	  
 		}
     } else if (isset($_GET['mode']) && isset($_GET['location_id']) && $_GET['mode'] == 'edit' && !isset($_POST['mode'])) {
-      $sql = "SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id=".mysql_real_escape_string($_GET['location_id']);
+      $sql = "SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id=".(int)($_GET['location_id']);
       $cur_loc = $wpdb->get_row($sql);
       mc_show_location_form('edit', $cur_loc);
-    } else if (isset($_POST['mode']) && isset($_POST['location_id']) && isset($_POST['location_label']) && isset($_POST['location_street']) && $_POST['mode'] == 'edit') {
+    } else if ( isset($_POST['location_id']) && isset($_POST['location_label']) && $_POST['mode'] == 'edit' ) {
 		$update = array(
 		'location_label'=>$_POST['location_label'],
 		'location_street'=>$_POST['location_street'],
@@ -69,14 +69,17 @@ my_calendar_check_db();
 		'location_latitude'=>$_POST['location_latitude'],
 		'location_zoom'=>$_POST['location_zoom']
 		);
-		$results = $wpdb->update( MY_CALENDAR_LOCATIONS_TABLE, $update, $formats, '%d' );
-      if ( $results === false ) {
-	  echo "<div class=\"error\"><p><strong>".__('Location could not be edited.','my-calendar')."</strong></p></div>";
-	  } else if ( $results == 0 ) {
-	  echo "<div class=\"updated\"><p><strong>".__('Location was not changed.','my-calendar')."</strong></p></div>";  
-	  } else {
-	  echo "<div class=\"updated\"><p><strong>".__('Location edited successfully','my-calendar')."</strong></p></div>";
-	  }
+		$where = array(
+		'location_id'=>(int) $_POST['location_id']
+		);
+		$results = $wpdb->update( MY_CALENDAR_LOCATIONS_TABLE, $update, $where, $formats, '%d' );
+		if ( $results === false ) {
+			echo "<div class=\"error\"><p><strong>".__('Location could not be edited.','my-calendar')."</strong></p></div>";
+		} else if ( $results == 0 ) {
+			echo "<div class=\"updated\"><p><strong>".__('Location was not changed.','my-calendar')."</strong></p></div>";  
+		} else {
+			echo "<div class=\"updated\"><p><strong>".__('Location edited successfully','my-calendar')."</strong></p></div>";
+		}
 	}
 
 	if ($_GET['mode'] != 'edit' || $_POST['mode'] == 'edit') {

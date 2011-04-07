@@ -131,7 +131,7 @@ function event_as_array($event) {
 	$details['link_map'] = $map;
 	$details['shortdesc'] = stripslashes($event->event_short);
 	$details['event_open'] = $event_open;
-	$details['icon'] = $event->category_icon;
+	$details['icon'] = $category_icon;
 	$details['color'] = $event->category_color;
 	$details['event_status'] = ($event->event_approve == 1 )?__('Published','my-calendar'):__('Reserved','my-calendar');
 	$details['details'] = ( get_option( 'mc_uri' ) != '' )?"<a href='".get_option( 'mc_uri' )."?mc_id=mc_".$dateid."_".$id."'><span>$details[title] </span>".__('details','my-calendar')."</a>":'';

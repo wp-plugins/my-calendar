@@ -1,11 +1,4 @@
 <?php
-// fix for a possible contact-form-7 problem (may not exist anymore)
-// http://wordpress.org/extend/plugins/contact-form-7/
-if (!function_exists('wpcf7_add_tag_generator')) {
-	function wpcf7_add_tag_generator(){
-		//if this is missing, it'll break things. But it's not my problem to fix it.
-	}
-}
 // Load WordPress core files
 	$iswin = preg_match('/:\\\/', dirname(__file__));
 	$slash = ($iswin) ? "\\" : "/";
