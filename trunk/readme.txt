@@ -74,6 +74,12 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.8.2 =
+
+* Fixed bug with {icon} template tag, for real.
+* Fixed RSS missing argument
+* Fixed empty list rendering in upcoming events widget
+
 = 1.8.1 =
 
 * Fixed bug with region saving on edit of location

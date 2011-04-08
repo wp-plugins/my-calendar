@@ -192,9 +192,10 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 	$template = ($template == 'default')?$defaults['upcoming']['template']:$template;
 	if ($template == '' ) { $template = "$default_template"; };
 	$no_event_text = ($substitute == '')?$defaults['upcoming']['text']:$substitute;
-  
     $day_count = -($before);
-	$output = "<ul id='upcoming-events'>";
+	$header = "<ul id='upcoming-events'>";
+	$footer = "</ul>";	
+	$output ='';
 	if ($display_upcoming_type == "days") {
 		$temp_array = array();
 		while ($day_count < $after+1) {
@@ -256,15 +257,15 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
         $events = mc_get_all_events($category);		 // grab all events within reasonable proximity
 		$output .= mc_produce_upcoming_events( $events,$template,$before,$after,'list',$order );
 	}
-	if ($output != '<ul>') {
-		$output .= "</ul>";
+	if ($output != '') {
+		$output = $header.$output.$footer;
 		return $output;
 	} else {
 		return stripcslashes( $no_event_text );
 	}	
 }
 // make this function time-sensitive, not date-sensitive.
-function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type='list',$order) {
+function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type='list',$order='asc') {
 		$past = 1;
 		$future = 1;
 		$offset = (60*60*get_option('gmt_offset'));
@@ -382,7 +383,8 @@ function my_calendar_todays_events($category='default',$template='default',$subs
 	$no_event_text = ($substitute == '')?$defaults['today']['text']:$substitute;
 
     $events = my_calendar_grab_events(date("Y",time()+$offset),date("m",time()+$offset),date("d",time()+$offset),$category);
-	if (count($events) != 0) { $output = "<ul>"; }
+	$header = "<ul id='upcoming-events'>";
+	$footer = "</ul>";		
 	
     @usort($events, "my_calendar_time_cmp");
         foreach($events as $event) {
@@ -410,8 +412,7 @@ function my_calendar_todays_events($category='default',$template='default',$subs
 			}
         }
     if (count($events) != 0) {
-		$output .= "</ul>";
-        return $output;
+        return $header.$output.$footer;
     } else {
 		return stripcslashes( $no_event_text );
 	}

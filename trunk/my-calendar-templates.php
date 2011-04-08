@@ -25,7 +25,7 @@ function event_as_array($event) {
 	$dateid = date('Y-m-d',$event->event_start_ts);
 	$id = $event->event_id;
 	$offset = (60*60*get_option('gmt_offset'));  
-
+	$category_icon = esc_attr($event->category_icon);
 	$path = ( file_exists( $wp_plugin_dir . '/my-calendar-custom/' ) )?'/my-calendar-custom':'/'.dirname(plugin_basename(__FILE__)).'/icons';
 	$category_icon = $wp_plugin_url . $path . '/' . $category_icon;
 
