@@ -343,6 +343,13 @@ function my_calendar_print_form_fields( $data,$mode,$event_id,$context='' ) {
 			<input type="hidden" value="<?php echo $dvalue; ?>" name="event_approved" />
 <?php } ?>
 		</p>
+		<?php if ( $data->event_flagged == 1 ) { ?>
+		<div class="error">
+		<p>
+		<input type="checkbox" value="0" id="event_flagged" name="event_flagged"<?php if ( !empty($data) && $data->event_flagged == '0' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_flagged == '1' ) { echo ""; } ?> /> <label for="event_flagged"><?php _e('This event is not spam','my-calendar'); ?></label>
+		</p>
+		</div>
+		<?php } ?>
 		<?php if ($mc_input['event_desc'] == 'on' || $mc_input_administrator ) { ?>
 		<?php if ($context != 'post') { ?>
 		<p>
@@ -803,6 +810,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
     $event_author = !empty($_POST['event_author']) ? $_POST['event_author'] : $current_user->ID;
 	$event_open = !empty($_POST['event_open']) ? $_POST['event_open'] : '2';
 	$event_group = !empty($_POST['event_group']) ? 1 : 0;
+	$event_flagged = ( $_POST['event_flagged']===0 || !isset($_POST['event_flagged']) )?0:1;
 	// set location
 		if ($location_preset != 'none') {
 			$sql = "SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id = $location_preset";
@@ -960,7 +968,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 				'event_group'=>$event_group,
 				'event_approved'=>$approved,
 				'event_host'=>$host,
-				'event_flagged'=> mc_akismet( $linky, $desc )				
+				'event_flagged'=>$event_flagged			
 				);		
 		}
 	} else {

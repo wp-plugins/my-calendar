@@ -698,7 +698,10 @@ $event = event_as_array($details);
 }
 // checks submitted events against akismet, if available, otherwise just returns false 
 function mc_akismet( $event_url='', $description='' ) {
-	global $akismet_api_host, $akismet_api_port;
+	global $akismet_api_host, $akismet_api_port, $user;
+	if ( current_user_can( 'edit_posts' ) ) { // is a privileged user
+		return 0;
+	} 
 	$c = array();
 	if ( ! function_exists( 'akismet_http_post' ) || ! ( get_option( 'wordpress_api_key' ) || $wpcom_api_key ) ) {
 		return 0;

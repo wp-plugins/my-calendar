@@ -74,6 +74,11 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.8.3 =
+
+* Turned on spam flag toggle, which I had commented out and failed to restore...
+* Default return false ('not spam') for privileged users when checking Akismet
+
 = 1.8.2 =
 
 * Fixed bug with {icon} template tag, for real.
