@@ -540,18 +540,27 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 					$week_of_event = week_of_month($date_of_event);
 					$current_week = week_of_month($current_date);
 					$day_diff = jd_date_diff($event->event_begin,$event->event_end);
-					$start = ($week_of_event)*7-1;
-					$finish = ($start + 7)-1;
+					$first_of_month = '01-'.date('M',strtotime($date)).'-'.date('Y',strtotime($date));
+					if ( date( 'D',strtotime($event->event_begin ) ) == date( 'D',strtotime( "$first_of_month - 1 day" ) ) ) {
+						$start = ($week_of_event)*7+1;
+						$finish = ($start + 7)+1;					
+					} else {
+						$start = ($week_of_event)*7-1;
+						$finish = ($start + 7)-1;
+					}
 					$t = date('t',strtotime($date));
 					if ($finish > $t) { $finish = $t; }
+					if ($start < 1) { $start = 1; }
 					for ($i=$start;$i<=$finish;$i++) {
 						$string = date( 'Y',strtotime($date) ).'-'.date('m',strtotime($date)).'-'.$i;
 						if ( date('D',strtotime($string)) == $day_of_event ) {
 							$date_of_event_this_month = $i;
 							break;
-						} 
-					}		
-					if ( get_option('mc_no_fifth_week') == 'true' && $week_of_event == 4 ) {
+						} else {
+							$date_of_event_this_month = '';
+						}						
+					}
+					if ( get_option('mc_no_fifth_week') == 'true' && $week_of_event == 4 ) {			
 						$finish = $start;
 						$start = $start - 7;
 						for ($i=$start;$i<=$finish;$i++) {
@@ -559,11 +568,14 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 							if ( date('D',strtotime($string)) == $day_of_event ) {
 								$date_of_event_this_month = $i;
 								break;
+							} else {
+								$date_of_event_this_month = '';
 							}
 						}					
 					}
 					if ( my_calendar_date_comp($event->event_begin,$date) ) {
-						if ( ( $current_day == $day_of_event && $current_week == $week_of_event ) || ( $current_date >= $date_of_event_this_month && $current_date <= $date_of_event_this_month+$day_diff && $date_of_event_this_month != '' ) ) {	
+						if ( ( $current_day == $day_of_event && $current_week == $week_of_event ) && ( $current_date >= $date_of_event_this_month && $current_date <= $date_of_event_this_month+$day_diff && $date_of_event_this_month != '' ) ) {	
+							//echo "$event->event_title: $start/$finish: $current_day == $day_of_event && $current_week == $week_of_event; $current_date >= $date_of_event_this_month && $current_date <= $date_of_event_this_month+$day_diff && $date_of_event_this_month != ''<br />";
 							$arr_events[]=$event;							
 						} else {
 							break;

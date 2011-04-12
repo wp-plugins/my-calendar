@@ -313,19 +313,19 @@ check_akismet();
 	<label for="my_calendar_show_months"><?php _e('In list mode, show how many months of events at a time:','my-calendar'); ?></label> <input type="text" size="3" id="my_calendar_show_months" name="my_calendar_show_months" value="<?php echo $my_calendar_show_months; ?>" />
 	</li>
 	<li>
-	<label for="my_calendar_date_format"><?php _e('Date format in list mode','my-calendar'); ?></label> <input type="text" id="my_calendar_date_format" name="my_calendar_date_format" value="<?php if ( get_option('my_calendar_date_format')  == "") { echo get_option('date_format'); } else { echo get_option( 'my_calendar_date_format'); } ?>" /> Current: <?php if ( get_option('my_calendar_date_format') == '') { echo date_i18n(get_option('date_format')); } else { echo date_i18n(get_option('my_calendar_date_format')); } ?><br />
+	<label for="my_calendar_date_format"><?php _e('Date format in list mode','my-calendar'); ?></label> <input type="text" id="my_calendar_date_format" name="my_calendar_date_format" value="<?php if ( get_option('my_calendar_date_format')  == "") { echo get_option('date_format'); } else { echo get_option( 'my_calendar_date_format'); } ?>" /> <?php _e('Current:','my-calendar'); ?> <?php if ( get_option('my_calendar_date_format') == '') { echo date_i18n(get_option('date_format')); } else { echo date_i18n(get_option('my_calendar_date_format')); } ?><br />
 	<small><?php _e('Date format uses the same syntax as the <a href="http://php.net/date">PHP <code>date()</code> function</a>. Save options to update sample output.','my-calendar'); ?></small>
 	</li>
 	<li>
 	<label for="mc_default_sort"><?php _e('Default Sort order for Admin Events List','my-calendar'); ?></label>
 	<select id="mc_default_sort" name="mc_default_sort">
-		<option value='1' <?php jd_cal_checkSelect( 'mc_default_sort','1'); ?>>Event ID</option>
-		<option value='2' <?php jd_cal_checkSelect( 'mc_default_sort','2'); ?>>Title</option>
-		<option value='3' <?php jd_cal_checkSelect( 'mc_default_sort','3'); ?>>Description</option>
-		<option value='4' <?php jd_cal_checkSelect( 'mc_default_sort','4'); ?>>Start Date</option>
-		<option value='5' <?php jd_cal_checkSelect( 'mc_default_sort','5'); ?>>Author</option>
-		<option value='6' <?php jd_cal_checkSelect( 'mc_default_sort','6'); ?>>Category</option>
-		<option value='7' <?php jd_cal_checkSelect( 'mc_default_sort','7'); ?>>Location Name</option>
+		<option value='1' <?php jd_cal_checkSelect( 'mc_default_sort','1'); ?>><?php _e('Event ID','my-calendar'); ?></option>
+		<option value='2' <?php jd_cal_checkSelect( 'mc_default_sort','2'); ?>><?php _e('Title','my-calendar'); ?></option>
+		<option value='3' <?php jd_cal_checkSelect( 'mc_default_sort','3'); ?>><?php _e('Description','my-calendar'); ?></option>
+		<option value='4' <?php jd_cal_checkSelect( 'mc_default_sort','4'); ?>><?php _e('Start Date','my-calendar'); ?></option>
+		<option value='5' <?php jd_cal_checkSelect( 'mc_default_sort','5'); ?>><?php _e('Author','my-calendar'); ?></option>
+		<option value='6' <?php jd_cal_checkSelect( 'mc_default_sort','6'); ?>><?php _e('Category','my-calendar'); ?></option>
+		<option value='7' <?php jd_cal_checkSelect( 'mc_default_sort','7'); ?>><?php _e('Location Name','my-calendar'); ?></option>
 	</select>	
 	</li>
 	<li>
@@ -537,7 +537,7 @@ $locations .= "$key,$value\n";
 	<option value="event_state" <?php jd_cal_checkSelect( 'mc_location_type','event_state'); ?>><?php _e('State/Province','my-calendar'); ?></option>
 	<option value="event_country" <?php jd_cal_checkSelect( 'mc_location_type','event_country'); ?>><?php _e('Country','my-calendar'); ?></option>
 	<option value="event_postcode" <?php jd_cal_checkSelect( 'mc_location_type','event_postcode'); ?>><?php _e('Postal Code','my-calendar'); ?></option>
-	<option value="event_postcode" <?php jd_cal_checkSelect( 'mc_location_type','event_region'); ?>><?php _e('Region','my-calendar'); ?></option>	
+	<option value="event_region" <?php jd_cal_checkSelect( 'mc_location_type','event_region'); ?>><?php _e('Region','my-calendar'); ?></option>	
 	</select>
 	</p>
 </fieldset>

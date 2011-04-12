@@ -113,7 +113,8 @@ function my_calendar_draw_event($event, $type="calendar", $process_date) {
 						$map_string = "$event->event_latitude,$event->event_longitude+($map_string_label)";
 					}
 					$map_url = esc_url("http://maps.google.com/maps?f=q&amp;z=$zoom&amp;q=$map_string");
-					$map = "<a href=\"$map_url\" class='external'>Map<span> to $map_label</span></a>";
+					$lead = __('Map to','my-calendar');
+					$map = "<a href=\"$map_url\" class='external'>$lead $map_label</a>";
 					$address .= "<div class=\"url map\">$map</div>";
 			}
 		$address .= "</div>";
