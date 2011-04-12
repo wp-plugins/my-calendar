@@ -99,3 +99,9 @@ left: -999em;
 border: 1px solid #ddd;
 margin: 0 0 5px;
 }
+#templates dt {
+float: left;
+margin-right: 10px;
+font-weight: 700;
+width: 8em;
+}

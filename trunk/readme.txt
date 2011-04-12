@@ -74,6 +74,12 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.8.4 =
+
+* Mini calendar widget had a mis-labeled option field
+* Custom User settings for event region didn't function correctly.
+* A variety of bug fixes applied to events repeating on a monthly-by-day basis
+
 = 1.8.3 =
 
 * Turned on spam flag toggle, which I had commented out and failed to restore...

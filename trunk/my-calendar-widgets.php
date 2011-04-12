@@ -383,7 +383,7 @@ function my_calendar_todays_events($category='default',$template='default',$subs
 	$no_event_text = ($substitute == '')?$defaults['today']['text']:$substitute;
 
     $events = my_calendar_grab_events(date("Y",time()+$offset),date("m",time()+$offset),date("d",time()+$offset),$category);
-	$header = "<ul id='upcoming-events'>";
+	$header = "<ul id='todays-events'>";
 	$footer = "</ul>";		
 	
     @usort($events, "my_calendar_time_cmp");
@@ -471,7 +471,7 @@ function form($instance) {
 	</select>
 	</p>
 	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_mini_time'); ?>"><?php _e('Show Category Key:','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_mini_time'); ?>" name="<?php echo $this->get_field_name('my_calendar_mini_time'); ?>">
+	<label for="<?php echo $this->get_field_id('my_calendar_mini_time'); ?>"><?php _e('Mini-Calendar Timespan:','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_mini_time'); ?>" name="<?php echo $this->get_field_name('my_calendar_mini_time'); ?>">
 	<option value="month" <?php echo ($widget_time == 'month')?'selected="selected"':''; ?>><?php _e('Month','my-calendar') ?></option>
 	<option value="week" <?php echo ($widget_time == 'week')?'selected="selected"':''; ?>><?php _e('Week','my-calendar') ?></option>
 	</select>

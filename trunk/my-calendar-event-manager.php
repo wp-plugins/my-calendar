@@ -660,9 +660,9 @@ function jd_events_display_list( $sortdir='default',$status='all',$type='normal'
 		<h2><?php _e('Manage Events','my-calendar'); ?></h2>
 		<?php if ( get_option('mc_event_approve') == 'true' ) { ?>
 		<ul class="links">
-		<li><a <?php echo ($_GET['limit']=='published')?' class="active-link"':''; ?> href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;limit=published">Published</a></li>
-		<li><a <?php echo ($_GET['limit']=='reserved')?' class="active-link"':''; ?>  href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;limit=reserved">Reserved</a></li> 
-		<li><a <?php echo ($_GET['limit']=='all' || !isset($_GET['limit']))?' class="active-link"':''; ?>  href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;limit=all">All</a></li>
+		<li><a <?php echo ($_GET['limit']=='published')?' class="active-link"':''; ?> href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;limit=published"><?php _e('Published','my-calendar'); ?></a></li>
+		<li><a <?php echo ($_GET['limit']=='reserved')?' class="active-link"':''; ?>  href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;limit=reserved"><?php _e('Reserved','my-calendar'); ?></a></li> 
+		<li><a <?php echo ($_GET['limit']=='all' || !isset($_GET['limit']))?' class="active-link"':''; ?>  href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar&amp;limit=all"><?php _e('All','my-calendar'); ?></a></li>
 		</ul>
 		<?php } ?>	
 	<?php
@@ -769,7 +769,7 @@ function jd_events_display_list( $sortdir='default',$status='all',$type='normal'
 ?>
 		</table>
 		<p>
-		<input type="submit" class="button-primary delete" value="Delete checked events" />
+		<input type="submit" class="button-primary delete" value="<?php _e('Delete checked events','my-calendar'); ?>" />
 		</p>
 		</form>
 <?php
