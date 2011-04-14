@@ -545,8 +545,8 @@ function my_calendar_grab_events($y,$m,$d,$category=null) {
 						$start = ($week_of_event)*7+1;
 						$finish = ($start + 7)+1;					
 					} else {
-						$start = ($week_of_event)*7-1;
-						$finish = ($start + 7)-1;
+						$start = ($week_of_event)*7;
+						$finish = ($start + 7);
 					}
 					$t = date('t',strtotime($date));
 					if ($finish > $t) { $finish = $t; }

@@ -24,9 +24,10 @@ function widget($args, $instance) {
 }
 
 function form($instance) {
+	global $default_template;
 	$widget_title = esc_attr($instance['my_calendar_today_title']);
 	$widget_template = esc_attr($instance['my_calendar_today_template']);
-	if (!$widget_template) { $widget_template = get_option('my_calendar_today_template'); }
+	if (!$widget_template) { $widget_template = $default_template; }
 	$widget_text = esc_attr($instance['my_calendar_no_events_text']);
 	$widget_category = esc_attr($instance['my_calendar_today_category']);
 	$widget_linked = esc_attr($instance['my_calendar_today_linked']);
@@ -43,8 +44,8 @@ function form($instance) {
 	<?php if ( get_option('mc_uri') == '' ) { $disabled = " disabled='disabled'"; $warning = _e('Add calendar URL to use this option.','my-calendar');  } else { ""; } ?>
 	<p>
 	<label for="<?php echo $this->get_field_id('my_calendar_today_linked'); ?>"><?php _e('Link widget title to calendar:','my-calendar'); ?></label> <select<?php echo $disabled; ?> id="<?php echo $this->get_field_id('my_calendar_today_linked'); ?>" name="<?php echo $this->get_field_name('my_calendar_today_linked'); ?>">
-	<option value="asc" <?php echo ($widget_linked == 'no')?'selected="selected"':''; ?>><?php _e('Not Linked','my-calendar') ?></option>
-	<option value="desc" <?php echo ($widget_linked == 'yes')?'selected="selected"':''; ?>><?php _e('Linked','my-calendar') ?></option>
+	<option value="no" <?php echo ($widget_linked == 'no')?'selected="selected"':''; ?>><?php _e('Not Linked','my-calendar') ?></option>
+	<option value="yes" <?php echo ($widget_linked == 'yes')?'selected="selected"':''; ?>><?php _e('Linked','my-calendar') ?></option>
 	</select>
 	</p>	
 	<p>
@@ -63,7 +64,8 @@ function form($instance) {
 		$instance['my_calendar_today_title'] = strip_tags($new_instance['my_calendar_today_title']);
 		$instance['my_calendar_today_template'] = $new_instance['my_calendar_today_template'];
 		$instance['my_calendar_no_events_text'] = strip_tags($new_instance['my_calendar_no_events_text']);
-		$instance['my_calendar_today_category'] = strip_tags($new_instance['my_calendar_today_category']);		
+		$instance['my_calendar_today_category'] = strip_tags($new_instance['my_calendar_today_category']);
+		$instance['my_calendar_today_linked'] = strip_tags($new_instance['my_calendar_today_linked']);		
 		return $instance;		
 	}
 
@@ -99,9 +101,10 @@ function widget($args, $instance) {
 
 
 function form($instance) {
+	global $default_template;
 	$widget_title = esc_attr($instance['my_calendar_upcoming_title']);
 	$widget_template = esc_attr($instance['my_calendar_upcoming_template']);
-	if (!$widget_template) { $widget_template = get_option('my_calendar_upcoming_template'); }
+	if (!$widget_template) { $widget_template = $default_template; }
 	$widget_text = esc_attr($instance['my_calendar_no_events_text']);
 	$widget_category = esc_attr($instance['my_calendar_upcoming_category']);
 	$widget_before = esc_attr($instance['my_calendar_upcoming_before']);
@@ -125,8 +128,8 @@ function form($instance) {
 	<?php if ( get_option('mc_uri') == '' ) { $disabled = " disabled='disabled'"; $warning = _e('Add calendar URL to use this option.','my-calendar');  } else { ""; } ?>
 	<p>
 	<label for="<?php echo $this->get_field_id('my_calendar_upcoming_linked'); ?>"><?php _e('Link widget title to calendar:','my-calendar'); ?></label> <select<?php echo $disabled; ?> id="<?php echo $this->get_field_id('my_calendar_upcoming_linked'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_linked'); ?>">
-	<option value="asc" <?php echo ($widget_linked == 'no')?'selected="selected"':''; ?>><?php _e('Not Linked','my-calendar') ?></option>
-	<option value="desc" <?php echo ($widget_linked == 'yes')?'selected="selected"':''; ?>><?php _e('Linked','my-calendar') ?></option>
+	<option value="no" <?php echo ($widget_linked == 'no')?'selected="selected"':''; ?>><?php _e('Not Linked','my-calendar') ?></option>
+	<option value="yes" <?php echo ($widget_linked == 'yes')?'selected="selected"':''; ?>><?php _e('Linked','my-calendar') ?></option>
 	</select>
 	</p>
 	
@@ -168,6 +171,7 @@ function form($instance) {
 		$instance['my_calendar_upcoming_after'] = strip_tags($new_instance['my_calendar_upcoming_after']);
 		$instance['my_calendar_upcoming_type'] = strip_tags($new_instance['my_calendar_upcoming_type']);
 		$instance['my_calendar_upcoming_order'] = strip_tags($new_instance['my_calendar_upcoming_order']);
+		$instance['my_calendar_upcoming_linked'] = strip_tags($new_instance['my_calendar_upcoming_linked']);		
 		return $instance;		
 	}
 
