@@ -37,6 +37,7 @@ This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.o
 Languages available:
 
 * American English (Default)
+* Turkish (Mehmet Ko&231;ali) - to 1.8.4
 * German (Uwe Jonas) - to 1.7.8
 * Swedish (Efva Nyberg) - to 1.7.8
 * Japanese ([Daisuke Abe](http://www.alter-ego.jp/)) - to 1.7.1
@@ -73,6 +74,13 @@ New or updated translations are always appreciated. The translation files are in
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.8.5 = 
+
+* Another bug fix to monthly-by-day recurrence. 
+* Fixed minor problem with default template not being visible in widget.
+* Fixed 'widget title linked' bug.
+* Added Turkish translation by Mehmet Ko&231;ali
 
 = 1.8.4 =
 
