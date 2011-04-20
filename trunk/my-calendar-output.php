@@ -51,6 +51,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date) {
 	$display_author = get_option('display_author');
 	$display_map = get_option('my_calendar_show_map');
 	$display_address = get_option('my_calendar_show_address');
+	$display_details = get_option('mc_details');
 	$this_category = $event->event_category; 
     // get user-specific data
 	$tz = mc_user_timezone();
@@ -166,6 +167,11 @@ function my_calendar_draw_event($event, $type="calendar", $process_date) {
 		}	
 	if (($display_address == 'true' || $display_map == 'true') && strlen($location_string) > 0 ) {
 		$header_details .= $address;
+	}
+	if ($display_details == 'true' && !isset($_GET['mc_id']) ) {
+		$dateid = date('Y-m-d',$event->event_start_ts);
+		$id = $event->event_id;
+		$header_details .= ( get_option( 'mc_uri' ) != '' )?"<p class='mc_details'><a href='".get_option( 'mc_uri' )."?mc_id=mc_".$dateid."_".$id."'><span>$event->event_title </span>".__('details','my-calendar')."</a></p>":'';
 	}
   // handle link expiration
 	if ( $event->event_link_expires == 0 ) {
@@ -305,7 +311,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 	}
 	if ( $format != 'mini' && $toggle == 'yes' ) {
 		$format_toggle = "<div class='mc-format'>";
-		$current_url = get_current_url();
+		$current_url = mc_get_current_url();
 		switch ($format) {
 			case 'list':
 				$_GET['format'] = 'calendar';
@@ -790,7 +796,7 @@ function my_calendar_categories_list($show='list',$context='public') {
 	if (isset($_GET['mc_id'])) {
 		return;
 	}
-	$current_url = get_current_url();
+	$current_url = mc_get_current_url();
 	$cv = (int) $_GET['cat'];
 
 	$needle = array( "?cat=$cv", "&#038;cat=$cv", "&amp;cat=$cv","/&#038;",".php&#038;" );
@@ -816,14 +822,14 @@ function my_calendar_categories_list($show='list',$context='public') {
 	$name = ($context == 'public')?'cat':'category';
 		
     $categories = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " ORDER BY category_id ASC");
-	if ( !empty($categories) ) {
+	if ( !empty($categories) && count($categories)>1 ) {
 		$output = "<div id='mc_categories'>\n";
 		$output .= ($show == 'list')?"
 		<ul>
-			<li><a href='$current_url$char"."cat=all'>All Categories</a></li>":$public_form.'
+			<li><a href='$current_url$char"."cat=all'>".__('All Categories','my-calendar')."</a></li>":$public_form.'
 		<label for="category">'.__('Categories','my-calendar').' '.$admin_label.'</label>
 			<select'.$admin_fields.'name="'.$name.'" id="category">
-			<option value="all" selected="selected">All Categories</option>'."\n";
+			<option value="all" selected="selected">'.__('All Categories','my-calendar').'</option>'."\n";
 		
 		foreach ($categories as $category) {
 			if ($show == 'list') {
@@ -843,11 +849,11 @@ function my_calendar_categories_list($show='list',$context='public') {
 
 function my_calendar_locations_list($show='list',$type='saved',$datatype='name') {
 global $wpdb;
-	if (isset($_GET['mc_id'])) {
+	if ( isset( $_GET['mc_id'] ) ) {
 		return;
 	}
-if ($type == 'saved') {
-	switch ($datatype) {
+if ( $type == 'saved' ) {
+	switch ( $datatype ) {
 		case "name":$data = "location_label";
 		break;
 		case "city":$data = "location_city";
@@ -864,7 +870,7 @@ if ($type == 'saved') {
 } else {
 	$data = $datatype;
 }
-$current_url = get_current_url();
+$current_url = mc_get_current_url();
 $cv = urlencode($_GET['loc']);
 $cd = urlencode($_GET['ltype']);
 if (strpos($current_url,"?")===false) {
@@ -894,62 +900,66 @@ if (strpos($current_url,"/&#038;")!==false || strpos($current_url,".php&#038;")!
 		$datatype = ($datatype=='label')?'name':$datatype;
 		$datatype = ($datatype=='postcode')?'zip':$datatype;
 	}
-	if ($show == 'list') {
-		$output .= "<ul id='mc-locations-list'>
-		<li><a href='$current_url$char"."loc=none&amp;ltype=none'>".__('Show all','my-calendar')."</a></li>\n";
-	} else {
-		$ltype = ($_GET['ltype']=='')?$datatype:$_GET['ltype'];
-		$output .= "
-<div id='mc_locations'>
-	<form action='".$current_url."' method='GET'>
-	<div>
-		<input type='hidden' name='ltype' value='$ltype' />";
-	$qsa = array();
-	parse_str($_SERVER['QUERY_STRING'],$qsa);
-		foreach ($qsa as $name => $argument) {
-			if ($name != 'loc' && $name != 'ltype') {
-				$output .= '		<input type="hidden" name="'.$name.'" value="'.$argument.'" />'."\n";
-			}
-		}
-		$output .= "
-		<label for='mc-locations-list'>".__('Show events in:','my-calendar')."</label>
-		<select name='loc' id='mc-locations-list'>
-		<option value='none'>Show all</option>\n";
-	}
-	foreach ( $locations as $key=>$location ) {
-		if ($type == 'saved') {
-			foreach ( $location as $key=>$value ) {
-				$vt = urlencode(trim($value));
-				if ($show == 'list') {
-					$selected = ($vt == $_GET['loc'])?" class='selected'":'';
-					$output .= "		<li$selected><a rel='nofollow' href='$current_url".$char."loc=$vt&amp;ltype=$datatype'>$value</a></li>\n";
-				} else {
-					$selected = ($vt == $_GET['loc'])?" selected='selected'":'';
-					$output .= "		<option value='$vt'$selected>$value</option>\n";
+	if ( count($locations) > 1 ) {
+		if ($show == 'list') {
+			$output .= "<ul id='mc-locations-list'>
+			<li><a href='$current_url$char"."loc=none&amp;ltype=none'>".__('Show all','my-calendar')."</a></li>\n";
+		} else {
+			$ltype = ($_GET['ltype']=='')?$datatype:$_GET['ltype'];
+			$output .= "
+	<div id='mc_locations'>
+		<form action='".$current_url."' method='GET'>
+		<div>
+			<input type='hidden' name='ltype' value='$ltype' />";
+		$qsa = array();
+		parse_str($_SERVER['QUERY_STRING'],$qsa);
+			foreach ($qsa as $name => $argument) {
+				if ($name != 'loc' && $name != 'ltype') {
+					$output .= '		<input type="hidden" name="'.$name.'" value="'.$argument.'" />'."\n";
 				}
 			}
-		} else {
-			$vk = urlencode(trim($key));
-			$location = trim($location);
-			if ($show == 'list') {
-				$selected = ($vk == $_GET['loc'])?" class='selected'":'';
-				$output .= "		<li$selected><a rel='nofollow' href='$current_url".$char."loc=$vk&amp;ltype=$datatype'>$location</a></li>\n";
-			} else {
-				$selected = ($vk == $_GET['loc'])?" selected='selected'":'';			
-				$output .= "		<option value='$vk'$selected>$location</option>\n";	
-			}			
+			$output .= "
+			<label for='mc-locations-list'>".__('Show events in:','my-calendar')."</label>
+			<select name='loc' id='mc-locations-list'>
+			<option value='none'>".__('Show all','my-calendar')."</option>\n";
 		}
-	}
-	if ($show == 'list') {
-		$output .= "</ul>";
+		foreach ( $locations as $key=>$location ) {
+			if ($type == 'saved') {
+				foreach ( $location as $key=>$value ) {
+					$vt = urlencode(trim($value));
+					if ($show == 'list') {
+						$selected = ($vt == $_GET['loc'])?" class='selected'":'';
+						$output .= "		<li$selected><a rel='nofollow' href='$current_url".$char."loc=$vt&amp;ltype=$datatype'>$value</a></li>\n";
+					} else {
+						$selected = ($vt == $_GET['loc'])?" selected='selected'":'';
+						$output .= "		<option value='$vt'$selected>$value</option>\n";
+					}
+				}
+			} else {
+				$vk = urlencode(trim($key));
+				$location = trim($location);
+				if ($show == 'list') {
+					$selected = ($vk == $_GET['loc'])?" class='selected'":'';
+					$output .= "		<li$selected><a rel='nofollow' href='$current_url".$char."loc=$vk&amp;ltype=$datatype'>$location</a></li>\n";
+				} else {
+					$selected = ($vk == $_GET['loc'])?" selected='selected'":'';			
+					$output .= "		<option value='$vk'$selected>$location</option>\n";	
+				}			
+			}
+		}
+		if ($show == 'list') {
+			$output .= "</ul>";
+		} else {
+			$output .= "		</select> 
+			<input type='submit' value=".__('Submit','my-calendar')." />
+			</div>
+		</form>
+	</div>";
+		}
+	return $output;		
 	} else {
-		$output .= "		</select> 
-		<input type='submit' value=".__('Submit','my-calendar')." />
-		</div>
-	</form>
-</div>";
+	return;
 	}
-	return $output;
 }
 
 function mc_user_timezone($type='') {
@@ -963,8 +973,10 @@ global $user_ID;
 		} else {
 			$tz = '';
 		}
+	 } else {
+		$tz = 'none';
 	 }
-	 if ($tz == get_option('gmt_offset') || $tz == 'none' || $tz == '' ) {
+	 if ( $tz == get_option('gmt_offset') || $tz == 'none' || $tz == '' ) {
 		$gtz = '';
 	 } else if ( $tz < get_option('gmt_offset') ) {
 		$gtz = -(abs( get_option('gmt_offset') - $tz ) );

@@ -160,12 +160,4 @@ function add_days_to_date( $givendate,$day=0 ) {
       return $newdate;
 }
 
-function reverse_array($array, $boolean, $order) {
-	if ( $order == 'desc' ) {
-		return array_reverse($array, $boolean);
-	} else {
-		return $array;
-	}
-}
-
 ?>

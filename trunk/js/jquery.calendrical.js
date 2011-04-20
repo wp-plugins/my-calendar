@@ -242,16 +242,26 @@
         
         var scrollTo;   //Element to scroll the dropdown box to when shown
         var ul = $('<ul />');
+		var first = $('<li />').append(
+                        $('<a href="javascript:;">No time/All day</a>')
+                        .click(function() {
+                            if (options && options.selectTime) {
+                                options.selectTime('');
+                            }
+                        }).mousemove(function() {
+                            $('li.selected', ul).removeClass('selected');
+                        })
+                    ).appendTo(ul);
         for (var hour = 0; hour < 24; hour++) {
             for (var minute = 0; minute < 60; minute += 15) {
-                if (startTime && startTime > (hour * 60 + minute)) continue;
+                //if (startTime && startTime > (hour * 60 + minute)) continue;
 
                 (function() {
                     var timeText = formatTime(hour, minute);
                     var fullText = timeText;
                     if (startTime != null) {
                         var duration = roundNumber( ( (hour * 60 + minute) - startTime ), 2 );
-                        if (duration < 60) {
+                        if (duration < 60 && duration >= 0) {
                             fullText += ' (' + duration + ' mins)';
                         } else if (duration == 60) {
                             fullText += ' (1 hr)';
@@ -284,21 +294,29 @@
                         li.addClass('selected');
                         //Set to scroll to the selected hour
                         //
-                        //This is set even if scrollTo is already set, since
-                        //scrolling to selected hour is more important than
+                        //This is set even if scrollTo is already set, since scrolling to selected hour is more important than
                         //scrolling to default hour
                         scrollTo = li;
                     }
                 })();
             }
         }
+		var last = $('<li />').append(
+                        $('<a href="javascript:;">12:00am</a>')
+                        .click(function() {
+                            if (options && options.selectTime) {
+                                options.selectTime('12:00am');
+                            }
+                        }).mousemove(function() {
+                            $('li.selected', ul).removeClass('selected');
+                        })
+                    ).appendTo(ul);		
         if (scrollTo) {
             //Set timeout of zero so code runs immediately after any calling
             //functions are finished (this is needed, since box hasn't been
             //added to the DOM yet)
             setTimeout(function() {
-                //Scroll the dropdown box so that scrollTo item is in
-                //the middle
+                //Scroll the dropdown box so that scrollTo item is in the middle
                 element[0].scrollTop =
                     scrollTo[0].offsetTop - scrollTo.height() * 2;
             }, 0);

@@ -5,7 +5,7 @@ var myCalQT = window.myCalQT || {};
 	return {
 		// set the function
 		embed : function() {
-			// check if it's string the url and if the function tb_show works, if not, return
+			// check if the URL is a string  and if the function tb_show works, if not, return
 			if (typeof this.configUrl !== 'string' || typeof tb_show !== 'function') {
 				return;
 			}	
@@ -115,7 +115,7 @@ var myCalQT = window.myCalQT || {};
 			if (typeof jQuery === 'undefined') {
 				return;
 			}
-			jQuery("#generate").click(function(e) {
+			jQuery("#mycalendar").click(function(e) {
 				e.preventDefault();
 				insertTag();
 			});

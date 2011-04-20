@@ -82,8 +82,8 @@ function widget($args, $instance) {
 	$the_title = apply_filters('widget_title',$instance['my_calendar_upcoming_title']);
 	$the_template = $instance['my_calendar_upcoming_template'];
 	$the_substitute = $instance['my_calendar_no_events_text'];
-	$before = esc_attr($instance['my_calendar_upcoming_before']);
-	$after = esc_attr($instance['my_calendar_upcoming_after']);
+	$before = ($instance['my_calendar_upcoming_before']!='')?esc_attr($instance['my_calendar_upcoming_before']):5;
+	$after = ($instance['my_calendar_upcoming_after']!='')?esc_attr($instance['my_calendar_upcoming_after']):5;
 	$type = esc_attr($instance['my_calendar_upcoming_type']);
 	$order = esc_attr($instance['my_calendar_upcoming_order']);
 	$the_category = ($instance['my_calendar_upcoming_category']=='')?'default':esc_attr($instance['my_calendar_upcoming_category']);
@@ -270,15 +270,17 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 }
 // make this function time-sensitive, not date-sensitive.
 function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type='list',$order='asc') {
+		$output = '';
 		$past = 1;
 		$future = 1;
 		$offset = (60*60*get_option('gmt_offset'));
 		$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));		
          @usort( $events, "my_calendar_timediff_cmp" );// sort all events by proximity to current date
 	     $count = count($events);
-			for ( $i=0;$i<=$count;$i++ ) {
+			for ( $i=0;$i<$count;$i++ ) {
+				if ( is_object( $events[$i] ) ) {
 					$beginning = $events[$i]->event_begin . ' ' . $events[$i]->event_time;
-					$current = date('Y-m-d H:i',time()+$offset);			
+					$current = date('Y-m-d H:i',time()+$offset);
 				if ($events[$i]) {
 					if ( ( $past<=$before && $future<=$after ) ) {
 						$near_events[] = $events[$i]; // if neither limit is reached, split off freely
@@ -297,6 +299,7 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 					if ($past > $before && $future > $after) {
 						break;
 					}
+				}
 				}
 			}
 		  $events = $near_events;
@@ -328,7 +331,7 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 				} else {
 					$prepend = $append = '';
 				}				
-					$output .= "$prepend".jd_draw_template($details,$template,$type)."$append";		  				
+				$output .= "$prepend".jd_draw_template($details,$template,$type)."$append";		  				
 				}
 			} else {
 				// By default, skip no events.
@@ -366,8 +369,8 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 					}
 				}		  
 			}		
-		
-        $day_count = $day_count+1;
+		// This may have once been relevant, but I don't see how it is now.
+        //$day_count = $day_count+1;
 		} else {
 			$output .= '';
 		}

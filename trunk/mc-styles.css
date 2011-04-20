@@ -103,5 +103,10 @@ margin: 0 0 5px;
 float: left;
 margin-right: 10px;
 font-weight: 700;
-width: 8em;
+font-size: 1em;
+width: 9em;
+}
+#templates dd {
+margin-left: 10em;
+padding: 2px 1px;
 }

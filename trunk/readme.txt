@@ -37,18 +37,19 @@ This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.o
 Languages available:
 
 * American English (Default)
+* Japanese ([Daisuke Abe](http://www.alter-ego.jp/)) - to 1.8.5
+* Russian ([Alex](http://blog.sotvoril.ru/) - to 1.8.5
 * Turkish (Mehmet Ko&231;ali) - to 1.8.4
 * German (Uwe Jonas) - to 1.7.8
 * Swedish (Efva Nyberg) - to 1.7.8
-* Japanese ([Daisuke Abe](http://www.alter-ego.jp/)) - to 1.7.1
 * Danish ([Jakob Smith](http://www.omkalfatring.dk/)) - to 1.7.0
 * Italian ([Sabir Musta](http://mustaphasabir.altervista.org)) - to 1.7.0
 * Czech ([Jan Rybarik](http://janrybarik.cz)) - to 1.6.3
 * Brazilian Portuguese (Leonardo Kfoury) - to 1.6.0?
-* Dutch (Luud Heck) - to 1.4.9
 
 Older translations
 
+* Dutch (Luud Heck) - to 1.4.9
 * Spanish ([Esteban Truelsegaard](http://www.netmdp.com))
 * Finnish (Ilpo Puhakka)
 
@@ -74,6 +75,15 @@ New or updated translations are always appreciated. The translation files are in
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.8.6 = 
+
+* Fixed bug with {details} template tag when Upcoming widgets configured as Events
+* Location and category filters now do not display forms/lists if there isn't more than one choice.
+* Extended details link feature to main calendar output and added to output options.
+* Minor changes to time-entry jQuery plug-in to improve usability.
+* Updated Japanese translation to 1.8.5
+* Added Russian translation to 1.8.5 
 
 = 1.8.5 = 
 

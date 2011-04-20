@@ -92,13 +92,13 @@ function mc_deal_with_deleted_user($id) {
 // Function to add the javascript to the admin header
 function my_calendar_add_javascript() { 
 global $wp_plugin_url;
-	if ( $_GET['page'] == 'my-calendar' ) {
+	if ( isset($_GET['page']) && $_GET['page'] == 'my-calendar' ) {
 		wp_enqueue_script('jquery.calendrical',$wp_plugin_url . '/my-calendar/js/jquery.calendrical.js', array('jquery') );
 	}
 }
 
 function my_calendar_write_js() {
-	if ($_GET['page']=='my-calendar') {
+	if ( isset($_GET['page']) && $_GET['page']=='my-calendar') {
 	?>
 	<script type="text/javascript">
 	//<![CDATA[
@@ -128,6 +128,15 @@ function my_calendar_write_js() {
 		);
 		add_action( 'admin_print_footer_scripts', 'wp_tiny_mce_preload_dialogs', 30 );	
 	}	
+	}
+	if ( isset($_GET['page']) && $_GET['page']=='my-calendar-help') {
+	?>
+	<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$('dd:even').css('background','#f6f6f6');
+	});
+	</script>
+	<?php
 	}
 }
 
@@ -171,15 +180,15 @@ function my_calendar_calendar_javascript() {
 
 function my_calendar_add_styles() {
 global $wp_plugin_url;
-	if ($_GET['page'] == 'my-calendar' || $_GET['page'] == 'my-calendar-categories' || $_GET['page'] == 'my-calendar-locations' || $_GET['page'] == 'my-calendar-config' || $_GET['page'] == 'my-calendar-styles' || $_GET['page'] == 'my-calendar-help' || $_GET['page'] == 'my-calendar-behaviors' ) {
+	if (  isset($_GET['page']) && ($_GET['page'] == 'my-calendar' || $_GET['page'] == 'my-calendar-categories' || $_GET['page'] == 'my-calendar-locations' || $_GET['page'] == 'my-calendar-config' || $_GET['page'] == 'my-calendar-styles' || $_GET['page'] == 'my-calendar-help' || $_GET['page'] == 'my-calendar-behaviors' ) ) {
 		echo '<link type="text/css" rel="stylesheet" href="'.$wp_plugin_url.'/my-calendar/mc-styles.css" />';
 	}
-	if ($_GET['page'] == 'my-calendar') {
+	if ( isset($_GET['page']) && $_GET['page'] == 'my-calendar') {
 		echo '<link type="text/css" rel="stylesheet" href="'.$wp_plugin_url.'/my-calendar/js/calendrical.css" />';
 	}
 }
 
-function get_current_url() {
+function mc_get_current_url() {
 	$pageURL = 'http';
 	if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
 		$pageURL .= "://";
@@ -552,7 +561,7 @@ function jd_cal_checkSelect( $theFieldname,$theValue,$theArray='' ){
 function my_calendar_permalink_prefix() {
   // Get the permalink structure from WordPress
   $p_link = get_permalink();
-  $real_link = get_current_url();
+  $real_link = mc_get_current_url();
 
   // Now use all of that to get the My Calendar link prefix
   if (strstr($p_link, '?') && $p_link == $real_link) {
@@ -599,12 +608,12 @@ global $wp_query;
 		$scripting .= "jQuery(document).ready(function($) { \$('html').removeClass('js') });\n";
 		$scripting .= "</script>\n";
 		$this_post = $wp_query->get_queried_object();
-		if (is_object($this_post)) {
+		if ( is_object($this_post) ) {
 			$id = $this_post->ID;
 		} 
 		if ( get_option( 'my_calendar_show_js' ) != '' ) {
 		$array = explode( ",",get_option( 'my_calendar_show_js' ) );
-			if (!is_array($array)) {
+			if ( !is_array( $array ) ) {
 				$array = array();
 			}
 		}
@@ -772,7 +781,7 @@ function mc_addbuttons() {
 	if ( get_user_option('rich_editing') == 'true') {
 		add_filter( 'tiny_mce_version', 'mc_tiny_mce_version', 0 );
 		add_filter( 'mce_external_plugins', 'mc_plugin', 0 );
-		add_filter( 'mce_buttons', 'mc_button', 0);
+		add_filter( 'mce_buttons', 'mc_button', 0 );
 	}
 	// Register Hooks
 	if (is_admin()) {	
@@ -840,6 +849,14 @@ global $wp_plugin_url;
 // ]]>	
 </script>
 <?php
+}
+
+function reverse_array($array, $boolean, $order) {
+	if ( $order == 'desc' ) {
+		return array_reverse($array, $boolean);
+	} else {
+		return $array;
+	}
 }
 
 function mc_is_mobile() {

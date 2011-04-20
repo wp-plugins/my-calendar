@@ -92,6 +92,7 @@ function edit_my_calendar_config() {
 		$mc_event_registration = ($_POST['mc_event_registration']=='on')?'true':'false';
 		$mc_short = ($_POST['mc_short']=='on')?'true':'false';
 		$mc_desc = ($_POST['mc_desc']=='on')?'true':'false';
+		$mc_details = ($_POST['mc_details']=='on')?'true':'false';
 		$mc_show_weekends = ($_POST['mc_show_weekends']=='on')?'true':'false';
 		$my_calendar_hide_icons = ($_POST['my_calendar_hide_icons']=='on')?'true':'false';
 		$mc_no_fifth_week = $_POST['mc_no_fifth_week'];
@@ -122,6 +123,7 @@ function edit_my_calendar_config() {
 		update_option('mc_event_registration',$mc_event_registration);
 		update_option('mc_short',$mc_short);
 		update_option('mc_desc',$mc_desc);
+		update_option('mc_details',$mc_details);
 		update_option('mc_show_weekends',$mc_show_weekends);
 		update_option('mc_no_fifth_week',$mc_no_fifth_week);
 		update_option('mc_show_rss',$mc_show_rss);
@@ -301,13 +303,12 @@ check_akismet();
 	<legend><?php _e('Calendar Options: Customize the Output of your Calendar','my-calendar'); ?></legend>
 	<ul>
 	<li>
-	<label for="mc_uri"><?php _e('URI for your public calendar (required to use the {details} template tag)','my-calendar'); ?></label> 
-	<input type="text" name="mc_uri" id="mc_uri" size="30" value="<?php echo $mc_uri; ?>" />
+	<label for="mc_uri"><?php _e('<abbr title="Uniform resource locator">URL</abbr> for your public calendar (required to use the {details} template tag)','my-calendar'); ?></label> 
+	<input type="text" name="mc_uri" id="mc_uri" size="40" value="<?php echo $mc_uri; ?>" />
 	</li>
 	<li>
 	<label for="mc_title_template"><?php _e('Event title template','my-calendar'); ?></label> 
-	<input type="text" name="mc_title_template" id="mc_title_template" size="30" value="<?php echo $mc_title_template; ?>" /><br />
-	<a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-help#templates"><?php _e("Template Help",'my-calendar'); ?></a> <?php _e('All template shortcodes are available.','my-calendar'); ?>
+	<input type="text" name="mc_title_template" id="mc_title_template" size="30" value="<?php echo $mc_title_template; ?>" /> <small><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-help#templates"><?php _e("Template Help",'my-calendar'); ?></a> <?php _e('All template shortcodes are available.','my-calendar'); ?></small>
 	</li>
 	<li>
 	<label for="my_calendar_show_months"><?php _e('In list mode, show how many months of events at a time:','my-calendar'); ?></label> <input type="text" size="3" id="my_calendar_show_months" name="my_calendar_show_months" value="<?php echo $my_calendar_show_months; ?>" />
@@ -352,7 +353,7 @@ check_akismet();
 	<input type="checkbox" id="my_calendar_show_heading" name="my_calendar_show_heading" <?php jd_cal_checkCheckbox('my_calendar_show_heading','true'); ?> /> <label for="my_calendar_show_heading"><?php _e('Show Heading for Calendar','my-calendar'); ?></label>
 	</li>
 	<li>
-		<input type="checkbox" id="mc_show_weekends" name="mc_show_weekends" <?php jd_cal_checkCheckbox('mc_show_weekends','true'); ?> /> <label for="mc_show_weekends"><?php _e('Show Weekends on Calendar','my-calendar'); ?></label>
+	<input type="checkbox" id="mc_show_weekends" name="mc_show_weekends" <?php jd_cal_checkCheckbox('mc_show_weekends','true'); ?> /> <label for="mc_show_weekends"><?php _e('Show Weekends on Calendar','my-calendar'); ?></label>
 	</li>		
 	<li>
 	<input type="checkbox" id="display_author" name="display_author" <?php jd_cal_checkCheckbox('display_author','true'); ?> /> <label for="display_jump"><?php _e('Do you want to display the author name on events?','my-calendar'); ?></label>
@@ -374,7 +375,10 @@ check_akismet();
 	</li>
 	<li>
 	<input type="checkbox" id="mc_desc" name="mc_desc" <?php jd_cal_checkCheckbox('mc_desc','true'); ?> /> <label for="mc_desc"><?php _e('Show full description field on calendar.','my-calendar'); ?></label>
-	</li>	
+	</li>
+	<li>
+	<input type="checkbox" id="mc_details" name="mc_details" <?php jd_cal_checkCheckbox('mc_details','true'); ?> /> <label for="mc_details"><?php _e('Show link to details on calendar. (requires a calendar URL, above)','my-calendar'); ?></label>
+	</li>		
 	<li>
 	<input type="checkbox" id="mc_event_link_expires" name="mc_event_link_expires" <?php jd_cal_checkCheckbox('mc_event_link_expires','true'); ?> /> <label for="mc_event_link_expires"><?php _e('Links associated with events will automatically expire after the event has passed.','my-calendar'); ?></label>
 	</li>
@@ -464,7 +468,7 @@ check_akismet();
 	</fieldset>
 		<p>
 		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Email Settings','my-calendar'); ?> &raquo;" />
-	</p>
+		</p>
 </form>
 </div>
 </div>
