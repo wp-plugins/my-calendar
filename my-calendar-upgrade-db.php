@@ -3,7 +3,7 @@ function my_calendar_check_db() {
 global $wpdb;
 $row = $wpdb->get_row( 'SELECT * FROM '.MY_CALENDAR_TABLE );
 
-if ( $_POST['upgrade'] == 'true' ) {
+if ( isset( $_POST['upgrade'] ) && $_POST['upgrade'] == 'true' ) {
 	my_calendar_upgrade_db();
 }
 
@@ -46,7 +46,7 @@ if ( $_POST['upgrade'] == 'true' ) {
 	</div>
 <?php
 	} else {
-		if ( $_POST['upgrade'] == 'true' ) {
+		if ( isset( $_POST['upgrade'] ) && $_POST['upgrade'] == 'true' ) {
 		?>
 		<div class='upgrade-db updated'>
 		<p>

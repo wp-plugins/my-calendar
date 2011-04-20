@@ -49,7 +49,7 @@ $output = '<?xml version="1.0" encoding="'.get_bloginfo('charset').'"?>
   <managingEditor>'. get_bloginfo('admin_email') .' (' . get_bloginfo('name') . ' Admin)</managingEditor>
   <generator>My Calendar WordPress Plugin http://www.joedolson.com/articles/my-calendar/</generator>
   <lastBuildDate>'. mysql2date('D, d M Y H:i:s +0000', time()+$offset) .'</lastBuildDate>
-  <atom:link href="'. get_current_url() .'" rel="self" type="application/rss+xml" />';
+  <atom:link href="'. mc_get_current_url() .'" rel="self" type="application/rss+xml" />';
 
 	$events = mc_get_all_events($category);
 	$before = 0;

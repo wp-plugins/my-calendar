@@ -1,17 +1,13 @@
 <?php
-
-
-function mc_select_category($category, $type='event', $group='events') {
+function mc_select_category($category, $type='event', $group='events' ) {
 global $wpdb;
 	$data = ($group=='category')?'category_id':'event_category';
-
-	if ( isset ($_GET['cat']) ) { $category = (int) $_GET['cat']; }
-	
+	if ( isset( $_GET['cat'] ) ) { $category = (int) $_GET['cat']; }
 	if ( $category == 'all' || strpos( $category, "all" ) !== false ) {
 		return '';
 	} else {
  	if ( strpos( $category, "|" ) || strpos( $category, "," ) ) {
-		if (strpos($category, "|" ) ) {
+		if ( strpos($category, "|" ) ) {
 			$categories = explode( "|", $category );
 		} else {
 			$categories = explode( ",", $category );		
@@ -46,16 +42,15 @@ global $wpdb;
 			}
 		}
 	} else {
-		if (is_numeric($category)) {
-		$select_category = ($type=='all')?" WHERE $data = $category":" event_category = $category AND";
+		if ( is_numeric( $category ) ) {
+			$select_category = ($type=='all')?" WHERE $data = $category":" event_category = $category AND";
 		} else {
 		$cat = $wpdb->get_row("SELECT category_id FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_name = '$category'");
-		$category_id = $cat->category_id;
-			if (!$category_id) {
-				//if the requested category doesn't exist, fail silently
-				$select_category = "";
-			} else {
+			if ( is_object($cat) ) {
+				$category_id = $cat->category_id;
 				$select_category = ($type=='all')?" WHERE $data = $category_id":" $data = $category_id AND";
+			} else {
+				$select_category = '';
 			}
 		}
 	}
@@ -109,6 +104,3 @@ global $user_ID;
 	 }
 	 return $limit_string;
 }
-
-
-?>

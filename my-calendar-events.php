@@ -17,17 +17,17 @@ global $wpdb;
 	$date = date('Y', time()+($offset)).'-'.date('m', time()+($offset)).'-'.date('d', time()+($offset));
     if (!empty($events)) {
         foreach($events as $event) {
-			$this_event_start = strtotime("$date $event->event_time");
-			$this_event_end = strtotime("$date $event->event_endtime");
+			$this_event_start = strtotime("$event->event_begin $event->event_time");
+			$this_event_end = strtotime("$event->event_end $event->event_endtime");
 			$event->event_start_ts = $this_event_start;
-			$event->event_end_ts = $this_event_end;		
+			$event->event_end_ts = $this_event_end;			
 			if ($event->event_recur != "S") {
 				$orig_begin = $event->event_begin;
 				$orig_end = $event->event_end;
 				$numback = 0;
 				$numforward = $event->event_repeats;
 				$event_repetition = (int) $event->event_repeats;
-				if ($event_repetition !== 0) {				
+				if ($event_repetition !== 0) {		
 					switch ($event->event_recur) {
 						case "D":
 							for ($i=$numback;$i<=$numforward;$i++) {
@@ -35,7 +35,11 @@ global $wpdb;
 								$end = my_calendar_add_date($orig_end,$i,0,0);		
 								${$i} = clone($event);
 								${$i}->event_begin = $begin;
-								${$i}->event_end = $end;							
+								${$i}->event_end = $end;
+								$this_event_start = strtotime("$begin $event->event_time");
+								$this_event_end = strtotime("$end $event->event_endtime");
+								${$i}->event_start_ts = $this_event_start;
+								${$i}->event_end_ts = $this_event_end;	
 								$arr_events[]=${$i};
 							}
 							break;
@@ -45,7 +49,11 @@ global $wpdb;
 								$end = my_calendar_add_date($orig_end,($i*7),0,0);
 								${$i} = clone($event);
 								${$i}->event_begin = $begin;
-								${$i}->event_end = $end;							
+								${$i}->event_end = $end;
+								$this_event_start = strtotime("$begin $event->event_time");
+								$this_event_end = strtotime("$end $event->event_endtime");
+								${$i}->event_start_ts = $this_event_start;
+								${$i}->event_end_ts = $this_event_end;	
 								$arr_events[]=${$i};
 							}
 							break;
@@ -55,7 +63,11 @@ global $wpdb;
 								$end = my_calendar_add_date($orig_end,($i*14),0,0);
 								${$i} = clone($event);
 								${$i}->event_begin = $begin;
-								${$i}->event_end = $end;							
+								${$i}->event_end = $end;
+								$this_event_start = strtotime("$begin $event->event_time");
+								$this_event_end = strtotime("$end $event->event_endtime");
+								${$i}->event_start_ts = $this_event_start;
+								${$i}->event_end_ts = $this_event_end;								
 								$arr_events[]=${$i};
 							}
 							break;							
@@ -65,7 +77,11 @@ global $wpdb;
 								$end = my_calendar_add_date($orig_end,0,$i,0);
 								${$i} = clone($event);
 								${$i}->event_begin = $begin;
-								${$i}->event_end = $end;							
+								${$i}->event_end = $end;
+								$this_event_start = strtotime("$begin $event->event_time");
+								$this_event_end = strtotime("$end $event->event_endtime");
+								${$i}->event_start_ts = $this_event_start;
+								${$i}->event_end_ts = $this_event_end;	
 								$arr_events[]=${$i};
 							}
 							break;
@@ -113,6 +129,10 @@ global $wpdb;
 											${$i} = clone($event);
 											${$i}->event_begin = $begin;
 											${$i}->event_end = $end;
+											$this_event_start = strtotime("$begin $event->event_time");
+											$this_event_end = strtotime("$end $event->event_endtime");
+											${$i}->event_start_ts = $this_event_start;
+											${$i}->event_end_ts = $this_event_end;												
 											$arr_events[]=${$i};
 										}
 									}
@@ -125,7 +145,11 @@ global $wpdb;
 								$end = my_calendar_add_date($orig_end,0,0,$i);
 								${$i} = clone($event);
 								${$i}->event_begin = $begin;
-								${$i}->event_end = $end;							
+								${$i}->event_end = $end;
+								$this_event_start = strtotime("$begin $event->event_time");
+								$this_event_end = strtotime("$end $event->event_endtime");
+								${$i}->event_start_ts = $this_event_start;
+								${$i}->event_end_ts = $this_event_end;									
 								$arr_events[]=${$i};
 							}
 						break;
@@ -148,9 +172,14 @@ global $wpdb;
 
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
 									$this_date = my_calendar_add_date($event_begin,($realStart),0,0);
+									$this_end = my_calendar_add_date($event_end,($realStart),0,0);									
 										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
 											${$realStart} = clone($event);
 											${$realStart}->event_begin = $this_date;
+											$this_event_start = strtotime("$this_date $event->event_time");
+											$this_event_end = strtotime("$this_end $event->event_endtime");
+											${$realStart}->event_start_ts = $this_event_start;
+											${$realStart}->event_end_ts = $this_event_end;												
 											$arr_events[] = ${$realStart};
 										}
 									}
@@ -163,6 +192,10 @@ global $wpdb;
 										${$realDays} = clone($event);
 										${$realDays}->event_begin = $this_date;
 										${$realDays}->event_end = $this_end;
+										$this_event_start = strtotime("$this_date $event->event_time");
+										$this_event_end = strtotime("$this_end $event->event_endtime");
+										${$realDays}->event_start_ts = $this_event_start;
+										${$realDays}->event_end_ts = $this_event_end;											
 										$arr_events[] = ${$realDays};
 									}
 								}
@@ -181,10 +214,14 @@ global $wpdb;
 
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
 									$this_date = my_calendar_add_date($event_begin,($realStart*7),0,0);
-									
+									$this_end = my_calendar_add_date($event_end,($realStart*7),0,0);									
 									if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
 											${$realStart} = clone($event);
 											${$realStart}->event_begin = $this_date;
+											$this_event_start = strtotime("$this_date $event->event_time");
+											$this_event_end = strtotime("$this_end $event->event_endtime");
+											${$realStart}->event_start_ts = $this_event_start;
+											${$realStart}->event_end_ts = $this_event_end;												
 											$arr_events[] = ${$realStart};
 										}
 									}
@@ -198,6 +235,10 @@ global $wpdb;
 										${$realDays} = clone($event);
 										${$realDays}->event_begin = $this_date;
 										${$realDays}->event_end = $this_end;
+										$this_event_start = strtotime("$this_date $event->event_time");
+										$this_event_end = strtotime("$this_end $event->event_endtime");
+										${$realDays}->event_start_ts = $this_event_start;
+										${$realDays}->event_end_ts = $this_event_end;											
 										$arr_events[] = ${$realDays};
 									}
 								}
@@ -216,11 +257,15 @@ global $wpdb;
 
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
 									$this_date = my_calendar_add_date($event_begin,($realStart*14),0,0);
-									$this_end = my_calendar_add_date($event_begin, ($realStart*14),0,0);
+									$this_end = my_calendar_add_date($event_end, ($realStart*14),0,0);
 										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
 											${$realStart} = clone($event);
 											${$realStart}->event_begin = $this_date;
 											${$realStart}->event_end = $this_end;
+											$this_event_start = strtotime("$this_date $event->event_time");
+											$this_event_end = strtotime("$this_end $event->event_endtime");
+											${$realStart}->event_start_ts = $this_event_start;
+											${$realStart}->event_end_ts = $this_event_end;												
 											$arr_events[] = ${$realStart};
 										}
 									}
@@ -230,11 +275,14 @@ global $wpdb;
 									for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
 									$this_date = my_calendar_add_date($event_begin,($realDays*14),0,0);
 									$this_end = my_calendar_add_date($event_end,($realDays*14),0,0);
-								
 										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
 											${$realDays} = clone($event);
 											${$realDays}->event_begin = $this_date;
 											${$realDays}->event_end = $this_end;
+											$this_event_start = strtotime("$this_date $event->event_time");
+											$this_event_end = strtotime("$this_end $event->event_endtime");
+											${$realDays}->event_start_ts = $this_event_start;
+											${$realDays}->event_end_ts = $this_event_end;												
 											$arr_events[] = ${$realDays};
 										}
 									}
@@ -254,9 +302,15 @@ global $wpdb;
 
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
 									$this_date = my_calendar_add_date($event_begin,0,$realStart,0);
+									$this_end = my_calendar_add_date($event_end,0,$realStart,0);
+									
 										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
 											${$realStart} = clone($event);
 											${$realStart}->event_begin = $this_date;
+											$this_event_start = strtotime("$this_date $event->event_time");
+											$this_event_end = strtotime("$this_end $event->event_endtime");
+											${$realStart}->event_start_ts = $this_event_start;
+											${$realStart}->event_end_ts = $this_event_end;												
 											$arr_events[] = ${$realStart};
 										}
 									}								
@@ -270,6 +324,10 @@ global $wpdb;
 										${$realDays} = clone($event);
 										${$realDays}->event_begin = $this_date;
 										${$realDays}->event_end = $this_end;
+										$this_event_start = strtotime("$this_date $event->event_time");
+										$this_event_end = strtotime("$this_end $event->event_endtime");
+										${$realDays}->event_start_ts = $this_event_start;
+										${$realDays}->event_end_ts = $this_event_end;											
 										$arr_events[] = ${$realDays};
 									}
 								}
@@ -328,7 +386,11 @@ global $wpdb;
 													$end = my_calendar_add_date($approxend,$n,0,0);
 													${$realStart} = clone($event);
 													${$realStart}->event_begin = $begin;
-													${$realStart}->event_end = $end;							
+													${$realStart}->event_end = $end;
+													$this_event_start = strtotime("$begin $event->event_time");
+													$this_event_end = strtotime("$end $event->event_endtime");
+													${$realStart}->event_start_ts = $this_event_start;
+													${$realStart}->event_end_ts = $this_event_end;													
 													$arr_events[]=${$realStart};	
 													break;
 												}
@@ -373,7 +435,11 @@ global $wpdb;
 														$end = my_calendar_add_date($approxend,$n,0,0);
 														${$realDays} = clone($event);
 														${$realDays}->event_begin = $begin;
-														${$realDays}->event_end = $end;							
+														${$realDays}->event_end = $end;	
+														$this_event_start = strtotime("$begin $event->event_time");
+														$this_event_end = strtotime("$end $event->event_endtime");
+														${$realDays}->event_start_ts = $this_event_start;
+														${$realDays}->event_end_ts = $this_event_end;												
 														$arr_events[]=${$realDays};
 														break;
 													} 
@@ -395,9 +461,14 @@ global $wpdb;
 
 									for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
 									$this_date = my_calendar_add_date($event_begin,0,0,$realStart);
+									$this_end = my_calendar_add_date($event_end,0,0,$realStart);									
 										if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
 											${$realStart} = clone($event);
 											${$realStart}->event_begin = $this_date;
+											$this_event_start = strtotime("$this_date $event->event_time");
+											$this_event_end = strtotime("$this_end $event->event_endtime");
+											${$realStart}->event_start_ts = $this_event_start;
+											${$realStart}->event_end_ts = $this_event_end;												
 											$arr_events[] = ${$realStart};
 										}
 									}								
@@ -406,11 +477,14 @@ global $wpdb;
 								for ($realDays;$realDays<=$fDays;$realDays++) { // for each event within plus or minus range, mod date and add to array.
 								$this_date = my_calendar_add_date($event_begin,0,0,$realDays);
 								$this_end = my_calendar_add_date($event_end,0,0,$realDays);
-								
 									if ( my_calendar_date_comp( $event->event_begin,$this_date ) == true ) {
 										${$realDays} = clone($event);
 										${$realDays}->event_begin = $this_date;
 										${$realDays}->event_end = $this_end;
+										$this_event_start = strtotime("$this_date $event->event_time");
+										$this_event_end = strtotime("$this_end $event->event_endtime");
+										${$realStart}->event_start_ts = $this_event_start;
+										${$realStart}->event_end_ts = $this_event_end;											
 										$arr_events[] = ${$realDays};
 									}
 								}

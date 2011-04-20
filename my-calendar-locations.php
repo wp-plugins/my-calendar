@@ -82,9 +82,9 @@ my_calendar_check_db();
 		}
 	}
 
-	if ($_GET['mode'] != 'edit' || $_POST['mode'] == 'edit') {
-	mc_show_location_form('add');
-  } 
+	if ( isset($_GET['mode']) && $_GET['mode'] != 'edit' || isset($_POST['mode']) && $_POST['mode'] != 'edit' || !isset($_GET['mode']) && !isset($_POST['mode']) ) {
+		mc_show_location_form('add');
+	} 
 }
 
 function mc_show_location_form($view='add',$cur_loc='') {

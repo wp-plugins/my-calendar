@@ -23,8 +23,13 @@ function my_dirlist($directory) {
     while ($file = readdir($handler)) {
         // if $file isn't this directory or its parent, 
         // add it to the results array
-        if ( $file != '.' && $file != '..' && (exif_imagetype($directory.'/'.$file) == IMAGETYPE_GIF ||  exif_imagetype($directory.'/'.$file) == IMAGETYPE_PNG ||  exif_imagetype($directory.'/'.$file) == IMAGETYPE_JPEG ) ) {
-            $results[] = $file;
+		if ( filesize( $directory.'/'.$file ) > 11 ) {
+			if ( $file != '.' && $file != '..' && (
+			exif_imagetype($directory.'/'.$file) == IMAGETYPE_GIF || 
+			exif_imagetype($directory.'/'.$file) == IMAGETYPE_PNG ||  
+			exif_imagetype($directory.'/'.$file) == IMAGETYPE_JPEG ) ) {
+				$results[] = $file;
+			}
 		}
     }
     // tidy up: close the handler
@@ -118,9 +123,9 @@ my_calendar_check_db();
       echo "<div class=\"updated\"><p><strong>".__('Category edited successfully','my-calendar')."</strong></p></div>";
     }
 
-  if ($_GET['mode'] != 'edit' || $_POST['mode'] == 'edit') {
-	mc_edit_category_form('add');
-    } 
+	if ( isset($_GET['mode']) && $_GET['mode'] != 'edit' || isset($_POST['mode']) && $_POST['mode'] != 'edit' || !isset($_GET['mode']) && !isset($_POST['mode']) ) {
+		mc_edit_category_form('add');
+	} 
 ?>
 </div>
 <?php
@@ -161,17 +166,17 @@ global $path, $wp_plugin_dir,$wp_plugin_url;
 		<?php } else { ?>
 			<div>
 			<input type="hidden" name="mode" value="edit" />
-            <input type="hidden" name="category_id" value="<?php echo $cur_cat->category_id ?>" />
+            <input type="hidden" name="category_id" value="<?php if ( is_object($cur_cat) ) echo $cur_cat->category_id ?>" />
 			</div>		
 		<?php } ?>
 			<fieldset>
 			<legend><?php if ($view == 'add') { _e('Add Category','my-calendar'); } else { _e('Edit Category','my-calendar'); } ?></legend>
-				<label for="category_name"><?php _e('Category Name','my-calendar'); ?>:</label> <input type="text" id="category_name" name="category_name" class="input" size="30" value="<?php echo $cur_cat->category_name ?>" /><br />
-				<label for="category_color"><?php _e('Category Color (Hex format)','my-calendar'); ?>:</label> <input type="text" id="category_color" name="category_color" class="input" size="10" maxlength="7" value="<?php echo (strpos($cur_cat->category_color,'#') !== 0)?'#':''; echo $cur_cat->category_color ?>" /><br />
+				<label for="category_name"><?php _e('Category Name','my-calendar'); ?>:</label> <input type="text" id="category_name" name="category_name" class="input" size="30" value="<?php if ( is_object($cur_cat) ) echo $cur_cat->category_name; ?>" /><br />
+				<label for="category_color"><?php _e('Category Color (Hex format)','my-calendar'); ?>:</label> <input type="text" id="category_color" name="category_color" class="input" size="10" maxlength="7" value="<?php if ( is_object($cur_cat) ) { echo (strpos($cur_cat->category_color,'#') !== 0)?'#':''; echo $cur_cat->category_color; } else { echo '#'; } ?>" /><br />
 				<label for="category_icon"><?php _e('Category Icon','my-calendar'); ?>:</label> <select name="category_icon" id="category_icon">
 <?php
 foreach ($iconlist as $value) {
-if ($cur_cat->category_icon == $value) {
+if ( ( is_object($cur_cat) ) && $cur_cat->category_icon == $value) {
 	$selected = " selected='selected'";
 } else {
 	$selected = "";

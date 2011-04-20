@@ -79,7 +79,7 @@ global $wp_plugin_dir;
 <h3 id="template"><?php _e('Widget Templating','my-calendar'); ?></h3>
 	<div class="inside">
 <p>
-<?php _e('These codes are available in calendar widgets, email notifications, and event titles.'); ?>
+<?php _e('These codes are available in calendar widgets, email notifications, and event titles.','my-calendar'); ?>
 </p>
 <dl>
 <dt><code>{category}</code></dt>
@@ -111,6 +111,9 @@ global $wp_plugin_dir;
 
 <dt><code>{link}</code></dt>
 <dd><?php _e('Displays the URL provided for the event.','my-calendar'); ?></dd>
+
+<dt><code>{details}</code></dt>
+<dd><?php _e('Provides a link to an auto-generated page containing all information on the given event.','my-calendar'); ?> <strong><?php _e('Requires that the site URL has been provided on the Settings page','my-calendar'); ?></strong>
 
 <dt><code>{description}</code></dt>
 <dd><?php _e('Displays the description of the event.','my-calendar'); ?></dd>

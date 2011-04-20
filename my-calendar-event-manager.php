@@ -34,7 +34,7 @@ $edit = $create = $save = $delete = false;
 $action = !empty($_POST['event_action']) ? $_POST['event_action'] : '';
 $event_id = !empty($_POST['event_id']) ? $_POST['event_id'] : '';
 
-if (isset($_GET['mode'])) {
+if ( isset( $_GET['mode'] ) ) {
 	if ( $_GET['mode'] == 'edit' ) {
 		$action = "edit";
 		$event_id = (int) $_GET['event_id'];
@@ -76,7 +76,7 @@ if ( !empty($_POST['mass_delete']) ) {
 	echo $message;
 }
 
-if ($_GET['mode'] == 'delete') {
+if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'delete' ) {
 	    $sql = "SELECT event_title, event_author FROM " . MY_CALENDAR_TABLE . " WHERE event_id=" . (int) $_GET['event_id'];
 	   $result = $wpdb->get_results( $sql, ARRAY_A );
 	if ( mc_can_edit_event( $result[0]['event_author'] ) ) {
@@ -104,7 +104,7 @@ if ($_GET['mode'] == 'delete') {
 
 
 // Approve and show an Event ...by Roland
-if ( $_GET['mode'] == 'approve' ) {
+if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'approve' ) {
 	if ( current_user_can( get_option( 'mc_event_approve_perms' ) ) ) {
 	    $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_approved = 1 WHERE event_id=" . (int) $_GET['event_id'];
 		$result = $wpdb->get_results( $sql, ARRAY_A );
@@ -118,7 +118,7 @@ if ( $_GET['mode'] == 'approve' ) {
 }
 
 // Reject and hide an Event ...by Roland
-if ($_GET['mode'] == 'reject') {
+if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'reject' ) {
 	if ( current_user_can( get_option( 'mc_event_approve_perms' ) ) ) {
 	    $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_approved = 2 WHERE event_id=" . (int) $_GET['event_id'];
 		$result = $wpdb->get_results( $sql, ARRAY_A );
@@ -164,7 +164,7 @@ check_akismet();
 		} else {
 			jd_events_edit_form('edit', $event_id);
 		}		
-		jd_events_display_list($sortdir,$limit);					
+		jd_events_display_list();					
 	} else if ( $action == 'copy' || ($action == 'copy' && $error_with_saving == 1)) { ?>
 <div id="icon-edit" class="icon32"></div>	
 		<h2><?php _e('Copy Event','my-calendar'); ?></h2>
@@ -175,14 +175,14 @@ check_akismet();
 		} else {
 			jd_events_edit_form('copy', $event_id);
 		}
-		jd_events_display_list($sortdir,$limit);		
+		jd_events_display_list();		
 	} else {
 	?>	
 <div id="icon-edit" class="icon32"></div>	
 		<h2><?php _e('Add Event','my-calendar'); ?></h2>
 		<?php jd_show_support_box(); ?>
 		<?php jd_events_edit_form(); ?>
-		<?php jd_events_display_list($sortdir,$limit); ?>
+		<?php jd_events_display_list(); ?>
 	<?php } ?>
 </div>
 <?php
@@ -291,7 +291,7 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 ?>
 
 	<?php 
-	if ($data->event_approved != 1 && $mode == 'edit' ) {
+	if ( is_object($data) && $data->event_approved != 1 && $mode == 'edit' ) {
 		$message = __('This event must be approved in order for it to appear on the calendar.','my-calendar');
 	} else {
 		$message = "";
@@ -343,7 +343,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id,$context='' ) {
 			<input type="hidden" value="<?php echo $dvalue; ?>" name="event_approved" />
 <?php } ?>
 		</p>
-		<?php if ( $data->event_flagged == 1 ) { ?>
+		<?php if (  is_object($data) && $data->event_flagged == 1 ) { ?>
 		<div class="error">
 		<p>
 		<input type="checkbox" value="0" id="event_flagged" name="event_flagged"<?php if ( !empty($data) && $data->event_flagged == '0' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_flagged == '1' ) { echo ""; } ?> /> <label for="event_flagged"><?php _e('This event is not spam','my-calendar'); ?></label>
@@ -383,9 +383,9 @@ function my_calendar_print_form_fields( $data,$mode,$event_id,$context='' ) {
 			$userList = my_calendar_getUsers();				 
 			foreach($userList as $u) {
 			 echo '<option value="'.$u->ID.'"';
-					if ( $data->event_host == $u->ID ) {
+					if (  is_object($data) && $data->event_host == $u->ID ) {
 					 echo ' selected="selected"';
-					} else if( $u->ID == $user->ID && empty($data->event_host) ) {
+					} else if(  is_object($u) && $u->ID == $user->ID && empty($data->event_host) ) {
 				    echo ' selected="selected"';
 					}
 				echo '>'.$u->display_name."</option>\n";
@@ -458,17 +458,17 @@ function my_calendar_print_form_fields( $data,$mode,$event_id,$context='' ) {
 <div class="inside">
 			<fieldset>
 			<legend><?php _e('Recurring Events','my-calendar'); ?></legend> 
-			<?php if ( $data->event_repeats != NULL ) { $repeats = $data->event_repeats; } else { $repeats = 0; } ?>
+			<?php if (  is_object($data) && $data->event_repeats != NULL ) { $repeats = $data->event_repeats; } else { $repeats = 0; } ?>
 			<p>
 			<label for="event_repeats"><?php _e('Repeats for','my-calendar'); ?></label> <input type="text" name="event_repeats" id="event_repeats" class="input" size="1" value="<?php echo $repeats; ?>" /> 
 			<label for="event_recur"><?php _e('Units','my-calendar'); ?></label> <select name="event_recur" class="input" id="event_recur">
-				<option class="input" <?php echo jd_option_selected( $data->event_recur,'S','option'); ?> value="S"><?php _e('Does not recur','my-calendar'); ?></option>
-				<option class="input" <?php echo jd_option_selected( $data->event_recur,'D','option'); ?> value="D"><?php _e('Daily','my-calendar'); ?></option>						
-				<option class="input" <?php echo jd_option_selected( $data->event_recur,'W','option'); ?> value="W"><?php _e('Weekly','my-calendar'); ?></option>
-				<option class="input" <?php echo jd_option_selected( $data->event_recur,'B','option'); ?> value="B"><?php _e('Bi-weekly','my-calendar'); ?></option>						
-				<option class="input" <?php echo jd_option_selected( $data->event_recur,'M','option'); ?> value="M"><?php _e('Date of Month (e.g., the 24th of each month)','my-calendar'); ?></option>
-				<option class="input" <?php echo jd_option_selected( $data->event_recur,'U','option'); ?> value="U"><?php _e('Day of Month (e.g., the 3rd Monday of each month)','my-calendar'); ?></option>
-				<option class="input" <?php echo jd_option_selected( $data->event_recur,'Y','option'); ?> value="Y"><?php _e('Annually','my-calendar'); ?></option>
+				<option class="input" <?php if ( is_object($data) ) echo jd_option_selected( $data->event_recur,'S','option'); ?> value="S"><?php _e('Does not recur','my-calendar'); ?></option>
+				<option class="input" <?php if ( is_object($data) ) echo jd_option_selected( $data->event_recur,'D','option'); ?> value="D"><?php _e('Daily','my-calendar'); ?></option>						
+				<option class="input" <?php if ( is_object($data) ) echo jd_option_selected( $data->event_recur,'W','option'); ?> value="W"><?php _e('Weekly','my-calendar'); ?></option>
+				<option class="input" <?php if ( is_object($data) ) echo jd_option_selected( $data->event_recur,'B','option'); ?> value="B"><?php _e('Bi-weekly','my-calendar'); ?></option>						
+				<option class="input" <?php if ( is_object($data) ) echo jd_option_selected( $data->event_recur,'M','option'); ?> value="M"><?php _e('Date of Month (e.g., the 24th of each month)','my-calendar'); ?></option>
+				<option class="input" <?php if ( is_object($data) ) echo jd_option_selected( $data->event_recur,'U','option'); ?> value="U"><?php _e('Day of Month (e.g., the 3rd Monday of each month)','my-calendar'); ?></option>
+				<option class="input" <?php if ( is_object($data) ) echo jd_option_selected( $data->event_recur,'Y','option'); ?> value="Y"><?php _e('Annually','my-calendar'); ?></option>
 			</select><br />
 					<?php _e('Enter "0" if the event should recur indefinitely. Your entry is the number of events after the first occurrence of the event: a recurrence of <em>2</em> means the event will happen three times.','my-calendar'); ?>
 			</p>
@@ -495,7 +495,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id,$context='' ) {
 			<input type="radio" id="event_none" name="event_open" value="2" <?php if (!empty($data)) { echo jd_option_selected( $data->event_open, '2' ); } ?> /> <label for="event_none"><?php _e('Does not apply','my-calendar'); ?></label>	
 			</p>	
 			<p>
-			<input type="checkbox" name="event_group" id="event_group" <?php echo jd_option_selected( $data->event_group,'1'); ?> /> <label for="event_group"><?php _e('If this event recurs, it can only be registered for as a complete series.','my-calendar'); ?></label>
+			<input type="checkbox" name="event_group" id="event_group" <?php if (  is_object($data) ) { echo jd_option_selected( $data->event_group,'1'); } ?> /> <label for="event_group"><?php _e('If this event recurs, it can only be registered for as a complete series.','my-calendar'); ?></label>
 			</p>				
 			</fieldset>
 </div>
@@ -592,25 +592,28 @@ function my_calendar_print_form_fields( $data,$mode,$event_id,$context='' ) {
 }
 
 // Used on the manage events admin page to display a list of events
-function jd_events_display_list( $sortdir='default',$status='all',$type='normal' ) {
+function jd_events_display_list( $type='normal' ) {
 	global $wpdb;
 	
 		$sortby = ( isset( $_GET['sort'] ) )?(int) $_GET['sort']:get_option('mc_default_sort');
 
 		if ( isset( $_GET['order'] ) ) {
-			$sortdir = ( $_GET['order'] == 'ASC' )?'ASC':'default';
+			$sortdir = ( isset($_GET['order']) && $_GET['order'] == 'ASC' )?'ASC':'default';
 		} else {
 			$sortdir = 'default';
 		}
 		if ( isset( $_GET['limit'] ) ) {
 			switch ($_GET['limit']) {
-				case 'reserved':$limit = 'reserved';
+				case 'reserved':$status = 'reserved';
 				break;
-				case 'published':$limit ='published';
+				case 'published':$status = 'published';
+				break;
+				default:
+				$status = 'all';
 				break;
 			}
 		} else {
-			$limit = 'all';
+			$status = 'all';
 		}
 	
 	if ( empty($sortby) ) {
@@ -810,7 +813,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
     $event_author = !empty($_POST['event_author']) ? $_POST['event_author'] : $current_user->ID;
 	$event_open = !empty($_POST['event_open']) ? $_POST['event_open'] : '2';
 	$event_group = !empty($_POST['event_group']) ? 1 : 0;
-	$event_flagged = ( $_POST['event_flagged']===0 || !isset($_POST['event_flagged']) )?0:1;
+	$event_flagged = ( !isset($_POST['event_flagged']) || $_POST['event_flagged']===0 )?0:1;
 	// set location
 		if ($location_preset != 'none') {
 			$sql = "SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id = $location_preset";
@@ -867,7 +870,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 		$errors .= "<div class='error'><p><strong>".__('Error','my-calendar').":</strong> ".__('Both start and end dates must be in the format YYYY-MM-DD','my-calendar')."</p></div>";
 	}
         // We check for a valid time, or an empty one
-		$time = date( 'H:i:00',strtotime($time) );
+		$time = ($time == '')?'00:00:00':date( 'H:i:00',strtotime($time) );
         $time_format_one = '/^([0-1][0-9]):([0-5][0-9]):([0-5][0-9])$/';
 		$time_format_two = '/^([2][0-3]):([0-5][0-9]):([0-5][0-9])$/';
         if (preg_match($time_format_one,$time) || preg_match($time_format_two,$time) || $time == '') {

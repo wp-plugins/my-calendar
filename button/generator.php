@@ -6,6 +6,10 @@
 	$wp_path = (isset($wp_path[0]) && $wp_path[0] != "") ? $wp_path[0] : $_SERVER["DOCUMENT_ROOT"];
 require_once($wp_path . $slash . 'wp-load.php');
 require_once($wp_path . $slash . 'wp-admin' . $slash . 'admin.php'); 
+
+// check for rights
+if ( !is_user_logged_in() || !current_user_can('edit_posts') ) 
+	wp_die(__( "You don't have access to this function.", 'my-calendar' ));
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" <?php do_action('admin_xml_ns'); ?> <?php language_attributes(); ?>>
@@ -38,6 +42,7 @@ do_action('admin_head');
 <body class="<?php echo apply_filters( 'admin_body_class', '' ); ?>">
 	<div class="wrap">
 		<h2><?php _e("My Calendar Shortcode Generator",'my-calendar'); ?></h2> 
+		<form action="#" mode="POST">
 		<fieldset> 
 			<legend><?php _e('Shortcode Atributes', 'my-calendar'); ?></legend>
 					<p>
@@ -80,8 +85,9 @@ do_action('admin_head');
 					</p>
 		</fieldset>
 		<p>
-		<input type="button" class="button" id="generate" name="generate" value="<?php _e('Generate Shortcode', 'my-calendar'); ?>" />
+		<input type="button" class="button" id="mycalendar" name="generate" value="<?php _e('Generate Shortcode', 'my-calendar'); ?>" />
 		</p>
+	</form>
 	</div>
 	<?php jd_show_support_box(); ?>
 	<script type="text/javascript" charset="utf-8">
