@@ -76,6 +76,10 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.8.7 =
+
+* One very minor change in 1.8.6 caused some plug-in conflicts, so I rolled that change back. Will find another solution to the problem it solved. This change affects very few users.
+
 = 1.8.6 = 
 
 * Fixed bug with {details} template tag when Upcoming widgets configured as Events
