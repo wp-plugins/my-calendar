@@ -1,6 +1,6 @@
 <?php
 // used to generate upcoming events lists
-function mc_get_all_events($category) {
+function mc_get_all_events($category,$rss='no') {
 global $wpdb;
 	$select_category = ( $category!='default' )?mc_select_category($category,'all'):'';
 	$limit_string = mc_limit_string('all');
@@ -11,6 +11,14 @@ global $wpdb;
 	} else {
 		$join = '';
 	}
+	// Maybe later. Work this out.
+	/*
+	if ( $rss != 'no' ) {
+	//	$limit = "LIMIT 0,$rss ORDER BY event_id DESC";
+	} else {
+	//	$limit = '';
+	}
+	*/
 	$limits = $select_category . $join . $limit_string;
     $events = $wpdb->get_results("SELECT *,event_begin as event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $limits");
 	$offset = (60*60*get_option('gmt_offset'));

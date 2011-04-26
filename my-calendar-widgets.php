@@ -82,8 +82,8 @@ function widget($args, $instance) {
 	$the_title = apply_filters('widget_title',$instance['my_calendar_upcoming_title']);
 	$the_template = $instance['my_calendar_upcoming_template'];
 	$the_substitute = $instance['my_calendar_no_events_text'];
-	$before = ($instance['my_calendar_upcoming_before']!='')?esc_attr($instance['my_calendar_upcoming_before']):5;
-	$after = ($instance['my_calendar_upcoming_after']!='')?esc_attr($instance['my_calendar_upcoming_after']):5;
+	$before = ($instance['my_calendar_upcoming_before']!='')?esc_attr($instance['my_calendar_upcoming_before']):3;
+	$after = ($instance['my_calendar_upcoming_after']!='')?esc_attr($instance['my_calendar_upcoming_after']):3;
 	$type = esc_attr($instance['my_calendar_upcoming_type']);
 	$order = esc_attr($instance['my_calendar_upcoming_order']);
 	$the_category = ($instance['my_calendar_upcoming_category']=='')?'default':esc_attr($instance['my_calendar_upcoming_category']);

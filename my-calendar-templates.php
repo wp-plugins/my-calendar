@@ -5,8 +5,8 @@ function jd_draw_template($array,$template,$type='list') {
 	foreach ($array as $key=>$value) {	
 	    $search = "{".$key."}";
 		if ($type != 'list') {
-			if ($key == 'link' && $value == '') { $value = get_bloginfo('url'); }
-			$value = htmlentities($value);
+			if ( $key == 'link' && $value == '') { $value = ( get_option('mc_uri') != '' )?get_option('mc_uri'):get_bloginfo('url'); }
+			if ( $key != 'guid') { $value = htmlentities($value); }
 		}
 		$template = stripcslashes(str_replace($search,$value,$template));
 		$rss_search = "{rss_$key}";
@@ -137,8 +137,10 @@ function event_as_array($event) {
 	$details['details'] = ( get_option( 'mc_uri' ) != '' )?"<a href='".get_option( 'mc_uri' )."?mc_id=mc_".$dateid."_".$id."'><span>$details[title] </span>".__('details','my-calendar')."</a>":'';
 	$details['dateid'] = $dateid;
 	// RSS guid
-	$details['guid'] = sanitize_title($event->event_title).'-'.rand(100000000,999999999);
+	$guid = ( get_option( 'mc_uri' ) != '' )?get_option( 'mc_uri' )."?mc_id=mc_$dateid"."_".$id:sanitize_title($event->event_title)."-$dateid-$id";
+	$details['guid'] =( get_option( 'mc_uri' ) != '')?"<guid isPermaLink='true'>$guid</guid>":"<guid isPermalink='false'>$guid</guid>";
 	/* ical format */
+
 	$details['ical_location'] = $event->event_label .' '. $event->event_street .' '. $event->event_street2 .' '. $event->event_city .' '. $event->event_state .' '. $event->event_postcode;
 	$ical_description = mc_newline_replace(strip_tags($event->event_desc));
 	$details['ical_description'] = str_replace( "\r", "=0D=0A=", $event->event_desc );	

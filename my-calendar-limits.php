@@ -65,41 +65,41 @@ global $user_ID;
 	 $user_settings = get_option('mc_user_settings');
 	 $limit_string = "event_flagged <> 1";
 	 if ( get_option('mc_user_settings_enabled') == 'true' && $user_settings['my_calendar_location_default']['enabled'] == 'on' || isset($_GET['loc']) && isset($_GET['ltype']) ) {
-		if ( is_user_logged_in() ) {
-			if (!isset($_GET['loc']) && !isset($_GET['ltype'])) {
+		if ( !isset($_GET['loc']) && !isset($_GET['ltype']) ) {
+			if ( is_user_logged_in() ) {
 				get_currentuserinfo();
 				$current_settings = get_user_meta( $user_ID, 'my_calendar_user_settings' );
 				$current_location = $current_settings['my_calendar_location_default'];
 				$location_type = get_option('mc_location_type');
-			} else {
-				$current_location = urldecode($_GET['loc']);
-				$location = urldecode($_GET['ltype']);
-					switch ($location) {
-						case "name":$location_type = "event_label";
-						break;
-						case "city":$location_type = "event_city";
-						break;
-						case "state":$location_type = "event_state";
-						break;
-						case "zip":$location_type = "event_postcode";
-						break;
-						case "country":$location_type = "event_country";
-						break;
-						case "region":$location_type = "event_region";
-						break;
-						default:$location_type = "event_label";
-						break;
-					}			
 			}
-			if ($current_location != 'none' && $current_location != '') {
-				if ($select_category == "") {
-					$limit_string = "$location_type='$current_location'";
-					$limit_string .= ($type=='all')?' AND':"";
-				} else {
-					$limit_string = "AND $location_type='$current_location'";
-					$limit_string .= ($type=='all')?'':"";				
-				}
-			} 
+		} else {
+			$current_location = urldecode($_GET['loc']);
+			$location = urldecode($_GET['ltype']);
+				switch ($location) {
+					case "name":$location_type = "event_label";
+					break;
+					case "city":$location_type = "event_city";
+					break;
+					case "state":$location_type = "event_state";
+					break;
+					case "zip":$location_type = "event_postcode";
+					break;
+					case "country":$location_type = "event_country";
+					break;
+					case "region":$location_type = "event_region";
+					break;
+					default:$location_type = "event_label";
+					break;
+				}			
+		}
+		if ($current_location != 'none' && $current_location != '') {
+			if ($select_category == "") {
+				$limit_string = "$location_type='$current_location'";
+				$limit_string .= ($type=='all')?' AND':"";
+			} else {
+				$limit_string = "AND $location_type='$current_location'";
+				$limit_string .= ($type=='all')?'':"";				
+			}
 		}
 	 }
 	 return $limit_string;
