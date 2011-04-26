@@ -95,6 +95,17 @@ list-style-type: disc;
 position: absolute;
 left: -999em;
 }
+.jd-my-calendar fieldset fieldset legend {
+position: static;
+font-weight: 700;
+padding: 5px;
+background: #eee;
+width: 99%;
+}
+.jd-my-calendar fieldset fieldset {
+margin: 0 0 20px 0;
+padding-top: 2px;
+}
 #mceditor {
 border: 1px solid #ddd;
 margin: 0 0 5px;

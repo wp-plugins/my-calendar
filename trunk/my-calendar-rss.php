@@ -30,7 +30,7 @@ function my_calendar_rss() {
 	</content:encoded>
 	<dc:format xmlns:dc='http://purl.org/dc/elements/1.1/'>text/html</dc:format>
 	<dc:source xmlns:dc='http://purl.org/dc/elements/1.1/'>".home_url()."</dc:source>	
-	<guid isPermaLink='false'>{guid}</guid>
+	{guid}
   </item>\n";
 // add RSS headers
 $output = '<?xml version="1.0" encoding="'.get_bloginfo('charset').'"?>
@@ -51,9 +51,12 @@ $output = '<?xml version="1.0" encoding="'.get_bloginfo('charset').'"?>
   <lastBuildDate>'. mysql2date('D, d M Y H:i:s +0000', time()+$offset) .'</lastBuildDate>
   <atom:link href="'. mc_get_current_url() .'" rel="self" type="application/rss+xml" />';
 
-	$events = mc_get_all_events($category);
+	$events = mc_get_all_events( $category, 15 );
+	if ( is_array( $events) ) {
+		$output .=  "Yes it is";
+	}
 	$before = 0;
-	$after = 10;
+	$after = 15;
 	$output .= mc_produce_upcoming_events( $events,$template,$before,$after,'rss' );
 $output .= '</channel>
 </rss>';

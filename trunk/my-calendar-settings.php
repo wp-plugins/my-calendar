@@ -81,54 +81,32 @@ function edit_my_calendar_config() {
 	}
  // output
 	if (isset($_POST['my_calendar_show_months']) ) {
-		$mc_uri = $_POST['mc_uri'];
-		$my_calendar_show_months = (int) $_POST['my_calendar_show_months'];
-		$my_calendar_date_format = $_POST['my_calendar_date_format'];
-		$disp_author = ($_POST['display_author']=='on')?'true':'false';
-		$disp_jump = ($_POST['display_jump']=='on')?'true':'false';
-		$my_calendar_show_map = ($_POST['my_calendar_show_map']=='on')?'true':'false';
-		$my_calendar_show_address = ($_POST['my_calendar_show_address']=='on')?'true':'false';
-		$my_calendar_show_heading = ($_POST['my_calendar_show_heading']=='on')?'true':'false';
-		$mc_event_registration = ($_POST['mc_event_registration']=='on')?'true':'false';
-		$mc_short = ($_POST['mc_short']=='on')?'true':'false';
-		$mc_desc = ($_POST['mc_desc']=='on')?'true':'false';
-		$mc_details = ($_POST['mc_details']=='on')?'true':'false';
-		$mc_show_weekends = ($_POST['mc_show_weekends']=='on')?'true':'false';
-		$my_calendar_hide_icons = ($_POST['my_calendar_hide_icons']=='on')?'true':'false';
-		$mc_no_fifth_week = $_POST['mc_no_fifth_week'];
-		$my_calendar_event_link_expires = ($_POST['mc_event_link_expires']=='on')?'true':'false'; 
-		$mc_apply_color = $_POST['mc_apply_color'];	
-		$mc_skip_holidays = ($_POST['mc_skip_holidays']=='on')?'true':'false';
-		$mc_show_rss = ($_POST['mc_show_rss']=='on')?'true':'false';
-		$mc_show_ical = ($_POST['mc_show_ical']=='on')?'true':'false';
-		$mc_skip_holidays_category = (int) $_POST['mc_skip_holidays_category'];
 		$mc_title_template = $_POST['mc_title_template'];
-		$mc_default_sort = $_POST['mc_default_sort'];
 		$templates = get_option('my_calendar_templates');
 		$templates['title'] = $mc_title_template;
-		update_option('mc_uri',$mc_uri);
-		update_option('mc_skip_holidays_category',$mc_skip_holidays_category);
-		update_option('mc_skip_holidays',$mc_skip_holidays);
+		update_option( 'mc_uri',$_POST['mc_uri'] );
+		update_option('mc_skip_holidays_category',(int) $_POST['mc_skip_holidays_category']);
+		update_option('mc_skip_holidays',($_POST['mc_skip_holidays']=='on')?'true':'false');
 		update_option('my_calendar_templates',$templates);
-		update_option('display_author',$disp_author);
-		update_option('display_jump',$disp_jump);
-		update_option('my_calendar_show_months',$my_calendar_show_months);
-		update_option('my_calendar_date_format',$my_calendar_date_format);
-		update_option('my_calendar_show_map',$my_calendar_show_map);
-		update_option('my_calendar_show_address',$my_calendar_show_address); 
-		update_option('my_calendar_show_heading',$my_calendar_show_heading);	
-		update_option('my_calendar_hide_icons',$my_calendar_hide_icons);
-		update_option('mc_event_link_expires',$my_calendar_event_link_expires);
-		update_option('mc_apply_color',$mc_apply_color);
-		update_option('mc_event_registration',$mc_event_registration);
-		update_option('mc_short',$mc_short);
-		update_option('mc_desc',$mc_desc);
-		update_option('mc_details',$mc_details);
-		update_option('mc_show_weekends',$mc_show_weekends);
-		update_option('mc_no_fifth_week',$mc_no_fifth_week);
-		update_option('mc_show_rss',$mc_show_rss);
-		update_option('mc_show_ical',$mc_show_ical);
-		update_option('mc_default_sort',$mc_default_sort);
+		update_option('display_author',($_POST['display_author']=='on')?'true':'false');
+		update_option('display_jump',($_POST['display_jump']=='on')?'true':'false');
+		update_option('my_calendar_show_months',(int) $_POST['my_calendar_show_months']);
+		update_option('my_calendar_date_format',$_POST['my_calendar_date_format']);
+		update_option('my_calendar_show_map',($_POST['my_calendar_show_map']=='on')?'true':'false');
+		update_option('my_calendar_show_address',($_POST['my_calendar_show_address']=='on')?'true':'false'); 
+		update_option('my_calendar_show_heading',($_POST['my_calendar_show_heading']=='on')?'true':'false');	
+		update_option('my_calendar_hide_icons',($_POST['my_calendar_hide_icons']=='on')?'true':'false');
+		update_option('mc_event_link_expires',($_POST['mc_event_link_expires']=='on')?'true':'false');
+		update_option('mc_apply_color',$_POST['mc_apply_color']);
+		update_option('mc_event_registration',($_POST['mc_event_registration']=='on')?'true':'false');
+		update_option('mc_short',($_POST['mc_short']=='on')?'true':'false');
+		update_option('mc_desc',($_POST['mc_desc']=='on')?'true':'false');
+		update_option('mc_details',($_POST['mc_details']=='on')?'true':'false');
+		update_option('mc_show_weekends',($_POST['mc_show_weekends']=='on')?'true':'false');
+		update_option('mc_no_fifth_week',$_POST['mc_no_fifth_week']);
+		update_option('mc_show_rss',($_POST['mc_show_rss']=='on')?'true':'false');
+		update_option('mc_show_ical',($_POST['mc_show_ical']=='on')?'true':'false');
+		update_option('mc_default_sort',$_POST['mc_default_sort']);
 		// styles (output)
 		echo "<div class=\"updated\"><p><strong>".__('Output Settings saved','my-calendar').".</strong></p></div>";
 	}
@@ -301,67 +279,64 @@ check_akismet();
 	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<fieldset>
 	<legend><?php _e('Calendar Options: Customize the Output of your Calendar','my-calendar'); ?></legend>
+	<fieldset>
+	<legend><?php _e('General Calendar Options','my-calendar'); ?></legend>
 	<ul>
 	<li>
 	<label for="mc_uri"><?php _e('<abbr title="Uniform resource locator">URL</abbr> for your public calendar (required to use the {details} template tag)','my-calendar'); ?></label> 
 	<input type="text" name="mc_uri" id="mc_uri" size="40" value="<?php echo $mc_uri; ?>" />
 	</li>
 	<li>
-	<label for="mc_title_template"><?php _e('Event title template','my-calendar'); ?></label> 
-	<input type="text" name="mc_title_template" id="mc_title_template" size="30" value="<?php echo $mc_title_template; ?>" /> <small><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-help#templates"><?php _e("Template Help",'my-calendar'); ?></a> <?php _e('All template shortcodes are available.','my-calendar'); ?></small>
-	</li>
-	<li>
-	<label for="my_calendar_show_months"><?php _e('In list mode, show how many months of events at a time:','my-calendar'); ?></label> <input type="text" size="3" id="my_calendar_show_months" name="my_calendar_show_months" value="<?php echo $my_calendar_show_months; ?>" />
-	</li>
-	<li>
 	<label for="my_calendar_date_format"><?php _e('Date format in list mode','my-calendar'); ?></label> <input type="text" id="my_calendar_date_format" name="my_calendar_date_format" value="<?php if ( get_option('my_calendar_date_format')  == "") { echo get_option('date_format'); } else { echo get_option( 'my_calendar_date_format'); } ?>" /> <?php _e('Current:','my-calendar'); ?> <?php if ( get_option('my_calendar_date_format') == '') { echo date_i18n(get_option('date_format')); } else { echo date_i18n(get_option('my_calendar_date_format')); } ?><br />
 	<small><?php _e('Date format uses the same syntax as the <a href="http://php.net/date">PHP <code>date()</code> function</a>. Save options to update sample output.','my-calendar'); ?></small>
+	</li>	
+	<li>
+	<input type="checkbox" id="mc_show_rss" name="mc_show_rss" <?php jd_cal_checkCheckbox('mc_show_rss','true'); ?> /> <label for="mc_show_rss"><?php _e('Show link to My Calendar RSS feed.','my-calendar'); ?></label>
 	</li>
 	<li>
-	<label for="mc_default_sort"><?php _e('Default Sort order for Admin Events List','my-calendar'); ?></label>
-	<select id="mc_default_sort" name="mc_default_sort">
-		<option value='1' <?php jd_cal_checkSelect( 'mc_default_sort','1'); ?>><?php _e('Event ID','my-calendar'); ?></option>
-		<option value='2' <?php jd_cal_checkSelect( 'mc_default_sort','2'); ?>><?php _e('Title','my-calendar'); ?></option>
-		<option value='3' <?php jd_cal_checkSelect( 'mc_default_sort','3'); ?>><?php _e('Description','my-calendar'); ?></option>
-		<option value='4' <?php jd_cal_checkSelect( 'mc_default_sort','4'); ?>><?php _e('Start Date','my-calendar'); ?></option>
-		<option value='5' <?php jd_cal_checkSelect( 'mc_default_sort','5'); ?>><?php _e('Author','my-calendar'); ?></option>
-		<option value='6' <?php jd_cal_checkSelect( 'mc_default_sort','6'); ?>><?php _e('Category','my-calendar'); ?></option>
-		<option value='7' <?php jd_cal_checkSelect( 'mc_default_sort','7'); ?>><?php _e('Location Name','my-calendar'); ?></option>
-	</select>	
-	</li>
-	<li>
-	<label for="mc_skip_holidays_category"><?php _e('Holiday Category','my-calendar'); ?></label>
-	<select id="mc_skip_holidays_category" name="mc_skip_holidays_category">
-			<?php
-			// Grab all the categories and list them
-			$sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE;
-			$cats = $wpdb->get_results($sql);
-				foreach($cats as $cat) {
-					echo '<option value="'.$cat->category_id.'"';
-						if ( get_option('mc_skip_holidays_category') == $cat->category_id ){
-						 echo ' selected="selected"';
-						}
-					echo '>'.$cat->category_name."</option>\n";
-				}
-			?>
-			</select>
-    </li>
-	<li>
-	<input type="checkbox" id="mc_skip_holidays" name="mc_skip_holidays" <?php jd_cal_checkCheckbox('mc_skip_holidays','true'); ?> /> <label for="mc_skip_holidays"><?php _e('If an event coincides with an event in the designated "Holiday" category, do not show the event.','my-calendar'); ?></label>
-	</li>
-	<li>
-	<input type="checkbox" id="my_calendar_show_heading" name="my_calendar_show_heading" <?php jd_cal_checkCheckbox('my_calendar_show_heading','true'); ?> /> <label for="my_calendar_show_heading"><?php _e('Show Heading for Calendar','my-calendar'); ?></label>
-	</li>
-	<li>
-	<input type="checkbox" id="mc_show_weekends" name="mc_show_weekends" <?php jd_cal_checkCheckbox('mc_show_weekends','true'); ?> /> <label for="mc_show_weekends"><?php _e('Show Weekends on Calendar','my-calendar'); ?></label>
+	<input type="checkbox" id="mc_show_ical" name="mc_show_ical" <?php jd_cal_checkCheckbox('mc_show_ical','true'); ?> /> <label for="mc_show_ical"><?php _e('Show link to iCal format download.','my-calendar'); ?></label>
 	</li>		
 	<li>
-	<input type="checkbox" id="display_author" name="display_author" <?php jd_cal_checkCheckbox('display_author','true'); ?> /> <label for="display_jump"><?php _e('Do you want to display the author name on events?','my-calendar'); ?></label>
+	<input type="checkbox" id="my_calendar_show_heading" name="my_calendar_show_heading" <?php jd_cal_checkCheckbox('my_calendar_show_heading','true'); ?> /> <label for="my_calendar_show_heading"><?php _e('Show Heading for Calendar','my-calendar'); ?></label><br /><?php _e('<strong style="color: red;">Note:</strong>  This feature will be removed from settings in the next major release. This calendar heading will be permanently removed.','my-calendar'); ?>
 	</li>	
 	<li>
 	<input type="checkbox" id="display_jump" name="display_jump" <?php jd_cal_checkCheckbox('display_jump','true'); ?> /> <label for="display_jump"><?php _e('Display a jumpbox for changing month and year quickly?','my-calendar'); ?></label>
+	</li>		
+	</ul>	
+	<?php // End General Options // ?>
+	</fieldset>
+	
+	<fieldset>
+	<legend><?php _e('Grid Layout Options','my-calendar'); ?></legend>
+	<ul>
+	<li>
+	<input type="checkbox" id="mc_show_weekends" name="mc_show_weekends" <?php jd_cal_checkCheckbox('mc_show_weekends','true'); ?> /> <label for="mc_show_weekends"><?php _e('Show Weekends on Calendar','my-calendar'); ?></label>
+	</li>		
+	</ul>	
+	<?php // End Grid Options // ?>
+	</fieldset>	
+	
+	<fieldset>
+	<legend><?php _e('List Layout Options','my-calendar'); ?></legend>
+	<ul>
+	<li>
+	<label for="my_calendar_show_months"><?php _e('In list mode, show how many months of events at a time:','my-calendar'); ?></label> <input type="text" size="3" id="my_calendar_show_months" name="my_calendar_show_months" value="<?php echo $my_calendar_show_months; ?>" />
+	</li>	
+	</ul>	
+	<?php // End List Options // ?>
+	</fieldset>	
+
+	<fieldset>
+	<legend><?php _e('Event Details Options','my-calendar'); ?></legend>
+	<ul>
+	<li>
+	<label for="mc_title_template"><?php _e('Event title template','my-calendar'); ?></label> 
+	<input type="text" name="mc_title_template" id="mc_title_template" size="30" value="<?php echo $mc_title_template; ?>" /> <small><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-help#templates"><?php _e("Template Help",'my-calendar'); ?></a> <?php _e('All template shortcodes are available.','my-calendar'); ?></small>
 	</li>	
 	<li>
+	<input type="checkbox" id="display_author" name="display_author" <?php jd_cal_checkCheckbox('display_author','true'); ?> /> <label for="display_jump"><?php _e('Do you want to display the author name on events?','my-calendar'); ?></label>
+	</li>
+		<li>
 	<input type="checkbox" id="my_calendar_hide_icons" name="my_calendar_hide_icons" <?php jd_cal_checkCheckbox('my_calendar_hide_icons','true'); ?> /> <label for="my_calendar_hide_icons"><?php _e('Hide category icons in output','my-calendar'); ?></label>
 	</li>
 	<li>
@@ -386,21 +361,56 @@ check_akismet();
 	<input type="checkbox" id="mc_event_registration" name="mc_event_registration" <?php jd_cal_checkCheckbox('mc_event_registration','true'); ?> /> <label for="mc_event_registration"><?php _e('Show current availability status of events.','my-calendar'); ?></label>
 	</li>
 	<li>
-	<input type="checkbox" id="mc_show_rss" name="mc_show_rss" <?php jd_cal_checkCheckbox('mc_show_rss','true'); ?> /> <label for="mc_show_rss"><?php _e('Show link to My Calendar RSS feed.','my-calendar'); ?></label>
-	</li>
-	<li>
-	<input type="checkbox" id="mc_show_ical" name="mc_show_ical" <?php jd_cal_checkCheckbox('mc_show_ical','true'); ?> /> <label for="mc_show_ical"><?php _e('Show link to iCal format download.','my-calendar'); ?></label>
-	</li>	
-	<li>
-	<input type="checkbox" id="mc_no_fifth_week" name="mc_no_fifth_week" value="true" <?php jd_cal_checkCheckbox('mc_no_fifth_week','true'); ?> /> <label for="mc_no_fifth_week"><?php _e('If a recurring event is scheduled for a date which doesn\'t exist (such as the 5th Wednesday in February), move it back one week.','my-calendar'); ?></label><br />
-	<?php _e('If this option is unchecked, recurring events which fall on dates which don\'t exist will simply not be shown on the calendar.','my-calendar'); ?>
-	</li>
-	<li>
     <input type="radio" id="mc_apply_color_default" name="mc_apply_color" value="default" <?php jd_cal_checkCheckbox('mc_apply_color','default'); ?> /> <label for="mc_apply_color_default"><?php _e('Default usage of category colors.','my-calendar'); ?></label><br />
     <input type="radio" id="mc_apply_color_to_titles" name="mc_apply_color" value="font"  <?php jd_cal_checkCheckbox('mc_apply_color','font'); ?> /> <label for="mc_apply_color_to_titles"><?php _e('Apply category colors to event titles as a font color.','my-calendar'); ?></label><br />
 	<input type="radio" id="mc_apply_bgcolor_to_titles" name="mc_apply_color" value="background"  <?php jd_cal_checkCheckbox('mc_apply_color','background'); ?> /> <label for="mc_apply_bgcolor_to_titles"><?php _e('Apply category colors to event titles as a background color.','my-calendar'); ?></label>	
+	</li>	
+	</ul>	
+	<?php // End Event Options // ?>
+	</fieldset>	
+
+	<fieldset>
+	<legend><?php _e('Event Scheduling Options','my-calendar'); ?></legend>
+	<ul>
+	<li>
+	<input type="checkbox" id="mc_no_fifth_week" name="mc_no_fifth_week" value="true" <?php jd_cal_checkCheckbox('mc_no_fifth_week','true'); ?> /> <label for="mc_no_fifth_week"><?php _e('If a recurring event is scheduled for a date which doesn\'t exist (such as the 5th Wednesday in February), move it back one week.','my-calendar'); ?></label><br />
+	<?php _e('If this option is unchecked, recurring events which fall on dates which don\'t exist will simply not be shown on the calendar.','my-calendar'); ?> <?php _e('<strong style="color: red;">Note:</strong> This feature will be made event-specific and will be removed from settings in the next major release.','my-calendar'); ?>
 	</li>
-	</ul>
+	<li>
+	<label for="mc_skip_holidays_category"><?php _e('Holiday Category','my-calendar'); ?></label>
+	<select id="mc_skip_holidays_category" name="mc_skip_holidays_category">
+			<?php
+			// Grab all the categories and list them
+			$sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE;
+			$cats = $wpdb->get_results($sql);
+				foreach($cats as $cat) {
+					echo '<option value="'.$cat->category_id.'"';
+						if ( get_option('mc_skip_holidays_category') == $cat->category_id ){
+						 echo ' selected="selected"';
+						}
+					echo '>'.$cat->category_name."</option>\n";
+				}
+			?>
+			</select>
+    </li>
+	<li>
+	<input type="checkbox" id="mc_skip_holidays" name="mc_skip_holidays" <?php jd_cal_checkCheckbox('mc_skip_holidays','true'); ?> /> <label for="mc_skip_holidays"><?php _e('If an event coincides with an event in the designated "Holiday" category, do not show the event.','my-calendar'); ?></label><br /><?php _e('<strong style="color: red;">Note:</strong>  This feature will be made event-specific and will be removed from settings in the next major release.','my-calendar'); ?>
+	</li>
+	<li>	
+	<label for="mc_default_sort"><?php _e('Default Sort order for Admin Events List','my-calendar'); ?></label>
+	<select id="mc_default_sort" name="mc_default_sort">
+		<option value='1' <?php jd_cal_checkSelect( 'mc_default_sort','1'); ?>><?php _e('Event ID','my-calendar'); ?></option>
+		<option value='2' <?php jd_cal_checkSelect( 'mc_default_sort','2'); ?>><?php _e('Title','my-calendar'); ?></option>
+		<option value='3' <?php jd_cal_checkSelect( 'mc_default_sort','3'); ?>><?php _e('Description','my-calendar'); ?></option>
+		<option value='4' <?php jd_cal_checkSelect( 'mc_default_sort','4'); ?>><?php _e('Start Date','my-calendar'); ?></option>
+		<option value='5' <?php jd_cal_checkSelect( 'mc_default_sort','5'); ?>><?php _e('Author','my-calendar'); ?></option>
+		<option value='6' <?php jd_cal_checkSelect( 'mc_default_sort','6'); ?>><?php _e('Category','my-calendar'); ?></option>
+		<option value='7' <?php jd_cal_checkSelect( 'mc_default_sort','7'); ?>><?php _e('Location Name','my-calendar'); ?></option>
+	</select>	
+	</li>	
+	</ul>	
+	<?php // End Scheduling Options // ?>
+	</fieldset>
 	</fieldset>
 		<p>
 		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Output Settings','my-calendar'); ?> &raquo;" />

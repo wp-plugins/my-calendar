@@ -75,6 +75,7 @@ function is_custom_icon() {
 
 function my_calendar_manage_categories() {
   global $wpdb;
+  $formats = array( '%s', '%s', '%s' );
 
   // My Calendar must be installed and upgraded before this will work
   check_my_calendar();
@@ -86,52 +87,75 @@ my_calendar_check_db();
 ?>
 <?php
   // We do some checking to see what we're doing
-  if (!empty($_POST) ) {
-	$nonce=$_REQUEST['_wpnonce'];
-    if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
-  }
+	if ( !empty($_POST) ) {
+		$nonce=$_REQUEST['_wpnonce'];
+		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
+	}
   
-  if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
-      $sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_name='".mysql_real_escape_string($_POST['category_name'])."', category_color='".mysql_real_escape_string($_POST['category_color'])."', category_icon='".mysql_real_escape_string($_POST['category_icon'])."'";
-      $results = $wpdb->query($sql);
-	  if ( $results ) {
-      echo "<div class=\"updated\"><p><strong>".__('Category added successfully','my-calendar')."</strong></p></div>";
-	  } else {
-      echo "<div class=\"error\"><p><strong>".__('Category addition failed.','my-calendar')."</strong></p></div>";	  
-	  }
-    } else if (isset($_GET['mode']) && isset($_GET['category_id']) && $_GET['mode'] == 'delete') {
-      $sql = "DELETE FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".mysql_real_escape_string($_GET['category_id']);
-      $results = $wpdb->query($sql);
-	  if ($results) {
-	      $sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_category=1 WHERE event_category=".mysql_real_escape_string($_GET['category_id']);
-	      $cal_results = $wpdb->query($sql);
-	  }
-	  if ($results && $cal_results) {
-      echo "<div class=\"updated\"><p><strong>".__('Category deleted successfully. Categories in calendar updated.','my-calendar')."</strong></p></div>";
-	  } else if ( $results && !$cal_results ) {
-      echo "<div class=\"updated\"><p><strong>".__('Category deleted successfully. Categories in calendar not updated.','my-calendar')."</strong></p></div>";	  
-	  } else if ( !$results && $cal_results ) {
-      echo "<div class=\"updated\"><p><strong>".__('Category not deleted. Categories in calendar updated.','my-calendar')."</strong></p></div>";	  
-	  }
+	if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
+    
+		$add = array(
+		'category_name'=>$_POST['category_name'],
+		'category_color'=>$_POST['category_color'],
+		'category_icon'=>$_POST['category_icon']
+		);
+		$results = $wpdb->insert( MY_CALENDAR_CATEGORIES_TABLE, $add, $formats );
+	  
+		if ( $results ) {
+			echo "<div class=\"updated\"><p><strong>".__('Category added successfully','my-calendar')."</strong></p></div>";
+		} else {
+			echo "<div class=\"updated error\"><p><strong>".__('Category addition failed.','my-calendar')."</strong></p></div>";	  
+		}
+    } else if ( isset($_GET['mode']) && isset($_GET['category_id']) && $_GET['mode'] == 'delete' ) {
+		$sql = "DELETE FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".mysql_real_escape_string($_GET['category_id']);
+		$results = $wpdb->query($sql);
+		if ($results) {
+			$sql = "UPDATE " . MY_CALENDAR_TABLE . " SET event_category=1 WHERE event_category=".mysql_real_escape_string($_GET['category_id']);
+			$cal_results = $wpdb->query($sql);
+		}
+		if ($results && $cal_results) {
+			echo "<div class=\"updated\"><p><strong>".__('Category deleted successfully. Categories in calendar updated.','my-calendar')."</strong></p></div>";
+		} else if ( $results && !$cal_results ) {
+			echo "<div class=\"updated\"><p><strong>".__('Category deleted successfully. Categories in calendar not updated.','my-calendar')."</strong></p></div>";	  
+		} else if ( !$results && $cal_results ) {
+			echo "<div class=\"updated error\"><p><strong>".__('Category not deleted. Categories in calendar updated.','my-calendar')."</strong></p></div>";  
+		}
     } else if (isset($_GET['mode']) && isset($_GET['category_id']) && $_GET['mode'] == 'edit' && !isset($_POST['mode'])) {
-      $sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".mysql_real_escape_string($_GET['category_id']);
-      $cur_cat = $wpdb->get_row($sql);
+		$cur_cat = (int) $_GET['category_id'];
 		mc_edit_category_form('edit',$cur_cat);
-      } else if (isset($_POST['mode']) && isset($_POST['category_id']) && isset($_POST['category_name']) && isset($_POST['category_color']) && $_POST['mode'] == 'edit') {
-      $sql = "UPDATE " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_name='".mysql_real_escape_string($_POST['category_name'])."', category_color='".mysql_real_escape_string($_POST['category_color'])."', category_icon='".mysql_real_escape_string($_POST['category_icon'])."' WHERE category_id=".mysql_real_escape_string($_POST['category_id']);
-      $wpdb->get_results($sql);
-      echo "<div class=\"updated\"><p><strong>".__('Category edited successfully','my-calendar')."</strong></p></div>";
+	} else if (isset($_POST['mode']) && isset($_POST['category_id']) && isset($_POST['category_name']) && isset($_POST['category_color']) && $_POST['mode'] == 'edit') {
+		$update = array(
+		'category_name'=>$_POST['category_name'],
+		'category_color'=>$_POST['category_color'],
+		'category_icon'=>$_POST['category_icon']
+		);
+		$where = array(
+		'category_id'=>(int) $_POST['category_id']
+		);	
+		$results = $wpdb->update( MY_CALENDAR_CATEGORIES_TABLE, $update, $where, $formats, '%d' );
+		if ($results) {
+			echo "<div class=\"updated\"><p><strong>".__('Category edited successfully','my-calendar')."</strong></p></div>";
+		} else {
+			echo "<div class=\"updated error\"><p><strong>".__('Error: Category was not edited.','my-calendar')."</strong></p></div>";
+		}
+		$cur_cat = (int) $_POST['category_id'];		
+		mc_edit_category_form('edit',$cur_cat);		
     }
 
 	if ( isset($_GET['mode']) && $_GET['mode'] != 'edit' || isset($_POST['mode']) && $_POST['mode'] != 'edit' || !isset($_GET['mode']) && !isset($_POST['mode']) ) {
 		mc_edit_category_form('add');
 	} 
-?>
-</div>
+?></div>
 <?php
 }
 
-function mc_edit_category_form($view='edit',$cur_cat='') {
+function mc_edit_category_form($view='edit',$catID='') {
+global $wpdb;
+	if ( $catID != '' ) {
+		$catID = (int) $catID; 
+		$sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=$catID";
+		$cur_cat = $wpdb->get_row($sql);
+	}
 global $path, $wp_plugin_dir,$wp_plugin_url;
 	if ( is_custom_icon() ) {
 		$directory = $wp_plugin_dir . '/my-calendar-custom/';
@@ -192,6 +216,9 @@ if ( ( is_object($cur_cat) ) && $cur_cat->category_icon == $value) {
     </form>
 </div>
 </div>
+<?php if ($view == 'edit') { ?>
+<p><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-categories"><?php _e('Add a New Category','my-calendar'); ?> &raquo;</a></p>
+<?php } ?>
 <?php mc_manage_categories(); ?>
 </div>
 <?php

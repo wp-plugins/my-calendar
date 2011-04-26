@@ -18,10 +18,10 @@ my_calendar_check_db();
 ?>
 <?php
   // We do some checking to see what we're doing
-  if (!empty($_POST)) {
-	$nonce=$_REQUEST['_wpnonce'];
-    if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
-  }
+	if ( !empty($_POST) ) {
+		$nonce=$_REQUEST['_wpnonce'];
+		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
+	}
 	if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
 		$add = array(
 		'location_label'=>$_POST['location_label'],
@@ -52,8 +52,7 @@ my_calendar_check_db();
 			echo "<div class=\"error\"><p><strong>".__('Location could not be deleted','my-calendar')."</strong></p></div>";	  
 		}
     } else if (isset($_GET['mode']) && isset($_GET['location_id']) && $_GET['mode'] == 'edit' && !isset($_POST['mode'])) {
-      $sql = "SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id=".(int)($_GET['location_id']);
-      $cur_loc = $wpdb->get_row($sql);
+	  $cur_loc = (int) $_GET['location_id'];
       mc_show_location_form('edit', $cur_loc);
     } else if ( isset($_POST['location_id']) && isset($_POST['location_label']) && $_POST['mode'] == 'edit' ) {
 		$update = array(
@@ -76,18 +75,26 @@ my_calendar_check_db();
 		if ( $results === false ) {
 			echo "<div class=\"error\"><p><strong>".__('Location could not be edited.','my-calendar')."</strong></p></div>";
 		} else if ( $results == 0 ) {
-			echo "<div class=\"updated\"><p><strong>".__('Location was not changed.','my-calendar')."</strong></p></div>";  
+			echo "<div class=\"updated error\"><p><strong>".__('Location was not changed.','my-calendar')."</strong></p></div>";  
 		} else {
 			echo "<div class=\"updated\"><p><strong>".__('Location edited successfully','my-calendar')."</strong></p></div>";
 		}
+		$cur_loc = (int) $_POST['location_id'];		
+		mc_show_location_form('edit', $cur_loc);
+		
 	}
 
-	if ( isset($_GET['mode']) && $_GET['mode'] != 'edit' || isset($_POST['mode']) && $_POST['mode'] != 'edit' || !isset($_GET['mode']) && !isset($_POST['mode']) ) {
+	if ( isset( $_GET['mode']) && $_GET['mode'] != 'edit' || isset($_POST['mode']) && $_POST['mode'] != 'edit' || !isset($_GET['mode']) && !isset($_POST['mode']) ) {
 		mc_show_location_form('add');
 	} 
 }
 
-function mc_show_location_form($view='add',$cur_loc='') {
+function mc_show_location_form( $view='add',$curID='' ) {
+global $wpdb;
+	if ($curID != '') {
+		$sql = "SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id=$curID";
+		$cur_loc = $wpdb->get_row($sql);
+	}
 ?>
 <?php if ($view == 'add') { ?>
 <h2><?php _e('Add New Location','my-calendar'); ?></h2>
@@ -163,6 +170,9 @@ function mc_show_location_form($view='add',$cur_loc='') {
 		</form>
 	</div>
 </div>
+<?php if ($view == 'edit') { ?>
+<p><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-locations"><?php _e('Add a New Location','my-calendar'); ?> &raquo;</a></p>
+<?php } ?>
 <?php mc_manage_locations(); ?>
 </div>
 <?php

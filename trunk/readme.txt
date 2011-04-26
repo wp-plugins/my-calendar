@@ -76,6 +76,12 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.8.8 =
+
+* Fixed bug in locations filtering that disabled feature if user not logged in.
+* Re-arranged settings and added notices about options which will be removed in a future release.
+* Revised RSS feed to use event permalinks when they are available.
+
 = 1.8.7 =
 
 * One very minor change in 1.8.6 caused some plug-in conflicts, so I rolled that change back. Will find another solution to the problem it solved. This change affects very few users.
