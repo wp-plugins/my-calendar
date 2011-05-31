@@ -76,6 +76,11 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.8.9 =
+
+* Fixed bug with database upgrade in multi-user additional calendars
+* Fixed bug where calendar picked up current month labeling using current day of the month
+
 = 1.8.8 =
 
 * Fixed bug in locations filtering that disabled feature if user not logged in.
