@@ -37,6 +37,7 @@ This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.o
 Languages available:
 
 * American English (Default)
+* French ([Manuel Lasnier](http://www.zef-creations.com)) - to 1.8.8
 * Japanese ([Daisuke Abe](http://www.alter-ego.jp/)) - to 1.8.5
 * Russian ([Alex](http://blog.sotvoril.ru/) - to 1.8.5
 * Turkish (Mehmet Ko&231;ali) - to 1.8.4
@@ -80,6 +81,7 @@ New or updated translations are always appreciated. The translation files are in
 
 * Fixed bug with database upgrade in multi-user additional calendars
 * Fixed bug where calendar picked up current month labeling using current day of the month
+* Added French translation
 
 = 1.8.8 =
 
