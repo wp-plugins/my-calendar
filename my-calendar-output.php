@@ -378,6 +378,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 	
 	if ( isset($_GET['month']) ) {
 		$c_month = $_GET['month'];
+		$c_day = 1;
 	} else if ($month != '') {
 		$c_month = $month;
 	} else {
