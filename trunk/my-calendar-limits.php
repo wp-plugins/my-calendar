@@ -1,8 +1,9 @@
 <?php
 function mc_select_category($category, $type='event', $group='events' ) {
 global $wpdb;
+	$select_category = '';
 	$data = ($group=='category')?'category_id':'event_category';
-	if ( isset( $_GET['cat'] ) ) { $category = (int) $_GET['cat']; }
+	if ( isset( $_GET['mcat'] ) ) { $category = (int) $_GET['mcat']; }
 	if ( $category == 'all' || strpos( $category, "all" ) !== false ) {
 		return '';
 	} else {
@@ -27,7 +28,7 @@ global $wpdb;
 				}
 			$i++;
 			} else {
-				$cat = $wpdb->get_row("SELECT category_id FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_name = '$key'");
+				$cat = $wpdb->get_row("SELECT category_id FROM " . my_calendar_categories_table() . " WHERE category_name = '$key'");
 				$category_id = $cat->category_id;
 				if ($i == 1) {
 					$select_category .= ($type=='all')?" WHERE (":' (';
@@ -45,7 +46,7 @@ global $wpdb;
 		if ( is_numeric( $category ) ) {
 			$select_category = ($type=='all')?" WHERE $data = $category":" event_category = $category AND";
 		} else {
-		$cat = $wpdb->get_row("SELECT category_id FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_name = '$category'");
+		$cat = $wpdb->get_row("SELECT category_id FROM " . my_calendar_categories_table() . " WHERE category_name = '$category'");
 			if ( is_object($cat) ) {
 				$category_id = $cat->category_id;
 				$select_category = ($type=='all')?" WHERE $data = $category_id":" $data = $category_id AND";
@@ -60,17 +61,22 @@ global $wpdb;
 
 
 
-function mc_limit_string($type='') {
-global $user_ID;
+function mc_limit_string($type='',$ltype='',$lvalue='') {
+global $user_ID;	
 	 $user_settings = get_option('mc_user_settings');
 	 $limit_string = "event_flagged <> 1";
-	 if ( get_option('mc_user_settings_enabled') == 'true' && $user_settings['my_calendar_location_default']['enabled'] == 'on' || isset($_GET['loc']) && isset($_GET['ltype']) ) {
+	 if ( get_option('mc_user_settings_enabled') == 'true' && $user_settings['my_calendar_location_default']['enabled'] == 'on' || isset($_GET['loc']) && isset($_GET['ltype']) || ( $ltype !='' && $lvalue != '' )  ) {
 		if ( !isset($_GET['loc']) && !isset($_GET['ltype']) ) {
-			if ( is_user_logged_in() ) {
-				get_currentuserinfo();
-				$current_settings = get_user_meta( $user_ID, 'my_calendar_user_settings' );
-				$current_location = $current_settings['my_calendar_location_default'];
-				$location_type = get_option('mc_location_type');
+			if (  $ltype == '' && $lvalue == '' ) {
+				if ( is_user_logged_in() ) {
+					get_currentuserinfo();
+					$current_settings = get_user_meta( $user_ID, 'my_calendar_user_settings' );
+					$current_location = $current_settings['my_calendar_location_default'];
+					$location_type = get_option('mc_location_type');
+				}
+			} else if ( $ltype !='' && $lvalue != '' ) {	
+				$location_type = $ltype;
+				$current_location = $lvalue;
 			}
 		} else {
 			$current_location = urldecode($_GET['loc']);
@@ -93,13 +99,13 @@ global $user_ID;
 				}			
 		}
 		if ($current_location != 'none' && $current_location != '') {
-			if ($select_category == "") {
+			//if ($select_category == "") {
 				$limit_string = "$location_type='$current_location'";
 				$limit_string .= ($type=='all')?' AND':"";
-			} else {
-				$limit_string = "AND $location_type='$current_location'";
-				$limit_string .= ($type=='all')?'':"";				
-			}
+			//} else {
+			//	$limit_string = "AND $location_type='$current_location'";
+			//	$limit_string .= ($type=='all')?'':'';				
+			//}
 		}
 	 }
 	 return $limit_string;

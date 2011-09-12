@@ -1,15 +1,14 @@
 <?php
 function my_calendar_check_db() {
 global $wpdb;
-$row = $wpdb->get_row( 'SELECT * FROM '.MY_CALENDAR_TABLE );
-
+$row = $wpdb->get_row( 'SELECT event_id,event_group_id FROM '.my_calendar_table() );
 if ( isset( $_POST['upgrade'] ) && $_POST['upgrade'] == 'true' ) {
 	my_calendar_upgrade_db();
 }
-	if ( !isset( $row->event_region ) && isset( $row->event_id ) ) { 
+	if ( !isset( $row->event_group_id ) && isset( $row->event_id ) ) {
 		if ( $_GET['page'] == 'my-calendar-config' ) { ?>
 	<div class='upgrade-db error'>
-		<form method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
+		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-config"); ?>">
 		<div>
 		<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />
 		<input type="hidden" name="upgrade" value="true" />
@@ -23,16 +22,16 @@ if ( isset( $_POST['upgrade'] ) && $_POST['upgrade'] == 'true' ) {
 	<?php } else { ?>
 	<div class='upgrade-db error'>
 		<p>
-		<?php _e('The My Calendar database needs to be updated.','my-calendar'); ?> <a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config"><?php _e('Upgrade now.','my-calendar'); ?></a>
+		<?php _e('The My Calendar database needs to be updated.','my-calendar'); ?> <a href="<?php echo admin_url("admin.php?page=my-calendar-config"); ?>"><?php _e('Update now.','my-calendar'); ?></a>
 		</p>
 	</div><?php 
 		}
 	} elseif ( !isset ( $row->event_id ) ) { ?>
 	<div class='upgrade-db error'>
-		<form method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-config">
+		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-config"); ?>">
 		<div>
-			<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />
-			<input type="hidden" name="upgrade" value="true" />
+		<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />
+		<input type="hidden" name="upgrade" value="true" />
 		</div>
 		<p>
 		<?php _e('You haven\'t entered any events, so My Calendar can\'t tell whether your database is up to date. If you can\'t add events, upgrade your database!','my-calendar'); ?>

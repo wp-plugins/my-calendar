@@ -8,7 +8,7 @@ function my_calendar_manage_locations() {
   global $wpdb;
   // My Calendar must be installed and upgraded before this will work
   check_my_calendar();
-	$formats = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%d' )
+	$formats = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%d' )
   
   
 ?>
@@ -32,11 +32,12 @@ my_calendar_check_db();
 		'location_postcode'=>$_POST['location_postcode'],
 		'location_region'=>$_POST['location_region'],
 		'location_country'=>$_POST['location_country'],
+		'location_url'=>$_POST['location_url'],
 		'location_longitude'=>$_POST['location_longitude'],
 		'location_latitude'=>$_POST['location_latitude'],
 		'location_zoom'=>$_POST['location_zoom']
 		);
-		$results = $wpdb->insert( MY_CALENDAR_LOCATIONS_TABLE, $add, $formats );
+		$results = $wpdb->insert( my_calendar_locations_table(), $add, $formats );
 	  
 		if ($results) {
 			echo "<div class=\"updated\"><p><strong>".__('Location added successfully','my-calendar')."</strong></p></div>";
@@ -44,7 +45,7 @@ my_calendar_check_db();
 			echo "<div class=\"error\"><p><strong>".__('Location could not be added to database','my-calendar')."</strong></p></div>";
 		}
     } else if ( isset($_GET['location_id']) && $_GET['mode'] == 'delete') {
-		$sql = "DELETE FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id=".(int)($_GET['location_id']);
+		$sql = "DELETE FROM " . my_calendar_locations_table() . " WHERE location_id=".(int)($_GET['location_id']);
 		$results = $wpdb->query($sql);
 		if ($results) {
 			echo "<div class=\"updated\"><p><strong>".__('Location deleted successfully','my-calendar')."</strong></p></div>";
@@ -64,6 +65,7 @@ my_calendar_check_db();
 		'location_postcode'=>$_POST['location_postcode'],
 		'location_region'=>$_POST['location_region'],
 		'location_country'=>$_POST['location_country'],
+		'location_url'=>$_POST['location_url'],
 		'location_longitude'=>$_POST['location_longitude'],
 		'location_latitude'=>$_POST['location_latitude'],
 		'location_zoom'=>$_POST['location_zoom']
@@ -71,7 +73,7 @@ my_calendar_check_db();
 		$where = array(
 		'location_id'=>(int) $_POST['location_id']
 		);
-		$results = $wpdb->update( MY_CALENDAR_LOCATIONS_TABLE, $update, $where, $formats, '%d' );
+		$results = $wpdb->update( my_calendar_locations_table(), $update, $where, $formats, '%d' );
 		if ( $results === false ) {
 			echo "<div class=\"error\"><p><strong>".__('Location could not be edited.','my-calendar')."</strong></p></div>";
 		} else if ( $results == 0 ) {
@@ -92,7 +94,7 @@ my_calendar_check_db();
 function mc_show_location_form( $view='add',$curID='' ) {
 global $wpdb;
 	if ($curID != '') {
-		$sql = "SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " WHERE location_id=$curID";
+		$sql = "SELECT * FROM " . my_calendar_locations_table() . " WHERE location_id=$curID";
 		$cur_loc = $wpdb->get_row($sql);
 	}
 ?>
@@ -106,7 +108,7 @@ global $wpdb;
 <div class="postbox">
 <h3><?php _e('Location Editor','my-calendar'); ?></h3>
 	<div class="inside">	   
-    <form id="my-calendar" method="post" action="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-locations">
+    <form id="my-calendar" method="post" action="<?php echo admin_url("admin.php?page=my-calendar-locations"); ?>">
 	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>	
 		<?php if ( $view == 'add' ) { ?>
 			<div>
@@ -125,7 +127,13 @@ global $wpdb;
 			<?php _e('All location fields are optional: <em>insufficient information may result in an inaccurate map</em>.','my-calendar'); ?>
 			</p>
 			<p>
-			<label for="location_label"><?php _e('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar'); ?></label> <input type="text" id="location_label" name="location_label" class="input" size="40" value="<?php if ( !empty( $cur_loc ) ) esc_attr_e(stripslashes($cur_loc->location_label)); ?>" />
+			<label for="location_label"><?php _e('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar'); ?></label> 
+			<?php if ( mc_controlled_field( 'label' ) ) {
+				if ( !empty( $cur_loc ) ) $cur_label = (stripslashes($cur_loc->location_label));			
+				echo mc_location_controller( 'label', $cur_label );
+			} else { ?>
+			<input type="text" id="location_label" name="location_label" class="input" size="40" value="<?php if ( !empty( $cur_loc ) ) esc_attr_e(stripslashes($cur_loc->location_label)); ?>" />
+			<?php } ?>
 			</p>
 			<p>
 			<label for="location_street"><?php _e('Street Address','my-calendar'); ?></label> <input type="text" id="location_street" name="location_street" class="input" size="40" value="<?php if ( !empty( $cur_loc ) ) esc_attr_e(stripslashes($cur_loc->location_street)); ?>" />
@@ -134,13 +142,45 @@ global $wpdb;
 			<label for="location_street2"><?php _e('Street Address (2)','my-calendar'); ?></label> <input type="text" id="location_street2" name="location_street2" class="input" size="40" value="<?php if ( !empty( $cur_loc ) ) esc_attr_e(stripslashes($cur_loc->location_street2)); ?>" />
 			</p>
 			<p>
-			<label for="location_city"><?php _e('City','my-calendar'); ?></label> <input type="text" id="location_city" name="location_city" class="input" size="40" value="<?php if ( !empty( $cur_loc ) ) esc_attr_e(stripslashes($cur_loc->location_city)); ?>" /> <label for="location_state"><?php _e('State/Province','my-calendar'); ?></label> <input type="text" id="location_state" name="location_state" class="input" size="10" value="<?php if ( !empty( $cur_loc ) ) echo htmlspecialchars($cur_loc->location_state); ?>" /> <label for="location_postcode"><?php _e('Postal Code','my-calendar'); ?></label> <input type="text" id="location_postcode" name="location_postcode" class="input" size="10" value="<?php if ( !empty( $cur_loc ) ) echo htmlspecialchars($cur_loc->location_postcode); ?>" />
+			<label for="location_city"><?php _e('City','my-calendar'); ?></label> 
+			<?php if ( mc_controlled_field( 'city' ) ) {
+				if ( !empty( $cur_loc ) ) $cur_label = ( stripslashes( $cur_loc->location_city ) );			
+				echo mc_location_controller( 'city', $cur_label );
+			} else { ?>
+			<input type="text" id="location_city" name="location_city" class="input" size="40" value="<?php if ( !empty( $cur_loc ) ) esc_attr_e(stripslashes($cur_loc->location_city)); ?>" />
+			<?php } ?>
+			<label for="location_state"><?php _e('State/Province','my-calendar'); ?></label> 
+			<?php if ( mc_controlled_field( 'state' ) ) {
+				if ( !empty( $cur_loc ) ) $cur_label = (stripslashes($cur_loc->location_state));			
+				echo mc_location_controller( 'state', $cur_label );
+			} else { ?>
+			<input type="text" id="location_state" name="location_state" class="input" size="10" value="<?php if ( !empty( $cur_loc ) ) echo stripslashes(esc_attr($cur_loc->location_state)); ?>" />	
+			<?php } ?>
+			<label for="location_postcode"><?php _e('Postal Code','my-calendar'); ?></label> 
+			<?php if ( mc_controlled_field( 'postcode' ) ) {
+				if ( !empty( $cur_loc ) ) $cur_label = (stripslashes($cur_loc->location_postcode));			
+				echo mc_location_controller( 'postcode', $cur_label );
+			} else { ?>
+			<input type="text" id="location_postcode" name="location_postcode" class="input" size="10" value="<?php if ( !empty( $cur_loc ) ) echo stripslashes(esc_attr($cur_loc->location_postcode)); ?>" />
+			<?php } ?>
 			</p>
 			<p>
-			<label for="location_region"><?php _e('Region','my-calendar'); ?></label> <input type="text" id="location_region" name="location_region" class="input" size="40" value="<?php if ( !empty( $cur_loc ) ) esc_attr_e(stripslashes($cur_loc->location_region)); ?>" />
+			<label for="location_region"><?php _e('Region','my-calendar'); ?></label> 
+			<?php if ( mc_controlled_field( 'region' ) ) {
+				if ( !empty( $cur_loc ) ) $cur_label = (stripslashes($cur_loc->location_region));			
+				echo mc_location_controller( 'region', $cur_label );
+			} else { ?>
+			<input type="text" id="location_region" name="location_region" class="input" size="40" value="<?php if ( !empty( $cur_loc ) ) esc_attr_e(stripslashes($cur_loc->location_region)); ?>" />
+			<?php } ?>
 			</p>
 			<p>
-			<label for="location_country"><?php _e('Country','my-calendar'); ?></label> <input type="text" id="location_country" name="location_country" class="input" size="10" value="<?php if ( !empty( $cur_loc ) ) esc_attr_e(stripslashes($cur_loc->location_country)); ?>" />
+			<label for="location_country"><?php _e('Country','my-calendar'); ?></label> 
+			<?php if ( mc_controlled_field( 'country' ) ) {
+				if ( !empty( $cur_loc ) ) $cur_label = (stripslashes($cur_loc->location_country));			
+				echo mc_location_controller( 'country', $cur_label );
+			} else { ?>
+			<input type="text" id="location_country" name="location_country" class="input" size="10" value="<?php if ( !empty( $cur_loc ) ) esc_attr_e(stripslashes($cur_loc->location_country)); ?>" />
+			<?php } ?>
 			</p>
 			<p>
 			<label for="location_zoom"><?php _e('Initial Zoom','my-calendar'); ?></label> 
@@ -153,6 +193,9 @@ global $wpdb;
 				<option value="6"<?php if ( !empty( $cur_loc ) && ( $cur_loc->location_zoom == 6 ) ) { echo " selected=\"selected\""; } ?>><?php _e('Region','my-calendar'); ?></option>
 				</select>
 			</p>
+			<p>
+			<label for="location_url"><?php _e('Website','my-calendar'); ?></label> <input type="text" id="location_url" name="location_url" class="input" size="40" value="<?php if ( !empty( $cur_loc ) ) esc_attr_e(stripslashes($cur_loc->location_url)); ?>" />
+			</p>			
 			<fieldset>
 			<legend><?php _e('GPS Coordinates (optional)','my-calendar'); ?></legend>
 			<p>
@@ -171,11 +214,42 @@ global $wpdb;
 	</div>
 </div>
 <?php if ($view == 'edit') { ?>
-<p><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-locations"><?php _e('Add a New Location','my-calendar'); ?> &raquo;</a></p>
+<p><a href="<?php echo admin_url("admin.php?page=my-calendar-locations"); ?>"><?php _e('Add a New Location','my-calendar'); ?> &raquo;</a></p>
 <?php } ?>
 <?php mc_manage_locations(); ?>
 </div>
 <?php
+}
+
+function mc_controlled_field( $this_field ) {
+	$this_field = trim($this_field);
+	$controlled = get_option( 'mc_location_control' );
+	if ( $controlled == 'on' ) {
+		$controlled_field = trim(str_replace( 'event_','',get_option('mc_location_type') ));
+		return ( $controlled_field==$this_field )?true:false;
+	} else {
+		return false;
+	}
+}
+
+function mc_location_controller( $fieldname, $selected ) {
+		if ( isset($_GET['page']) && $_GET['page'] == 'my-calendar-locations' ) {
+			$fieldname = 'location_'.$fieldname;
+		} else {
+			$fieldname = 'event_'.$fieldname;
+		}
+		$selected = trim($selected);
+		$options = get_option('mc_user_settings');
+		$regions = $options['my_calendar_location_default']['values'];
+		$form .= "<select name='$fieldname' id='$fieldname'>";
+		$form .= "<option value='none'>No preference</option>\n";				
+		foreach ($regions as $key=>$value) {
+			$key = trim($key);
+			$aselected = ($selected==$key)?" selected='selected'":'';
+			$form .= "<option value='$key'$aselected>$value</option>\n";
+		}
+		$form .= "</select>";		
+	return $form;
 }
 
 function mc_manage_locations() {
@@ -185,7 +259,7 @@ global $wpdb;
 <?php
     
     // We pull the locations from the database	
-    $locations = $wpdb->get_results("SELECT * FROM " . MY_CALENDAR_LOCATIONS_TABLE . " ORDER BY location_id ASC");
+    $locations = $wpdb->get_results("SELECT * FROM " . my_calendar_locations_table() . " ORDER BY location_label ASC");
 
  if ( !empty($locations) )
    {
@@ -207,8 +281,8 @@ global $wpdb;
            <tr class="<?php echo $class; ?>">
 	     <th scope="row"><?php echo $location->location_id; ?></th>
 	     <td><?php echo stripslashes($location->location_label) . "<br />" . stripslashes($location->location_street) . "<br />" . stripslashes($location->location_street2) . "<br />" . stripslashes($location->location_city) . ", " . stripslashes($location->location_state) . " " . stripslashes($location->location_postcode); ?></td>
-	     <td><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-locations&amp;mode=edit&amp;location_id=<?php echo $location->location_id;?>" class='edit'><?php echo __('Edit','my-calendar'); ?></a></td>
-         <td><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-locations&amp;mode=delete&amp;location_id=<?php echo $location->location_id;?>" class="delete" onclick="return confirm('<?php echo __('Are you sure you want to delete this category?','my-calendar'); ?>')"><?php echo __('Delete','my-calendar'); ?></a></td>
+	     <td><a href="<?php echo admin_url("admin.php?page=my-calendar-locations&amp;mode=edit&amp;location_id=$location->location_id"); ?>" class='edit'><?php _e('Edit','my-calendar'); ?></a></td>
+         <td><a href="<?php echo admin_url("admin.php?page=my-calendar-locations&amp;mode=delete&amp;location_id=$location->location_id"); ?>" class="delete" onclick="return confirm('<?php _e('Are you sure you want to delete this category?','my-calendar'); ?>')"><?php _e('Delete','my-calendar'); ?></a></td>
          </tr>
                 <?php
           }

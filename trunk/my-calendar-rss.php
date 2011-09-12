@@ -6,28 +6,17 @@ function my_calendar_rss() {
     <link>{link}</link>
 	<pubDate>{rssdate}</pubDate>
 	<dc:creator>{author}</dc:creator>  	
-    <description><![CDATA[
-    &lt;div class=&quot;vevent&quot;&gt;
-    &lt;h1 class=&quot;summary&quot;&gt;{rss_title}&lt;/h1&gt;
-    &lt;p class=&quot;description&quot;&gt;{rss_description}&lt;/p&gt;
-    &lt;p class=&quot;dtstart&quot; title=&quot;{ical_start}&quot;&gt;Begin: {time} on {date}&lt;/p&gt;
-    &lt;p class=&quot;dtend&quot; title=&quot;{ical_end}&quot;&gt;End: {endtime} on {enddate}&lt;/p&gt;	
-    &lt;div class=&quot;location&quot;&gt;{rss_hcard}&lt;/div&gt;
-	{rss_link_title}
-    &lt;/div&gt;
-    ]]></description>
-	<content:encoded>
-    <![CDATA[
-    <div class='vevent'>
+    <description><![CDATA[{rss_description}]]></description>
+	<content:encoded><![CDATA[<div class='vevent'>
     <h1 class='summary'>{title}</h1>
     <p class='description'>{description}</p>
     <p class='dtstart' title='{ical_start}'>Begin: {time} on {date}</p>
     <p class='dtend' title='{ical_end}'>End: {endtime} on {enddate}</p>	
+	<p>Recurrance: {recurs}</p>
+	<p>Repetition: {repeats} times</p>
     <div class='location'>{hcard}</div>
 	{link_title}
-    </div>
-    ]]>	
-	</content:encoded>
+    </div>]]></content:encoded>
 	<dc:format xmlns:dc='http://purl.org/dc/elements/1.1/'>text/html</dc:format>
 	<dc:source xmlns:dc='http://purl.org/dc/elements/1.1/'>".home_url()."</dc:source>	
 	{guid}
@@ -51,13 +40,16 @@ $output = '<?xml version="1.0" encoding="'.get_bloginfo('charset').'"?>
   <lastBuildDate>'. mysql2date('D, d M Y H:i:s +0000', time()+$offset) .'</lastBuildDate>
   <atom:link href="'. mc_get_current_url() .'" rel="self" type="application/rss+xml" />';
 
-	$events = mc_get_all_events( $category, 15 );
+	$events = mc_get_rss_events();
 	if ( is_array( $events) ) {
-		$output .=  "Yes it is";
+		//print_r($events);
 	}
 	$before = 0;
 	$after = 15;
-	$output .= mc_produce_upcoming_events( $events,$template,$before,$after,'rss' );
+	foreach ( $events as $event ) {
+		$array = event_as_array($event);
+		$output .= jd_draw_template( $array, $template, 'rss' );
+	}
 $output .= '</channel>
 </rss>';
 	header('Content-type: application/rss+xml');
