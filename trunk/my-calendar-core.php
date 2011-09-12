@@ -150,19 +150,6 @@ function my_calendar_write_js() {
 	jQuery(document).ready(function($) {
 	    $('#event_begin, #event_time,' + '#event_end, #event_endtime').calendricalDateTimeRange();
 	});
-	jQuery(document).ready(function($) {
-		var id = 'event_desc';
-		$('a.toggleVisual').click(
-			function() {
-				tinyMCE.execCommand('mceAddControl', false, id);
-			}
-		);
-		$('a.toggleHTML').click(
-			function() {
-				tinyMCE.execCommand('mceRemoveControl', false, id);
-			}
-		);
-	});
 	//]]>
 	</script>
 	<?php
@@ -245,7 +232,7 @@ global $wp_plugin_url;
 		echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'js/calendrical.css', __FILE__ ).'" />';
 		$mc_input = get_option('mc_input_options');
 		if ( !isset($mc_input['event_image']) ) { $mc_input['event_image'] = 'off'; }		
-		if ( $mc_input['event_image'] == 'on' && $mc_input['event_use_editor'] != 'on' || version_compare( get_bloginfo( 'version' ), '3.0','<' ) ) {
+		if ( $mc_input['event_image'] == 'on' || $mc_input['event_use_editor'] != 'on' || version_compare( get_bloginfo( 'version' ), '3.0','<' ) ) {
 			echo '<link type="text/css" rel="stylesheet" href="'.includes_url( 'js/thickbox/thickbox.css' ).'" />';
 		}
 		wp_enqueue_style('thickbox');
