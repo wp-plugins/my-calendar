@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.8.9
+Version: 1.9.0
 */
 /*  Copyright 2009-2011  Joe Dolson (email : joe@joedolson.com)
 
@@ -24,18 +24,26 @@ Version: 1.8.9
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 global $mc_version, $wpdb;
-$mc_version = '1.8.9';
+$mc_version = '1.9.0';
 
 // Define the tables used in My Calendar
 define('MY_CALENDAR_TABLE', $wpdb->prefix . 'my_calendar');
 define('MY_CALENDAR_CATEGORIES_TABLE', $wpdb->prefix . 'my_calendar_categories');
 define('MY_CALENDAR_LOCATIONS_TABLE', $wpdb->prefix . 'my_calendar_locations');
 
+if ( function_exists('is_multisite') && is_multisite() ) {
+// Define the tables used in My Calendar
+define('MY_CALENDAR_GLOBAL_TABLE', $wpdb->base_prefix . 'my_calendar');
+define('MY_CALENDAR_GLOBAL_CATEGORIES_TABLE', $wpdb->base_prefix . 'my_calendar_categories');
+define('MY_CALENDAR_GLOBAL_LOCATIONS_TABLE', $wpdb->base_prefix . 'my_calendar_locations');
+}
+
 // Define plugin constants
 $my_calendar_directory = get_bloginfo( 'wpurl' ) . '/' . PLUGINDIR . '/' . dirname( plugin_basename(__FILE__) );
 define( 'MY_CALENDAR_DIRECTORY', $my_calendar_directory );
 
 include(dirname(__FILE__).'/my-calendar-core.php' );
+include(dirname(__FILE__).'/my-calendar-install.php' );
 include(dirname(__FILE__).'/my-calendar-settings.php' );
 include(dirname(__FILE__).'/my-calendar-categories.php' );
 include(dirname(__FILE__).'/my-calendar-locations.php' );
@@ -45,7 +53,6 @@ include(dirname(__FILE__).'/my-calendar-styles.php' );
 include(dirname(__FILE__).'/my-calendar-behaviors.php' );
 include(dirname(__FILE__).'/my-calendar-widgets.php' );
 include(dirname(__FILE__).'/date-utilities.php' );
-include(dirname(__FILE__).'/my-calendar-install.php' );
 include(dirname(__FILE__).'/my-calendar-upgrade-db.php' );
 include(dirname(__FILE__).'/my-calendar-user.php' );
 include(dirname(__FILE__).'/my-calendar-output.php' );
@@ -56,7 +63,9 @@ include(dirname(__FILE__).'/my-calendar-events.php' );
 include(dirname(__FILE__).'/my-calendar-limits.php' );
 include(dirname(__FILE__).'/my-calendar-shortcodes.php' );
 include(dirname(__FILE__).'/my-calendar-detect-mobile.php' );
-//require_once( ABSPATH . WPINC . '/pluggable.php' );
+include(dirname(__FILE__).'/my-calendar-templating.php' );
+include(dirname(__FILE__).'/my-calendar-group-manager.php' );
+include(dirname(__FILE__).'/my-calendar-export.php' );
 
 // Install on activation
 register_activation_hook( __FILE__, 'check_my_calendar' );
@@ -98,6 +107,7 @@ add_action( 'admin_menu', 'my_calendar_add_javascript' );
 add_action( 'init','my_calendar_add_display_javascript' );
 add_action( 'wp_footer','my_calendar_calendar_javascript' );
 add_action( 'wp_head','my_calendar_fouc' );
+add_action( 'init', 'my_calendar_export_vcal', 200 );
 
 // Add filters 
 add_filter( 'widget_text', 'do_shortcode', 9 );
@@ -108,21 +118,20 @@ function jd_show_support_box() {
 ?>
 <div class="resources">
 <ul>
-<li><a href="http://mywpworks.com/wp-plugin-guides/my-calendar-plugin-beginners-guide/" rel="external"><?php _e("Buy the Beginner's Guide",'my-calendar'); ?></a></li>
+<li><a href="http://www.joedolson.com/articles/my-calendar/guide/" rel="external"><?php _e("Buy the <strong>New</strong> User's Guide",'my-calendar'); ?></a></li>
 <li><a href="http://www.joedolson.com/articles/my-calendar/" rel="external"><?php _e("Get Support",'my-calendar'); ?></a></li>
-<li><a href="<?php bloginfo('wpurl'); ?>/wp-admin/admin.php?page=my-calendar-help"><?php _e("My Calendar Help",'my-calendar'); ?></a></li>
+<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>"><?php _e("My Calendar Help",'my-calendar'); ?></a></li>
 <li><strong><a href="http://www.joedolson.com/donate.php" rel="external"><?php _e("Make a Donation",'my-calendar'); ?></a></strong></li>
 <li><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <div>
 <input type="hidden" name="cmd" value="_s-xclick" />
 <input type="hidden" name="hosted_button_id" value="UZBQUG2LKKMRW" />
-<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" name="submit" alt="Donate!" />
-<img alt="" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+<input type="image" src="https://www.paypalobjects.com/WEBSCR-640-20110429-1/en_US/i/btn/btn_donate_LG.gif" name="submit" alt="Make a gift to support My Calendar!" />
+<img alt="" src="https://www.paypalobjects.com/WEBSCR-640-20110429-1/en_US/i/scr/pixel.gif" width="1" height="1" />
 </div>
 </form>
 </li>
 </ul>
-
 </div>
 <?php
 }
@@ -132,8 +141,8 @@ function my_calendar_menu() {
   global $wpdb;
   check_my_calendar();
   $allowed_group = 'manage_options';
-  $allowed_group = get_option('can_manage_events');
-  $icon_path = get_option('siteurl').'/wp-content/plugins/'.basename(dirname(__FILE__)).'/images';
+  $allowed_group = ( get_option('mc_can_manage_events') != '')?'manage_options':get_option('mc_can_manage_events');
+  $icon_path = site_url().'/wp-content/plugins/'.basename(dirname(__FILE__)).'/images';
 	if ( function_exists('add_object_page') ) {
 		add_object_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), $allowed_group, 'my-calendar', 'edit_my_calendar',$icon_path.'/icon.png' );
 	} else {  
@@ -142,16 +151,33 @@ function my_calendar_menu() {
 		}
 	}
 	if ( function_exists('add_submenu_page') ) {
-		add_submenu_page('my-calendar', __('Add/Edit Events','my-calendar'), __('Add/Edit Events','my-calendar'), $allowed_group, 'my-calendar', 'edit_my_calendar');
 		add_action( "admin_head", 'my_calendar_write_js' );		
 		add_action( "admin_head", 'my_calendar_add_styles' );
-
+		add_submenu_page('my-calendar', __('Add/Edit Events','my-calendar'), __('Add/Edit Events','my-calendar'), $allowed_group, 'my-calendar', 'edit_my_calendar');
 		add_submenu_page('my-calendar', __('Manage Categories','my-calendar'), __('Manage Categories','my-calendar'), 'manage_options', 'my-calendar-categories', 'my_calendar_manage_categories');
+		add_submenu_page('my-calendar', __('Manage Event Groups','my-calendar'), __('Manage Event Groups','my-calendar'), 'manage_options', 'my-calendar-groups', 'edit_my_calendar_groups');		
 		add_submenu_page('my-calendar', __('Manage Locations','my-calendar'), __('Manage Locations','my-calendar'), 'manage_options', 'my-calendar-locations', 'my_calendar_manage_locations');		
 		add_submenu_page('my-calendar', __('Settings','my-calendar'), __('Settings','my-calendar'), 'manage_options', 'my-calendar-config', 'edit_my_calendar_config');
 		add_submenu_page('my-calendar', __('Style Editor','my-calendar'), __('Style Editor','my-calendar'), 'manage_options', 'my-calendar-styles', 'edit_my_calendar_styles');
-		add_submenu_page('my-calendar', __('Behavior Editor','my-calendar'), __('Behavior Editor','my-calendar'), 'manage_options', 'my-calendar-behaviors', 'edit_my_calendar_behaviors');		
+		add_submenu_page('my-calendar', __('Behavior Editor','my-calendar'), __('Behavior Editor','my-calendar'), 'manage_options', 'my-calendar-behaviors', 'edit_my_calendar_behaviors');	
+		add_submenu_page('my-calendar', __('Template Editor','my-calendar'), __('Template Editor','my-calendar'), 'manage_options', 'my-calendar-templates', 'edit_mc_templates');
 		add_submenu_page('my-calendar', __('My Calendar Help','my-calendar'), __('Help','my-calendar'), 'manage_options', 'my-calendar-help', 'my_calendar_help');		
+	}
+	if ( function_exists( 'mc_pro_verify' ) ) { // will actually verify only on settings page
+		add_submenu_page('my-calendar', __('My Calendar Pro Settings','my-calendar'), __('My Calendar Pro Settings','my-calendar'), 'manage_options', 'my-calendar-pro', 'my_calendar_pro_settings');		
+		
+	}
+}
+
+// return a result for admin_url in 2.9.2
+if ( !function_exists( 'admin_url' ) ) {
+	function admin_url() {
+		return get_bloginfo('wpurl').'/wp-admin/';
+	}
+}
+if ( !function_exists( 'home_url' ) ) {
+	function home_url() {
+		return get_option('home');
 	}
 }
 
@@ -161,5 +187,6 @@ add_shortcode('my_calendar_upcoming','my_calendar_insert_upcoming');
 add_shortcode('my_calendar_today','my_calendar_insert_today');
 add_shortcode('my_calendar_locations','my_calendar_locations');
 add_shortcode('my_calendar_categories','my_calendar_categories');
+add_shortcode('my_calendar_show_locations','my_calendar_show_locations_list');
 
 ?>

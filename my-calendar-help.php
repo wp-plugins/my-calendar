@@ -19,14 +19,24 @@ global $wp_plugin_dir;
 <?php _e('This basic shortcode will show the calendar on a post or page including all categories and the category key, in a traditional month-by-month format.','my-calendar'); ?>
 </p>
 <p><code>[my_calendar category="General|Other" format="list" showkey="yes" shownav="yes" toggle="no" time="week"]</code><br />
-<?php _e('The shortcode supports six attributes, <code>category</code>, <code>format</code>, <code>showkey</code>, <code>shownav</code>, <code>toggle</code>, and <code>time</code>. There two alternate options for <code>format</code>: <code>list</code>, which will show the calendar in a list format, skipping dates without any events, and <code>mini</code>, which will display the calendar in a form more suitable to being displayed in smaller spaces, such as the sidebar. The <code>category</code> attribute requires either the name of or ID number one of your event categories (the name is case-sensitive). This will show a calendar only including events in that category. Multiple categories can be specified by separating the category names or IDs using either the pipe character (<code>|</code>) or a comma. Setting <code>showkey</code> to <code>no</code> will prevent the category key from being displayed &mdash; this can be useful with single-category output. Setting <code>shownav</code> to <code>no</code> will disable the Previous/Next links. Setting <code>toggle</code> to yes will show a link to switch between the list and grid views. The <code>time</code> shortcode switches between a weekly view and the default monthly view.','my-calendar'); ?>
+<?php _e('The shortcode supports eight attributes:','my-calendar'); ?>
+	<ul>
+	<li><code>category</code>: <?php _e('Names or IDs of categories included in this calendar, comma or pipe separated.','my-calendar'); ?></li>
+	<li><code>format</code>: <?php _e('Either "list" or "mini" to show the list view or the mini calendar; exclude or any other value to show the main grid calendar.','my-calendar'); ?></li>
+	<li><code>showkey</code>: <?php _e('Set as "no" to hide the category key.','my-calendar'); ?></li>
+	<li><code>shownav</code>: <?php _e('Set as "no" to hide the month-by-month navigation.','my-calendar'); ?></li>
+	<li><code>toggle</code>: <?php _e('Set as "yes" to show a link to switch between list and grid formats.','my-calendar'); ?></li>
+	<li><code>time</code>: <?php _e('Set to "week" to show a one week view or to "day" to show a single day view. Any other value will show a month view. (Day view shows as a list regardless of format setting.)','my-calendar'); ?></li>
+	<li><code>ltype</code>: <?php _e('The type of location data to restrict by.','my-calendar'); ?></li>
+	<li><code>lvalue</code>: <?php _e('The specific location information to filter to.','my-calendar'); ?></li>
+	</ul>
 </p>
 <p>
 <em><?php _e('The main My Calendar short code can be generated from a button in your post and page editor. The mini calendar can also be accessed and configured as a widget.','my-calendar'); ?></em>
 </p>
 <h4><?php _e('Additional Calendar Views (Upcoming events, today\'s events)','my-calendar'); ?></h4>
-<p><code>[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" template="{title} {date}" order="asc"]</code><br />
-	<?php _e('This shortcode displays the output of the Upcoming Events widget. The <code>before</code> and <code>after</code> attributes should be numbers; the <code>type</code> attribute can be either "event" or "days", and the <code>category</code> attribute works the same way as the category attribute on the main calendar shortcode. Templates work using the template codes listed below. <code>fallback</code> provides text in case there are no events meeting your criteria. Order provides a sort order for the events list &ndash; either ascending (<code>asc</code>) or descending (<code>desc</code>).','my-calendar'); ?>
+<p><code>[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" template="{title} {date}" order="asc" skip="0"]</code><br />
+	<?php _e('This shortcode displays the output of the Upcoming Events widget. The <code>before</code> and <code>after</code> attributes should be numbers; the <code>type</code> attribute can be either "event" or "days", and the <code>category</code> attribute works the same way as the category attribute on the main calendar shortcode. Templates work using the template codes listed below. <code>fallback</code> provides text in case there are no events meeting your criteria. Order provides a sort order for the events list &ndash; either ascending (<code>asc</code>) or descending (<code>desc</code>). <code>Skip</code> is the number of events to skip in the upcoming events.','my-calendar'); ?>
 </p>
 <p><code>[my_calendar_today category="" fallback="Nothing today!" template="{title} {date}"]</code><br />
 	<?php _e('Predictably enough, this shortcode displays the output of the Today\'s Events widget, with three configurable attributes: category, template and fallback text.','my-calendar'); ?>
@@ -39,6 +49,9 @@ global $wp_plugin_dir;
 
 <p><code>[my_calendar_locations show="list" type="saved" datatype="name"]</code><br />
 	<?php _e('This shortcode produces a list of event locations, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>, <code>type</code> is either <code>saved</code> (to show items from your stored locations), or <code>custom</code> (to show the options configured in your user settings). <code>datatype</code> must be the type of data your limits are choosing from: <code>name</code> (business name), <code>city</code>, <code>state</code>, <code>country</code>, <code>zip</code> (postal code), or <code>region</code>.','my-calendar'); ?>
+</p>
+<p><code>[my_calendar_show_locations datatype=""]</code><br />
+	<?php _e('If you want to display a list of locations in your database, use this shortcode. The <code>datatype</code> is the type of data displayed; all lists will include a link to the map of that location. In addition to basic location information as in the above shortcode, you can also use "hcard" to display all available location information.','my-calendar'); ?>
 </p>
 <p><code>[my_calendar_categories show="list"]</code><br />
 	<?php _e('This shortcode produces a list of event categories, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>.','my-calendar'); ?>
@@ -81,18 +94,22 @@ global $wp_plugin_dir;
 <p>
 <?php _e('These codes are available in calendar widgets, email notifications, and event titles.','my-calendar'); ?>
 </p>
+<h4><?php _e('Event Template Tags','my-calendar'); ?></h4>
 <dl>
-<dt><code>{category}</code></dt>
-<dd><?php _e('Displays the name of the category the event is in.','my-calendar'); ?></dd>
-
 <dt><code>{title}</code></dt>
 <dd><?php _e('Displays the title of the event.','my-calendar'); ?></dd>
+
+<dt><code>{link_title}</code></dt>
+<dd><?php _e('Displays title of the event as a link if a URL is present, or the title alone if no URL is available.','my-calendar'); ?></dd>
 
 <dt><code>{time}</code></dt>
 <dd><?php _e('Displays the start time for the event.','my-calendar'); ?></dd>
 
 <dt><code>{usertime}</code></dt>
-<dd><?php _e('Displays the start time for the event adjusted to the current user\'s time zone settings. Blank output if user settings are disabled or the user has not selected a preferred time zone.','my-calendar'); ?></dd>
+<dd><?php _e('Displays the start time for the event adjusted to the current user\'s time zone settings. Returns <code>{time}</code> if user settings are disabled or if the user has not selected a preferred time zone.','my-calendar'); ?></dd>
+
+<dt><code>{endusertime}</code></dt>
+<dd><?php _e('Displays the end time for the event adjusted to the current user\'s time zone settings. Returns <code>{endtime}</code> if user settings are disabled or if the user has not selected a preferred time zone.','my-calendar'); ?></dd>
 
 <dt><code>{date}</code></dt>
 <dd><?php _e('Displays the date on which the event begins.','my-calendar'); ?></dd>
@@ -109,18 +126,45 @@ global $wp_plugin_dir;
 <dt><code>{host}</code></dt>
 <dd><?php _e('Displays the name of the person assigned as host for the event.','my-calendar'); ?></dd>
 
-<dt><code>{link}</code></dt>
-<dd><?php _e('Displays the URL provided for the event.','my-calendar'); ?></dd>
+<dt><code>{host_email}</code></dt>
+<dd><?php _e('Displays the email address of the person assigned as host for the event.','my-calendar'); ?></dd>
 
-<dt><code>{details}</code></dt>
-<dd><?php _e('Provides a link to an auto-generated page containing all information on the given event.','my-calendar'); ?> <strong><?php _e('Requires that the site URL has been provided on the Settings page','my-calendar'); ?></strong>
+<dt><code>{shortdesc}</code></dt>
+<dd><?php _e('Displays the short version of the event description.','my-calendar'); ?></dd>
 
 <dt><code>{description}</code></dt>
 <dd><?php _e('Displays the description of the event.','my-calendar'); ?></dd>
 
-<dt><code>{link_title}</code></dt>
-<dd><?php _e('Displays title of the event as a link if a URL is present, or the title alone if no URL is available.','my-calendar'); ?></dd>
+<dt><code>{image}</code></dt>
+<dd><?php _e('Image associated with the event.','my-calendar'); ?></dd>
 
+<dt><code>{link}</code></dt>
+<dd><?php _e('Displays the URL provided for the event.','my-calendar'); ?></dd>
+
+<dt><code>{ical_link}</code></dt>
+<dd><?php _e('Produces the URL to download an iCal formatted record for the event.','my-calendar'); ?></dd>
+
+<dt><code>{ical_html}</code></dt>
+<dd><?php _e('Produces a hyperlink to download an iCal formatted record for the event.','my-calendar'); ?></dd>
+
+<dt><code>{recurs}</code></dt>
+<dd><?php _e('Shows the recurrence status of the event. (Daily, Weekly, etc.)','my-calendar'); ?></dd>
+
+<dt><code>{repeats}</code></dt>
+<dd><?php _e('Shows the number of repetitions of the event.','my-calendar'); ?></dd>
+
+<dt><code>{details}</code></dt>
+<dd><?php _e('Provides a link to an auto-generated page containing all information on the given event.','my-calendar'); ?> <strong><?php _e('Requires that the site URL has been provided on the Settings page','my-calendar'); ?></strong>
+
+<dt><code>{event_open}</code></dt>
+<dd><?php _e('Displays text indicating whether registration for the event is currently open or closed; displays nothing if that choice is selected in the event.','my-calendar'); ?></dd>
+
+<dt><code>{event_status}</code></dt>
+<dd><?php _e('Displays the current status of the event: either "Published" or "Reserved" - primary used in email templates.','my-calendar'); ?></dd>
+</dl>
+<h4><?php _e('Location Template Tags','my-calendar'); ?></h4>
+
+<dl>
 <dt><code>{location}</code></dt>
 <dd><?php _e('Displays the name of the location of the event.','my-calendar'); ?></dd>
 
@@ -131,39 +175,63 @@ global $wp_plugin_dir;
 <dd><?php _e('Displays the second line of the site address.','my-calendar'); ?></dd>
 
 <dt><code>{city}</code></dt>
-<dd><?php _e('Displays the city for the event.','my-calendar'); ?></dd>
+<dd><?php _e('Displays the city for the location.','my-calendar'); ?></dd>
 
 <dt><code>{state}</code></dt>
-<dd><?php _e('Displays the state for the event.','my-calendar'); ?></dd>
+<dd><?php _e('Displays the state for the location.','my-calendar'); ?></dd>
 
 <dt><code>{postcode}</code></dt>
-<dd><?php _e('Displays the postcode for the event.','my-calendar'); ?></dd>
+<dd><?php _e('Displays the postcode for the location.','my-calendar'); ?></dd>
+
+<dt><code>{region}</code></dt>
+<dd><?php _e('Shows the custom region entered for the location.','my-calendar'); ?></dd>
 
 <dt><code>{country}</code></dt>
 <dd><?php _e('Displays the country for the event location.','my-calendar'); ?></dd>
+
+<dt><code>{sitelink}</code></dt>
+<dd><?php _e('Output the URL for the location link.','my-calendar'); ?></dd>
+
+<dt><code>{sitelink_html}</code></dt>
+<dd><?php _e('Output a hyperlink to the location\'s listed link with default link text.','my-calendar'); ?></dd>
 
 <dt><code>{hcard}</code></dt>
 <dd><?php _e('Displays the event address in <a href="http://microformats.org/wiki/hcard">hcard</a> format.','my-calendar'); ?></dd>
 
 <dt><code>{link_map}</code></dt>
 <dd><?php _e('Displays a link to a Google Map of the event, if sufficient address information is available. If not, will be empty.','my-calendar'); ?></dd>
+</dl>
+<h4><?php _e('Category Template Tags','my-calendar'); ?></h4>
 
-<dt><code>{event_open}</code></dt>
-<dd><?php _e('Displays text indicating whether registration for the event is currently open or closed; displays nothing if that choice is selected in the event.','my-calendar'); ?></dd>
-
-<dt><code>{shortdesc}</code></dt>
-<dd><?php _e('Displays the short version of the event description.','my-calendar'); ?></dd>
-
-<dt><code>{event_status}</code></dt>
-<dd><?php _e('Displays the current status of the event: either "Published" or "Reserved" - primary used in email templates.','my-calendar'); ?></dd>
+<dl>
+<dt><code>{category}</code></dt>
+<dd><?php _e('Displays the name of the category the event is in.','my-calendar'); ?></dd>
 
 <dt><code>{icon}</code></dt>
 <dd><?php _e('Produces the address of the current event\'s category icon.','my-calendar'); ?></dd>
 
+<dt><code>{icon_html}</code></dt>
+<dd><?php _e('Produces the HTML for the current event\'s category icon.','my-calendar'); ?></dd>
+
 <dt><code>{color}</code></dt>
 <dd><?php _e('Produces the hex code for the current event\'s category color.','my-calendar'); ?></dd>
 
+<dt><code>{category_id}</code></dt>
+<dd><?php _e('Displays the ID for
+ the category the event is in.','my-calendar'); ?></dd>
 </dl>
+
+<h4><?php _e('Special use Template Tags','my-calendar'); ?></h4>
+
+<dl>
+<dt><code>{dateid}</code></dt>
+<dd><?php _e('A unique ID for the current instance of an event.','my-calendar'); ?></dd>
+
+<dt><code>{id}</code></dt>
+<dd><?php _e('The ID for the event record associated with the current instance of an event.','my-calendar'); ?></dd>
+
+</dl>
+
 			</div>
 		</div>
 	</div>

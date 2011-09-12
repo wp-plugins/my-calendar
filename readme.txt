@@ -4,53 +4,55 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager
 Requires at least: 2.9.2
-Tested up to: 3.1.1
+Tested up to: 3.3-aortic-dissection
 Stable tag: trunk
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
 == Description ==
 
-My Calendar provides basic event management and provides numerous methods to display your events. The plug-in can support individual calendars within WordPress Multi-User, or multiple calendars displaying different categories of events. 
+My Calendar provides event management and provides numerous methods to display your events. The plug-in can support individual calendars within WordPress Multi-User, or multiple calendars displaying different categories of events. 
 
 Basic Features:
 
-*	Standard calendar or list views of events in calendar
-* 	Show events by week or by month
-* 	Mini-calendar view for compact displays
+*	Standard calendar grid or list views of events
+* 	Show events in monthly, weekly, or daily view.
+* 	Mini-calendar view for compact displays (as widget or as shortcode)
 *	Widget to show today's events
-*	Configurable widget to show upcoming or past events 
-*	Widget templating to control what information is displayed in widget output.
-*	Calendar can be displayed including a single category, all categories, or a selection of categories
+*	Widget to show upcoming or past events 
+*	Template tags to control the HTML and information produced in most output areas.
+*	Calendar can be limited to a single category, all categories, or a selection of categories
+* 	Calendar can be limited to events in specific locations
 *	Disable default CSS and default JavaScript or display only on specific Pages/Posts
 *	Editable CSS styles and JavaScript behaviors
+*	Recurring events can be scheduled daily, weekly, on weekdays only, biweekly, monthly by date, monthly by day/week and annually.
+*	Individual occurrences of recurring events can be modified individually
 * 	Events can be configured to be added by any level of user; directly to calendar or reserved for administrative approval
-* 	Help information within the plugin for shortcode usage and widget templates.
 * 	Store and display the following information for each event: title, description, alternate description, event category, URL, start date, start time, end date, end time, registration status (open, closed or irrelevant), event location.
 * 	Email notification to administrator when events are scheduled or reserved
 *	Location Manager for storing frequently used venues
 *   Import method from Kieran O'Shea's Calendar plugin
 * 	Integrated Help file to guide in use of shortcodes and template tags
 
-This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/) in April 2010. You can import any previous scheduled events from Kieran's calendar into My Calendar. 
+This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/) in April 2010. You can import any previous scheduled events from Kieran's calendar into My Calendar.
 
 Languages available:
 
 * American English (Default)
+* Dutch (Luud Heck) - to 1.8.9
+* Danish ([Jakob Smith](http://www.omkalfatring.dk/)) - to 1.8.9
 * French ([Manuel Lasnier](http://www.zef-creations.com)) - to 1.8.8
 * Japanese ([Daisuke Abe](http://www.alter-ego.jp/)) - to 1.8.5
 * Russian ([Alex](http://blog.sotvoril.ru/) - to 1.8.5
-* Turkish (Mehmet Ko&231;ali) - to 1.8.4
+* Turkish (Mehmet Ko&ccedil;ali) - to 1.8.4
 * German (Uwe Jonas) - to 1.7.8
 * Swedish (Efva Nyberg) - to 1.7.8
-* Danish ([Jakob Smith](http://www.omkalfatring.dk/)) - to 1.7.0
 * Italian ([Sabir Musta](http://mustaphasabir.altervista.org)) - to 1.7.0
 * Czech ([Jan Rybarik](http://janrybarik.cz)) - to 1.6.3
 * Brazilian Portuguese (Leonardo Kfoury) - to 1.6.0?
 
 Older translations
 
-* Dutch (Luud Heck) - to 1.4.9
 * Spanish ([Esteban Truelsegaard](http://www.netmdp.com))
 * Finnish (Ilpo Puhakka)
 
@@ -76,6 +78,64 @@ New or updated translations are always appreciated. The translation files are in
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.9.0 =
+
+Additions:
+
+* template editing for list, grid, mini, and single event output.
+* pop-up box is now draggable.
+* date format option for grid mode, week view.
+* templating for details link text.
+* templating for event URL link text.
+* location filtering from shortcode.
+* image upload option for events
+* day class to calendar date headings and cells
+* individual instances of repeating events can be edited
+* feature to add multiple occurrences of an event simultaneously. (concept from Dave Heitzman)
+* feature to mass edit information for groups of events (concept from Dave Heitzman)
+* stored URL for locations (contrib by John Colvin)
+* recurring daily events on weekdays only (based on contrib by John Colvin)
+* optional templating for all event output formats
+* individual event occurrence iCal export
+* numerous additional template tags
+* Option to use custom location filter fields as data control
+* Shortcode to generate list of saved locations
+* Network administrators can control whether sub-site calendars contribute only to a central calendar, only to their own calendar, or whether site administrators can make that choice. 
+* Upgrade notice information in dashboard for future upgrades.
+* implementation of WordPress text diff to compare your styles and scripts against my current released versions
+* Option to skip a defined number of events in upcoming events lists.
+
+Bug fixes:
+
+* jump box was displaying in week/grid view.
+* some potentially repeatable IDs (code validation).
+* 'Administrators see all options' did not work.
+* Fixed timestamps on main calendar objects
+* Squashed e_notice errors.
+* category limiting did not work without permalinks due to GET variable conflict with WordPress core
+* Missing nonce in database upgrade routine
+* Mini calendar simultaneously displayed single event view when visited.
+* Link generation for details view did not work if calendar link parameterized
+* Issue with weekdays only calendar if day of week set to start on Sunday
+* Issue with retrieval of user-specific settings
+* Issue with accessing styles and javascript if My Calendar installed in non-standard directory.
+* Problem in Today's Events widget when Holiday restrictions are enabled.
+
+Changes:
+
+* replaced all default icons with 24-bit transparent PNGs
+* jumpbox output to automatically scope to the oldest dates in the database.
+* iCal output changed to output all events for complete current month
+* RSS output to prioritze newly added events
+* holiday skipping/fifth week customization moved into event manager function
+* new 'close' icon for pop-up box; added close icon and scripting to mini calendar pop-up
+* copy in several places; updated template tags.
+* location lists sorted by location label (contrib by John Colvin)
+* Eliminated calendar heading option
+* default style resets no longer stored in global variables, instead stored as files.
+* Map links now trigger the driving directions dialog in Google Maps
+* New default stylesheet, refresh.css
 
 = 1.8.9 =
 
@@ -539,4 +599,4 @@ Because the majority of users end up on my web site asking for help anyway -- an
 
 == Upgrade Notice ==
 
-Upgrading from version 1.6.3 or below will require you to re-configure your upcoming events and today's events widgets.
+- Version 1.9 incorporates many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require the new styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting your changes, but you can update styles and scripts on their editing pages.

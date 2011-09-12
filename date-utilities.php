@@ -160,4 +160,52 @@ function add_days_to_date( $givendate,$day=0 ) {
       return $newdate;
 }
 
+function first_day_of_week() {
+	$offset = (60*60*get_option('gmt_offset'));
+	$start_of_week = (get_option('start_of_week')==1||get_option('start_of_week')==0)?get_option('start_of_week'):0;
+	$today = date('w',time()+$offset);
+	$now = date('Y-m-d',time()+$offset);
+	switch ($today) {
+		case 1:
+			$day = ($start_of_week == 1)?date('j',time()+$offset):date('j',strtotime( $now . ' -1 day'));
+		break;
+		case 2:
+			$day = ($start_of_week == 1)?date('j',strtotime( $now . ' -1 day')):date('j',strtotime( $now . ' -2 day'));
+		break;
+		case 3:
+			$day = ($start_of_week == 1)?date('j',strtotime( $now . ' -2 day')):date('j',strtotime( $now . ' -3 day'));
+		break;
+		case 4:
+			$day = ($start_of_week == 1)?date('j',strtotime( $now . ' -3 day')):date('j',strtotime( $now . ' -4 day'));
+		break;
+		case 5:
+			$day = ($start_of_week == 1)?date('j',strtotime( $now . ' -4 day')):date('j',strtotime( $now . ' -5 day'));
+		break;
+		case 6:
+			$day = ($start_of_week == 1)?date('j',strtotime( $now . ' -5 day')):date('j',strtotime( $now . ' -6 day'));
+		break;
+		case 0:
+			$day = ($start_of_week == 1)?date('j',strtotime( $now . ' -6 day')):date('j',strtotime( $now ));
+		break;
+	}
+	return $day;	
+}
+
+function mc_ordinal($number) {
+    // when fed a number, adds the English ordinal suffix. Works for any
+    // number, even negatives
+    if ($number % 100 > 10 && $number %100 < 14) {
+        $suffix = "th";
+    } else {
+        switch($number % 10) {
+            case 0:$suffix = "th";break;
+            case 1:$suffix = "st";break;
+            case 2:$suffix = "nd";break;
+            case 3:$suffix = "rd";break;
+            default:$suffix = "th";break;
+        }
+    }
+	return "${number}$suffix";
+}
+
 ?>
