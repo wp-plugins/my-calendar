@@ -108,7 +108,6 @@ add_action( 'init','my_calendar_add_display_javascript' );
 add_action( 'wp_footer','my_calendar_calendar_javascript' );
 add_action( 'wp_head','my_calendar_fouc' );
 add_action( 'init', 'my_calendar_export_vcal', 200 );
-
 // Add filters 
 add_filter( 'widget_text', 'do_shortcode', 9 );
 add_filter('plugin_action_links', 'jd_calendar_plugin_action', -10, 2);
