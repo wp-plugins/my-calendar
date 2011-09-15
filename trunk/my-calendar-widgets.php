@@ -187,24 +187,27 @@ function form($instance) {
 
 // Widget upcoming events
 function my_calendar_upcoming_events($before='default',$after='default',$type='default',$category='default',$template='default',$substitute='',$order='asc',$skip=0 ) {
-  global $wpdb,$default_template;
+  global $wpdb,$default_template,$defaults;
   $output = '';
+  $date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
+  
   // This function cannot be called unless calendar is up to date
 	check_my_calendar();
 	$offset = (60*60*get_option('gmt_offset'));	
-    $defaults = get_option('mc_widget_defaults');
-	$display_upcoming_type = ($type == 'default')?$defaults['upcoming']['type']:$type;
+    $widget_defaults = get_option('mc_widget_defaults');
+	if ( !is_array($widget_defaults) ) { $widget_defaults = array(); } // get globals; check on mc_widget_des
+	$display_upcoming_type = ($type == 'default')?$widget_defaults['upcoming']['type']:$type;
 	if ($display_upcoming_type == '') { $display_upcoming_type = 'event'; }
     // Get number of units we should go into the future
-	$after = ($after == 'default')?$defaults['upcoming']['after']:$after;
+	$after = ($after == 'default')?$widget_defaults['upcoming']['after']:$after;
 	if ($after == '') { $after = 10; }
 	// Get number of units we should go into the past
-	$before = ($before == 'default')?$defaults['upcoming']['before']:$before;
+	$before = ($before == 'default')?$widget_defaults['upcoming']['before']:$before;
 	if ($before == '') { $before = 0; }
 	$category = ($category == 'default')?'':$category;
-	$template = ($template == 'default')?$defaults['upcoming']['template']:$template;
+	$template = ($template == 'default')?$widget_defaults['upcoming']['template']:$template;
 	if ($template == '' ) { $template = "$default_template"; };
-	$no_event_text = ($substitute == '')?$defaults['upcoming']['text']:$substitute;
+	$no_event_text = ($substitute == '')?$widget_defaults['upcoming']['text']:$substitute;
     $day_count = -($before);
 	$header = "<ul id='upcoming-events'>";
 	$footer = "</ul>";	
@@ -220,8 +223,8 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 				foreach($events as $event) {
 					$event_details = event_as_array($event);
 					$date_diff = jd_date_diff( strtotime($event_details['date']),strtotime($event_details['enddate']));
-					$date = date_i18n(get_option('mc_date_format'),strtotime($current_date));
-					$date_end = date_i18n(get_option('mc_date_format'),strtotime(my_calendar_add_date($current_date,$date_diff)));
+					$date = date_i18n( $date_format,strtotime($current_date));
+					$date_end = date_i18n( $date_format,strtotime(my_calendar_add_date($current_date,$date_diff)));
 					$event_details['date'] = $date;
 					$event_details['enddate'] = $date_end;
 					if ( get_option( 'mc_event_approve' ) == 'true' ) {

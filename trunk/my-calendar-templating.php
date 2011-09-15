@@ -63,9 +63,7 @@ function edit_mc_templates() {
 ?>
     <div class="wrap templating" id="poststuff">
 	
-<?php 
-my_calendar_check_db();
-?>
+<?php my_calendar_check_db(); ?>
     <h2><?php _e('My Calendar Information Templates','my-calendar'); ?></h2>
     <?php jd_show_support_box(); ?>
 	<div class='mc_template_tags'>

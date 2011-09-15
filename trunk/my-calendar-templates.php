@@ -84,6 +84,7 @@ function event_as_array($event,$type='html') {
 	// My Calendar must be updated to run this function
 	check_my_calendar();
 	$details = array();
+	$date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');	
 	$dateid = date( 'Y-m-d',strtotime( $event->event_begin ) );
 	$month_date = date('dS',strtotime( $event->event_begin ) );
 	$day_name = date_i18n('l',strtotime($event->event_begin));
@@ -119,8 +120,8 @@ function event_as_array($event,$type='html') {
 	$details['recurs'] = $event_recur;
 	$details['repeats'] = $event->event_repeats;
 	$real_end_date = $event->event_end;
-	$date = date_i18n( get_option('mc_date_format'),strtotime( $event->event_begin ) );
-	$date_end = date_i18n( get_option('mc_date_format'),strtotime($real_end_date) );
+	$date = date_i18n( $date_format,strtotime( $event->event_begin ) );
+	$date_end = date_i18n( $date_format,strtotime($real_end_date) );
 	$details['image'] = ( $event->event_image != '' )?"<img src='$event->event_image' alt='' class='mc-image' />":'';
 	$details['time'] = ( $event->event_time == '00:00:00' )?get_option( 'mc_notime_text' ):date(get_option('mc_time_format'),strtotime($event->event_time));
 	$details['endtime'] = ($event->event_endtime == '00:00:00' )?'':date_i18n( get_option('mc_time_format'),strtotime($event->event_endtime));

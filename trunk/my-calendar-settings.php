@@ -99,14 +99,16 @@ function edit_my_calendar_config() {
 		update_option('mc_skip_holidays',( !empty($_POST['mc_skip_holidays']) && $_POST['mc_skip_holidays']=='on')?'true':'false');
 		update_option('mc_templates',$templates);
 		update_option('mc_display_author',( !empty($_POST['mc_display_author']) && $_POST['mc_display_author']=='on')?'true':'false');
+		update_option('mc_show_event_vcal',( !empty($_POST['mc_show_event_vcal']) && $_POST['mc_show_event_vcal']=='on')?'true':'false');		
 		update_option('mc_display_jump',( !empty($_POST['mc_display_jump']) && $_POST['mc_display_jump']=='on')?'true':'false');
+		update_option('mc_show_list_info',( !empty($_POST['mc_show_list_info']) && $_POST['mc_show_list_info']=='on')?'true':'false');		
 		update_option('mc_show_months',(int) $_POST['mc_show_months']);
 		update_option('mc_date_format',$_POST['mc_date_format']);
 		update_option('mc_week_format',$_POST['my_calendar_week_format']);
 		update_option('mc_time_format',$_POST['mc_time_format']);
 		update_option('mc_show_map',( !empty($_POST['mc_show_map']) && $_POST['mc_show_map']=='on')?'true':'false');
 		update_option('mc_show_address',( !empty($_POST['mc_show_address']) && $_POST['mc_show_address']=='on')?'true':'false'); 
-		update_option('mc_hide_icons',( !empty($_POST['mc_calendar_hide_icons']) && $_POST['mc_hide_icons']=='on')?'true':'false');
+		update_option('mc_hide_icons',( !empty($_POST['mc_hide_icons']) && $_POST['mc_hide_icons']=='on')?'true':'false');
 		update_option('mc_event_link_expires',( !empty($_POST['mc_event_link_expires']) && $_POST['mc_event_link_expires']=='on')?'true':'false');
 		update_option('mc_apply_color',$_POST['mc_apply_color']);
 		update_option('mc_event_registration',( !empty($_POST['mc_event_registration']) && $_POST['mc_event_registration']=='on')?'true':'false');
@@ -356,7 +358,10 @@ check_akismet();
 	<legend><?php _e('List Layout Options','my-calendar'); ?></legend>
 	<ul>
 	<li>
-	<label for="mc_show_months"><?php _e('In list mode, show how many months of events at a time:','my-calendar'); ?></label> <input type="text" size="3" id="mc_show_months" name="mc_show_months" value="<?php echo $mc_show_months; ?>" />
+	<label for="mc_show_months"><?php _e('How many months of events to show at a time:','my-calendar'); ?></label> <input type="text" size="3" id="mc_show_months" name="mc_show_months" value="<?php echo $mc_show_months; ?>" />
+	</li>
+	<li>
+	<input type="checkbox" id="mc_show_list_info" name="mc_show_list_info" <?php jd_cal_checkCheckbox( 'mc_show_list_info','true' ); ?> /> <label for="mc_show_list_info"><?php _e('Show the first event\'s title and the number of events that day with the date:','my-calendar'); ?></label>
 	</li>	
 	</ul>	
 	<?php // End List Options // ?>
@@ -382,7 +387,10 @@ check_akismet();
 	<li>
 	<input type="checkbox" id="mc_display_author" name="mc_display_author" <?php jd_cal_checkCheckbox('mc_display_author','true'); ?> /> <label for="mc_display_jump"><?php _e('Display author\'s name','my-calendar'); ?></label>
 	</li>
-		<li>
+	<li>
+	<input type="checkbox" id="mc_show_event_vcal" name="mc_show_event_vcal" <?php jd_cal_checkCheckbox('mc_show_event_vcal','true'); ?> /> <label for="mc_show_ical"><?php _e('Display link to single event iCal download.','my-calendar'); ?></label> 
+	</li>		
+	<li>
 	<input type="checkbox" id="mc_hide_icons" name="mc_hide_icons" <?php jd_cal_checkCheckbox('mc_hide_icons','true'); ?> /> <label for="mc_hide_icons"><?php _e('Hide category icons','my-calendar'); ?></label>
 	</li>
 	<li>
@@ -418,7 +426,7 @@ check_akismet();
 	<legend><?php _e('Event Scheduling Options','my-calendar'); ?></legend>
 	<ul>
 	<li>
-	<input type="checkbox" id="mc_no_fifth_week" name="mc_no_fifth_week" value="true" <?php jd_cal_checkCheckbox('mc_no_fifth_week','true'); ?> /> <label for="mc_no_fifth_week"><?php _e('Default setting for event input: If a recurring event is scheduled for a date which doesn\'t exist (such as the 5th Wednesday in February), move it back one week.','my-calendar'); ?></label>	
+	<input type="checkbox" id="mc_no_fifth_week" name="mc_no_fifth_week" value="on" <?php jd_cal_checkCheckbox('mc_no_fifth_week','true'); ?> /> <label for="mc_no_fifth_week"><?php _e('Default setting for event input: If a recurring event is scheduled for a date which doesn\'t exist (such as the 5th Wednesday in February), move it back one week.','my-calendar'); ?></label>	
 	</li>
 	<li>
 	<label for="mc_skip_holidays_category"><?php _e('Holiday Category','my-calendar'); ?></label>
