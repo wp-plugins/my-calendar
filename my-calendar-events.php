@@ -351,7 +351,7 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 		$numback = 0;
 		// if we're splitting events, I'll take the performance hit to save coding; for the public site, keep it fast.
 		if ( $object == true ) {
-			$event_repetition = $event->event_repeats;
+			$event_repetition = (int) $event->event_repeats;
 		} else {
 			$event_repetition = ( $event->event_repeats != 0)?$event->event_repeats:_mc_increment_values( $event->event_recur );
 		}
