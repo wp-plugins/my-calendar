@@ -66,6 +66,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date) {
 	$body_details = '';
 	$address = '';
 	$output = '';
+	$date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
 
 	$data = event_as_array($event);	
 	$details = false;
@@ -134,7 +135,7 @@ jQuery(document).ready(function($) {
 	$title_template = ($templates['title'] == '' )?'{title}':$templates['title'];
 	$mytitle = jd_draw_template($data,$title_template);
 	$toggle = ($type == 'calendar')?" <a href='#' class='mc-toggle'><img src='".MY_CALENDAR_DIRECTORY."/images/event-details.png' alt='".__('Event Details','my-calendar')."' /></a>":'';
-	$event_date = ($type == 'single')?date_i18n(get_option('mc_date_format'),strtotime($process_date)).', ':'';
+	$event_date = ($type == 'single')?date_i18n($date_format,strtotime($process_date)).', ':'';
 	$header_details .= ($type != 'list' && $type != 'single')?"<h3 class='event-title summary' tabindex='0'>$image".$mytitle."$toggle</h3>\n":'';
 	$title = apply_filters( 'mc_before_event_title','',$event );
 	$title .= ($type == 'single' )?"<h2 class='event-title summary'>$image $mytitle</h2>\n":'';
@@ -207,7 +208,7 @@ jQuery(document).ready(function($) {
 			}
 		}
 
-		if ( function_exists('my_calendar_generate_vcal') ) {
+		if ( function_exists('my_calendar_generate_vcal') && get_option('mc_show_event_vcal') == 'true' ) {
 			$nonce = wp_create_nonce('my-calendar-nonce');
 			$vcal_link = "<p><a class='ical' rel='nofollow' href='".home_url()."?vcal=$uid"."'>".__('iCal','my-calendar')."</a></p>\n";
 			$body_details .= $vcal_link;
@@ -251,7 +252,7 @@ jQuery(document).ready(function($) {
 		$return = ($type == 'single')?"<p><a href='".get_option('mc_uri')."'>".__('View full calendar','my-calendar')."</a></p>":'';
 		if ($event_link != '') {
 			$is_external = mc_external_link( $event_link );	
-			$link_template = ( isset($templates['link']))?$templates['link']:'[title]';
+			$link_template = ( isset($templates['link']))?$templates['link']:'{title}';
 			$link_text = jd_draw_template($data,$link_template);
 			$details = "\n". $header_details . $body_details . $description . $short . $status."<p><a href='$event_link' $is_external>".$link_text.'</a></p>'.$return;
 		} else {
@@ -375,6 +376,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 	$args = array('name'=>$name,'format'=>$format,'category'=>$category,'showkey'=>$showkey,'shownav'=>$shownav,'toggle'=>$toggle,'time'=>$time,'ltype'=>$ltype,'lvalue'=>$lvalue);
 	$my_calendar_body .= apply_filters('mc_before_calendar','',$args);
 	$format = ( mc_is_mobile() )?'list':$format;
+	$date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
 
 	if ( $format != 'mini' && $toggle == 'yes' ) {
 		$format_toggle = "<div class='mc-format'>";
@@ -505,7 +507,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 			$events_class = " has-events$class";
 		}
 		$class = '';
-		$my_calendar_body .= $mc_nav."\n"."<h3 class='mc-single".$class."'>".date_i18n( get_option('mc_date_format'),strtotime("$c_year-$c_month-$c_day")).'</h3><div id="mc-day" class="'.$dayclass.' '.(date("Ymd", mktime (0,0,0,$c_month,$c_day,$c_year))==date_i18n("Ymd",time()+$offset)?'current-day':'day-with-date').$events_class.'">'."\n";
+		$my_calendar_body .= $mc_nav."\n"."<h3 class='mc-single".$class."'>".date_i18n( $date_format,strtotime("$c_year-$c_month-$c_day")).'</h3><div id="mc-day" class="'.$dayclass.' '.(date("Ymd", mktime (0,0,0,$c_month,$c_day,$c_year))==date_i18n("Ymd",time()+$offset)?'current-day':'day-with-date').$events_class.'">'."\n";
 		$process_date = date_i18n("Y-m-d",strtotime("$c_year-$c_month-$c_day"));		
 		if ( count($grabbed_events) > 0 ) {
 			foreach ( $grabbed_events as $now ) {
@@ -694,7 +696,6 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 	} else if ($format == "list") {
 		$my_calendar_body .= "<ul id=\"calendar-list\">";
 		// show calendar as list
-		$date_format = get_option('mc_date_format');
 		$num_months = ($time == 'week')?1:get_option('mc_show_months');
 		$num_events = 0;
 		for ($m=0;$m<$num_months;$m++) {
@@ -738,6 +739,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 					}
 					$classes = (date("Ymd", mktime (0,0,0,$c_month,$thisday,$c_year))==date("Ymd",time()+($offset)))?' current-day':'';
 					$classes .= ( my_calendar_date_xcomp( $process_date, date('Y-m-d',time()+$offset) ) )?' past-date':'';
+							usort( $grabbed_events, 'my_calendar_time_cmp' );
 							$now = $grabbed_events[0];
 							$count = count( $grabbed_events ) - 1;
 							if ( $count == 0 ) { $cstate = ''; } else 
@@ -746,10 +748,14 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 							} else {
 								$cstate = sprintf(__(" and %d other events",'my-calendar'), $count); 
 							}
-							$title = stripcslashes($now->event_title).$cstate;
+							if ( get_option( 'mc_show_list_info' ) == 'true' ) {
+								$title = ' - '.$is_anchor . stripcslashes($now->event_title).$cstate . $is_close_anchor;
+							} else {
+								$title = '';
+							}
 					$my_calendar_body .= "
 					<li class='mc-events $class$classes'>
-					<strong class=\"event-date\">$is_anchor".date_i18n($date_format,mktime(0,0,0,$c_month,$thisday,$c_year))."$is_close_anchor - $is_anchor".$title."$is_close_anchor</strong>".my_calendar_draw_events($grabbed_events, $format, $process_date)."
+					<strong class=\"event-date\">$is_anchor".date_i18n($date_format,mktime(0,0,0,$c_month,$thisday,$c_year))."$is_close_anchor"."$title</strong>".my_calendar_draw_events($grabbed_events, $format, $process_date)."
 					</li>";
 					$num_events++;
 				} 	
@@ -968,7 +974,7 @@ function my_calendar_categories_list($show='list',$context='public') {
 function mc_build_url( $add, $subtract, $root='' ) {
 global $wp_rewrite;
 	if ( is_front_page() ) { 
-		$home = get_bloginfo('home'); 		
+		$home = get_bloginfo('home') . '/'; 		
 	} else if ( is_home() ) {
 		$page = get_option('page_for_posts');
 		$home = get_permalink($page); 	
@@ -977,6 +983,7 @@ global $wp_rewrite;
 	} else {
 		$home = get_permalink(); 		
 	}
+	if ( $root != '' ) { $home = $root; }
 	$variables = $_GET;
 	foreach($subtract as $value) {
 		unset($variables[$value]);
@@ -985,7 +992,7 @@ global $wp_rewrite;
 		$variables[$key] = $value;
 	}
 	unset($variables['page_id']);
-	$char = ( $wp_rewrite->using_permalinks() )?'?':'&';
+	$char = ( $wp_rewrite->using_permalinks() || is_front_page() )?'?':'&';
 return $home.$char.http_build_query($variables, '', '&amp;');
 }
 

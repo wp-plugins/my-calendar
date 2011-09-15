@@ -1,6 +1,24 @@
 <?php
 // define global variables;
-global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_template,$default_user_settings, $wpdb,$grid_template,$list_template,$mini_template,$single_template;
+global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_template,$default_user_settings, $wpdb,$grid_template,$list_template,$mini_template,$single_template, $defaults;
+
+$defaults = array(
+	'upcoming'=>array(	
+		'type'=>'event',
+		'before'=>3,
+		'after'=>3,
+		'template'=>$default_template,
+		'category'=>'',
+		'text'=>'',
+		'title'=>'Upcoming Events'
+	),
+	'today'=>array(
+		'template'=>$default_template,
+		'category'=>'',
+		'title'=>'Today\'s Events',
+		'text'=>''
+	)
+);
 
 $grid_template = addslashes('<span class="event-time dtstart" title="{dtstart}">{time}<span class="time-separator"> - </span><span class="end-time dtend" title="{dtend}">{endtime}</span></span>
 
@@ -291,7 +309,7 @@ $default_user_settings = array(
 	); 
 
 function mc_default_settings( ) {
-global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_user_settings,$grid_template,$list_template,$mini_template,$single_template,$mc_version;
+global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_user_settings,$grid_template,$list_template,$mini_template,$single_template,$mc_version, $defaults;
 // no arguments
 	add_option('mc_can_manage_events','edit_posts');
 	add_option('mc_display_author','false');
@@ -350,26 +368,10 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option('mc_show_rss','false');
 	add_option('mc_show_ical','false');	
 	add_option('mc_time_format',get_option('time_format'));
-		$defaults = array(
-			'upcoming'=>array(	
-				'type'=>'event',
-				'before'=>3,
-				'after'=>3,
-				'template'=>$default_template,
-				'category'=>'',
-				'text'=>'',
-				'title'=>'Upcoming Events'
-			),
-			'today'=>array(
-				'template'=>$default_template,
-				'category'=>'',
-				'title'=>'Today\'s Events',
-				'text'=>''
-			)
-		);
 	add_option( 'mc_widget_defaults',$defaults);
 	add_option( 'mc_show_weekends','true' );
 	add_option( 'mc_uri','' );	
+	add_option( 'mc_show_event_vcal','false' );
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($initial_db);
 	dbDelta($initial_cat_db);

@@ -79,6 +79,21 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.9.1 =
+
+* Bug fix: Incorrect title template tag auto-generated if title template is empty.
+* Bug fix: Create events permissions broken
+* Bug fix: Host list broken in WordPress versions lower than 3.1
+* Bug fix: My Calendar not using WordPress defaults for customizable date and time settings if not set by user.
+* Bug fix: Turning off calendar icons did not turn off icons in key
+* Bug fix: details links used current URL instead of stored URL
+* Bug fix: default widget settings not loaded on upgrade.
+* Bug fix: next/previous links not working on home page if permalinks not set.
+* Bug fix: event title shown in date field in list mode was not for the first event of the day.
+* Style change: Minor change to my-calendar.css to adjust for the green background on weekends. (Which showed up as the result of a fix to an HTML problem in 1.8.9.)
+* Bug fix/Option add: Added option to remove individual iCal link
+* Option add: Added option to conceal first event title/number of events with date in list mode.
+
 = 1.9.0 =
 
 Additions:
@@ -587,6 +602,10 @@ Changes:
 
 Because the majority of users end up on my web site asking for help anyway -- and it's simply more difficult to maintain two copies of my Frequently Asked Questions. Please visit [my web site FAQ](http://www.joedolson.com/articles/my-calendar/faq/) to read my Frequently Asked Questions!
 
+= This plug-in is really complicated. Why can't you personally help me figure out how to use it? =
+
+I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/articles/my-calendar/users-guide/) for $19. This $19 helps defray the hundreds of hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
+
 == Screenshots ==
 
 1. Calendar using calendar list format.
@@ -595,8 +614,11 @@ Because the majority of users end up on my web site asking for help anyway -- an
 4. Category management page
 5. Settings page
 6. Location management
-7. Style and behavior editing
+7. Style editing
+8. Mini calendar
+9. Script/behavior editing
+10. Template editing
 
 == Upgrade Notice ==
 
-- Version 1.9 incorporates many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require the new styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting your changes, but you can update styles and scripts on their editing pages.
+- Version 1.9.0 incorporates many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require the new styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting your changes, but you can update styles and scripts on their editing pages. Version 1.9.1 includes a set of bug fixes, but no major changes to 1.9.0.

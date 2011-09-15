@@ -37,12 +37,17 @@ if ( ! function_exists( 'is_ssl' ) ) {
 
 // mod from Mike T
 function my_calendar_getUsers() {
-	global $blog_id;
-	$users = new WP_User_Query( array(
-	'blog_id' => $blog_id,
-	'orderby' => 'display_name',
-	'fields' => array('ID', 'user_nicename','display_name')
-	) );
+	global $blog_id, $wpdb;
+	if ( version_compare( get_bloginfo( 'version' ), '3.1','<' ) ) {
+			$authors = $wpdb->get_results( "SELECT ID, user_nicename, display_name from $wpdb->users ORDER BY display_name" );
+			return $authors;
+	} else {
+		$users = new WP_User_Query( array(
+		'blog_id' => $blog_id,
+		'orderby' => 'display_name',
+		'fields' => array('ID', 'user_nicename','display_name')
+		) );
+	}
 	return $users->get_results();
 }
 
@@ -266,7 +271,7 @@ function csv_to_array($csv, $delimiter = ',', $enclosure = '"', $escape = '\\', 
 
 // Function to check what version of My Calendar is installed and install or upgrade if needed
 function check_my_calendar() {
-	global $wpdb, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs,$mc_version,$grid_template,$list_template,$mini_template,$single_template;
+	global $wpdb, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs,$mc_version,$grid_template,$list_template,$mini_template,$single_template, $defaults;
 	$current_version = ( get_option('mc_version') == '') ? get_option('my_calendar_version') : get_option('mc_version');
 	// If current version matches, don't bother running this.
 	if ($current_version == $mc_version) {
@@ -310,6 +315,7 @@ function check_my_calendar() {
 		if ( version_compare( $current_version, "1.7.1", "<" ) ) { 	$upgrade_path[] = "1.7.1";	} 
 		if ( version_compare ( $current_version, "1.8.0", "<" ) ) {	$upgrade_path[] = "1.8.0";	} 
 		if ( version_compare ( $current_version, "1.9.0", "<" ) ) {	$upgrade_path[] = "1.9.0";	}
+		if ( version_compare ( $current_version, "1.9.1", "<" ) ) {	$upgrade_path[] = "1.9.1";	}
 	}
 	// having determined upgrade path, assign new version number
 	update_option( 'mc_version' , $mc_version );
@@ -324,6 +330,9 @@ function check_my_calendar() {
 	foreach ($upgrade_path as $upgrade) {
 		switch ($upgrade) {
 		// only upgrade db on most recent version
+			case '1.9.1':
+				update_option( 'mc_widget_defaults', $defaults);
+				break;
 			case '1.9.0':
 				delete_option( 'mc_show_heading' );
 				add_option( 'mc_time_format', get_option( 'time_format' ) );

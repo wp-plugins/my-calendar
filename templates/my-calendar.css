@@ -33,7 +33,7 @@ border:1px solid #c3d3d3;
 color: #000; 
 background: #eee;
 }
-#jd-calendar .weekend {
+#jd-calendar .weekend .mc-date{
 background:#bd7; 
 color: #000; 
 }
