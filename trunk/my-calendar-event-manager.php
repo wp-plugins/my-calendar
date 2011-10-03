@@ -499,8 +499,8 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 		<?php } ?>
 		<?php if ($mc_input['event_desc'] == 'on' || $mc_input_administrator ) { ?>
 		<p>
-		<?php if ( !empty($data) ) { $description = stripslashes(esc_attr($data->event_desc)); } else { $description = ''; } ?>
-		<label for="content"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><?php if ( $mc_input['event_use_editor'] == 'on' ) {  the_editor( $description ); }  else { ?><textarea id="content" name="content" class="event_desc" rows="5" cols="80"><?php echo $description; ?></textarea><?php if ( $mc_input['event_use_editor'] == 'on' ) { ?></div><?php } } ?>
+		<?php if ( !empty($data) ) { $description = $data->event_desc; } else { $description = ''; } ?>
+		<label for="content"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><?php if ( $mc_input['event_use_editor'] == 'on' ) {  the_editor( stripslashes($description) ); }  else { ?><textarea id="content" name="content" class="event_desc" rows="5" cols="80"><?php echo stripslashes(esc_attr($description)); ?></textarea><?php if ( $mc_input['event_use_editor'] == 'on' ) { ?></div><?php } } ?>
 		</p>
 		<?php } ?>
 		<?php 
@@ -525,7 +525,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 		<?php } ?>		
 		<?php if ($mc_input['event_short'] == 'on' || $mc_input_administrator ) { ?>
 		<p>
-		<label for="event_short"><?php _e('Event Short Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><textarea id="event_short" name="event_short" class="input" rows="2" cols="80"><?php if ( !empty($data) ) echo esc_attr($data->event_short); ?></textarea>
+		<label for="event_short"><?php _e('Event Short Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><textarea id="event_short" name="event_short" class="input" rows="2" cols="80"><?php if ( !empty($data) ) echo stripslashes(esc_attr($data->event_short)); ?></textarea>
 		</p>
 		<?php } ?>
 	<p>

@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.9.1
+Version: 1.9.2
 */
 /*  Copyright 2009-2011  Joe Dolson (email : joe@joedolson.com)
 
@@ -24,7 +24,7 @@ Version: 1.9.1
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 global $mc_version, $wpdb;
-$mc_version = '1.9.1';
+$mc_version = '1.9.2';
 
 // Define the tables used in My Calendar
 define('MY_CALENDAR_TABLE', $wpdb->prefix . 'my_calendar');
@@ -115,9 +115,12 @@ add_filter('plugin_action_links', 'jd_calendar_plugin_action', -10, 2);
 // produce admin support box
 function jd_show_support_box() {
 ?>
+<div id="support">
+<div class="resources">
+<a href="http://www.joedolson.com/articles/my-calendar/users-guide/" rel="external" class="mcbuy"><?php _e("Buy the <strong>NEW</strong><br /> My Calendar User's Guide",'my-calendar'); ?></a>
+</div>
 <div class="resources">
 <ul>
-<li><a href="http://www.joedolson.com/articles/my-calendar/guide/" rel="external"><?php _e("Buy the <strong>New</strong> User's Guide",'my-calendar'); ?></a></li>
 <li><a href="http://www.joedolson.com/articles/my-calendar/" rel="external"><?php _e("Get Support",'my-calendar'); ?></a></li>
 <li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>"><?php _e("My Calendar Help",'my-calendar'); ?></a></li>
 <li><strong><a href="http://www.joedolson.com/donate.php" rel="external"><?php _e("Make a Donation",'my-calendar'); ?></a></strong></li>
@@ -131,6 +134,7 @@ function jd_show_support_box() {
 </form>
 </li>
 </ul>
+</div>
 </div>
 <?php
 }
