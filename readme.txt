@@ -79,6 +79,18 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.9.2 = 
+
+* Bug fix: Fixed sort error returned by calendar if no events are in array.
+* Bug fix: Fixed incorrect URLs for icons in custom directory in category key.
+* Bug fix: Caption text did not display.
+* Added {date} and {time} to details link text templating.
+* Bug fix: Fixed {icon} URL in template output. 
+* Bug fix: Fixed bug with table layout of dates when weekends are disabled on grid calendar.
+* Bug fix: Fixed bug with generation of details link when not using permalinks.
+* Bug fix: Fixed bug with HTML editor converting HTML entities.
+* Bug fix: Fixed bug where weekly view showed the wrong dates if the current week started in the previous month. 
+
 = 1.9.1 =
 
 * Bug fix: Incorrect title template tag auto-generated if title template is empty.
@@ -621,4 +633,5 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
-- Version 1.9.0 incorporates many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require the new styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting your changes, but you can update styles and scripts on their editing pages. Version 1.9.1 includes a set of bug fixes, but no major changes to 1.9.0.
+- Version 1.9.2 includes a set of bug fixes, but no major changes.
+- Version 1.9.0 incorporated many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require updated styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting any custom changes, but you can update styles and scripts on their editing pages. 

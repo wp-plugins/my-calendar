@@ -377,7 +377,7 @@ check_akismet();
 	<li>
 	<label for="mc_details_label"><?php _e('Event details link text','my-calendar'); ?></label>
 	<input type="text" name="mc_details_label" id="mc_details_label" size="30" value="<?php echo stripslashes(esc_attr($mc_details_label)); ?>" />
-	<small><?php _e('Available template tags: <code>{title}</code>, <code>{location}</code>, <code>{color}</code>, <code>{icon}</code>','my-calendar'); ?></small>
+	<small><?php _e('Available template tags: <code>{title}</code>, <code>{location}</code>, <code>{color}</code>, <code>{icon}</code>, <code>{date}</code>, <code>{time}</code>.','my-calendar'); ?></small>
 	</li>
 	<li>
 	<label for="mc_link_label"><?php _e('Event URL link text','my-calendar'); ?></label>

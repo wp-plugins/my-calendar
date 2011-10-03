@@ -165,30 +165,25 @@ function first_day_of_week() {
 	$start_of_week = (get_option('start_of_week')==1||get_option('start_of_week')==0)?get_option('start_of_week'):0;
 	$today = date('w',time()+$offset);
 	$now = date('Y-m-d',time()+$offset);
+	$month = 0; // don't change month
 	switch ($today) {
-		case 1:
-			$day = ($start_of_week == 1)?date('j',time()+$offset):date('j',strtotime( $now . ' -1 day'));
-		break;
-		case 2:
-			$day = ($start_of_week == 1)?date('j',strtotime( $now . ' -1 day')):date('j',strtotime( $now . ' -2 day'));
-		break;
-		case 3:
-			$day = ($start_of_week == 1)?date('j',strtotime( $now . ' -2 day')):date('j',strtotime( $now . ' -3 day'));
-		break;
-		case 4:
-			$day = ($start_of_week == 1)?date('j',strtotime( $now . ' -3 day')):date('j',strtotime( $now . ' -4 day'));
-		break;
-		case 5:
-			$day = ($start_of_week == 1)?date('j',strtotime( $now . ' -4 day')):date('j',strtotime( $now . ' -5 day'));
-		break;
-		case 6:
-			$day = ($start_of_week == 1)?date('j',strtotime( $now . ' -5 day')):date('j',strtotime( $now . ' -6 day'));
-		break;
-		case 0:
-			$day = ($start_of_week == 1)?date('j',strtotime( $now . ' -6 day')):date('j',strtotime( $now ));
-		break;
+		case 1:	$sub = ($start_of_week == 1)?0:1;break; // mon
+		case 2:	$sub = ($start_of_week == 1)?1:2;break; // tues
+		case 3:	$sub = ($start_of_week == 1)?2:3;break; // wed
+		case 4:	$sub = ($start_of_week == 1)?3:4;break; // thu
+		case 5:	$sub = ($start_of_week == 1)?4:5;break; // fri
+		case 6:	$sub = ($start_of_week == 1)?5:6;break; // sat
+		case 0:	$sub = ($start_of_week == 1)?6:0;break; // sun
 	}
-	return $day;	
+	$day = date('j',strtotime( $now . ' -'.$sub.' day'));
+	if ( $sub != 0 ) {
+		if ( date('n',strtotime( $now . ' -'.$sub.' day') ) != date( 'n',strtotime($now) ) ) {
+			$month = -1;
+		} else {
+			$month = 0;
+		}
+	}
+	return array( $day, $month );
 }
 
 function mc_ordinal($number) {
