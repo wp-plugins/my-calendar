@@ -157,7 +157,7 @@ jQuery(document).ready(function($) {
 		// end vcard
 		$body_details .= "	<div id='$uid-$type-details' class='details'>\n"; 
 		$body_details .= apply_filters('mc_before_event','',$event);
-		$body_details .= ($type == 'calendar' || $type == 'mini' )?"\n	<span class='close'><a href='#' class='mc-toggle mc-close'><img src='".MY_CALENDAR_DIRECTORY."/images/event-close.png' alt='".__('Close','my-calendar')."' /></a></span>":'';
+		$body_details .= ($type == 'calendar' || $type == 'mini' )?"<span class='close'><a href='#' class='mc-toggle mc-close'><img src='".MY_CALENDAR_DIRECTORY."/images/event-close.png' alt='".__('Close','my-calendar')."' /></a></span>":'';
 		$body_details .= "<div class='time-block'>";
 			if ( $event->event_time != "00:00:00" && $event->event_time != '' ) {
 				$body_details .= "\n	<span class='event-time dtstart' title='".$id_start.'T'.$event->event_time."'>$event_date".date_i18n(get_option('mc_time_format'), strtotime($event->event_time));
@@ -265,7 +265,7 @@ jQuery(document).ready(function($) {
 		$details .= "
 			</div><!--ends .sub-details-->\n";
 	} else {
-		$toggle = ($type == 'calendar' || $type == 'mini' )?"\n	<a href='#' class='mc-toggle mc-close close'><img src='".MY_CALENDAR_DIRECTORY."/images/event-close.png' alt='".__('Close','my-calendar')."' /></a>":'';	
+		$toggle = ($type == 'calendar' || $type == 'mini' )?"<a href='#' class='mc-toggle mc-close close'><img src='".MY_CALENDAR_DIRECTORY."/images/event-close.png' alt='".__('Close','my-calendar')."' /></a>":'';	
 		$details = $header_details."\n<div id='$uid-$type-details' class='details'>\n	".$toggle.$details."\n";
 	}
 	// create edit links
