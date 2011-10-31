@@ -17,6 +17,7 @@ function jd_draw_template($array,$template,$type='list') {
 }
 
 function mc_maplink( $event, $request='map', $source='event' ) {
+	$connector='to+';
 	if ( $source == 'event' ) {
 		$map_string = $event->event_street.' '.$event->event_street2.' '.$event->event_city.' '.$event->event_state.' '.$event->event_postcode.' '.$event->event_country;	
 		$zoom = ($event->event_zoom != 0)?$event->event_zoom:'15';	
@@ -30,10 +31,11 @@ function mc_maplink( $event, $request='map', $source='event' ) {
 		$map_string = str_replace(" ","+",$map_string);
 		if ($event->location_longitude != '0.000000' && $event->location_latitude != '0.000000') {
 			$map_string = "$event->location_latitude,$event->location_longitude";
+			$connector = '';
 		}	
 	}
 	if ( strlen( trim( $map_string ) ) > 5 ) {
-		$map_url = "http://maps.google.com/maps?f=q&amp;z=$zoom&amp;q=to+$map_string";
+		$map_url = "http://maps.google.com/maps?f=q&amp;z=$zoom&amp;q=$connector"."$map_string";
 		if ( $request == 'url' || $source == 'location' ) { return $map_url; }
 		$map_label = stripslashes( ($event->event_label != "")?$event->event_label:$event->event_title);
 		$map = "<a href=\"$map_url\" class='map-link external'>".sprintf(__('Map<span> to %s</span>','my-calendar'),$map_label )."</a>";

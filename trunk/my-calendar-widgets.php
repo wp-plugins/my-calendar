@@ -220,7 +220,8 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 			$current_date = "$y-$m-$d";
 			@usort($events, "my_calendar_time_cmp");
 			if (count($events) != 0) {
-				foreach($events as $event) {
+				foreach( array_keys($events) as $key) {
+					$event =& $events[$key];		
 					$event_details = event_as_array($event);
 					$date_diff = jd_date_diff( strtotime($event_details['date']),strtotime($event_details['enddate']));
 					$date = date_i18n( $date_format,strtotime($current_date));
@@ -238,7 +239,8 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 		}
 		// By default, skip no events.
 		$skipping = false;
-		foreach ( $temp_array as $details ) {
+		foreach ( array_keys($temp_array) as $key ) {
+		$details =& $temp_array[$key];				
 			// if any event this date is in the holiday category, we are skipping
 			if ( $details['cat_id'] == get_option('mc_skip_holidays_category') ) {
 				$skipping = true;
@@ -314,7 +316,8 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 		  $events = $near_events;
 		  @usort( $events, "my_calendar_datetime_cmp" ); // sort split events by date
 		if ( is_array( $events ) ) {
-			foreach( $events as $event ) {
+			foreach( array_keys($events) as $key ) {
+				$event =& $events[$key];		
 				$event_details = event_as_array( $event );
 					if ( get_option( 'mc_event_approve' ) == 'true' ) {
 						if ( $event->event_approved != 0 ) { $temp_array[] = $event_details; }
@@ -325,7 +328,8 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 		
 			// By default, skip no events.
 			$skipping = false;
-			foreach ( $temp_array as $details ) {
+			foreach ( array_keys($temp_array) as $key ) {
+				$details =& $temp_array[$key];		
 				if ( $details['cat_id'] == get_option('mc_skip_holidays_category') ) {
 					$skipping = true;
 					break;
@@ -377,6 +381,7 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 
 // Widget todays events
 function my_calendar_todays_events($category='default',$template='default',$substitute='') {
+if ( get_transient('mc_todays_cache') ) { return get_transient('mc_todays_cache'); }
 	global $wpdb, $default_template;
 	$output = '';
 	$offset = (60*60*get_option('gmt_offset'));  
@@ -394,11 +399,13 @@ function my_calendar_todays_events($category='default',$template='default',$subs
 	$holiday_exists = false;
     @usort($events, "my_calendar_time_cmp");
 	// quick loop through all events today to check for holidays
-	foreach( $events as $event ) {
+	foreach( array_keys($events) as $key ) {
+		$event =& $events[$key];			
 		if ( $event->event_category == get_option('mc_skip_holidays_category') ) {	$holiday_exists = true;	}
 	}
 	
-        foreach($events as $event) {
+        foreach( array_keys($events) as $key ) {
+			$event =& $events[$key];		
 		    $event_details = event_as_array($event);
 			$date = date_i18n(get_option('mc_date_format'),time()+$offset);
 	
@@ -425,10 +432,14 @@ function my_calendar_todays_events($category='default',$template='default',$subs
 			
         }
     if (count($events) != 0) {
-        return $header.$output.$footer;
+        $return = $header.$output.$footer;
     } else {
-		return stripcslashes( $no_event_text );
+		$return = stripcslashes( $no_event_text );
 	}
+	$time =  strtotime( date( 'Y-m-d H:m:s',time()+$offset ) ) - strtotime( date( 'Y-m-d',time()+$offset ) );
+	$time_remaining = 24*60*60 - $time;
+	set_transient( 'mc_todays_cache', $return, $time_remaining );
+	return $return;
 }
 
 class my_calendar_mini_widget extends WP_Widget {

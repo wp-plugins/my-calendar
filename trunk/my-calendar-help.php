@@ -235,6 +235,13 @@ global $wp_plugin_dir;
 			</div>
 		</div>
 	</div>
+<div id="get-support">
+<div class="postbox">
+<h3 id="template"><?php _e('Get Plug-in Support','my-calendar'); ?></h3>
+	<div class="inside">
+<?php jcd_get_support_form(); ?>
+	</div>
+</div>
 	
 <div id="notes">
 <div class="postbox">

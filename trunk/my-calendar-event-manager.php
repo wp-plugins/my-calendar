@@ -240,7 +240,7 @@ if ( isset( $_POST['event_action'] ) ) {
 			if ( isset($_POST['event_instance'] ) && $mc_output[0] == true ) {
 				// mc_split_event creates the other newevents, my_calendar_save creates this one (only if proceed is true)
 				$events = mc_split_event( (int) $_POST['event_id'], $mc_output[2]['event_begin'] );
-			} 
+			}
 			$response = my_calendar_save($action,$mc_output,(int) $_POST['event_id']);	
 		}
 		echo $response;
@@ -327,6 +327,7 @@ global $wpdb,$event_author;
 			$event[0]->event_start_ts = $event_start_ts;
 			my_calendar_send_email( $event[0] );
 			$message = "<div class='updated'><p>". __('Event added. It will now show in your calendar.','my-calendar') . "</p></div>";
+			mc_delete_cache();
 		}
 	}
 	if ( $action == 'edit' && $proceed == true ) {
@@ -352,6 +353,7 @@ global $wpdb,$event_author;
 					$message = "<div class='updated'><p>".__('Nothing was changed in that update.','my-calendar')."</p></div>";
 				} else {
 					$message = "<div class='updated'><p>".__('Event updated successfully','my-calendar')."</p></div>";
+					mc_delete_cache();
 				}
 		} else {
 			$message = "<div class='error'><p><strong>".__('You do not have sufficient permissions to edit that event.','my-calendar')."</strong></p></div>";
@@ -372,6 +374,7 @@ global $wpdb,$event_author;
 			$sql = "SELECT event_id FROM " . my_calendar_table() . " WHERE event_id='" . mysql_real_escape_string($event_id) . "'";
 			$result = $wpdb->get_results($sql);
 			if ( empty($result) || empty($result[0]->event_id) ) {
+				mc_delete_cache();			
 				return "<div class='updated'><p>".__('Event deleted successfully','my-calendar')."</p></div>";
 			} else {
 				$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Despite issuing a request to delete, the event still remains in the database. Please investigate.','my-calendar')."</p></div>";
@@ -924,7 +927,8 @@ function jd_events_display_list( $type='normal' ) {
 		$sql = "SELECT * FROM " . my_calendar_categories_table() ;
         $categories = $wpdb->get_results($sql);
 			
-		foreach ( $events as $event ) {
+		foreach ( array_keys($events) as $key ) {
+			$event =& $events[$key];
 			$class = ($class == 'alternate') ? '' : 'alternate';
 			$spam = ($event->event_flagged == 1) ? ' spam' : '';
 			$spam_label = ($event->event_flagged == 1) ? '<strong>Possible spam:</strong> ' : '';

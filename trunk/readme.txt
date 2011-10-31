@@ -11,7 +11,7 @@ Accessible WordPress event calendar plugin. Show events from multiple calendars 
 
 == Description ==
 
-My Calendar provides event management and provides numerous methods to display your events. The plug-in can support individual calendars within WordPress Multi-User, or multiple calendars displaying different categories of events. 
+My Calendar provides event management and numerous methods to display your events. The plug-in can support individual site calendars within WordPress Multi-User, or multiple calendars displayed by categories of or locations for events. 
 
 Basic Features:
 
@@ -33,15 +33,16 @@ Basic Features:
 *	Location Manager for storing frequently used venues
 *   Import method from Kieran O'Shea's Calendar plugin
 * 	Integrated Help file to guide in use of shortcodes and template tags
+* 	[User's Guide available for purchase](http://www.joedolson.com/articles/my-calendar/users-guide/) with extensive assistance in set up and use.
 
 This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/) in April 2010. You can import any previous scheduled events from Kieran's calendar into My Calendar.
 
 Languages available:
 
 * American English (Default)
+* French (Frederic Escallier) - to 1.9.2
 * Dutch (Luud Heck) - to 1.8.9
 * Danish ([Jakob Smith](http://www.omkalfatring.dk/)) - to 1.8.9
-* French ([Manuel Lasnier](http://www.zef-creations.com)) - to 1.8.8
 * Japanese ([Daisuke Abe](http://www.alter-ego.jp/)) - to 1.8.5
 * Russian ([Alex](http://blog.sotvoril.ru/) - to 1.8.5
 * Turkish (Mehmet Ko&ccedil;ali) - to 1.8.4
@@ -78,6 +79,17 @@ New or updated translations are always appreciated. The translation files are in
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.9.3 =
+
+* Stylesheet saving can write longer files. Solves problem with occasional truncation of stylesheets.
+* Added transient caching for calendar events to improve performance, plus other various performance improvements
+* Small html output change.
+* 1.9.0 made details boxes draggable; made this optional.
+* Added plug-in support request form.
+* Added updated French translation to 1.9.2
+* Fixed bug with date switcher duplicating/skipping months.
+* Updated User's Guide (not included with plug-in)
 
 = 1.9.2 = 
 
@@ -633,5 +645,5 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
-- Version 1.9.2 includes a set of bug fixes, but no major changes.
+- Version 1.9.3 includes a set of bug fixes, performance improvements, and a new support request form.
 - Version 1.9.0 incorporated many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require updated styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting any custom changes, but you can update styles and scripts on their editing pages. 

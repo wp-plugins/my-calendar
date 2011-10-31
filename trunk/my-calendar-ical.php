@@ -28,7 +28,8 @@ PRODID:-//Accessible Web Design//My Calendar//http://www.mywpcal.com//v'.$mc_ver
 		$events = my_calendar_grab_events( $y,$m,$i );
 
 		if ( is_array($events) && !empty($events) ) {
-			foreach ($events as $event) {
+			foreach ( array_keys($events) as $key) {
+				$event =& $events[$key];
 				if ( is_object($event) ) {
 					$array = event_as_array($event);
 					$output .= jd_draw_template($array,$template,'ical');

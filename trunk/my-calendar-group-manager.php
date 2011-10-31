@@ -151,6 +151,7 @@ global $wpdb,$event_author;
 					$message = "<div class='updated'><p>".__('Nothing was changed in that update.','my-calendar')."</p></div>";
 				} else {
 					$message = "<div class='updated'><p>".__('Event updated successfully','my-calendar')."</p></div>";
+					mc_delete_cache();
 				}
 		} else {
 			$message = "<div class='error'><p><strong>".__('You do not have sufficient permissions to edit that event.','my-calendar')."</strong></p></div>";

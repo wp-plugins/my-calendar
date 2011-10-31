@@ -372,6 +372,7 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option( 'mc_show_weekends','true' );
 	add_option( 'mc_uri','' );	
 	add_option( 'mc_show_event_vcal','false' );
+	add_option( 'mc_draggable',0 );
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($initial_db);
 	dbDelta($initial_cat_db);
