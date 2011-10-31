@@ -46,7 +46,8 @@ $output = '<?xml version="1.0" encoding="'.get_bloginfo('charset').'"?>
 	}
 	$before = 0;
 	$after = 15;
-	foreach ( $events as $event ) {
+	foreach ( array_keys($events) as $key ) {
+		$event =& $events[$key];		
 		$array = event_as_array($event);
 		$output .= jd_draw_template( $array, $template, 'rss' );
 	}

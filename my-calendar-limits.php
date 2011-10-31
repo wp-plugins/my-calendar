@@ -98,7 +98,7 @@ global $user_ID;
 					break;
 				}			
 		}
-		if ($current_location != 'none' && $current_location != '') {
+		if ($current_location != 'all' && $current_location != '') {
 			//if ($select_category == "") {
 				$limit_string = "$location_type='$current_location'";
 				$limit_string .= ($type=='all')?' AND':"";

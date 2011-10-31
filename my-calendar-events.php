@@ -17,7 +17,8 @@ global $wpdb;
 	$date = date('Y', time()+($offset)).'-'.date('m', time()+($offset)).'-'.date('d', time()+($offset));
 	$arr_events = array();
     if (!empty($events)) {
-        foreach($events as $event) {
+        foreach( array_keys($events) as $key) {
+			$event =& $events[$key];
 			$event_occurrences = mc_increment_event( $event );
 			$arr_events = array_merge( $arr_events, $event_occurrences );
 		}				
@@ -28,7 +29,8 @@ global $wpdb;
 function mc_get_rss_events() {
 	global $wpdb;
 	$events = $wpdb->get_results("SELECT *,event_begin as event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) ORDER BY event_added DESC LIMIT 0,15" );
-	foreach ( $events as $event ) {
+	foreach ( array_keys($events) as $key ) {
+		$event =& $events[$key];	
 		$output[] = $event;
 	}
 	return $output;
@@ -55,6 +57,18 @@ function my_calendar_get_event($date,$id,$type='html') {
 }
 // Grab all events for the requested date from calendar
 function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='') {
+			if ( isset($_GET['mcat']) ) { $ccategory = $_GET['mcat']; } else { $ccategory = $category; }
+			if ( isset($_GET['ltype']) ) { $cltype = $_GET['ltype']; } else { $cltype = $ltype; }
+			if ( isset($_GET['loc']) ) { $clvalue = $_GET['loc']; } else { $clvalue = $lvalue; }
+			if ( $ccategory == '' ) { $ccategory = 'all'; }
+			if ( $clvalue == '' ) { $clvalue = 'all';  }			
+			if ( $cltype == '' ) { $cltype = 'all'; }
+			if ( $clvalue == 'all' ) { $cltype = 'all'; }
+			
+			//echo "$y, $m, $d, $ccategory, $cltype, $clvalue<br />";
+	$output = mc_check_cache( $y, $m, $d, $ccategory, $cltype, $clvalue );
+	if ( $output && $output != 'empty' ) { return $output; }
+	if ( $output == 'empty' ) { return; }
     global $wpdb;
 	if (!checkdate($m,$d,$y)) {	return;	} // not a valid date
 	$select_category = ( $category != null )?mc_select_category($category):'';
@@ -98,7 +112,8 @@ function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='') {
 	ORDER BY event_id");
 
 	if (!empty($events)) {
-			foreach($events as $event) {
+			foreach( array_keys($events) as $key) {
+			$event =& $events[$key];
 			// add timestamps for start and end
 				$diff = strtotime($event->event_end) - strtotime($event->event_begin);
 				$event_end = date( 'Y-m-d',( strtotime( $date )+$diff ) );
@@ -302,9 +317,43 @@ function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='') {
 				}
 			}
      	}
-
+	mc_create_cache( $arr_events, $y, $m, $d, $ccategory, $cltype, $clvalue );
     return $arr_events;
 }
+
+function mc_check_cache($y, $m, $d, $category, $ltype, $lvalue) {
+	$caching = true;
+	if ( $caching == true ) {
+		$cache = get_transient('mc_cache');
+			//if ( $category == null ) { $category = 'all'; }
+			//if ( $ltype == '' ) { $ltype = 'all'; }
+			//if ( $lvalue == '' ) { $lvalue = 'all'; }
+		$value = $cache[$y][$m][$d][$category][$ltype][$lvalue];
+		if ( $value ) { return $value; } else { return false; }
+	} else {
+		return false;
+	}
+}
+
+function mc_create_cache($arr_events, $y, $m, $d, $category, $ltype, $lvalue) {
+	$caching = true;
+	if ( $arr_events == false ) { $arr_events = 'empty'; }
+	if ( $caching == true ) {
+		$cache = get_transient('mc_cache');
+			//if ( $category == null ) { $category = 'all'; }
+			//if ( $ltype == '' ) { $ltype = 'all'; }
+			//if ( $lvalue == '' ) { $lvalue = 'all'; }		
+		$cache[$y][$m][$d][$category][$ltype][$lvalue] = $arr_events;
+		set_transient( 'mc_cache',$cache, 60*60*48 );
+	}
+	//delete_option('mc_cache');
+}
+
+function mc_delete_cache() {
+	delete_transient( 'mc_cache' );
+	delete_transient( 'mc_todays_cache' );
+}
+
 function _mc_increment_values( $recur ) {
 	switch ($recur) {
 		case "S": // single

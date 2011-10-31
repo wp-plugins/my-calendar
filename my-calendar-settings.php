@@ -361,7 +361,7 @@ check_akismet();
 	<label for="mc_show_months"><?php _e('How many months of events to show at a time:','my-calendar'); ?></label> <input type="text" size="3" id="mc_show_months" name="mc_show_months" value="<?php echo $mc_show_months; ?>" />
 	</li>
 	<li>
-	<input type="checkbox" id="mc_show_list_info" name="mc_show_list_info" <?php jd_cal_checkCheckbox( 'mc_show_list_info','true' ); ?> /> <label for="mc_show_list_info"><?php _e('Show the first event\'s title and the number of events that day with the date:','my-calendar'); ?></label>
+	<input type="checkbox" id="mc_show_list_info" name="mc_show_list_info" <?php jd_cal_checkCheckbox( 'mc_show_list_info','true' ); ?> /> <label for="mc_show_list_info"><?php _e('Show the first event\'s title and the number of events that day next to the date.','my-calendar'); ?></label>
 	</li>	
 	</ul>	
 	<?php // End List Options // ?>

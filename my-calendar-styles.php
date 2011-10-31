@@ -50,7 +50,7 @@ function mc_default_style( $filename, $return='content' ) {
 function mc_write_styles($stylefile, $my_calendar_style) {
 	if ( is_writeable( $stylefile ) ) {
 		$f = fopen( $stylefile, 'w+' );
-		fwrite( $f, $my_calendar_style );
+		fwrite( $f, $my_calendar_style, 20000 ); // number of bytes to write, max.
 		fclose( $f );
 		return true;
 	} else {

@@ -18,6 +18,7 @@ function edit_my_calendar_behaviors() {
 	  update_option('mc_list_javascript', ( empty($_POST['list_javascript']) )?0:1 );
 	  update_option('mc_mini_javascript', ( empty($_POST['mini_javascript']) )?0:1 );
 	  update_option('mc_ajax_javascript', ( empty($_POST['ajax_javascript']) )?0:1 );
+	  update_option('mc_draggable', ( empty($_POST['mc_draggable']) )?0:1 );
 	  // set js
 	  update_option('mc_listjs',$mc_listjs);
 	  update_option('mc_minijs',$mc_minijs);
@@ -55,6 +56,7 @@ function edit_my_calendar_behaviors() {
 	$ajax_javascript = get_option('mc_ajax_javascript'); 
 	
 	$mc_show_js = stripcslashes(get_option('mc_show_js'));
+	$mc_draggable = get_option('mc_draggable');
 
   // Now we render the form
   ?>
@@ -66,13 +68,17 @@ my_calendar_check_db();
     <?php jd_show_support_box(); ?>
 <div id="poststuff" class="jd-my-calendar">
 <div class="postbox" id="cdiff">
+	
 	<h3><?php _e('Calendar Behavior Settings','my-calendar'); ?></h3>
 	<div class="inside">	
     <form id="my-calendar" method="post" action="<?php echo admin_url('admin.php?page=my-calendar-behaviors'); ?>">
 	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<p>
 	<label for="mc_show_js"><?php _e('Apply JavaScript only on these pages (comma separated page IDs)','my-calendar'); ?></label> <input type="text" id="mc_show_js" name="mc_show_js" value="<?php echo $mc_show_js; ?>" />
-	</p>    
+	</p>  
+	<p>
+	<input type="checkbox" id="mc_draggable" name="mc_draggable" value="1" <?php jd_cal_checkCheckbox('mc_draggable',1); ?> /> <label for="mc_draggable"><?php _e('Details boxes are draggable','my-calendar'); ?></label>
+	</p>
 	<fieldset>
 	<legend><?php _e('Calendar Behaviors: Calendar View','my-calendar'); ?></legend>
 	<p>

@@ -186,10 +186,10 @@ function mc_plugin_update_message() {
 function my_calendar_add_display_javascript() {
 global $wp_plugin_url;
 	wp_enqueue_script('jquery');
-	wp_enqueue_script('jquery.easydrag',plugins_url( 'js/jquery.easydrag.js', __FILE__ ), array('jquery') );
+	if ( get_option('mc_draggable') == '1' ) { 
+		wp_enqueue_script('jquery.easydrag',plugins_url( 'js/jquery.easydrag.js', __FILE__ ), array('jquery') );
+	}
 }
-
-
 
 function my_calendar_calendar_javascript() {
 	if ( !mc_is_mobile() ) {
@@ -313,9 +313,10 @@ function check_my_calendar() {
 		if ( version_compare( $current_version, "1.6.3", "<" ) ) {	$upgrade_path[] = "1.6.3";	} 
 		if ( version_compare( $current_version, "1.7.0", "<" ) ) { 	$upgrade_path[] = "1.7.0";	} 
 		if ( version_compare( $current_version, "1.7.1", "<" ) ) { 	$upgrade_path[] = "1.7.1";	} 
-		if ( version_compare ( $current_version, "1.8.0", "<" ) ) {	$upgrade_path[] = "1.8.0";	} 
-		if ( version_compare ( $current_version, "1.9.0", "<" ) ) {	$upgrade_path[] = "1.9.0";	}
-		if ( version_compare ( $current_version, "1.9.1", "<" ) ) {	$upgrade_path[] = "1.9.1";	}
+		if ( version_compare( $current_version, "1.8.0", "<" ) ) {	$upgrade_path[] = "1.8.0";	} 
+		if ( version_compare( $current_version, "1.9.0", "<" ) ) {	$upgrade_path[] = "1.9.0";	}
+		if ( version_compare( $current_version, "1.9.1", "<" ) ) {	$upgrade_path[] = "1.9.1";	}
+		if ( version_compare( $current_version, "1.9.3", "<" ) ) { $upgrade_path[] = "1.9.3";  }
 	}
 	// having determined upgrade path, assign new version number
 	update_option( 'mc_version' , $mc_version );
@@ -330,6 +331,9 @@ function check_my_calendar() {
 	foreach ($upgrade_path as $upgrade) {
 		switch ($upgrade) {
 		// only upgrade db on most recent version
+			case '1.9.3':
+				update_option( 'mc_draggable', 1 );
+				break;
 			case '1.9.1':
 				update_option( 'mc_widget_defaults', $defaults);
 				break;
@@ -1032,6 +1036,129 @@ function mc_guess_calendar() {
 		}
 	}
 }
+
+function jcd_get_support_form() {
+global $current_user;
+get_currentuserinfo();
+	// send fields for My Calendar
+	$version = get_option('mc_version');
+	$mc_db_version = get_option('mc_db_version');
+	$mc_uri = get_option('mc_uri');
+	$mc_css = get_option('mc_css_file');
+	// send fields for all plugins
+	$wp_version = get_bloginfo('version');
+	$home_url = home_url();
+	$wp_url = get_bloginfo('wpurl');
+	$language = get_bloginfo('language');
+	$charset = get_bloginfo('charset');
+	// server
+	$php_version = phpversion();
+
+	// theme data
+	$theme_path = get_bloginfo('stylesheet_url');
+	$theme = get_theme_data($theme_path);
+		$theme_name = $theme['Name'];
+		$theme_uri = $theme['URI'];
+		$theme_parent = $theme['Template'];
+		$theme_version = $theme['Version'];
+	// plugin data
+	$plugins = get_plugins();
+	$plugins_string = '';
+		foreach( array_keys($plugins) as $key ) {
+			if ( is_plugin_active( $key ) ) {
+				$plugin =& $plugins[$key];
+				$plugin_name = $plugin['Name'];
+				$plugin_uri = $plugin['PluginURI'];
+				$plugin_version = $plugin['Version'];
+				$plugins_string .= "$plugin_name: $plugin_version; $plugin_uri\n";
+			}
+		}
+	$data = "
+================ Installation Data ====================
+==My Calendar:==
+Version: $version
+DB Version: $mc_db_version
+URI: $mc_uri
+CSS: $mc_css
+
+==WordPress:==
+Version: $wp_version
+URL: $home_url
+Install: $wp_url
+Language: $language
+Charset: $charset
+
+==Extra info:==
+PHP Version: $php_version
+Server Software: $_SERVER[SERVER_SOFTWARE]
+User Agent: $_SERVER[HTTP_USER_AGENT]
+
+==Theme:==
+Name: $theme_name
+URI: $theme_uri
+Parent: $theme_parent
+Version: $theme_version
+
+==Active Plugins:==
+$plugins_string
+";
+	if ( isset($_POST['mc_support']) ) {
+		$nonce=$_REQUEST['_wpnonce'];
+		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");	
+		$request = ( !empty($_POST['support_request']) )?stripslashes($_POST['support_request']):false;
+		$has_donated = ( $_POST['has_donated'] == 'on')?"Donor":"No donation";
+		$has_purchased = ( $_POST['has_purchased'] == 'on')?"Purchaser":"No purchase";
+		$has_read_faq = ( $_POST['has_read_faq'] == 'on')?"Read FAQ":false;
+		$subject = "My Calendar support request. $has_donated; $has_purchased";
+		$message = $request ."\n\n". $data;
+		$from = "From: \"$current_user->display_name\" <$current_user->user_email>\r\n";
+
+		if ( !$has_read_faq ) {
+			echo "<div class='message error'><p>".__('Please read the FAQ and other Help documents before making a support request.','my-calendar')."</p></div>";
+		} else if ( !$request ) {
+			echo "<div class='message error'><p>".__('Please describe your problem. I\'m not psychic.','my-calendar')."</p></div>";
+		} else {
+			wp_mail( "plugins@joedolson.com",$subject,$message,$from );
+		
+			if ( $has_donated == 'Donor' || $has_purchased == 'Purchaser' ) {
+				echo "<div class='message updated'><p>".__('Thank you for supporting the continuing development of this plug-in! I\'ll get back to you as soon as I can.','my-calendar')."</p></div>";		
+			} else {
+				echo "<div class='message updated'><p>".__('I\'ll get back to you as soon as I can, after dealing with any support requests from plug-in supporters.','my-calendar')."</p></div>";				
+			}
+		}
+	}
+	
+	echo "
+	<form method='post' action='".admin_url('admin.php?page=my-calendar-help')."'>
+		<div><input type='hidden' name='_wpnonce' value='".wp_create_nonce('my-calendar-nonce')."' /></div>
+		<div>
+		<p>".
+		__('Please note: I do keep records of those who have donated, but if your donation came from somebody other than your account at this web site, please note this in your message.','my-calendar')
+		."<p>
+		<input type='checkbox' name='has_read_faq' id='has_read_faq' value='on' /> <label for='has_read_faq'>".__('I have read <a href="http://www.joedolson.com/articles/my-calendar/faq/">the FAQ for this plug-in</a>.','my-calendar')." <span>(required)</span></label>
+		</p>
+		<p>
+		<input type='checkbox' name='has_donated' id='has_donated' value='on' /> <label for='has_donated'>".__('I have <a href="http://www.joedolson.com/donate.php">made a donation to help support this plug-in</a>.','my-calendar')."</label>
+		</p>
+		<p>
+		<input type='checkbox' name='has_purchased' id='has_purchased' value='on' /> <label for='has_purchased'>".__('I have <a href="http://www.joedolson.com/articles/my-calendar/users-guide/">purchased the User\'s Guide</a>, but could not find an answer to this question.','my-calendar')."</label>
+		</p>
+		<p>
+		<label for='support_request'>Support Request:</label><br /><textarea name='support_request' id='support_request' cols='80' rows='10'>".stripslashes($request)."</textarea>
+		</p>
+		<p>
+		<input type='submit' value='".__('Send Support Request','my-calendar')."' name='mc_support' class='button-primary' />
+		</p>
+		<p>".
+		__('The following additional information will be sent with your support request:','my-calendar')
+		."</p>
+		<div class='mc_support'>
+		".wpautop($data)."
+		</div>
+		</div>
+	</form>";
+}
+
 // Filters -- these are filters applied on My Calendar elements, which you can use to modify output. 
 // Base values are empty unless otherwise specified.
 // The actual filters are in the places they belong, but these are here for documentation.
