@@ -766,7 +766,7 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 					$nDays = 5;
 					$fDays = 5;
 					$day_of_event = date( 'D', strtotime($event->event_begin) );
-					$week_of_event = week_of_month( date( 'd', strtotime($event->event_begin) ) );
+					$week_of_event = week_of_month( date( 'j', strtotime($event->event_begin) ) );
 					$day_diff = jd_date_diff($event_begin, $event_end);
 					
 						if (my_calendar_date_comp( $event_begin, my_calendar_add_date($today,-($nDays),0,0) )) {
@@ -783,7 +783,7 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 									$timestamp = strtotime(my_calendar_add_date($approxbegin,$n,0,0));
 									$current_day = date('D',$timestamp);
 									if ($current_day == $day_of_event) {
-										$current_week = week_of_month( date( 'd',$timestamp));
+										$current_week = week_of_month( date( 'j',$timestamp));
 										$current_date = date( 'd',$timestamp);
 										if ($current_day == $day_of_event && $current_week == $week_of_event) {
 											$date_of_event_this_month = $current_date;
@@ -799,8 +799,8 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 													$month = date( 'm', $timestamp);
 												}
 												$string = date( 'Y', $timestamp ).'-'.$month.'-'.$day;
-												if ( date('D',strtotime($string)) == $day_of_event ) {
-													$date_of_event_this_month = $i;
+												if ( date('D',strtotime($string)) == $day_of_event && $week_of_event == week_of_month( $i ) ) {
+													$date_of_event_this_month = $i;										
 													break;
 												}											
 											}
@@ -816,7 +816,7 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 												}
 											}
 										}
-										if ( ($current_day == $day_of_event && $current_week == $week_of_event) || ($current_date >= $date_of_event_this_month && $current_date <= $date_of_event_this_month+$day_diff && $date_of_event_this_month != '' ) ) {
+										if ( ($current_day == $day_of_event && $current_week == $week_of_event) || ($current_date >= $date_of_event_this_month && $current_date <= $date_of_event_this_month+$day_diff && $date_of_event_this_month != '' ) ) {									
 											$begin = my_calendar_add_date($approxbegin,$n,0,0);
 											$end = my_calendar_add_date($approxend,$n,0,0);
 											${$realStart} = clone($event);

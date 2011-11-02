@@ -4,7 +4,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager
 Requires at least: 2.9.2
-Tested up to: 3.3-aortic-dissection
+Tested up to: 3.3 beta-2
 Stable tag: trunk
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
@@ -79,6 +79,14 @@ New or updated translations are always appreciated. The translation files are in
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.9.4 =
+
+* Bug fix: month-by-day recurring events in upcoming events list
+* Bug fix: duplication of events in upcoming events list
+* Bug fix: when editing a single event with indefinite recurrences, future events set up without continuing recurrence.
+* Function error when data not present fixed.
+* Added display of sending name/address for support messages
 
 = 1.9.3 =
 
@@ -645,5 +653,5 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
-- Version 1.9.3 includes a set of bug fixes, performance improvements, and a new support request form.
+- Version 1.9.4 includes a few small bug fixes.
 - Version 1.9.0 incorporated many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require updated styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting any custom changes, but you can update styles and scripts on their editing pages. 
