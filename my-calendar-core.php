@@ -184,9 +184,8 @@ function mc_plugin_update_message() {
 }
 
 function my_calendar_add_display_javascript() {
-global $wp_plugin_url;
 	wp_enqueue_script('jquery');
-	if ( get_option('mc_draggable') == '1' ) { 
+	if ( get_option('mc_draggable') == '1' && !is_admin() ) { 
 		wp_enqueue_script('jquery.easydrag',plugins_url( 'js/jquery.easydrag.js', __FILE__ ), array('jquery') );
 	}
 }
@@ -194,7 +193,7 @@ global $wp_plugin_url;
 function my_calendar_calendar_javascript() {
 	if ( !mc_is_mobile() ) {
 		$scripting = '';
-		global $wpdb, $wp_query, $wp_plugin_url;
+		global $wpdb, $wp_query;
 
 		if ( get_option('mc_calendar_javascript') != 1 || get_option('mc_list_javascript') != 1 || get_option('mc_mini_javascript') != 1 || get_option('mc_ajax_javascript') != 1 ) {
 		  
@@ -228,7 +227,6 @@ function my_calendar_calendar_javascript() {
 }
 
 function my_calendar_add_styles() {
-global $wp_plugin_url;
 	if ( !empty($_GET['page']) ) {
 	if (  isset($_GET['page']) && ($_GET['page'] == 'my-calendar' || $_GET['page'] == 'my-calendar-groups' || $_GET['page'] == 'my-calendar-categories' || $_GET['page'] == 'my-calendar-locations' || $_GET['page'] == 'my-calendar-config' || $_GET['page'] == 'my-calendar-styles' || $_GET['page'] == 'my-calendar-help' || $_GET['page'] == 'my-calendar-behaviors' ) || $_GET['page'] == 'my-calendar-templates' ) {
 		echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'mc-styles.css', __FILE__ ).'" />';
@@ -1116,7 +1114,7 @@ $plugins_string
 		if ( !$has_read_faq ) {
 			echo "<div class='message error'><p>".__('Please read the FAQ and other Help documents before making a support request.','my-calendar')."</p></div>";
 		} else if ( !$request ) {
-			echo "<div class='message error'><p>".__('Please describe your problem. I\'m not psychic.','my-calendar')."</p></div>";
+			echo "<div class='message error'><p>".__('Please describe your problem in detail. I\'m not psychic.','my-calendar')."</p></div>";
 		} else {
 			wp_mail( "plugins@joedolson.com",$subject,$message,$from );
 		
@@ -1133,8 +1131,11 @@ $plugins_string
 		<div><input type='hidden' name='_wpnonce' value='".wp_create_nonce('my-calendar-nonce')."' /></div>
 		<div>
 		<p>".
-		__('Please note: I do keep records of those who have donated, but if your donation came from somebody other than your account at this web site, please note this in your message.','my-calendar')
+		__('Please note: I do keep records of those who have donated, <strong>but if your donation came from somebody other than your account at this web site, please note this in your message.</strong>','my-calendar')
 		."<p>
+		<code>From: \"$current_user->display_name\" &lt;$current_user->user_email&gt;</code>
+		</p>
+		<p>
 		<input type='checkbox' name='has_read_faq' id='has_read_faq' value='on' /> <label for='has_read_faq'>".__('I have read <a href="http://www.joedolson.com/articles/my-calendar/faq/">the FAQ for this plug-in</a>.','my-calendar')." <span>(required)</span></label>
 		</p>
 		<p>

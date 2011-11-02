@@ -329,7 +329,7 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 			// By default, skip no events.
 			$skipping = false;
 			foreach ( array_keys($temp_array) as $key ) {
-				$details =& $temp_array[$key];		
+				$details = $temp_array[$key];		
 				if ( $details['cat_id'] == get_option('mc_skip_holidays_category') ) {
 					$skipping = true;
 					break;
@@ -357,7 +357,7 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 		
 				if ( $i < $skip && $skip != 0 ) {
 					$i++;
-				} else {	
+				} else {		
 					if ($skipping == true) {
 						if ($details['cat_id'] == get_option('mc_skip_holidays_category') ) {
 							$output .= apply_filters('mc_event_upcoming',"$prepend".jd_draw_template($details,$template,$type)."$append",$event);
@@ -399,11 +399,12 @@ if ( get_transient('mc_todays_cache') ) { return get_transient('mc_todays_cache'
 	$holiday_exists = false;
     @usort($events, "my_calendar_time_cmp");
 	// quick loop through all events today to check for holidays
-	foreach( array_keys($events) as $key ) {
-		$event =& $events[$key];			
-		if ( $event->event_category == get_option('mc_skip_holidays_category') ) {	$holiday_exists = true;	}
-	}
-	
+	if (is_array($events) ) {
+		foreach( array_keys($events) as $key ) {
+			$event =& $events[$key];			
+			if ( $event->event_category == get_option('mc_skip_holidays_category') ) {	$holiday_exists = true;	}
+		}
+
         foreach( array_keys($events) as $key ) {
 			$event =& $events[$key];		
 		    $event_details = event_as_array($event);
@@ -431,14 +432,17 @@ if ( get_transient('mc_todays_cache') ) { return get_transient('mc_todays_cache'
 			$output .= apply_filters( 'mc_event_today',$this_event,$event );
 			
         }
-    if (count($events) != 0) {
-        $return = $header.$output.$footer;
-    } else {
+		if (count($events) != 0) {
+			$return = $header.$output.$footer;
+		} else {
+			$return = stripcslashes( $no_event_text );
+		}
+		$time =  strtotime( date( 'Y-m-d H:m:s',time()+$offset ) ) - strtotime( date( 'Y-m-d',time()+$offset ) );
+		$time_remaining = 24*60*60 - $time;
+		set_transient( 'mc_todays_cache', $return, $time_remaining );
+	} else {
 		$return = stripcslashes( $no_event_text );
-	}
-	$time =  strtotime( date( 'Y-m-d H:m:s',time()+$offset ) ) - strtotime( date( 'Y-m-d',time()+$offset ) );
-	$time_remaining = 24*60*60 - $time;
-	set_transient( 'mc_todays_cache', $return, $time_remaining );
+	}	
 	return $return;
 }
 

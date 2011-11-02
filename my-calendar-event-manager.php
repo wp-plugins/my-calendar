@@ -22,7 +22,7 @@ global $wpdb, $users_entries;
 		$next_date = $repeat_data[1];
 
 		$repeats_future = ($event->event_repeats == 0)?0:($repeats - $repeats_past - 2);
-		$recur_type_future = ($repeats_future == 0)?'S':$event->event_recur;
+		$recur_type_future = ($repeats_future == 0 && $repeats != 0 )?'S':$event->event_recur;
 		$recur_type_past = ($repeats_past == 0)?'S':$event->event_recur;
 				
 		$past_event = $future_event = clone($event); // all objects are identical at this point

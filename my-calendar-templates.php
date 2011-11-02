@@ -90,7 +90,7 @@ function event_as_array($event,$type='html') {
 	$dateid = date( 'Y-m-d',strtotime( $event->event_begin ) );
 	$month_date = date('dS',strtotime( $event->event_begin ) );
 	$day_name = date_i18n('l',strtotime($event->event_begin));
-	$week_number = mc_ordinal( week_of_month( $event->event_begin ) );
+	$week_number = mc_ordinal( week_of_month( date('j',strtotime($event->event_begin) ) ) +1 );
 	$id = $event->event_id;
 	$offset = (60*60*get_option('gmt_offset'));  
 	$category_icon = esc_attr($event->category_icon);
@@ -125,8 +125,8 @@ function event_as_array($event,$type='html') {
 	$date_end = date_i18n( $date_format,strtotime($real_end_date) );
 	$details['image'] = ( $event->event_image != '' )?"<img src='$event->event_image' alt='' class='mc-image' />":'';
 	$details['time'] = ( $event->event_time == '00:00:00' )?get_option( 'mc_notime_text' ):date(get_option('mc_time_format'),strtotime($event->event_time));
-	$details['endtime'] = ($event->event_endtime == '00:00:00' )?'':date_i18n( get_option('mc_time_format'),strtotime($event->event_endtime));
 	$endtime = ($event->event_endtime == '00:00:00')?'23:59:00':$event->event_endtime;	
+	$details['endtime'] = date_i18n( get_option('mc_time_format'),strtotime( $endtime ));
 	$tz = mc_user_timezone();
 	if ($tz != '') {
 		$local_begin = date_i18n( get_option('mc_time_format'), strtotime($event->event_time ."+$tz hours") );
