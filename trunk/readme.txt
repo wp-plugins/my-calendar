@@ -80,6 +80,11 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.9.5 =
+
+* Bug fix: Caching of Today's events did not account for category limits
+* Bug fix: Upcoming events listed by day duplication
+
 = 1.9.4 =
 
 * Bug fix: month-by-day recurring events in upcoming events list
@@ -653,5 +658,5 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
-- Version 1.9.4 includes a few small bug fixes.
+- Version 1.9.5 includes two small bug fixes.
 - Version 1.9.0 incorporated many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require updated styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting any custom changes, but you can update styles and scripts on their editing pages. 

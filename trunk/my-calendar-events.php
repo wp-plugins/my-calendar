@@ -65,7 +65,6 @@ function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='') {
 			if ( $cltype == '' ) { $cltype = 'all'; }
 			if ( $clvalue == 'all' ) { $cltype = 'all'; }
 			
-			//echo "$y, $m, $d, $ccategory, $cltype, $clvalue<br />";
 	$output = mc_check_cache( $y, $m, $d, $ccategory, $cltype, $clvalue );
 	if ( $output && $output != 'empty' ) { return $output; }
 	if ( $output == 'empty' ) { return; }

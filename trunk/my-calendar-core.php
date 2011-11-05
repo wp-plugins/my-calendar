@@ -1133,7 +1133,7 @@ $plugins_string
 		<p>".
 		__('Please note: I do keep records of those who have donated, <strong>but if your donation came from somebody other than your account at this web site, please note this in your message.</strong>','my-calendar')
 		."<p>
-		<code>From: \"$current_user->display_name\" &lt;$current_user->user_email&gt;</code>
+		<code>".__('From:','my-calendar')." \"$current_user->display_name\" &lt;$current_user->user_email&gt;</code>
 		</p>
 		<p>
 		<input type='checkbox' name='has_read_faq' id='has_read_faq' value='on' /> <label for='has_read_faq'>".__('I have read <a href="http://www.joedolson.com/articles/my-calendar/faq/">the FAQ for this plug-in</a>.','my-calendar')." <span>(required)</span></label>

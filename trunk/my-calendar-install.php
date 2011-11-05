@@ -126,7 +126,7 @@ $initial_minijs = 'jQuery(document).ready(function($) {
 });';
 
 $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{time}, {category}</span>";
-
+$charset_collate = '';
 if ( ! empty($wpdb->charset) ) {
 	$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
 }
