@@ -120,20 +120,22 @@ function jd_show_support_box() {
 <a href="http://www.joedolson.com/articles/my-calendar/users-guide/" rel="external" class="mcbuy"><?php _e("Buy the <strong>NEW</strong><br /> My Calendar User's Guide",'my-calendar'); ?></a>
 </div>
 <div class="resources">
-<ul>
-<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>#get-support"><?php _e("Get Support",'my-calendar'); ?></a></li>
-<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>"><?php _e("My Calendar Help",'my-calendar'); ?></a></li>
-<li><strong><a href="http://www.joedolson.com/donate.php" rel="external"><?php _e("Make a Donation",'my-calendar'); ?></a></strong></li>
-<li><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<div>
-<input type="hidden" name="cmd" value="_s-xclick" />
-<input type="hidden" name="hosted_button_id" value="UZBQUG2LKKMRW" />
-<input type="image" src="https://www.paypalobjects.com/WEBSCR-640-20110429-1/en_US/i/btn/btn_donate_LG.gif" name="submit" alt="Make a gift to support My Calendar!" />
-<img alt="" src="https://www.paypalobjects.com/WEBSCR-640-20110429-1/en_US/i/scr/pixel.gif" width="1" height="1" />
-</div>
-</form>
-</li>
-</ul>
+	<ul>
+		<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>#get-support"><?php _e("Get Support",'my-calendar'); ?></a></li>
+		<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>"><?php _e("My Calendar Help",'my-calendar'); ?></a></li>
+		<li><strong><a href="http://www.joedolson.com/donate.php" rel="external"><?php _e("Make a Donation",'my-calendar'); ?></a></strong></li>
+		<li><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+		<div>
+		<input type="hidden" name="cmd" value="_s-xclick" />
+		<input type="hidden" name="hosted_button_id" value="UZBQUG2LKKMRW" />
+		<input type="image" src="https://www.paypalobjects.com/WEBSCR-640-20110429-1/en_US/i/btn/btn_donate_LG.gif" name="submit" alt="Make a gift to support My Calendar!" />
+		<img alt="" src="https://www.paypalobjects.com/WEBSCR-640-20110429-1/en_US/i/scr/pixel.gif" width="1" height="1" />
+		</div>
+		</form>
+		</li>
+		<li><a href="http://profiles.wordpress.org/users/joedolson/"><?php _e('Check out my other plug-ins','my-calendar'); ?></a></li>
+		<li><a href="http://wordpress.org/extend/plugins/my-calendar/"><?php _e('Rate this plug-in','my-calendar'); ?></a></li>
+	</ul>
 </div>
 </div>
 <?php
