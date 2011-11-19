@@ -511,12 +511,17 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 		// It restricts use of the image uploader to a single image and forces it to be in 
 		// the event image field, rather than the event description.
 		if ( !isset($mc_input['event_image']) ) { $mc_input['event_image'] = 'off'; }	
-		if ( ( $mc_input['event_image'] == 'on' && $mc_input['event_use_editor'] != 'on' ) || ( $mc_input_administrator && $mc_input['event_use_editor'] != 'on' ) ) { ?>
+		if ( ( $mc_input['event_image'] == 'on' ) || $mc_input_administrator ) { ?>
 		<p>
 		<?php if ( !empty($data->event_image) ) { ?>
 		<div class="event_image"><?php _e("This event's image:",'my-calendar'); ?><br /><img src="<?php if ( !empty($data) ) echo esc_attr($data->event_image); ?>" alt="" /></div>
 		<?php } ?>
-		<label for="event_image"><?php _e("Add an image:",'my-calendar'); ?></label> <input type="text" name="event_image" id="event_image" size="60" value="<?php if ( !empty($data) ) echo esc_attr($data->event_image); ?>" /> <input id="upload_image_button" type="button" class="button" value="<?php _e('Upload Image','my-calendar'); ?>" /><br /><?php _e('Include your image URL or upload an image.','my-calendar'); ?>
+		<label for="event_image"><?php _e("Add an image:",'my-calendar'); ?></label> <input type="text" name="event_image" id="event_image" size="60" value="<?php if ( !empty($data) ) echo esc_attr($data->event_image); ?>" /> 
+			<?php if ( $mc_input['event_use_editor'] == 'on' ) { ?>
+				<?php echo " "; _e('(URL to Event image)','my-calendar'); ?>
+			<?php } else { ?>
+		<input id="upload_image_button" type="button" class="button" value="<?php _e('Upload Image','my-calendar'); ?>" /><br /><?php _e('Include your image URL or upload an image.','my-calendar'); ?>
+			<?php } ?>
 		</p>
 		<?php } else { ?>
 		<div>
@@ -1099,7 +1104,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
     $approved = !empty($_POST['event_approved']) ? $_POST['event_approved'] : '0';
 	$location_preset = !empty($_POST['location_preset']) ? $_POST['location_preset'] : '';
     $event_author = !empty($_POST['event_author']) ? $_POST['event_author'] : $current_user->ID;
-	$event_open = !empty($_POST['event_open']) ? $_POST['event_open'] : '2';
+	$event_open = (isset($_POST['event_open']) && $_POST['event_open']!==0) ? $_POST['event_open'] : '2';
 	$event_group = !empty($_POST['event_group']) ? 1 : 0;
 	$event_flagged = ( !isset($_POST['event_flagged']) || $_POST['event_flagged']===0 )?0:1;
 	$event_image = esc_url_raw( $_POST['event_image'] );

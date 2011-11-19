@@ -80,6 +80,13 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.9.6 =
+
+* Fixed bug in Event Manager where information about whether an event was open for registration saved incorrectly.
+* Added raw details_link template tag.
+* Fixed Google Maps link error when using Long/Lat coordinates.
+* Associated image option was not available if HTML editor was enabled.
+
 = 1.9.5 =
 
 * Bug fix: Caching of Today's events did not account for category limits
@@ -658,5 +665,5 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
-- Version 1.9.5 includes two small bug fixes.
+- Version 1.9.6 squashes a few more bugs. Whee!
 - Version 1.9.0 incorporated many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require updated styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting any custom changes, but you can update styles and scripts on their editing pages. 

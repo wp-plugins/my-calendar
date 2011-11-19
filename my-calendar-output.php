@@ -147,7 +147,7 @@ jQuery(document).ready(function($) {
 	$toggle = ($type == 'calendar')?" <a href='#' class='mc-toggle'><img src='".MY_CALENDAR_DIRECTORY."/images/event-details.png' alt='".__('Event Details','my-calendar')."' /></a>":'';
 	$current_date = date_i18n($date_format,strtotime($process_date));
 	$event_date = ($type == 'single')?$current_date.', ':'';
-	$header_details .= ($type != 'list' && $type != 'single')?"<h3 class='event-title summary' tabindex='0'>$image".$mytitle."$toggle</h3>\n":'';
+	$header_details .= ($type != 'list' && $type != 'single')?"<h3 class='event-title summary'>$image".$mytitle."$toggle</h3>\n":'';
 	$title = apply_filters( 'mc_before_event_title','',$event );
 	$title .= ($type == 'single' )?"<h2 class='event-title summary'>$image $mytitle</h2>\n":'';
 	$title .= apply_filters( 'mc_after_event_title','',$event );
@@ -332,7 +332,7 @@ global $wpdb;
 $current_url = mc_get_current_url();
 	$date_switcher = "";
 	$date_switcher .= '<div class="my-calendar-date-switcher">
-            <form action="'.$current_url.'" method="GET"><div>';
+            <form action="'.$current_url.'" method="get"><div>';
 	$qsa = array();
 	parse_str($_SERVER['QUERY_STRING'],$qsa);
 	foreach ($qsa as $name => $argument) {
@@ -946,7 +946,7 @@ function my_calendar_categories_list($show='list',$context='public') {
 	
 	$admin_fields = ($context == 'public')?' ':' multiple="multiple" size="5" ';
 	$admin_label = ($context == 'public')?'':__('(select to include)','my-calendar');
-	$form = "<form action='".$current_url."' method='GET'>
+	$form = "<form action='".$current_url."' method='get'>
 				<div>";
 			$qsa = array();
 			parse_str($_SERVER['QUERY_STRING'],$qsa);
@@ -1111,7 +1111,7 @@ global $wpdb;
 			$ltype = ($_GET['ltype']=='')?$datatype:$_GET['ltype'];
 			$output .= "
 	<div id='mc_locations'>
-		<form action='".$current_url."' method='GET'>
+		<form action='".$current_url."' method='get'>
 		<div>
 			<input type='hidden' name='ltype' value='$ltype' />";
 		$qsa = array();
