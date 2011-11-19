@@ -24,6 +24,7 @@ function mc_maplink( $event, $request='map', $source='event' ) {
 		$map_string = str_replace(" ","+",$map_string);
 		if ($event->event_longitude != '0.000000' && $event->event_latitude != '0.000000') {
 			$map_string = "$event->event_latitude,$event->event_longitude";
+			$connector = '';			
 		}
 	} else {
 		$map_string = $event->location_street.' '.$event->location_street2.' '.$event->location_city.' '.$event->location_state.' '.$event->location_postcode.' '.$event->location_country;	
@@ -202,6 +203,7 @@ function event_as_array($event,$type='html') {
 		} else {
 			$details_link = '';
 		}
+	$details['details_link'] = ( get_option( 'mc_uri' ) != '' )?$details_link:'';
 	$details['details'] = ( get_option( 'mc_uri' ) != '' )?"<a href='$details_link'>$details_label</a>":'';
 	$details['dateid'] = $dateid;
 	$details['id'] = $id;
