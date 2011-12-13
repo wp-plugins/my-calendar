@@ -103,9 +103,9 @@ function edit_my_calendar_config() {
 		update_option('mc_display_jump',( !empty($_POST['mc_display_jump']) && $_POST['mc_display_jump']=='on')?'true':'false');
 		update_option('mc_show_list_info',( !empty($_POST['mc_show_list_info']) && $_POST['mc_show_list_info']=='on')?'true':'false');		
 		update_option('mc_show_months',(int) $_POST['mc_show_months']);
-		update_option('mc_date_format',$_POST['mc_date_format']);
-		update_option('mc_week_format',$_POST['my_calendar_week_format']);
-		update_option('mc_time_format',$_POST['mc_time_format']);
+		update_option('mc_date_format',stripslashes($_POST['mc_date_format']));
+		update_option('mc_week_format',stripslashes($_POST['my_calendar_week_format']));
+		update_option('mc_time_format',stripslashes($_POST['mc_time_format']));
 		update_option('mc_show_map',( !empty($_POST['mc_show_map']) && $_POST['mc_show_map']=='on')?'true':'false');
 		update_option('mc_show_address',( !empty($_POST['mc_show_address']) && $_POST['mc_show_address']=='on')?'true':'false'); 
 		update_option('mc_hide_icons',( !empty($_POST['mc_hide_icons']) && $_POST['mc_hide_icons']=='on')?'true':'false');
@@ -322,13 +322,13 @@ check_akismet();
 	<input type="text" name="mc_uri" id="mc_uri" size="40" value="<?php echo esc_url($mc_uri); ?>" /><br /><small><?php _e('Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar'); ?> <?php mc_guess_calendar(); ?></small>
 	</li>
 	<li>
-	<label for="mc_time_format"><?php _e('Time format','my-calendar'); ?></label> <input type="text" id="mc_time_format" name="mc_time_format" value="<?php if ( get_option('mc_time_format')  == "") { echo ''; } else { echo esc_attr( stripslashes( get_option( 'mc_time_format') ) ); } ?>" /> <?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_time_format') == '') { echo date_i18n( get_option('time_format') ); } else { echo date_i18n(get_option('mc_time_format')); } ?>
+	<label for="mc_time_format"><?php _e('Time format','my-calendar'); ?></label> <input type="text" id="mc_time_format" name="mc_time_format" value="<?php if ( get_option('mc_time_format')  == "") { echo ''; } else { echo esc_attr( get_option( 'mc_time_format') ); } ?>" /> <?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_time_format') == '') { echo date_i18n( get_option('time_format') ); } else { echo date_i18n( get_option('mc_time_format') ); } ?>
 	</li>	
 	<li>
-	<label for="mc_week_format"><?php _e('Date format in grid mode, week view','my-calendar'); ?></label> <input type="text" id="mc_week_format" name="my_calendar_week_format" value="<?php if ( get_option('mc_week_format')  == "") { echo ''; } else { echo esc_attr( stripslashes( get_option( 'mc_week_format') ) ); } ?>" /> <?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_week_format') == '') { echo date_i18n('M j, \'y'); } else { echo date_i18n(get_option('mc_week_format')); } ?>
+	<label for="mc_week_format"><?php _e('Date format in grid mode, week view','my-calendar'); ?></label> <input type="text" id="mc_week_format" name="my_calendar_week_format" value="<?php if ( get_option('mc_week_format')  == "") { echo ''; } else { echo esc_attr( get_option( 'mc_week_format') ); } ?>" /> <?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_week_format') == '') { echo date_i18n('M j, \'y'); } else { echo date_i18n( get_option('mc_week_format') ); } ?>
 	</li>	
 	<li>
-	<label for="mc_date_format"><?php _e('Date Format in all other views','my-calendar'); ?></label> <input type="text" id="mc_date_format" name="mc_date_format" value="<?php if ( get_option('mc_date_format')  == "") { echo esc_attr( stripslashes( get_option('date_format') ) ); } else { echo esc_attr( stripslashes( get_option( 'mc_date_format') ) ); } ?>" /> <?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_date_format') == '') { echo date_i18n(get_option('date_format')); } else { echo date_i18n(get_option('mc_date_format')); } ?><br />
+	<label for="mc_date_format"><?php _e('Date Format in all other views','my-calendar'); ?></label> <input type="text" id="mc_date_format" name="mc_date_format" value="<?php if ( get_option('mc_date_format')  == "") { echo esc_attr( get_option('date_format') ); } else { echo esc_attr(  get_option( 'mc_date_format') ); } ?>" /> <?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_date_format') == '') { echo date_i18n(get_option('date_format')); } else { echo date_i18n( get_option('mc_date_format') ); } ?><br />
 	<small><?php _e('Date format uses the same syntax as the <a href="http://php.net/date">PHP <code>date()</code> function</a>. Save options to update sample output.','my-calendar'); ?></small>
 	</li>
 	<li>

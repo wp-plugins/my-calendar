@@ -1,4 +1,13 @@
 <?php
+/*
+Note:
+            $qst = get_permalink($post->ID);
+            $qst = parse_url($qst);
+            if ($qst['query'])
+                $qst = '&format=pdf';
+            else
+                $qst = '?format=pdf';
+*/
 function my_calendar_add_feed() {
 	global $wp_rewrite, $wpdb;
 	if ( get_option('mc_show_rss') == 'true' ) {
@@ -183,18 +192,30 @@ function mc_plugin_update_message() {
 	}
 }
 
-function my_calendar_add_display_javascript() {
+function mc_header_js() {
+global $wp_query;
 	wp_enqueue_script('jquery');
 	if ( get_option('mc_draggable') == '1' && !is_admin() ) { 
-		wp_enqueue_script('jquery.easydrag',plugins_url( 'js/jquery.easydrag.js', __FILE__ ), array('jquery') );
+		$this_post = $wp_query->get_queried_object();
+		if (is_object($this_post)) {
+			$id = $this_post->ID;
+		} 
+		if ( get_option( 'mc_show_js' ) != '' ) {
+		$array = explode( ",",get_option( 'mc_show_js' ) );
+			if (!is_array($array)) {
+				$array = array();
+			}
+		}
+		if ( @in_array( $id, $array ) || get_option( 'mc_show_js' ) == '' ) {
+			wp_enqueue_script('jquery.easydrag',plugins_url( 'js/jquery.easydrag.js', __FILE__ ), array('jquery') );
+		}
 	}
 }
 
-function my_calendar_calendar_javascript() {
+function mc_footer_js() {
 	if ( !mc_is_mobile() ) {
 		$scripting = '';
 		global $wpdb, $wp_query;
-
 		if ( get_option('mc_calendar_javascript') != 1 || get_option('mc_list_javascript') != 1 || get_option('mc_mini_javascript') != 1 || get_option('mc_ajax_javascript') != 1 ) {
 		  
 		$list_js = stripcslashes( get_option( 'mc_listjs' ) );

@@ -156,6 +156,7 @@ if ( !empty($_POST['mass_delete']) ) {
 	$sql .= ')';
 	$result = $wpdb->query($sql);
 	if ( $result !== 0 && $result !== false ) {
+		mc_delete_cache();
 		$message = "<div class='updated'><p>".sprintf(__('%1$d events deleted successfully out of %2$d selected','my-calendar'), $i, $total )."</p></div>";
 	} else {
 		$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Your events have not been deleted. Please investigate.','my-calendar')."</p></div>";
@@ -198,6 +199,7 @@ if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'approve' ) {
 	if ( current_user_can( get_option( 'mc_event_approve_perms' ) ) ) {
 	    $sql = "UPDATE " . my_calendar_table() . " SET event_approved = 1 WHERE event_id=" . (int) $_GET['event_id'];
 		$result = $wpdb->get_results( $sql, ARRAY_A );
+		mc_delete_cache();
 	} else {
 	?>
 		<div class="error">
@@ -212,6 +214,7 @@ if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'reject' ) {
 	if ( current_user_can( get_option( 'mc_event_approve_perms' ) ) ) {
 	    $sql = "UPDATE " . my_calendar_table() . " SET event_approved = 2 WHERE event_id=" . (int) $_GET['event_id'];
 		$result = $wpdb->get_results( $sql, ARRAY_A );
+		mc_delete_cache();
 	} else {
 	?>
 		<div class="error">
