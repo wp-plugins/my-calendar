@@ -1074,15 +1074,17 @@ get_currentuserinfo();
 	$php_version = phpversion();
 
 	// theme data
-	$theme_path = get_bloginfo('stylesheet_url');
+	$theme_path = get_stylesheet_directory().'/style.css';
 	$theme = get_theme_data($theme_path);
 		$theme_name = $theme['Name'];
 		$theme_uri = $theme['URI'];
 		$theme_parent = $theme['Template'];
 		$theme_version = $theme['Version'];
 	// plugin data
+
 	$plugins = get_plugins();
 	$plugins_string = '';
+	
 		foreach( array_keys($plugins) as $key ) {
 			if ( is_plugin_active( $key ) ) {
 				$plugin =& $plugins[$key];
