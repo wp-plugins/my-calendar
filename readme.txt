@@ -80,6 +80,10 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.9.8 =
+
+* This is just a convenience update due to a warning appearing in 1.9.7 that I missed.
+
 = 1.9.7 =
 
 * Cache was not cleared when events were approved, rejected, or deleted.
