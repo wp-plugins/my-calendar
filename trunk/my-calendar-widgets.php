@@ -190,7 +190,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
   global $wpdb,$default_template,$defaults;
   $output = '';
   $date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
-  
+
   // This function cannot be called unless calendar is up to date
 	check_my_calendar();
 	$offset = (60*60*get_option('gmt_offset'));	
@@ -291,6 +291,10 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 			for ( $i=0;$i<$count;$i++ ) {
 				if ( is_object( $events[$i] ) ) {
 					$beginning = $events[$i]->event_begin . ' ' . $events[$i]->event_time;
+					// tiny improvement, I hope: if event ends on same day and has an end-time set, expire it after the end of the event.
+					if ( $events[$i]->event_endtime != '00:00:00' && $events[$i]->event_endtime != null  && $events[$i]->event_begin == $events[$i]->event_end ) {
+						$beginning = $events[$i]->event_end . ' ' . $events[$i]->event_endtime;
+					}
 					$current = date('Y-m-d H:i',time()+$offset);
 					if ($events[$i]) {
 						if ( ( $past<=$before && $future<=$after ) ) {

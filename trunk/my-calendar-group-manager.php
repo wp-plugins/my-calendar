@@ -503,7 +503,7 @@ function mc_check_group_data( $action,$_POST ) {
 $errors = "";
 if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 	$title = !empty($_POST['event_title']) ? trim($_POST['event_title']) : '';
-	$desc = !empty($_POST['event_desc']) ? trim($_POST['event_desc']) : '';
+	$desc = !empty($_POST['content']) ? trim($_POST['content']) : '';
 	$short = !empty($_POST['event_short']) ? trim($_POST['event_short']) : '';
 	$repeats = !empty($_POST['event_repeats']) ? trim($_POST['event_repeats']) : 0;
 	$host = !empty($_POST['event_host']) ? $_POST['event_host'] : $current_user->ID;	

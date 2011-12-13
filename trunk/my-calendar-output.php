@@ -1019,7 +1019,8 @@ global $wp_rewrite;
 	}
 	unset($variables['page_id']);
 	if ( $root == '' ) {
-		$char = ( $wp_rewrite->using_permalinks() || is_front_page() )?'?':'&'; // this doesn't work correctly -- it may *never* need to be &. Consider
+	// root is set to empty when I want to reference the current location
+		$char = ( $wp_rewrite->using_permalinks() || is_front_page() || is_archive() )?'?':'&';
 	} else {
 		$char = ( $wp_rewrite->using_permalinks() )?'?':'&'; // this doesn't work correctly -- it may *never* need to be &. Consider	
 	}

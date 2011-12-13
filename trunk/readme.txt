@@ -4,7 +4,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager
 Requires at least: 2.9.2
-Tested up to: 3.3 beta-2
+Tested up to: 3.3
 Stable tag: trunk
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
@@ -79,6 +79,15 @@ New or updated translations are always appreciated. The translation files are in
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.9.7 =
+
+* Cache was not cleared when events were approved, rejected, or deleted.
+* Fixed bug with slashed characters in time and date formats
+* Fixed bug where previous/next links did not work on category pages
+* Fixed bug where event description was deleted if edited in groups manager.
+* Easydrag.js now respects conditional loading by page ID.
+* Small change to upcoming events list: events with an end time specifie and not crossing days will move off the list after they end rather than after they start.
 
 = 1.9.6 =
 
@@ -665,5 +674,5 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
-- Version 1.9.6 squashes a few more bugs. Whee!
+- Version 1.9.7 squashes more bugs. No settings or functionality changes.
 - Version 1.9.0 incorporated many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require updated styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting any custom changes, but you can update styles and scripts on their editing pages. 
