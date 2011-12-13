@@ -104,7 +104,6 @@ add_action( 'edit_user_profile', 'mc_user_profile' );
 add_action( 'profile_update', 'mc_user_save_profile');
 add_action( 'init', 'my_calendar_add_feed' );
 add_action( 'admin_menu', 'my_calendar_add_javascript' );
-add_action( 'init','my_calendar_add_display_javascript' );
 add_action( 'wp_footer','mc_footer_js' );
 add_action( 'wp_head','my_calendar_fouc' );
 add_action( 'wp_enqueue_scripts','mc_header_js' );
