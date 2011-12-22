@@ -40,7 +40,7 @@ This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.o
 Languages available:
 
 * American English (Default)
-* French (Frederic Escallier) - to 1.9.5
+* French (Frederic Escallier) - to 1.9.8
 * Dutch (Luud Heck) - to 1.8.9
 * Danish ([Jakob Smith](http://www.omkalfatring.dk/)) - to 1.8.9
 * Japanese ([Daisuke Abe](http://www.alter-ego.jp/)) - to 1.8.5
