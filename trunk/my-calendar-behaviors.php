@@ -88,7 +88,7 @@ my_calendar_check_db();
 	<label for="calendar-javascript"><?php _e('Edit the jQuery scripts for My Calendar in Calendar format','my-calendar'); ?></label><br /><textarea id="calendar-javascript" name="mc_caljs" rows="8" cols="80"><?php echo $mc_caljs; ?></textarea>
 	</p>
 	<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save','my-calendar'); ?> &raquo;" />
+		<input type="submit" name="save" class="button-secondary" value="<?php _e('Save','my-calendar'); ?>" />
 	</p>	
 	</fieldset>
 	
@@ -119,7 +119,7 @@ my_calendar_check_db();
 	<label for="list-javascript"><?php _e('Edit the jQuery scripts for My Calendar in List format','my-calendar'); ?></label><br /><textarea id="list-javascript" name="mc_listjs" rows="8" cols="80"><?php echo $mc_listjs; ?></textarea>
 	</p>
 	<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save','my-calendar'); ?> &raquo;" />
+		<input type="submit" name="save" class="button-secondary" value="<?php _e('Save','my-calendar'); ?>" />
 	</p>	
 	</fieldset>
 
@@ -150,7 +150,7 @@ my_calendar_check_db();
 	<label for="mini-javascript"><?php _e('Edit the jQuery scripts for My Calendar in Mini Calendar format','my-calendar'); ?></label><br /><textarea id="mini-javascript" name="mc_minijs" rows="8" cols="80"><?php echo $mc_minijs; ?></textarea>
 	</p>
 	<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save','my-calendar'); ?> &raquo;" />
+		<input type="submit" name="save" class="button-secondary" value="<?php _e('Save','my-calendar'); ?>" />
 	</p>	
 	</fieldset>
 	
@@ -181,7 +181,7 @@ my_calendar_check_db();
 	<label for="ajax-javascript"><?php _e('Edit the jQuery scripts for My Calendar AJAX navigation','my-calendar'); ?></label><br /><textarea id="ajax-javascript" name="mc_ajaxjs" rows="8" cols="80"><?php echo $mc_ajaxjs; ?></textarea>
 	</p>
 	<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save','my-calendar'); ?> &raquo;" />
+		<input type="submit" name="save" class="button-secondary" value="<?php _e('Save','my-calendar'); ?>" />
 	</p>	
 	</fieldset>	
 	<?php
@@ -201,7 +201,9 @@ my_calendar_check_db();
 		echo '</div>';
 	}
 	?>	
-	
+	<p>
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save','my-calendar'); ?>" />
+	</p>		
   </form>
   </div>
  </div>

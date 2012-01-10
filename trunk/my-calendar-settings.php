@@ -73,19 +73,21 @@ function edit_my_calendar_config() {
 		$mc_event_approve = ( !empty($_POST['mc_event_approve']) && $_POST['mc_event_approve']=='on')?'true':'false';
 		$mc_event_approve_perms = $_POST['mc_event_approve_perms'];
 		$mc_event_edit_perms = $_POST['mc_event_edit_perms'];
+		$mc_caching_enabled = ( !empty($_POST['mc_caching_enabled']) && $_POST['mc_caching_enabled']=='on')?'true':'false';
+		
 		update_option('mc_event_approve_perms',$mc_event_approve_perms);
 		update_option('mc_event_approve',$mc_event_approve);
 		update_option('mc_can_manage_events',$new_perms);	  	
 		update_option('mc_event_edit_perms',$mc_event_edit_perms);
+		update_option('mc_caching_enabled',$mc_caching_enabled);
 		
 		if ( get_site_option('mc_multisite') == 2 ) {
 			$mc_current_table = (int) $_POST['mc_current_table'];
 			update_option('mc_current_table',$mc_current_table);
 		}
-		
 		echo "<div class='updated'><p><strong>".__('Permissions Settings saved','my-calendar').".</strong></p></div>";
 	}
- // output
+	// output
 	if (isset($_POST['mc_show_months']) ) {
 		$mc_title_template = $_POST['mc_title_template'];
 		$mc_details_label = $_POST['mc_details_label'];
@@ -95,6 +97,9 @@ function edit_my_calendar_config() {
 		$templates['label'] = $mc_details_label;
 		$templates['link'] = $mc_link_label;
 		update_option('mc_uri',$_POST['mc_uri'] );
+		update_option('mc_open_uri',( !empty($_POST['mc_open_uri']) && $_POST['mc_open_uri']=='on' && get_option('mc_uri') != '')?'true':'false');
+		update_option('mc_day_uri',$_POST['mc_day_uri'] );
+		update_option('mc_open_day_uri',( !empty($_POST['mc_open_day_uri']) && $_POST['mc_open_day_uri']=='on' && get_option('mc_day_uri') != '')?'true':'false');
 		update_option('mc_skip_holidays_category',(int) $_POST['mc_skip_holidays_category']);
 		update_option('mc_skip_holidays',( !empty($_POST['mc_skip_holidays']) && $_POST['mc_skip_holidays']=='on')?'true':'false');
 		update_option('mc_templates',$templates);
@@ -119,6 +124,8 @@ function edit_my_calendar_config() {
 		update_option('mc_no_fifth_week',( !empty($_POST['mc_no_fifth_week']) && $_POST['mc_no_fifth_week']=='on')?'true':'false');
 		update_option('mc_show_rss',( !empty($_POST['mc_show_rss']) && $_POST['mc_show_rss']=='on')?'true':'false');
 		update_option('mc_show_ical',( !empty($_POST['mc_show_ical']) && $_POST['mc_show_ical']=='on')?'true':'false');
+		update_option('mc_show_print',( !empty($_POST['mc_show_print']) && $_POST['mc_show_print']=='on')?'true':'false');
+		
 		update_option('mc_default_sort',$_POST['mc_default_sort']);
 		// styles (output)
 		echo "<div class=\"updated\"><p><strong>".__('Output Settings saved','my-calendar').".</strong></p></div>";
@@ -156,8 +163,10 @@ function edit_my_calendar_config() {
 		$mc_next_events = $_POST['mc_next_events'];
 		$mc_event_open = $_POST['mc_event_open'];
 		$mc_event_closed = $_POST['mc_event_closed'];
+		$mc_week_caption = $_POST['mc_week_caption'];
 		$my_calendar_caption = $_POST['my_calendar_caption'];
 		update_option('mc_notime_text',$mc_notime_text);
+		update_option('mc_week_caption',$mc_week_caption);
 		update_option('mc_next_events',$mc_next_events);
 		update_option('mc_previous_events',$mc_previous_events);	
 		update_option('mc_caption',$my_calendar_caption);
@@ -211,6 +220,7 @@ function edit_my_calendar_config() {
 	$mc_details_label = $templates['label'];
 	$mc_link_label = $templates['link'];
 	$mc_uri = get_option('mc_uri');
+	$mc_day_uri = get_option('mc_day_uri');
 ?>
     <div class="wrap">
 <?php 
@@ -225,7 +235,7 @@ check_akismet();
 	<h3><?php _e('Calendar Management Settings','my-calendar'); ?></h3>
 	<div class="inside">	
     <form id="my-calendar-manage" method="post" action="<?php echo admin_url("admin.php?page=my-calendar-config"); ?>">
-	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>    
+	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div> 	
 	<fieldset>
     <legend><?php _e('Calendar Options: Management','my-calendar'); ?></legend>
     <ul>
@@ -255,6 +265,8 @@ check_akismet();
 	</select><br />
 	<em><?php _e('By default, only administrators may edit or delete any event. Other users may only edit or delete events which they authored.','my-calendar'); ?></em>
 	</li>
+	<li><input type="checkbox" id="mc_caching_enabled" name="mc_caching_enabled" <?php jd_cal_checkCheckbox('mc_caching_enabled','true'); ?> /> <label for="mc_caching_enabled"><?php _e('Enable caching.','my-calendar'); ?></label>
+	</li>
 	<?php if ( get_site_option('mc_multisite') == 2 && MY_CALENDAR_TABLE != MY_CALENDAR_GLOBAL_TABLE ) { ?>
 	<li>
 	<input type="radio" name="mc_current_table" id="mc0" value="0"<?php echo jd_option_selected(get_option('mc_current_table'),0); ?> /> <label for="mc0"><?php _e('Currently editing my local calendar','my-calendar'); ?></label>
@@ -268,7 +280,7 @@ check_akismet();
 	</ul>
 	</fieldset>
 		<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Approval Settings','my-calendar'); ?> &raquo;" />
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Management Settings','my-calendar'); ?>" />
 		</p>
 	</form>
 	</div>
@@ -297,12 +309,15 @@ check_akismet();
 	<label for="mc_event_closed"><?php _e('If events are closed','my-calendar'); ?></label> <input type="text" id="mc_event_closed" name="mc_event_closed" value="<?php if ( get_option('mc_event_closed') == "") { _e('Registration is closed','my-calendar'); } else { echo esc_attr( stripslashes( get_option('mc_event_closed') ) ); } ?>" />
 	</li>	
 	<li>
+	<label for="mc_week_caption"><?php _e('Week view caption:','my-calendar'); ?></label> <input type="text" id="mc_week_caption" name="mc_week_caption" value="<?php echo esc_attr( stripslashes( get_option('mc_week_caption') ) ); ?>" />
+	</li>
+	<li>
 	<label for="my_calendar_caption"><?php _e('Additional caption:','my-calendar'); ?></label> <input type="text" id="my_calendar_caption" name="my_calendar_caption" value="<?php echo esc_attr( stripslashes( get_option('mc_caption') ) ); ?>" /><br /><small><?php _e('The calendar caption is the text containing the displayed month and year in either list or calendar format. This text will be displayed following that existing text.','my-calendar'); ?></small>
 	</li>
 	</ul>
 	</fieldset>	
 		<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Custom Text Settings','my-calendar'); ?> &raquo;" />
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Custom Text Settings','my-calendar'); ?>" />
 	</p>
 	</form>
 </div>
@@ -312,6 +327,7 @@ check_akismet();
 	<div class="inside">
  <form id="my-calendar-output" method="post" action="<?php echo admin_url("admin.php?page=my-calendar-config"); ?>">
 	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
+		<p><input type="submit" name="save" class="button-primary" value="<?php _e('Save Output Settings','my-calendar'); ?>" /></p>
 	<fieldset>
 	<legend><?php _e('Calendar Options: Customize the Output of your Calendar','my-calendar'); ?></legend>
 	<fieldset>
@@ -320,6 +336,16 @@ check_akismet();
 	<li>
 	<label for="mc_uri"><?php _e('<abbr title="Uniform resource locator">URL</abbr> to use for event details display.','my-calendar'); ?></label> 
 	<input type="text" name="mc_uri" id="mc_uri" size="40" value="<?php echo esc_url($mc_uri); ?>" /><br /><small><?php _e('Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar'); ?> <?php mc_guess_calendar(); ?></small>
+	</li>
+	<li>
+	<input type="checkbox" id="mc_open_uri" name="mc_open_uri" <?php jd_cal_checkCheckbox('mc_open_uri','true'); ?> /> <label for="mc_open_uri"><?php _e('Open calendar links in single event view','my-calendar'); ?></label> <small><?php _e('Replaces pop-up in grid view.','my-calendar'); ?></small>
+	</li>
+	<li>
+	<label for="mc_day_uri"><?php _e('<abbr title="Uniform resource locator">URL</abbr> for the single days events timeline.','my-calendar'); ?></label> 
+	<input type="text" name="mc_day_uri" id="mc_day_uri" size="40" value="<?php echo esc_url($mc_day_uri); ?>" /><br /><small><?php _e('Can be any Page or Post with the <code>[my_calendar time="day"]</code> shortcode.','my-calendar'); ?> <?php mc_guess_calendar(); ?></small>
+	</li>
+	<li>
+	<input type="checkbox" id="mc_open_day_uri" name="mc_open_day_uri" <?php jd_cal_checkCheckbox('mc_open_day_uri','true'); ?> /> <label for="mc_open_day_uri"><?php _e('Open Mini calendar widget to daily view page (above)','my-calendar'); ?></label> <small><?php _e('Replaces pop-up in mini calendar','my-calendar'); ?></small>
 	</li>
 	<li>
 	<label for="mc_time_format"><?php _e('Time format','my-calendar'); ?></label> <input type="text" id="mc_time_format" name="mc_time_format" value="<?php if ( get_option('mc_time_format')  == "") { echo ''; } else { echo esc_attr( get_option( 'mc_time_format') ); } ?>" /> <?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_time_format') == '') { echo date_i18n( get_option('time_format') ); } else { echo date_i18n( get_option('mc_time_format') ); } ?>
@@ -338,6 +364,9 @@ check_akismet();
 	<input type="checkbox" id="mc_show_ical" name="mc_show_ical" <?php jd_cal_checkCheckbox('mc_show_ical','true'); ?> /> <label for="mc_show_ical"><?php _e('Show link to iCal format download.','my-calendar'); ?></label> <small><?php _e('iCal outputs events occurring in the current calendar month.','my-calendar'); ?></small>
 	</li>
 	<li>
+	<input type="checkbox" id="mc_show_print" name="mc_show_print" <?php jd_cal_checkCheckbox('mc_show_print','true'); ?> /> <label for="mc_show_print"><?php _e('Show link to print-formatted view of calendar','my-calendar'); ?></label>
+	</li>	
+	<li>
 	<input type="checkbox" id="mc_display_jump" name="mc_display_jump" <?php jd_cal_checkCheckbox('mc_display_jump','true'); ?> /> <label for="mc_display_jump"><?php _e('Display a jumpbox for changing month and year quickly?','my-calendar'); ?></label>
 	</li>		
 	</ul>	
@@ -349,7 +378,7 @@ check_akismet();
 	<ul>
 	<li>
 	<input type="checkbox" id="mc_show_weekends" name="mc_show_weekends" <?php jd_cal_checkCheckbox('mc_show_weekends','true'); ?> /> <label for="mc_show_weekends"><?php _e('Show Weekends on Calendar','my-calendar'); ?></label>
-	</li>		
+	</li>	
 	</ul>	
 	<?php // End Grid Options // ?>
 	</fieldset>	
@@ -466,8 +495,8 @@ check_akismet();
 	</fieldset>
 	</fieldset>
 		<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Output Settings','my-calendar'); ?> &raquo;" />
-	</p>
+		<input type="submit" name="save" class="button-secondary" value="<?php _e('Save Output Settings','my-calendar'); ?>" />
+		</p>
 </form>
 </div>
 </div>
@@ -500,7 +529,7 @@ check_akismet();
 	</ul>
 	</fieldset>
 		<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Input Settings','my-calendar'); ?> &raquo;" />
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Input Settings','my-calendar'); ?>" />
 	</p>
 </form>
 </div>
@@ -524,7 +553,7 @@ check_akismet();
 	<p class="notice"><strong>*</strong> <?php _e('Changes only effect input permissions. Public-facing calendars will be unchanged.','my-calendar'); ?></p>
 	</fieldset>
 		<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Multisite Settings','my-calendar'); ?> &raquo;" />
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Multisite Settings','my-calendar'); ?>" />
 		</p>
 </form>	
 	</div>
@@ -555,7 +584,7 @@ check_akismet();
 	</ul>
 	</fieldset>
 		<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Email Settings','my-calendar'); ?> &raquo;" />
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Email Settings','my-calendar'); ?>" />
 		</p>
 </form>
 </div>
@@ -638,7 +667,7 @@ $locations .= stripslashes("$key,$value")."\n";
 </fieldset>
 	</fieldset>
 	<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save User Settings','my-calendar'); ?> &raquo;" />
+		<input type="submit" name="save" class="button-primary" value="<?php _e('Save User Settings','my-calendar'); ?>" />
 	</p>
   </form>
   <?php

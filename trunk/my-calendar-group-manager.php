@@ -210,7 +210,7 @@ function mc_group_form( $group_id, $type='break' ) {
 	$query = "SELECT event_id, event_begin, event_time FROM ".my_calendar_table()." WHERE event_group_id = $group_id";
 	$results = $wpdb->get_results($query);
 	if ( $type == 'apply' ) {
-		$warning = (!mc_compare_group_members($group_id))?"<p class='warning'>".__('<strong>NOTE:</strong> The group editable fields for the events in this group do not match','my-calendar')."</p>":'<p>'.__('The group editable fields in for the events in this group match.','my-calendar').'</p>';
+		$warning = (!mc_compare_group_members($group_id))?"<p class='warning'>".__('<strong>NOTE:</strong> The group editable fields for the events in this group do not match','my-calendar')."</p>":'<p>'.__('The group editable fields for the events in this group match.','my-calendar').'</p>';
 	} else {
 		$warning = '';
 	}
@@ -224,9 +224,9 @@ function mc_group_form( $group_id, $type='break' ) {
 	$group .= "<ul>";
 	$checked = ( $type=='apply' )?' checked="checked"':'';
 	foreach ( $results as $result ) {
-		$date = date_i18n( get_option('mc_date_format'), strtotime( $result->event_begin ) );
-		$time = date_i18n( get_option('mc_time_format'), strtotime( $result->event_time ) );
-		$group .= "<li><input type='checkbox' name='$type"."[]' value='$result->event_id' id='$type$result->event_id'$checked /> <label for='break$result->event_id'><a href='#event$result->event_id'>#$result->event_id</a>: $date, $time</label></li>\n";
+		$date = date_i18n( 'D, j M, Y', strtotime( $result->event_begin ) );
+		$time = date_i18n( 'g:i a', strtotime( $result->event_time ) );
+		$group .= "<li><input type='checkbox' name='$type"."[]' value='$result->event_id' id='$type$result->event_id'$checked /> <label for='break$result->event_id'><a href='#event$result->event_id'>#$result->event_id</a>: $date; $time</label></li>\n";
 	}
 	$group .= "<li><input type='checkbox' class='selectall' id='$type'$checked /> <label for='$type'><b>".__('Check/Uncheck all','my-calendar')."</b></label></li>\n</ul>";
 	$group .= ($type == 'apply')?"</fieldset>":'';
@@ -257,7 +257,7 @@ function jd_groups_edit_form( $mode='edit', $event_id=false, $group_id=false ) {
 	<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;mode=edit&amp;event_id=$event_id&amp;group_id=$group_id"); ?>">
 	<?php my_calendar_print_group_fields($data,$mode,$event_id, $group_id); ?>
 			<p>
-                <input type="submit" name="save" class="button-primary" value="<?php _e('Edit Event Group','my-calendar'); ?> &raquo;" />
+                <input type="submit" name="save" class="button-primary" value="<?php _e('Edit Event Group','my-calendar'); ?>" />
 			</p>
 	</form>
 
@@ -282,20 +282,28 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 <div id="poststuff" class="jd-my-calendar">
 <div class="postbox">	
 	<div class="inside">
+				<p>
+                <input type="submit" name="save" class="button-primary" value="<?php _e('Edit Event Group','my-calendar'); ?>" />
+			</p>
         <fieldset>
 		<legend><?php _e('Enter your Event Information','my-calendar'); ?></legend>
-			<?php 
-			$apply = mc_group_form( $group_id, 'apply' ); 
-			echo $apply; 
-			?>
 		<p>
 		<label for="event_title"><?php _e('Event Title','my-calendar'); ?><span><?php _e('(required)','my-calendar'); ?></span></label> <input type="text" id="event_title" name="event_title" class="input" size="60" value="<?php if ( !empty($data) ) echo stripslashes(esc_attr($data->event_title)); ?>" />
 		</p>
+			<?php 
+			$apply = mc_group_form( $group_id, 'apply' ); 
+			echo $apply; 
+			?>		
+		<?php if ( $data->event_repeats == 0 && $data->event_recur == 'S' ) { ?>
+		<p>
+		<input type="checkbox" value="1" id="event_span" name="event_span"<?php if ( !empty($data) && $data->event_span == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_span' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_span"><?php _e('Selected dates are a single multi-day event.','my-calendar'); ?></label>
+		</p>
+		<?php } ?>
 		<?php if ($mc_input['event_desc'] == 'on' || $mc_input_administrator ) { ?>
 		<p id="group_description">
-		<?php if ( !empty($data) ) { $description = stripslashes(esc_attr($data->event_desc)); } else { $description = ''; } ?>
-		<label for="content"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><?php if ( $mc_input['event_use_editor'] == 'on' ) {  the_editor( $description ); }  else { ?><textarea id="content" name="content" class="event_desc" rows="5" cols="80"><?php echo $description; ?></textarea><?php if ( $mc_input['event_use_editor'] == 'on' ) { ?></div><?php } } ?>
-		</p>
+		<?php if ( !empty($data) ) { $description = $data->event_desc; } else { $description = ''; } ?>
+		<label for="content"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><?php if ( $mc_input['event_use_editor'] == 'on' ) {  the_editor( stripslashes($description) ); }  else { ?><textarea id="content" name="content" class="event_desc" rows="5" cols="80"><?php echo stripslashes(esc_attr($description)); ?></textarea><?php if ( $mc_input['event_use_editor'] == 'on' ) { ?></div><?php } } ?>
+		</p>		
 		<?php } ?>
 		<?php 
 		// If the editor is enabled, shouldn't display the image uploader. 
@@ -513,6 +521,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 	$location_preset = !empty($_POST['location_preset']) ? $_POST['location_preset'] : '';
 	$event_open = !empty($_POST['event_open']) ? $_POST['event_open'] : '2';
 	$event_image = esc_url_raw( $_POST['event_image'] );
+	$event_span = !empty($_POST['event_span']) ? 1 : 0;
 	// set location
 		if ($location_preset != 'none') {
 			$sql = "SELECT * FROM " . my_calendar_locations_table() . " WHERE location_id = $location_preset";
@@ -585,6 +594,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			'event_zoom'=>$event_zoom,
 			'event_open'=>$event_open,
 			'event_host'=>$host,
+			'event_span'=>$event_span,
 		// floats
 			'event_longitude'=>$event_longitude,
 			'event_latitude'=>$event_latitude			
@@ -613,6 +623,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 		$users_entries->event_open = $event_open;
 		$users_entries->event_short = $short;
 		$users_entries->event_image = $event_image;
+		$users_entries->event_span = $event_span;
 		$proceed = false;
 	}
 	$data = array($proceed, $users_entries, $submit,$errors);

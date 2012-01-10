@@ -17,18 +17,25 @@ global $wpdb;
 	$date = date('Y', time()+($offset)).'-'.date('m', time()+($offset)).'-'.date('d', time()+($offset));
 	$arr_events = array();
     if (!empty($events)) {
+		$groups = array();
         foreach( array_keys($events) as $key) {
 			$event =& $events[$key];
-			$event_occurrences = mc_increment_event( $event );
-			$arr_events = array_merge( $arr_events, $event_occurrences );
-		}				
+			if ( !in_array( $event->event_group_id, $groups ) ) {
+				$event_occurrences = mc_increment_event( $event );
+				$arr_events = array_merge( $arr_events, $event_occurrences );
+				if ( $event->event_span == 1 ) {
+					//$groups[] = $event->event_group_id;
+				}
+			}			
+		}
 	} 
 	return $arr_events;
 }
 
-function mc_get_rss_events() {
+function mc_get_rss_events( $cat_id=false) {
 	global $wpdb;
-	$events = $wpdb->get_results("SELECT *,event_begin as event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) ORDER BY event_added DESC LIMIT 0,15" );
+	if ( $cat_id ) { $cat = "WHERE event_category = $cat_id"; } else { $cat = ''; }
+	$events = $wpdb->get_results("SELECT *,event_begin as event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $cat ORDER BY event_added DESC LIMIT 0,15" );
 	foreach ( array_keys($events) as $key ) {
 		$event =& $events[$key];	
 		$output[] = $event;
@@ -321,12 +328,9 @@ function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='') {
 }
 
 function mc_check_cache($y, $m, $d, $category, $ltype, $lvalue) {
-	$caching = true;
+	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
 	if ( $caching == true ) {
 		$cache = get_transient('mc_cache');
-			//if ( $category == null ) { $category = 'all'; }
-			//if ( $ltype == '' ) { $ltype = 'all'; }
-			//if ( $lvalue == '' ) { $lvalue = 'all'; }
 		$value = $cache[$y][$m][$d][$category][$ltype][$lvalue];
 		if ( $value ) { return $value; } else { return false; }
 	} else {
@@ -335,17 +339,24 @@ function mc_check_cache($y, $m, $d, $category, $ltype, $lvalue) {
 }
 
 function mc_create_cache($arr_events, $y, $m, $d, $category, $ltype, $lvalue) {
-	$caching = true;
+	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
 	if ( $arr_events == false ) { $arr_events = 'empty'; }
 	if ( $caching == true ) {
-		$cache = get_transient('mc_cache');
-			//if ( $category == null ) { $category = 'all'; }
-			//if ( $ltype == '' ) { $ltype = 'all'; }
-			//if ( $lvalue == '' ) { $lvalue = 'all'; }		
+		$before = memory_get_usage();
+		$ret = get_transient('mc_cache');
+		$after = memory_get_usage();
+		$mem_limit = mc_allocated_memory( $before, $after );
+		if ( $mem_limit ) { mc_delete_cache(); }
+		$cache = get_transient('mc_cache');		
 		$cache[$y][$m][$d][$category][$ltype][$lvalue] = $arr_events;
 		set_transient( 'mc_cache',$cache, 60*60*48 );
 	}
-	//delete_option('mc_cache');
+}
+
+function mc_allocated_memory($before, $after) {
+    $size = ($after - $before);
+	// limits cache to occupying 2000 KB of PHP memory. 
+	if ( $size/1024 > 2000 ) { return true; } else { return false; }
 }
 
 function mc_delete_cache() {
@@ -641,14 +652,15 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 
 							for ($realStart;$realStart<=$realFinish;$realStart++) { // jump forward to near present.
 							$this_date = my_calendar_add_date($event_begin,($realStart*7),0,0);
-							$this_end = my_calendar_add_date($event_end,($realStart*7),0,0);									
+							$this_end = my_calendar_add_date($event_end,($realStart*7),0,0);
 							if ( my_calendar_date_comp( $event->event_begin,$this_date ) ) {
 									${$realStart} = clone($event);
 									${$realStart}->event_begin = $this_date;
 									$this_event_start = strtotime("$this_date $event->event_time");
 									$this_event_end = strtotime("$this_end $event->event_endtime");
+									${$realStart}->event_end = date('Y-m-d',$this_event_end);
 									${$realStart}->event_start_ts = $this_event_start;
-									${$realStart}->event_end_ts = $this_event_end;												
+									${$realStart}->event_end_ts = $this_event_end;											
 									$arr_events[] = ${$realStart};
 								}
 							}
@@ -664,6 +676,7 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 								${$realDays}->event_end = $this_end;
 								$this_event_start = strtotime("$this_date $event->event_time");
 								$this_event_end = strtotime("$this_end $event->event_endtime");
+								${$realStart}->event_end = date('Y-m-d',$this_event_end);								
 								${$realDays}->event_start_ts = $this_event_start;
 								${$realDays}->event_end_ts = $this_event_end;											
 								$arr_events[] = ${$realDays};
@@ -691,6 +704,7 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 									${$realStart}->event_end = $this_end;
 									$this_event_start = strtotime("$this_date $event->event_time");
 									$this_event_end = strtotime("$this_end $event->event_endtime");
+									${$realStart}->event_end = date('Y-m-d',$this_event_end);									
 									${$realStart}->event_start_ts = $this_event_start;
 									${$realStart}->event_end_ts = $this_event_end;												
 									$arr_events[] = ${$realStart};
@@ -708,6 +722,7 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 									${$realDays}->event_end = $this_end;
 									$this_event_start = strtotime("$this_date $event->event_time");
 									$this_event_end = strtotime("$this_end $event->event_endtime");
+									${$realStart}->event_end = date('Y-m-d',$this_event_end);									
 									${$realDays}->event_start_ts = $this_event_start;
 									${$realDays}->event_end_ts = $this_event_end;												
 									$arr_events[] = ${$realDays};
@@ -736,6 +751,7 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 									${$realStart}->event_begin = $this_date;
 									$this_event_start = strtotime("$this_date $event->event_time");
 									$this_event_end = strtotime("$this_end $event->event_endtime");
+									${$realStart}->event_end = date('Y-m-d',$this_event_end);									
 									${$realStart}->event_start_ts = $this_event_start;
 									${$realStart}->event_end_ts = $this_event_end;												
 									$arr_events[] = ${$realStart};
@@ -753,6 +769,7 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 								${$realDays}->event_end = $this_end;
 								$this_event_start = strtotime("$this_date $event->event_time");
 								$this_event_end = strtotime("$this_end $event->event_endtime");
+								${$realDays}->event_end = date('Y-m-d',$this_event_end);								
 								${$realDays}->event_start_ts = $this_event_start;
 								${$realDays}->event_end_ts = $this_event_end;											
 								$arr_events[] = ${$realDays};
@@ -823,6 +840,7 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 											${$realStart}->event_end = $end;
 											$this_event_start = strtotime("$begin $event->event_time");
 											$this_event_end = strtotime("$end $event->event_endtime");
+											${$realStart}->event_end = date('Y-m-d',$this_event_end);											
 											${$realStart}->event_start_ts = $this_event_start;
 											${$realStart}->event_end_ts = $this_event_end;
 												$arr_events[]=${$realStart};	
@@ -879,6 +897,7 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 												${$realDays}->event_end = $end;	
 												$this_event_start = strtotime("$begin $event->event_time");
 												$this_event_end = strtotime("$end $event->event_endtime");
+												${$realDays}->event_end = date('Y-m-d',$this_event_end);			
 												${$realDays}->event_start_ts = $this_event_start;
 												${$realDays}->event_end_ts = $this_event_end;												
 												$arr_events[]=${$realDays};

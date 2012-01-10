@@ -5,9 +5,9 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.9.8
+Version: 1.10.0
 */
-/*  Copyright 2009-2011  Joe Dolson (email : joe@joedolson.com)
+/*  Copyright 2009-2012  Joe Dolson (email : joe@joedolson.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ Version: 1.9.8
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 global $mc_version, $wpdb;
-$mc_version = '1.9.8';
+$mc_version = '1.10.0';
 
 // Define the tables used in My Calendar
 define('MY_CALENDAR_TABLE', $wpdb->prefix . 'my_calendar');
@@ -122,6 +122,7 @@ function jd_show_support_box() {
 <div class="resources">
 	<ul>
 		<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>#get-support"><?php _e("Get Support",'my-calendar'); ?></a></li>
+		<li><a href="http://www.joedolson.com/articles/bugs/"><?php _e("Report a bug",'my-calendar'); ?></a></li>
 		<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>"><?php _e("My Calendar Help",'my-calendar'); ?></a></li>
 		<li><strong><a href="http://www.joedolson.com/donate.php" rel="external"><?php _e("Make a Donation",'my-calendar'); ?></a></strong></li>
 		<li><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -143,10 +144,10 @@ function jd_show_support_box() {
 
 // Function to deal with adding the calendar menus
 function my_calendar_menu() {
-  global $wpdb;
+  global $wpdb, $wp_plugin_url;
   check_my_calendar();
   $allowed_group = ( get_option('mc_can_manage_events') == '' )?'manage_options':get_option('mc_can_manage_events');
-  $icon_path = site_url().'/wp-content/plugins/'.basename(dirname(__FILE__)).'/images';
+  $icon_path = $wp_plugin_url.'/'.basename(dirname(__FILE__)).'/images';
 	if ( function_exists('add_object_page') ) {
 		add_object_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), $allowed_group, 'my-calendar', 'edit_my_calendar',$icon_path.'/icon.png' );
 	} else {  

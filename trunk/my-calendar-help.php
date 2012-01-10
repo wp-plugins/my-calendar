@@ -120,6 +120,12 @@ global $wp_plugin_dir;
 <dt><code>{endtime}</code></dt>
 <dd><?php _e('Displays the time at which the event ends.','my-calendar'); ?></dd>
 
+<dt><code>{daterange}</code></dt>
+<dd><?php _e('Displays the beginning date to the end date for events. Does not show end date if same as start date.','my-calendar'); ?></dd>
+
+<dt><code>{multidate}</code></dt>
+<dd><?php _e('For multi-day events displays an unordered list of dates and times for events in this group. Otherwise, beginning date/time.','my-calendar'); ?></dd>
+
 <dt><code>{author}</code></dt>
 <dd><?php _e('Displays the WordPress author who posted the event.','my-calendar'); ?></dd>
 
