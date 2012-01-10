@@ -700,5 +700,5 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
-- Version 1.9.7 squashes more bugs. No settings or functionality changes.
+- Version 1.10.0 adds a printable view, multi-day events, and a few additional new options.
 - Version 1.9.0 incorporated many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require updated styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting any custom changes, but you can update styles and scripts on their editing pages. 
