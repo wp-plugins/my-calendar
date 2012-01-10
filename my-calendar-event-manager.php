@@ -82,6 +82,7 @@ function mc_convert( $object, $edit=false ) {
 			'event_fifth_week'=>$object->event_fifth_week,
 			'event_holiday'=>$object->event_holiday,
 			'event_group_id'=>$object->event_group_id,
+			'event_span'=>$object->event_span,
 		// floats
 			'event_longitude'=>$object->event_longitude,
 			'event_latitude'=>$object->event_latitude,			
@@ -122,17 +123,13 @@ $action = !empty($_POST['event_action']) ? $_POST['event_action'] : '';
 $event_id = !empty($_POST['event_id']) ? $_POST['event_id'] : '';
 
 if ( isset( $_GET['mode'] ) ) {
-	if ( $_GET['mode'] == 'edit' ) {
-		$action = "edit";
+	$action = $_GET['mode'];
+	if ( $action == 'edit' || $action == 'copy' ) {
 		$event_id = (int) $_GET['event_id'];
-	}
-	if ( $_GET['mode'] == 'copy' ) {
-		$action = "copy";
-		$event_id = (int) $_GET['event_id'];	
 	}
 }
 
-// Lets see if this is first run and create us a table if it is!
+// Check whether My Calendar is up to date and installed.
 check_my_calendar();
 
 if ( !empty($_POST['mass_delete']) ) {
@@ -141,14 +138,15 @@ if ( !empty($_POST['mass_delete']) ) {
 	$events = $_POST['mass_delete'];
 	$sql = 'DELETE FROM ' . my_calendar_table() . ' WHERE event_id IN (';	
 	$i=0;
+	$deleted = array();
 	foreach ($events as $value) {
 		$value = (int) $value;
 		$ea = "SELECT event_author FROM " . my_calendar_table() . " WHERE event_id = $value";
 		$result = $wpdb->get_results( $ea, ARRAY_A );
-		$total = count($events);
-		
+		$total = count($events);	
 		if ( mc_can_edit_event( $result[0]['event_author'] ) ) {
 			$sql .= mysql_real_escape_string($value).',';
+			$deleted[] = $value;
 			$i++;
 		}
 	}
@@ -157,6 +155,8 @@ if ( !empty($_POST['mass_delete']) ) {
 	$result = $wpdb->query($sql);
 	if ( $result !== 0 && $result !== false ) {
 		mc_delete_cache();
+		// argument: array of event IDs
+		do_action( 'mc_mass_delete_events', $deleted );		
 		$message = "<div class='updated'><p>".sprintf(__('%1$d events deleted successfully out of %2$d selected','my-calendar'), $i, $total )."</p></div>";
 	} else {
 		$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Your events have not been deleted. Please investigate.','my-calendar')."</p></div>";
@@ -193,8 +193,7 @@ if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'delete' ) {
 	}
 }
 
-
-// Approve and show an Event ...by Roland
+// Approve and show an Event ...originally by Roland
 if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'approve' ) {
 	if ( current_user_can( get_option( 'mc_event_approve_perms' ) ) ) {
 	    $sql = "UPDATE " . my_calendar_table() . " SET event_approved = 1 WHERE event_id=" . (int) $_GET['event_id'];
@@ -244,7 +243,7 @@ if ( isset( $_POST['event_action'] ) ) {
 				// mc_split_event creates the other newevents, my_calendar_save creates this one (only if proceed is true)
 				$events = mc_split_event( (int) $_POST['event_id'], $mc_output[2]['event_begin'] );
 			}
-			$response = my_calendar_save($action,$mc_output,(int) $_POST['event_id']);	
+			$response = my_calendar_save($action,$mc_output,(int) $_POST['event_id']);		
 		}
 		echo $response;
 	}
@@ -302,7 +301,6 @@ if ( get_site_option('mc_multisite') == 2 ) {
 <?php
 } 
 
-
 function my_calendar_save( $action,$output,$event_id=false ) {
 global $wpdb,$event_author;
 	$proceed = $output[0];
@@ -312,7 +310,7 @@ global $wpdb,$event_author;
 		$add = $output[2]; // add format here
 		$formats = array( 
 						'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
-						'%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d',
+						'%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d',
 						'%f','%f'
 						);		
 		$result = $wpdb->insert( 
@@ -323,7 +321,9 @@ global $wpdb,$event_author;
 		if ( !$result ) {
 			$message = "<div class='error'><p><strong>". __('Error','my-calendar') .":</strong> ". __('I\'m sorry! I couldn\'t add that event to the database.','my-calendar') . "</p></div>";	      
 		} else {
-	    // Call mail function
+			// do an action using the $action and processed event data
+			do_action( 'mc_save_event', $action, $add );				
+			// Call mail function
 			$sql = "SELECT * FROM ". my_calendar_table()." JOIN " . my_calendar_categories_table() . " ON (event_category=category_id) WHERE event_id = ".$wpdb->insert_id;
 			$event = $wpdb->get_results($sql);
 			$event_start_ts = strtotime( $event[0]->event_begin . ' ' . $event[0]->event_time );
@@ -339,7 +339,7 @@ global $wpdb,$event_author;
 			$update = $output[2];
 			$formats = array( 
 						'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
-						'%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d',
+						'%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d',
 						'%f','%f'
 						);
 			//$wpdb->show_errors();
@@ -355,6 +355,8 @@ global $wpdb,$event_author;
 				} else if ( $result === 0 ) {
 					$message = "<div class='updated'><p>".__('Nothing was changed in that update.','my-calendar')."</p></div>";
 				} else {
+					// do an action using the $action and processed event data
+					do_action( 'mc_save_event', $action, $add );				
 					$message = "<div class='updated'><p>".__('Event updated successfully','my-calendar')."</p></div>";
 					mc_delete_cache();
 				}
@@ -377,7 +379,9 @@ global $wpdb,$event_author;
 			$sql = "SELECT event_id FROM " . my_calendar_table() . " WHERE event_id='" . mysql_real_escape_string($event_id) . "'";
 			$result = $wpdb->get_results($sql);
 			if ( empty($result) || empty($result[0]->event_id) ) {
-				mc_delete_cache();			
+				mc_delete_cache();
+				// do an action using the event_id
+				do_action( 'mc_delete_event', $event_id );				
 				return "<div class='updated'><p>".__('Event deleted successfully','my-calendar')."</p></div>";
 			} else {
 				$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Despite issuing a request to delete, the event still remains in the database. Please investigate.','my-calendar')."</p></div>";
@@ -430,10 +434,10 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 	}
 	echo ($message != '')?"<div class='error'><p>$message</p></div>":'';
 	?>
-	<form id="my-calendar" method="post" action="<?php echo admin_url('admin.php?page=my-calendar'); ?>">
+	<form id="my-calendar" method="post" class="jd-my-calendar" action="<?php echo admin_url('admin.php?page=my-calendar'); ?>">
 	<?php my_calendar_print_form_fields($data,$mode,$event_id); ?>
 			<p>
-                <input type="submit" name="save" class="button-primary" value="<?php _e('Save Event','my-calendar'); ?> &raquo;" />
+                <input type="submit" name="save" class="button-secondary" value="<?php _e('Save Event','my-calendar'); ?>" />
 			</p>
 	</form>
 
@@ -466,6 +470,9 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 <div id="poststuff" class="jd-my-calendar">
 <div class="postbox">	
 	<div class="inside">
+			<p>
+                <input type="submit" name="save" class="button-primary" value="<?php _e('Save Event','my-calendar'); ?>" />
+			</p>	
 <?php
 	if ( !empty( $_GET['date'] ) && $data->event_recur != 'S' ) {
 		$date = date_i18n( get_option('mc_date_format'),strtotime($_GET['date']) );
@@ -593,7 +600,10 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 <div class="postbox">	
 <div class="inside">
 			<fieldset><legend><?php _e('Event Date and Time','my-calendar'); ?></legend>
-			<p><em><?php _e('Enter the beginning and ending information for this occurrence of the event.','my-calendar'); ?></em></p>
+			<p>
+			<input type="checkbox" value="1" id="event_span" name="event_span"<?php if ( !empty($data) && $data->event_span == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_span' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_span"><?php _e('This is a multi-day event.','my-calendar'); ?></label>
+			</p>
+			<p class="note"><em><?php _e('Enter the beginning and ending information for this occurrence of the event.','my-calendar'); ?> <?php _e('If this is a multi-day event, it will create a single event with multiple times/dates; otherwise this will create separate events for each occurrence.','my-calendar'); ?></em></p>
 			<div id="event1" class="clonedInput">
 			<?php
 			if ( !empty($data) ) {
@@ -1113,6 +1123,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 	$event_image = esc_url_raw( $_POST['event_image'] );
 	$event_fifth_week = !empty($_POST['event_fifth_week']) ? 1 : 0;
 	$event_holiday = !empty($_POST['event_holiday']) ? 1 : 0;
+	$event_span = !empty($_POST['event_span']) ? 1 : 0;
 	// get group id: if multiple events submitted, auto group OR if event being submitted is already part of a group; otherwise zero.
 		$group_id_submitted = (int) $_POST['event_group_id'];
 	$event_group_id = ( ( is_array($_POST['event_begin']) && count($_POST['event_begin'])>1 ) || mc_event_is_grouped( $group_id_submitted) )?$group_id_submitted:0;
@@ -1248,6 +1259,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			'event_fifth_week'=>$event_fifth_week,
 			'event_holiday'=>$event_holiday,
 			'event_group_id'=>$event_group_id,
+			'event_span'=>$event_span,
 		// floats
 			'event_longitude'=>$event_longitude,
 			'event_latitude'=>$event_latitude			
@@ -1289,6 +1301,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 		$users_entries->event_holiday = $event_holiday;
 		$users_entries->event_flagged = 0;
 		$users_entries->event_group_id = $event_group_id;
+		$users_entries->event_span = $event_span;
 		$proceed = false;
 	}
 	$data = array($proceed, $users_entries, $submit,$errors);

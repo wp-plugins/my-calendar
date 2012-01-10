@@ -59,8 +59,6 @@ global $wpdb;
 	}
 }
 
-
-
 function mc_limit_string($type='',$ltype='',$lvalue='') {
 global $user_ID;	
 	 $user_settings = get_option('mc_user_settings');
@@ -76,7 +74,7 @@ global $user_ID;
 				}
 			} else if ( $ltype !='' && $lvalue != '' ) {	
 				$location_type = $ltype;
-				$current_location = $lvalue;
+				$current_location = esc_sql( $lvalue );
 			}
 		} else {
 			$current_location = urldecode($_GET['loc']);
@@ -99,13 +97,8 @@ global $user_ID;
 				}			
 		}
 		if ($current_location != 'all' && $current_location != '') {
-			//if ($select_category == "") {
 				$limit_string = "$location_type='$current_location'";
 				$limit_string .= ($type=='all')?' AND':"";
-			//} else {
-			//	$limit_string = "AND $location_type='$current_location'";
-			//	$limit_string .= ($type=='all')?'':'';				
-			//}
 		}
 	 }
 	 return $limit_string;

@@ -16,8 +16,10 @@ function my_calendar_add_feed() {
 	if ( get_option('mc_show_ical') == 'true' ) {
 		add_feed( 'my-calendar-ics', 'my_calendar_ical' );
 	}
-	
-	if ( get_option('mc_show_rss') == 'true' || get_option('mc_show_ical') == 'true' ) {
+	if ( get_option('mc_show_print') == 'true' ) {
+		add_feed( 'my-calendar-print', 'my_calendar_print' );
+	}	
+	if ( get_option('mc_show_rss') == 'true' || get_option('mc_show_ical') == 'true' || get_option('mc_show_print') == true ) {
 		add_action('generate_rewrite_rules', 'mc_rewrite_rules');
 		$wp_rewrite->flush_rules();	
 	}
@@ -220,7 +222,9 @@ function mc_footer_js() {
 		  
 		$list_js = stripcslashes( get_option( 'mc_listjs' ) );
 		$cal_js = stripcslashes( get_option( 'mc_caljs' ) );
+		if ( get_option('mc_open_uri') == 'true') { $cal_js = str_replace('e.preventDefault();','',$cal_js); }
 		$mini_js = stripcslashes( get_option( 'mc_minijs' ) );
+		if ( get_option('mc_open_day_uri') == 'true') { $mini_js = str_replace('e.preventDefault();','',$mini_js); }
 		$ajax_js = stripcslashes( get_option( 'mc_ajaxjs' ) );
 
 			$this_post = $wp_query->get_queried_object();
@@ -336,20 +340,31 @@ function check_my_calendar() {
 		if ( version_compare( $current_version, "1.9.0", "<" ) ) {	$upgrade_path[] = "1.9.0";	}
 		if ( version_compare( $current_version, "1.9.1", "<" ) ) {	$upgrade_path[] = "1.9.1";	}
 		if ( version_compare( $current_version, "1.9.3", "<" ) ) { $upgrade_path[] = "1.9.3";  }
+		if ( version_compare( $current_version, "1.10.0", "<" ) ) { $upgrade_path[] = "1.10.0";  }
 	}
 	// having determined upgrade path, assign new version number
 	update_option( 'mc_version' , $mc_version );
 	// Now we've determined what the current install is or isn't 
 	if ( $new_install == true ) {
-		  //add default settings
+		 //add default settings
 		mc_default_settings();
 		$sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_color='#ffffff', category_icon='event.png'";
 		$wpdb->query($sql);
-    }		
+    } else {
+		// clear cache so updates are immediately available
+		mc_delete_cache();
+	}	
 	// switch for different upgrade paths
 	foreach ($upgrade_path as $upgrade) {
 		switch ($upgrade) {
 		// only upgrade db on most recent version
+			case '1.10.0':
+				upgrade_db();
+				update_option( 'mc_caching_enabled','true' );
+				update_option( 'mc_week_caption',"The week's events" );
+				update_option( 'mc_show_print','false' );
+				update_option( 'mc_db_version','1.10.0' );			
+				break;
 			case '1.9.3':
 				update_option( 'mc_draggable', 1 );
 				break;
@@ -1182,6 +1197,22 @@ $plugins_string
 		</div>
 	</form>";
 }
+
+// Actions -- these are action hooks attached to My Calendar events, usable to add additional actions during those events.
+// Actions are only performed after their respective My Calendar events have been successfully completed.
+// If there are errors in the My Calendar event, the action hook will not fire.
+/*
+mc_save_event
+Performed when an event is added, updated, or copied. Arguments are the action taken ('edit','copy','add') and 
+and an array of the processed event data
+
+mc_delete_event
+Performed when an event is deleted. Argument is the event_id.
+
+mc_mass_delete_events
+Performed when events are deleted en masse. Argument is an array of event_ids deleted.
+
+*/
 
 // Filters -- these are filters applied on My Calendar elements, which you can use to modify output. 
 // Base values are empty unless otherwise specified.

@@ -91,12 +91,19 @@ font-size: .9em;
 }
 .clonedInput {margin-bottom: 10px;border-bottom: 1px solid #ddd;}
 #my-calendar .apply {
-float: right;
-padding: 15px 15px 0;
-border-radius: 5px;
+padding: 1px 5px 0;
+margin: 0 -5px;
+border-radius: 3px;
 box-shadow: 2px 2px 3px #aaa;
 background: #ffd;
-width: 200px;
+}
+#my-calendar .apply ul {
+-moz-column-count: 3;
+-moz-column-gap: 20px;
+-webkit-column-count: 3;
+-webkit-column-gap: 20px;
+column-count: 3;
+column-gap: 20px;
 }
 #my-calendar .apply legend {background: #ffd;padding: 2px 0;}
 #my-calendar .apply .warning {
@@ -118,3 +125,5 @@ column-gap: 20px;
 .event_image {float:right;}
 .event_image img {margin-top: 2px;}
 .mc_support {font-family:'Courier New';background:#fff;padding:5px;}
+.jd-my-calendar .button-primary { position: absolute; top: 10px; right: 20px;}
+.template-editor, .style-editor { width: 98%; }

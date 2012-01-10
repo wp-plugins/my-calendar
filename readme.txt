@@ -80,6 +80,28 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.10.0 =
+
+* New feature: option to link dates in mini calendar to separate daily view instead of pop-up.
+* New feature: no longer necessary to manually edit behaviors in order to open main calendar event titles to separate page.
+* New feature: Ability to define grouped events as a single multi-day event and remove duplicates from events lists (upcoming events and today's events widgets)
+* New feature: group-association classes assigned to multi-day events in grid display.
+* New template tags: {daterange} and {multidate} for displaying a beginning and ending date range for a single event and for displaying each date in a multi-day event, respectively.
+* Week-view calendar caption now editable.
+* Added printable version.
+* Submit buttons in forms are now duplicated at top and bottom of long editing sections, to improve usability.
+* Minor style change to group editor to avoid group list colliding with editor textarea.
+* Removed angle brackets from Previous/Next events links.
+* Added custom action hooks for event save and event delete
+* Added ability to prevent today's events from showing up in upcoming events listings.
+* Added categories to iCal output.
+* iCal should return times in local time, not in UTC.
+* Bug fix: iCal output not correctly encoded
+* Bug fix: mc_next_link filter did not exist.
+* Bug fix: placed limit on maximum size of cached calendar data.
+* Bug fix: Upcoming events list will no longer occasionally display more items than expected.
+* Bug fix: menu icon not aware of custom content locations
+
 = 1.9.8 =
 
 * This is just a convenience update due to a warning appearing in 1.9.7 that I missed.
