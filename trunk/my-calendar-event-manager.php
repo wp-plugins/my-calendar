@@ -458,7 +458,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 	$user = get_userdata($user_ID);		
 	$mc_input_administrator = (get_option('mc_input_options_administrators')=='true' && current_user_can('manage_options'))?true:false;
 	$mc_input = get_option('mc_input_options');
-?>
+	?>
 <div>
 <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />
 <input type="hidden" name="event_group_id" value="<?php if ( !empty( $data->event_group_id ) ) { echo $data->event_group_id; } else { mc_group_id(); } ?>" />
