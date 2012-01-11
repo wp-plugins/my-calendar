@@ -183,8 +183,8 @@ function my_calendar_write_js() {
 add_action( 'in_plugin_update_message-my-calendar/my-calendar.php', 'mc_plugin_update_message' );
 function mc_plugin_update_message() {
 	global $mc_version;
-	define('PLUGIN_README_URL',  'http://svn.wp-plugins.org/my-calendar/trunk/readme.txt');
-	$response = wp_remote_get( PLUGIN_README_URL, array ('user-agent' => 'WordPress/My Calendar' . $mc_version . '; ' . get_bloginfo( 'url' ) ) );
+	define('MC_PLUGIN_README_URL',  'http://svn.wp-plugins.org/my-calendar/trunk/readme.txt');
+	$response = wp_remote_get( MC_PLUGIN_README_URL, array ('user-agent' => 'WordPress/My Calendar' . $mc_version . '; ' . get_bloginfo( 'url' ) ) );
 	if ( ! is_wp_error( $response ) || is_array( $response ) ) {
 		$data = $response['body'];
 		$bits=explode('== Upgrade Notice ==',$data);

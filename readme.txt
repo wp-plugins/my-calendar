@@ -80,6 +80,11 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.10.1 = 
+
+* Bug fix: undeclared array in widget manager
+* Renamed overly-generic constant.
+
 = 1.10.0 =
 
 * New feature: option to link dates in mini calendar to separate daily view instead of pop-up.

@@ -450,6 +450,7 @@ if ( $caching && is_array($todays_cache) && $todays_cache[$category] ) { return 
 	$footer = "</ul>";		
 	$holiday_exists = false;
     @usort($events, "my_calendar_time_cmp");
+	$groups = array();
 	// quick loop through all events today to check for holidays
 	if (is_array($events) ) {
 		foreach( array_keys($events) as $key ) {
