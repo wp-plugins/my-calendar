@@ -80,6 +80,10 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.10.2 =
+
+* Critical security update. Please upgrade promptly. Big thank you to Dean Batha for the bug report.
+
 = 1.10.1 = 
 
 * Bug fix: undeclared array in widget manager
@@ -705,5 +709,6 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
+- Version 1.10.2 is a CRITICAL SECURITY UPGRADE. Please upgrade promptly.
 - Version 1.10.0 adds a printable view, multi-day events, and a few additional new options.
 - Version 1.9.0 incorporated many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require updated styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting any custom changes, but you can update styles and scripts on their editing pages. 
