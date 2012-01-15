@@ -374,9 +374,9 @@ global $wpdb,$event_author;
 				$instance = date('Y-m-d',strtotime($_POST['event_instance']) );
 				mc_split_event( $event_id, $instance );
 			}
-			$sql = "DELETE FROM " . my_calendar_table() . " WHERE event_id='" . mysql_real_escape_string($event_id) . "'";
+			$sql = "DELETE FROM " . my_calendar_table() . " WHERE event_id='" . (int) $event_id . "'";
 			$wpdb->query($sql);
-			$sql = "SELECT event_id FROM " . my_calendar_table() . " WHERE event_id='" . mysql_real_escape_string($event_id) . "'";
+			$sql = "SELECT event_id FROM " . my_calendar_table() . " WHERE event_id='" . (int) $event_id . "'";
 			$result = $wpdb->get_results($sql);
 			if ( empty($result) || empty($result[0]->event_id) ) {
 				mc_delete_cache();
@@ -398,7 +398,7 @@ global $wpdb,$users_entries;
 		if ( intval($event_id) != $event_id ) {
 			return "<div class=\"error\"><p>".__('Sorry! That\'s an invalid event key.','my-calendar')."</p></div>";
 		} else {
-			$data = $wpdb->get_results("SELECT * FROM " . my_calendar_table() . " WHERE event_id='" . mysql_real_escape_string($event_id) . "' LIMIT 1");
+			$data = $wpdb->get_results("SELECT * FROM " . my_calendar_table() . " WHERE event_id='" . (int) $event_id . "' LIMIT 1");
 			if ( empty($data) ) {
 				return "<div class=\"error\"><p>".__("Sorry! We couldn't find an event with that ID.",'my-calendar')."</p></div>";
 			}

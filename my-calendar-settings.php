@@ -37,7 +37,7 @@ function my_calendar_import() {
 		foreach ($cats as $key) {
 			$name = mysql_real_escape_string($key['category_name']);
 			$color = mysql_real_escape_string($key['category_colour']);
-			$id = mysql_real_escape_string($key['category_id']);
+			$id = (int) $key['category_id'];
 			$catsql = "INSERT INTO " . my_calendar_categories_table() . " SET 
 				category_id='".$id."',
 				category_name='".$name."', 

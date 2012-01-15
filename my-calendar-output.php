@@ -344,6 +344,8 @@ $current_url = mc_get_current_url();
 	$qsa = array();
 	parse_str($_SERVER['QUERY_STRING'],$qsa);
 	foreach ($qsa as $name => $argument) {
+		$name = esc_url(strip_tags($argument));
+		$argument = esc_url(strip_tags($argument));
 	    if ($name != 'month' && $name != 'yr' && $name != 'dy' ) {
 			$date_switcher .= '<input type="hidden" name="'.$name.'" value="'.$argument.'" />';
 	    }
@@ -440,7 +442,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 	$args = array('name'=>$name,'format'=>$format,'category'=>$category,'showkey'=>$showkey,'shownav'=>$shownav,'toggle'=>$toggle,'time'=>$time,'ltype'=>$ltype,'lvalue'=>$lvalue);
 	$my_calendar_body .= apply_filters('mc_before_calendar','',$args);
 	$main_class = ( $name !='' )?sanitize_title($name):'all';
-	$cid = ( isset($_GET['cid'] ) )?$_GET['cid']:'all';
+	$cid = ( isset($_GET['cid'] ) )?wp_kses($_GET['cid']):'all';
 	$format = ( mc_is_mobile() )?'list':$format;
 	$date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
 	
