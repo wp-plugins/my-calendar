@@ -80,6 +80,10 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.10.3 =
+
+* Incorrectly called wp_kses(). Apologies for the frequent updates!
+
 = 1.10.2 =
 
 * Critical security update. Please upgrade promptly. Big thank you to Dean Batha for the bug report.
