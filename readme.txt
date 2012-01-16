@@ -80,6 +80,10 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.10.4 =
+
+* In my rush to fix the security issue, I broke an aspect of the event navigation. Apologies for this! Now fixed.
+
 = 1.10.3 =
 
 * Incorrectly called wp_kses(). Apologies for the frequent updates!
