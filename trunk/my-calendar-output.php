@@ -344,7 +344,7 @@ $current_url = mc_get_current_url();
 	$qsa = array();
 	parse_str($_SERVER['QUERY_STRING'],$qsa);
 	foreach ($qsa as $name => $argument) {
-		$name = esc_attr(strip_tags($argument));
+		$name = esc_attr(strip_tags($name));
 		$argument = esc_attr(strip_tags($argument));
 	    if ($name != 'month' && $name != 'yr' && $name != 'dy' ) {
 			$date_switcher .= '<input type="hidden" name="'.$name.'" value="'.$argument.'" />';
