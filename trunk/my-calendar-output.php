@@ -335,7 +335,7 @@ jQuery(document).ready(function($) {
 	}
 }
 
-function mc_build_date_switcher( $type='calendar' ) {
+function mc_build_date_switcher( $type='calendar', $cid='all' ) {
 global $wpdb;
 $current_url = mc_get_current_url();
 	$date_switcher = "";
@@ -343,6 +343,7 @@ $current_url = mc_get_current_url();
             <form action="'.$current_url.'" method="get"><div>';
 	$qsa = array();
 	parse_str($_SERVER['QUERY_STRING'],$qsa);
+	if ( !isset( $_GET['cid'] ) ) { $date_switcher .= '<input type="hidden" name="cid" value="'.$cid.'" />'; }	
 	foreach ($qsa as $name => $argument) {
 		$name = esc_attr(strip_tags($name));
 		$argument = esc_attr(strip_tags($argument));
@@ -632,7 +633,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 			<div class="my-calendar-header">';
 					// We want to know if we should display the date switcher
 					if ( $time != 'week' && $time != 'day' ) {
-						$my_calendar_body .= ( $mc_display_jump == 'true' )?mc_build_date_switcher( $format ):'';
+						$my_calendar_body .= ( $mc_display_jump == 'true' )?mc_build_date_switcher( $format, $main_class ):'';
 					}
 					// The header of the calendar table and the links.
 					$my_calendar_body .= "$mc_nav\n$format_toggle\n</div>";
@@ -651,7 +652,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 					$my_calendar_body .= '<div class="my-calendar-header">'; 
 					// We want to know if we should display the date switcher
 					if ( $time != 'week' && $time != 'day' ) {
-						$my_calendar_body .= ( $mc_display_jump == 'true' )?mc_build_date_switcher( $format ):'';
+						$my_calendar_body .= ( $mc_display_jump == 'true' )?mc_build_date_switcher( $format, $main_class ):'';
 					}
 					$my_calendar_body .= "$mc_nav\n$format_toggle\n</div>";	
 				}
