@@ -80,6 +80,10 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.10.5 =
+
+* I made a truly bone-headed error in the last update, and I'm not even going to say what. If you didn't notice it, lucky for you! 
+
 = 1.10.4 =
 
 * In my rush to fix the security issue, I broke an aspect of the event navigation. Apologies for this! Now fixed.
