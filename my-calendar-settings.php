@@ -297,10 +297,10 @@ check_akismet();
 	<label for="mc_notime_text"><?php _e('Label for events without a set time','my-calendar'); ?></label> <input type="text" id="mc_notime_text" name="mc_notime_text" value="<?php if ( get_option('mc_notime_text') == "") { _e('N/A','my-calendar'); } else { echo esc_attr( stripslashes( get_option('mc_notime_text') ) ); } ?>" />
 	</li>
 	<li>
-	<label for="mc_previous_events"><?php _e('Previous events link','my-calendar'); ?></label> <input type="text" id="mc_previous_events" name="mc_previous_events" value="<?php if ( get_option('mc_previous_events') == "") { _e('Previous Events','my-calendar'); } else { echo esc_attr( stripslashes( get_option('mc_previous_events') ) ); } ?>" />
+	<label for="mc_previous_events"><?php _e('Previous events link','my-calendar'); ?></label> <input type="text" id="mc_previous_events" name="mc_previous_events" value="<?php if ( get_option('mc_previous_events') == "") { _e('Previous Events','my-calendar'); } else { echo esc_attr( stripslashes( get_option('mc_previous_events') ) ); } ?>" /> <?php _e('Use <code>{date}</code> to display the appropriate date in navigation.','my-calendar'); ?>
 	</li>
 	<li>
-	<label for="mc_next_events"><?php _e('Next events link','my-calendar'); ?></label> <input type="text" id="mc_next_events" name="mc_next_events" value="<?php if ( get_option('mc_next_events') == "") { _e('Next Events','my-calendar'); } else { echo esc_attr(  stripslashes( get_option('mc_next_events') ) ); } ?>" />
+	<label for="mc_next_events"><?php _e('Next events link','my-calendar'); ?></label> <input type="text" id="mc_next_events" name="mc_next_events" value="<?php if ( get_option('mc_next_events') == "") { _e('Next Events','my-calendar'); } else { echo esc_attr(  stripslashes( get_option('mc_next_events') ) ); } ?>" /> <?php _e('Use <code>{date}</code> to display the appropriate date in navigation.','my-calendar'); ?>
 	</li>
 	<li>
 	<label for="mc_event_open"><?php _e('If events are open','my-calendar'); ?></label> <input type="text" id="mc_event_open" name="mc_event_open" value="<?php if ( get_option('mc_event_open') == "") { _e('Registration is open','my-calendar'); } else { echo esc_attr( stripslashes( get_option('mc_event_open') ) ); } ?>" />

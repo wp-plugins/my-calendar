@@ -273,7 +273,11 @@ function mc_get_current_url() {
 	if ( !empty($_SERVER['HTTPS']) && $_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
 		$pageURL .= "://";
 		if ( !empty( $_SERVER['SERVER_PORT']) && $_SERVER["SERVER_PORT"] != "80") {
-			$pageURL .= $_SERVER["HTTP_HOST"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+			if ( strpos( $_SERVER["HTTP_HOST"], $_SERVER["SERVER_PORT"] ) === FALSE ) { 
+				$pageURL .= $_SERVER["HTTP_HOST"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+			} else { 
+				$pageURL .= $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]; 
+			}	
 		} else {
 			$pageURL .= $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
 		}

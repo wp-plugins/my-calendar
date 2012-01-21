@@ -177,7 +177,8 @@ function event_as_array($event,$type='html') {
 			$event_open = '';	
 		}
 	
-	$details['description'] = stripslashes($event->event_desc);
+	$details['description'] = wpautop(stripslashes($event->event_desc));
+	$details['description_raw'] = stripslashes($event->event_desc);
 	$details['link_title'] = ($details['link'] != '')?"<a href='".$event->event_link."'>".stripslashes($event->event_title)."</a>":stripslashes($event->event_title);
 	$details['location'] = stripslashes($event->event_label);
 	$details['street'] = stripslashes($event->event_street);
@@ -188,7 +189,8 @@ function event_as_array($event,$type='html') {
 	$details['country'] = stripslashes($event->event_country);
 	$details['hcard'] = stripslashes($hcard);
 	$details['link_map'] = $map;
-	$details['shortdesc'] = stripslashes($event->event_short);
+	$details['shortdesc'] = wpautop(stripslashes($event->event_short));
+	$details['shortdesc_raw'] = stripslashes($event->event_short);
 	$details['event_open'] = $event_open;
 	$details['icon'] = $category_icon;
 	$details['icon_html'] = "<img src='$category_icon' class='mc-category-icon' alt='' />";

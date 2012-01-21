@@ -80,6 +80,13 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.10.6 =
+
+* Revised template tags so the description tags are run through wpautop(), and added _raw versions which are not.
+* Fixed a bug in URL generation so that URLs with ports are correctly constructed.
+* Fixed a bug iin Print output which did not allow restriction to multiple categories
+* Added option to use {date} in previous/next navigation links to indicate what date set is being navigated to.
+
 = 1.10.5 =
 
 * I made a truly bone-headed error in the last update, and I'm not even going to say what. If you didn't notice it, lucky for you! 

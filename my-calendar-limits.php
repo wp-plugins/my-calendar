@@ -1,9 +1,10 @@
 <?php
 function mc_select_category($category, $type='event', $group='events' ) {
+$category = urldecode($category);
 global $wpdb;
 	$select_category = '';
 	$data = ($group=='category')?'category_id':'event_category';
-	if ( isset( $_GET['mcat'] ) ) { $category = (int) $_GET['mcat']; }
+	if ( isset( $_GET['mcat'] ) ) { $category = $_GET['mcat']; }
 	if ( $category == 'all' || strpos( $category, "all" ) !== false ) {
 		return '';
 	} else {
@@ -17,6 +18,7 @@ global $wpdb;
 		$i = 1;
 		foreach ($categories as $key) {
 			if ( is_numeric($key) ) {
+				$key = (int) $key;
 				if ($i == 1) {
 					$select_category .= ($type=='all')?" WHERE (":' (';
 				}				
@@ -28,6 +30,7 @@ global $wpdb;
 				}
 			$i++;
 			} else {
+				$key = esc_sql($key);
 				$cat = $wpdb->get_row("SELECT category_id FROM " . my_calendar_categories_table() . " WHERE category_name = '$key'");
 				$category_id = $cat->category_id;
 				if ($i == 1) {
