@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.10.6
+Version: 1.10.7
 */
 /*  Copyright 2009-2012  Joe Dolson (email : joe@joedolson.com)
 
@@ -24,12 +24,18 @@ Version: 1.10.6
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 global $mc_version, $wpdb;
-$mc_version = '1.10.6';
+$mc_version = '1.10.7';
 
 // Define the tables used in My Calendar
-define('MY_CALENDAR_TABLE', $wpdb->prefix . 'my_calendar');
-define('MY_CALENDAR_CATEGORIES_TABLE', $wpdb->prefix . 'my_calendar_categories');
-define('MY_CALENDAR_LOCATIONS_TABLE', $wpdb->prefix . 'my_calendar_locations');
+if ( function_exists('is_multisite') && is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
+	define('MY_CALENDAR_TABLE', $wpdb->base_prefix . 'my_calendar');
+	define('MY_CALENDAR_CATEGORIES_TABLE', $wpdb->base_prefix . 'my_calendar_categories');
+	define('MY_CALENDAR_LOCATIONS_TABLE', $wpdb->base_prefix . 'my_calendar_locations');
+} else {
+	define('MY_CALENDAR_TABLE', $wpdb->prefix . 'my_calendar');
+	define('MY_CALENDAR_CATEGORIES_TABLE', $wpdb->prefix . 'my_calendar_categories');
+	define('MY_CALENDAR_LOCATIONS_TABLE', $wpdb->prefix . 'my_calendar_locations');
+}
 
 if ( function_exists('is_multisite') && is_multisite() ) {
 // Define the tables used in My Calendar

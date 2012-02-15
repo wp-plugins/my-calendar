@@ -323,45 +323,70 @@ function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='') {
 				}
 			}
      	}
-	mc_create_cache( $arr_events, $y, $m, $d, $ccategory, $cltype, $clvalue );
+	mc_create_cache( $arr_events, $y, $m, $d );
     return $arr_events;
 }
 
 function mc_check_cache($y, $m, $d, $category, $ltype, $lvalue) {
 	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
 	if ( $caching == true ) {
-		$cache = get_transient('mc_cache');
-		$value = $cache[$y][$m][$d][$category][$ltype][$lvalue];
-		if ( $value ) { return $value; } else { return false; }
+		$cache = get_transient("mc_cache");
+		if ( isset( $cache[$y][$m][$d] ) ) {
+			$value = $cache[$y][$m][$d];
+		} else {
+			return false;
+		}
+		if ( $value ) { return mc_clean_cache($value, $category,$ltype,$lvalue); } else { return false; }
 	} else {
 		return false;
 	}
 }
 
-function mc_create_cache($arr_events, $y, $m, $d, $category, $ltype, $lvalue) {
+function mc_clean_cache( $cache, $category, $ltype, $lvalue ) {
+	// process cache to strip events which do not meet current restrictions
+	$type = ($ltype != 'all')?"event_$ltype":"event_state";
+	$return = false;
+	if ( is_array($cache) ) {	
+		foreach ( $cache as $key=>$value ) {
+			if ( 
+				( $value->event_category == $category || $category == 'all' ) &&
+				( $value->$type == $lvalue || ( $ltype == 'all' && $lvalue == 'all' ) )
+				) {
+				$val = $value->$type;
+				$return[$key]=$value;
+			}
+		}
+		return $return;
+	}
+}
+
+function mc_create_cache($arr_events, $y, $m, $d ) {
 	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
 	if ( $arr_events == false ) { $arr_events = 'empty'; }
 	if ( $caching == true ) {
 		$before = memory_get_usage();
-		$ret = get_transient('mc_cache');
+		$ret = get_transient("mc_cache");
 		$after = memory_get_usage();
 		$mem_limit = mc_allocated_memory( $before, $after );
-		if ( $mem_limit ) { mc_delete_cache(); }
-		$cache = get_transient('mc_cache');		
-		$cache[$y][$m][$d][$category][$ltype][$lvalue] = $arr_events;
-		set_transient( 'mc_cache',$cache, 60*60*48 );
+		if ( $mem_limit ) { return; } // if cache is maxed, don't add additional references. Cache expires every two days.
+		$cache = get_transient("mc_cache");		
+		$cache[$y][$m][$d] = $arr_events;
+		set_transient( "mc_cache",$cache, 60*60*48 );
 	}
 }
 
 function mc_allocated_memory($before, $after) {
     $size = ($after - $before);
-	// limits cache to occupying 2000 KB of PHP memory. 
-	if ( $size/1024 > 2000 ) { return true; } else { return false; }
+	$total_allocation = str_replace('M','',ini_get('memory_limit'))*1048576; // CONVERT TO BYTES
+	$limit =  $total_allocation/32;
+	// limits each cache to occupying 1/32 of allowed PHP memory (usually will be between 250K and 1MB). 
+	if ( $size > $limit ) { return true; } else { return false; }
 }
 
 function mc_delete_cache() {
 	delete_transient( 'mc_cache' );
 	delete_transient( 'mc_todays_cache' );
+	delete_transient( 'mc_cache_upcoming' );
 }
 
 function _mc_increment_values( $recur ) {
@@ -592,6 +617,7 @@ function mc_increment_event( $event, $instance='', $object=true ) {
 		} else { // I really need to decide about getting rid of infinite events.
 			$event_begin = $event->event_begin;
 			$event_end = $event->event_end;
+			$offset = (60*60*get_option('gmt_offset'));			
 			$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));
 			
 			switch ($event->event_recur) {

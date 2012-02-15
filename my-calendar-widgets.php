@@ -131,7 +131,7 @@ function form($instance) {
 	<fieldset>
 	<legend><?php _e('Widget Options','my-calendar'); ?></legend>
 	<?php $config_url = admin_url("admin.php?page=my-calendar-config"); ?>
-	<?php if ( get_option('mc_uri') == '' ) { $disabled = " disabled='disabled'"; $warning = _e('Add <a href="'.$config_url.'#mc_uri" target="_blank" title="Opens in new window">calendar URL in settings</a> to use this option.','my-calendar');  } else { ""; } ?>
+	<?php if ( get_option('mc_uri') == '' ) { $disabled = " disabled='disabled'";  _e('Add <a href="'.$config_url.'#mc_uri" target="_blank" title="Opens in new window">calendar URL in settings</a> to use this option.','my-calendar');  } else { $disabled=""; } ?>
 	<p>
 	<label for="<?php echo $this->get_field_id('my_calendar_upcoming_linked'); ?>"><?php _e('Link widget title to calendar:','my-calendar'); ?></label> <select<?php echo $disabled; ?> id="<?php echo $this->get_field_id('my_calendar_upcoming_linked'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_linked'); ?>">
 	<option value="no" <?php echo ($widget_linked == 'no')?'selected="selected"':''; ?>><?php _e('Not Linked','my-calendar') ?></option>
@@ -296,6 +296,10 @@ $group_id = (int) $group_id;
 }
 // make this function time-sensitive, not date-sensitive.
 function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type='list',$order='asc',$skip=0, $show_today='yes') {
+	
+		$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
+		$cache = ($caching)?get_transient( 'mc_cache_upcoming' ):false;
+		if ( $cache ) return $cache;
 		$output = '';
 		$near_events = array();
 		$temp_array = array();
@@ -426,6 +430,7 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 		} else {
 			$output .= '';
 		}
+		$set = ($caching)?set_transient( 'mc_cache_upcoming', $output, 60*30 ):false; // only cached for 30 minutes.
 	return $output;
 }
 

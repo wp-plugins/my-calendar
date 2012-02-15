@@ -19,18 +19,21 @@ function my_calendar_add_feed() {
 	if ( get_option('mc_show_print') == 'true' ) {
 		add_feed( 'my-calendar-print', 'my_calendar_print' );
 	}	
+	/* removed 2/11/2012.
 	if ( get_option('mc_show_rss') == 'true' || get_option('mc_show_ical') == 'true' || get_option('mc_show_print') == true ) {
 		add_action('generate_rewrite_rules', 'mc_rewrite_rules');
 		$wp_rewrite->flush_rules();	
 	}
+	*/
 }
-
+/* I believe that this is obsolete, at least as far back as 2.9.2
 function mc_rewrite_rules( $wp_rewrite ) {
   $new_rules = array(
     'feed/(.+)' => 'index.php?feed='.$wp_rewrite->preg_index(1)
   );
   $wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
 }
+*/
 
 if ( ! function_exists( 'is_ssl' ) ) {
 	function is_ssl() {
@@ -224,12 +227,11 @@ function mc_footer_js() {
 		$cal_js = stripcslashes( get_option( 'mc_caljs' ) );
 		if ( get_option('mc_open_uri') == 'true') { $cal_js = str_replace('e.preventDefault();','',$cal_js); }
 		$mini_js = stripcslashes( get_option( 'mc_minijs' ) );
-		if ( get_option('mc_open_day_uri') == 'true') { $mini_js = str_replace('e.preventDefault();','',$mini_js); }
+		if ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'listanchor'  || get_option('mc_open_day_uri') == 'gridanchor') { $mini_js = str_replace('e.preventDefault();','',$mini_js); }
 		$ajax_js = stripcslashes( get_option( 'mc_ajaxjs' ) );
 
-			$this_post = $wp_query->get_queried_object();
-			if (is_object($this_post)) {
-				$id = $this_post->ID;
+			if (is_object($wp_query)) {
+				$id = $wp_query->post->ID;
 			} 
 			if ( get_option( 'mc_show_js' ) != '' ) {
 			$array = explode( ",",get_option( 'mc_show_js' ) );
@@ -345,6 +347,7 @@ function check_my_calendar() {
 		if ( version_compare( $current_version, "1.9.1", "<" ) ) {	$upgrade_path[] = "1.9.1";	}
 		if ( version_compare( $current_version, "1.9.3", "<" ) ) { $upgrade_path[] = "1.9.3";  }
 		if ( version_compare( $current_version, "1.10.0", "<" ) ) { $upgrade_path[] = "1.10.0";  }
+		if ( version_compare( $current_version, "1.10.7", "<" ) ) { $upgrade_path[] = "1.10.7";  }		
 	}
 	// having determined upgrade path, assign new version number
 	update_option( 'mc_version' , $mc_version );
@@ -362,6 +365,10 @@ function check_my_calendar() {
 	foreach ($upgrade_path as $upgrade) {
 		switch ($upgrade) {
 		// only upgrade db on most recent version
+			case '1.10.7':
+				upgrade_db();
+				update_option( 'mc_multisite_show', 0 );
+				break;
 			case '1.10.0':
 				upgrade_db();
 				update_option( 'mc_caching_enabled','true' );
@@ -727,9 +734,9 @@ global $wp_query;
 		$scripting .= "jQuery(document).ready(function($) { \$('html').removeClass('mcjs') });\n";
 		$scripting .= "jQuery.noConflict();\n";
 		$scripting .= "</script>\n";
-		$this_post = $wp_query->get_queried_object();
-		if ( is_object($this_post) ) {
-			$id = $this_post->ID;
+
+		if (is_object($wp_query)) {
+			$id = $wp_query->post->ID;
 		} 
 		if ( get_option( 'mc_show_js' ) != '' ) {
 		$array = explode( ",",get_option( 'mc_show_js' ) );

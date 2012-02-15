@@ -52,12 +52,7 @@ Languages available:
 * Czech ([Jan Rybarik](http://janrybarik.cz)) - to 1.6.3
 * Brazilian Portuguese (Leonardo Kfoury) - to 1.6.0?
 
-Older translations
-
-* Spanish ([Esteban Truelsegaard](http://www.netmdp.com))
-* Finnish (Ilpo Puhakka)
-
-New or updated translations are always appreciated. The translation files are included in the download. 
+New or updated translations are always appreciated. The translation files are included in the download.
 
 == Installation ==
 
@@ -79,6 +74,21 @@ New or updated translations are always appreciated. The translation files are in
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.10.7 =
+
+* Made 'to' value in Google Maps links a translatable value.
+* Feature change: iCal download now respects currently selected month. 
+* Added a phone number field to the Location manager
+* Added a setting to display only the core site's calendar on child sites in multisite mode.
+* Added a setting for the link target for mini calendar dates
+* Re-wrote labels for URL link target settings fields.
+* Bug fix: Location selector did not respect currently selected categories.
+* Bug fix: "Add another occurrence" option available in Edit mode, but not functional. Removed option.
+* Bug fix: Limiting by categories didn't trim whitespace from category names.
+* Bug fix: Fixed RSS/ICS/Print permalinks if PATHINFO permalinks are enabled.
+* Improved cache handling. Cache limit relative to amount of memory available to PHP. Cache stores information more efficiently.
+* Revised RSS/iCal handling to avoid .htaccess problems.
 
 = 1.10.6 =
 
@@ -728,6 +738,7 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
+- Version 1.10.7 Fixes some miscellaneous bugs and adds a few minor additional features.
 - Version 1.10.2 is a CRITICAL SECURITY UPGRADE. Please upgrade promptly.
 - Version 1.10.0 adds a printable view, multi-day events, and a few additional new options.
 - Version 1.9.0 incorporated many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require updated styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting any custom changes, but you can update styles and scripts on their editing pages. 

@@ -30,7 +30,7 @@ global $wpdb;
 				}
 			$i++;
 			} else {
-				$key = esc_sql($key);
+				$key = esc_sql(trim($key));
 				$cat = $wpdb->get_row("SELECT category_id FROM " . my_calendar_categories_table() . " WHERE category_name = '$key'");
 				$category_id = $cat->category_id;
 				if ($i == 1) {
