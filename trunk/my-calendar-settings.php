@@ -92,6 +92,7 @@ function edit_my_calendar_config() {
 		$mc_title_template = $_POST['mc_title_template'];
 		$mc_details_label = $_POST['mc_details_label'];
 		$mc_link_label = $_POST['mc_link_label'];
+		if ( !empty($_POST['mc_open_day_uri']) ) { $mc_open_day_uri = $_POST['mc_open_day_uri']; }
 		$templates = get_option('mc_templates');
 		$templates['title'] = $mc_title_template;
 		$templates['label'] = $mc_details_label;
@@ -99,7 +100,8 @@ function edit_my_calendar_config() {
 		update_option('mc_uri',$_POST['mc_uri'] );
 		update_option('mc_open_uri',( !empty($_POST['mc_open_uri']) && $_POST['mc_open_uri']=='on' && get_option('mc_uri') != '')?'true':'false');
 		update_option('mc_day_uri',$_POST['mc_day_uri'] );
-		update_option('mc_open_day_uri',( !empty($_POST['mc_open_day_uri']) && $_POST['mc_open_day_uri']=='on' && get_option('mc_day_uri') != '')?'true':'false');
+		update_option('mc_mini_uri',$_POST['mc_mini_uri'] );
+		update_option('mc_open_day_uri', $mc_open_day_uri );
 		update_option('mc_skip_holidays_category',(int) $_POST['mc_skip_holidays_category']);
 		update_option('mc_skip_holidays',( !empty($_POST['mc_skip_holidays']) && $_POST['mc_skip_holidays']=='on')?'true':'false');
 		update_option('mc_templates',$templates);
@@ -153,7 +155,9 @@ function edit_my_calendar_config() {
 		if ( isset($_POST['mc_network']) ) {
 			$mc_multisite = (int) $_POST['mc_multisite'];
 			update_site_option('mc_multisite',$mc_multisite );
-			echo "<div class=\"updated\"><p><strong>".__('Multsite settings saved','my-calendar').".</strong></p></div>";
+			$mc_multisite_show = (int) $_POST['mc_multisite_show'];
+			update_site_option('mc_multisite_show',$mc_multisite_show );			
+			echo "<div class=\"updated\"><p><strong>".__('Multisite settings saved','my-calendar').".</strong></p></div>";
 		}
 	}
 	// custom text
@@ -221,6 +225,7 @@ function edit_my_calendar_config() {
 	$mc_link_label = $templates['link'];
 	$mc_uri = get_option('mc_uri');
 	$mc_day_uri = get_option('mc_day_uri');
+	$mc_mini_uri = get_option('mc_mini_uri');
 ?>
     <div class="wrap">
 <?php 
@@ -334,28 +339,40 @@ check_akismet();
 	<legend><?php _e('General Calendar Options','my-calendar'); ?></legend>
 	<ul>
 	<li>
-	<label for="mc_uri"><?php _e('<abbr title="Uniform resource locator">URL</abbr> to use for event details display.','my-calendar'); ?></label> 
-	<input type="text" name="mc_uri" id="mc_uri" size="40" value="<?php echo esc_url($mc_uri); ?>" /><br /><small><?php _e('Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar'); ?> <?php mc_guess_calendar(); ?></small>
+	<label for="mc_uri"><?php _e('Target <abbr title="Uniform resource locator">URL</abbr> for event details links:','my-calendar'); ?></label> 
+	<input type="text" name="mc_uri" id="mc_uri" size="60" value="<?php echo esc_url($mc_uri); ?>" /><br /><small><?php _e('Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar'); ?> <?php mc_guess_calendar(); ?></small>
 	</li>
 	<li>
-	<input type="checkbox" id="mc_open_uri" name="mc_open_uri" <?php jd_cal_checkCheckbox('mc_open_uri','true'); ?> /> <label for="mc_open_uri"><?php _e('Open calendar links in single event view','my-calendar'); ?></label> <small><?php _e('Replaces pop-up in grid view.','my-calendar'); ?></small>
+	<input type="checkbox" id="mc_open_uri" name="mc_open_uri" <?php jd_cal_checkCheckbox('mc_open_uri','true'); ?> /> <label for="mc_open_uri"><?php _e('Open calendar links to event details URL','my-calendar'); ?></label><br /><small><?php _e('Replaces pop-up in grid view.','my-calendar'); ?></small>
 	</li>
 	<li>
-	<label for="mc_day_uri"><?php _e('<abbr title="Uniform resource locator">URL</abbr> for the single days events timeline.','my-calendar'); ?></label> 
-	<input type="text" name="mc_day_uri" id="mc_day_uri" size="40" value="<?php echo esc_url($mc_day_uri); ?>" /><br /><small><?php _e('Can be any Page or Post with the <code>[my_calendar time="day"]</code> shortcode.','my-calendar'); ?> <?php mc_guess_calendar(); ?></small>
+	<label for="mc_day_uri"><?php _e('Target <abbr title="Uniform resource locator">URL</abbr> for single day\'s timeline links.','my-calendar'); ?></label> 
+	<input type="text" name="mc_day_uri" id="mc_day_uri" size="60" value="<?php echo esc_url($mc_day_uri); ?>" /><br /><small><?php _e('Can be any Page or Post with the <code>[my_calendar time="day"]</code> shortcode.','my-calendar'); ?></small>
+	</li>
+		<li>
+	<label for="mc_mini_uri"><?php _e('Target <abbr title="Uniform resource locator">URL</abbr> for mini calendar in-page anchors:','my-calendar'); ?></label> 
+	<input type="text" name="mc_mini_uri" id="mc_mini_uri" size="60" value="<?php echo esc_url($mc_mini_uri); ?>" /><br /><small><?php _e('Can be any Page or Post with the <code>[my_calendar]</code> shortcode using format selected below','my-calendar'); ?></small>
 	</li>
 	<li>
-	<input type="checkbox" id="mc_open_day_uri" name="mc_open_day_uri" <?php jd_cal_checkCheckbox('mc_open_day_uri','true'); ?> /> <label for="mc_open_day_uri"><?php _e('Open Mini calendar widget to daily view page (above)','my-calendar'); ?></label> <small><?php _e('Replaces pop-up in mini calendar','my-calendar'); ?></small>
+	<label for="mc_open_day_uri"><?php _e('Mini calendar widget date links to:','my-calendar'); ?></label> <select id="mc_open_day_uri" name="mc_open_day_uri" />
+	<option value='false'<?php echo jd_option_selected(get_option('mc_open_day_uri'),'false','option'); ?>><?php _e('jQuery pop-up view','my-calendar'); ?></option>	
+	<option value='true'<?php echo jd_option_selected(get_option('mc_open_day_uri'),'true','option'); ?>><?php _e('daily view page (above)','my-calendar'); ?></option>
+	<option value='listanchor'<?php echo jd_option_selected(get_option('mc_open_day_uri'),'listanchor','option'); ?>><?php _e('in-page anchor on main calendar page (list)','my-calendar'); ?></option>
+	<option value='calendaranchor'<?php echo jd_option_selected(get_option('mc_open_day_uri'),'calendaranchor','option'); ?>><?php _e('in-page anchor on main calendar page (grid)','my-calendar'); ?></option>	
+	</select>
+	<small><?php _e('Replaces pop-up in mini calendar','my-calendar'); ?></small>
 	</li>
-	<li>
-	<label for="mc_time_format"><?php _e('Time format','my-calendar'); ?></label> <input type="text" id="mc_time_format" name="mc_time_format" value="<?php if ( get_option('mc_time_format')  == "") { echo ''; } else { echo esc_attr( get_option( 'mc_time_format') ); } ?>" /> <?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_time_format') == '') { echo date_i18n( get_option('time_format') ); } else { echo date_i18n( get_option('mc_time_format') ); } ?>
+	<li class='mc-time-format'>
+	<label for="mc_time_format"><?php _e('Time format','my-calendar'); ?></label><br /><input type="text" id="mc_time_format" name="mc_time_format" value="<?php if ( get_option('mc_time_format')  == "") { echo ''; } else { echo esc_attr( get_option( 'mc_time_format') ); } ?>" /> <code><?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_time_format') == '') { echo date_i18n( get_option('time_format') ); } else { echo date_i18n( get_option('mc_time_format') ); } ?></code>
 	</li>	
-	<li>
-	<label for="mc_week_format"><?php _e('Date format in grid mode, week view','my-calendar'); ?></label> <input type="text" id="mc_week_format" name="my_calendar_week_format" value="<?php if ( get_option('mc_week_format')  == "") { echo ''; } else { echo esc_attr( get_option( 'mc_week_format') ); } ?>" /> <?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_week_format') == '') { echo date_i18n('M j, \'y'); } else { echo date_i18n( get_option('mc_week_format') ); } ?>
+	<li class='mc-week-format'>
+	<label for="mc_week_format"><?php _e('Date in grid mode, week view','my-calendar'); ?></label><br /><input type="text" id="mc_week_format" name="my_calendar_week_format" value="<?php if ( get_option('mc_week_format')  == "") { echo ''; } else { echo esc_attr( get_option( 'mc_week_format') ); } ?>" /> <code><?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_week_format') == '') { echo date_i18n('M j, \'y'); } else { echo date_i18n( get_option('mc_week_format') ); } ?></code>
 	</li>	
+	<li class='mc-date-format'>
+	<label for="mc_date_format"><?php _e('Date Format in other views','my-calendar'); ?></label><br /><input type="text" id="mc_date_format" name="mc_date_format" value="<?php if ( get_option('mc_date_format')  == "") { echo esc_attr( get_option('date_format') ); } else { echo esc_attr(  get_option( 'mc_date_format') ); } ?>" /> <code><?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_date_format') == '') { echo date_i18n(get_option('date_format')); } else { echo date_i18n( get_option('mc_date_format') ); } ?></code>
+	</li>
 	<li>
-	<label for="mc_date_format"><?php _e('Date Format in all other views','my-calendar'); ?></label> <input type="text" id="mc_date_format" name="mc_date_format" value="<?php if ( get_option('mc_date_format')  == "") { echo esc_attr( get_option('date_format') ); } else { echo esc_attr(  get_option( 'mc_date_format') ); } ?>" /> <?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_date_format') == '') { echo date_i18n(get_option('date_format')); } else { echo date_i18n( get_option('mc_date_format') ); } ?><br />
-	<small><?php _e('Date format uses the same syntax as the <a href="http://php.net/date">PHP <code>date()</code> function</a>. Save options to update sample output.','my-calendar'); ?></small>
+	<small><?php _e('Date formats use the same syntax as the <a href="http://php.net/date">PHP <code>date()</code> function</a>. Save options to update sample output.','my-calendar'); ?></small>
 	</li>
 	<li>
 	<input type="checkbox" id="mc_show_rss" name="mc_show_rss" <?php jd_cal_checkCheckbox('mc_show_rss','true'); ?> /> <label for="mc_show_rss"><?php _e('Show link to My Calendar RSS feed.','my-calendar'); ?></label> <small><?php _e('RSS feed shows recently added events.','my-calendar'); ?></small>
@@ -551,6 +568,10 @@ check_akismet();
 	<li><input type="radio" value="2" id="ms2" name="mc_multisite"<?php echo jd_option_selected(get_site_option('mc_multisite'),2); ?> /> <label for="ms2"><?php _e('Site owners may manage either calendar','my-calendar'); ?></label></li>
 	</ul>
 	<p class="notice"><strong>*</strong> <?php _e('Changes only effect input permissions. Public-facing calendars will be unchanged.','my-calendar'); ?></p>
+	<ul>
+	<li><input type="radio" value="0" id="mss0" name="mc_multisite_show"<?php echo jd_option_selected(get_site_option('mc_multisite_show'),'0'); ?> /> <label for="mss0"><?php _e('Sub-site calendars show events from their local calendar.','my-calendar'); ?></label></li>
+	<li><input type="radio" value="1" id="mss1" name="mc_multisite_show"<?php echo jd_option_selected(get_site_option('mc_multisite_show'),'1'); ?> /> <label for="mss1"><?php _e('Sub-site calendars show events from the central calendar.','my-calendar'); ?></label></li>
+	</ul>
 	</fieldset>
 		<p>
 		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Multisite Settings','my-calendar'); ?>" />

@@ -167,6 +167,7 @@ $initial_db = "CREATE TABLE " . my_calendar_table() . " (
  event_longitude FLOAT(10,6) NOT NULL DEFAULT '0',
  event_latitude FLOAT(10,6) NOT NULL DEFAULT '0',
  event_zoom INT(2) NOT NULL DEFAULT '14',
+ event_phone VARCHAR(32) NOT NULL,
  event_group INT(1) NOT NULL DEFAULT '0',
  event_group_id INT(11) NOT NULL DEFAULT '0',
  event_span INT(1) NOT NULL DEFAULT '0',
@@ -202,6 +203,7 @@ $initial_loc_db = "CREATE TABLE " . my_calendar_locations_table() . " (
  location_longitude FLOAT(10,6) NOT NULL DEFAULT '0',
  location_latitude FLOAT(10,6) NOT NULL DEFAULT '0',
  location_zoom INT(2) NOT NULL DEFAULT '14',
+ location_phone VARCHAR(32) NOT NULL,
  PRIMARY KEY  (location_id) 
  ) $charset_collate;";
 
@@ -377,6 +379,7 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option( 'mc_draggable',0 );
 	add_option( 'mc_caching_enabled','true' );
 	add_option( 'mc_week_caption',"The week's events" );
+	add_option( 'mc_multisite_show', 0 );
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($initial_db);
 	dbDelta($initial_cat_db);

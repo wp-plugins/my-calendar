@@ -1,7 +1,7 @@
 <?php
 // Used to draw multiple events
 function my_calendar_draw_events($events, $type, $process_date) {
-  if ( $type == 'mini' && get_option('mc_open_day_uri') == 'true' ) return;
+  if ( $type == 'mini' && ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'listanchor' || get_option('mc_open_day_uri') == 'gridanchor' ) ) return;
   // We need to sort arrays of objects by time
   if ( is_array($events) ) {
  usort($events, "my_calendar_time_cmp");
@@ -145,7 +145,7 @@ jQuery(document).ready(function($) {
 	$templates = get_option('mc_templates');
 	$title_template = ($templates['title'] == '' )?'{title}':$templates['title'];
 	$mytitle = jd_draw_template($data,$title_template);
-	$toggle = ($type == 'calendar')?"-<a href='#' class='mc-toggle'><img src='".MY_CALENDAR_DIRECTORY."/images/event-details.png' alt='".__('Event Details','my-calendar')."' /></a>":'';
+	$toggle = ($type == 'calendar')?"&nbsp;<a href='#' class='mc-toggle'><img src='".MY_CALENDAR_DIRECTORY."/images/event-details.png' alt='".__('Event Details','my-calendar')."' /></a>":'';
 	$toggle =  (get_option('mc_open_uri')=='true')?'':$toggle;
 	$current_date = date_i18n($date_format,strtotime($process_date));
 	$event_date = ($type == 'single')?$current_date.', ':'';
@@ -552,8 +552,8 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 		$nLink = my_calendar_next_link($c_year,$c_month,$c_day,$format,$time);	
 		$prevLink = mc_build_url( array( 'yr'=>$pLink['yr'],'month'=>$pLink['month'],'dy'=>$pLink['day'],'cid'=>$main_class ),array() );
 		$nextLink = mc_build_url( array( 'yr'=>$nLink['yr'],'month'=>$nLink['month'],'dy'=>$nLink['day'],'cid'=>$main_class ),array() );
-		$previous_link = apply_filters('mc_previous_link','		<li class="my-calendar-prev"><a id="prevMonth" href="' . $prevLink . $anchor .'" rel="nofollow">'.$pLink['label'].'</a></li>',$pLink);
-		$next_link = apply_filters('mc_next_link','		<li class="my-calendar-next"><a id="nextMonth" href="' . $nextLink . $anchor .'" rel="nofollow">'.$nLink['label'].'</a></li>',$nLink);
+		$previous_link = apply_filters('mc_previous_link','		<li class="my-calendar-prev"><a class="prevMonth" href="' . $prevLink . $anchor .'" rel="nofollow">'.$pLink['label'].'</a></li>',$pLink);
+		$next_link = apply_filters('mc_next_link','		<li class="my-calendar-next"><a class="nextMonth" href="' . $nextLink . $anchor .'" rel="nofollow">'.$nLink['label'].'</a></li>',$nLink);
 		$mc_nav = '
 <div class="my-calendar-nav">
 	<ul>
@@ -571,7 +571,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 		$grabbed_events = my_calendar_grab_events($c_year,$c_month,$c_day,$category,$ltype,$lvalue);
 		$events_class = '';
 		if (!count($grabbed_events)) {
-			$events_class = " no-events";
+			$events_class = "no-events";
 		} else {
 			$class = '';
 			foreach ( array_keys($grabbed_events) as $key ) {
@@ -581,10 +581,11 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 					$class .= $author;
 				}
 			}
-			$events_class = " has-events$class";
+			$events_class = "has-events$class";
 		}
 		$class = '';
-		$my_calendar_body .= $mc_nav."\n"."<h3 class='mc-single".$class."'>".date_i18n( $date_format,strtotime("$c_year-$c_month-$c_day")).'</h3><div id="mc-day" class="'.$dayclass.' '.(date("Ymd", mktime (0,0,0,$c_month,$c_day,$c_year))==date("Ymd",time()+$offset)?'current-day':'day-with-date').$events_class.'">'."\n";
+		$dateclass = mc_dateclass( time()+$offset, mktime(0,0,0,$c_month,$c_day, $c_year ) );
+		$my_calendar_body .= $mc_nav."\n"."<h3 class='mc-single".$class."'>".date_i18n( $date_format,strtotime("$c_year-$c_month-$c_day")).'</h3><div id="mc-day" class="'.$dayclass.' '.$dateclass.' '.$events_class.'">'."\n";
 		$process_date = date_i18n("Y-m-d",strtotime("$c_year-$c_month-$c_day"));		
 		if ( count($grabbed_events) > 0 ) {
 			foreach ( array_keys($grabbed_events) as $key ) {
@@ -722,7 +723,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 							$grabbed_events = my_calendar_grab_events($c_year,$c_month,$thisday,$category,$ltype,$lvalue);
 							$events_class = '';
 								if (!count($grabbed_events)) {
-									$events_class = " no-events$addclass";
+									$events_class = "no-events$addclass";
 									$element = 'span';
 									$trigger = '';
 									$close = 'span';
@@ -733,10 +734,18 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 											$class .= $author;
 										}
 									}			
-									$events_class = " has-events$addclass$class";
+									$events_class = "has-events$addclass$class";
 									if ($format == 'mini') {
+									 if ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'false' ) {
 										$day_url = mc_build_url( array('yr'=>$c_year,'month'=>$c_month,'dy'=>$thisday), array('month','dy','yr','ltype','loc','mcat'), get_option( 'mc_day_uri' ) );
 										$link = ( get_option('mc_day_uri') != '' )?$day_url:'#';
+									} else {
+										$atype = str_replace( 'anchor','',get_option('mc_open_day_uri') );
+										$ad = str_pad( $thisday, 2, '0', STR_PAD_LEFT ); // need to match format in ID
+										$am = str_pad( $c_month, 2, '0', STR_PAD_LEFT );
+										$date_url = mc_build_url( array('yr'=>$c_year,'month'=>$c_month,'dy'=>$thisday), array('month','dy','yr','ltype','loc','mcat','cid'), get_option( 'mc_mini_uri' ) );	
+										$link = ( get_option('mc_mini_uri') != '' ) ?$date_url.'#'.$atype.'-'.$c_year.'-'.$am.'-'.$ad:'#';
+									}
 										$element = 'a href="'.$link.'"';
 										$close = 'a';
 										$trigger = ' trigger';
@@ -746,6 +755,8 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 										$close = 'span';
 									}
 								}
+								$dateclass = mc_dateclass( time()+$offset, mktime(0,0,0,$c_month,$thisday, $c_year ) );
+								
 							if ( $start_of_week == 0) {
 								$class = ($ii<6&&$ii>0?"$trigger":" weekend$trigger");
 								$is_weekend = ($ii<6&&$ii>0)?false:true;
@@ -763,7 +774,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 									echo 'Today: '.date_i18n("Y-m-d h:i",time()+$offset).' -- '.date("Y-m-d h:i", mktime (0,0,0,$c_month,$thisday,$c_year)).'<br />';
 } */
 							if ( ( $is_weekend && get_option('mc_show_weekends') == 'true' ) || !$is_weekend ) {
-								$my_calendar_body .= "\n".'<td class="'.$dayclass.' '.$class.' '.(date("Ymd", mktime (0,0,0,$c_month,$thisday,$c_year))==date("Ymd",time()+$offset)?'current-day':'day-with-date').$events_class.'">'."\n	<$element class='mc-date".$class."'>".$thisday_heading."</$close>". my_calendar_draw_events($grabbed_events, $format, $process_date)."</td>";
+					$my_calendar_body .= "\n".'<td id="'.$format.'-'.$process_date.'" class="'.$dayclass.' '.$class.' '.$dateclass.' '.$events_class.'">'."\n<$element class='mc-date".$class."'>".$thisday_heading."</$close>". my_calendar_draw_events($grabbed_events, $format, $process_date)."</td>";
 							}
 					  } else {
 						if ( !isset($now) ) { $now = 1; }
@@ -829,7 +840,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 					} else {
 						$is_anchor = $is_close_anchor = "";
 					}
-					$classes = (date("Ymd", mktime (0,0,0,$c_month,$thisday,$c_year))==date("Ymd",time()+($offset)))?' current-day':'';
+					$classes = mc_dateclass( time()+$offset, mktime(0,0,0,$c_month,$thisday, $c_year ) );
 					$classes .= ( my_calendar_date_xcomp( $process_date, date('Y-m-d',time()+$offset) ) )?' past-date':'';
 							usort( $grabbed_events, 'my_calendar_time_cmp' );
 							$now = $grabbed_events[0];
@@ -846,7 +857,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 								$title = '';
 							}
 					$my_calendar_body .= "
-					<li class='mc-events $class$classes'>
+					<li id='$format-$process_date' class='mc-events $class $classes'>
 					<strong class=\"event-date\">$is_anchor".date_i18n($date_format,mktime(0,0,0,$c_month,$thisday,$c_year))."$is_close_anchor"."$title</strong>".my_calendar_draw_events($grabbed_events, $format, $process_date)."
 					</li>";
 					$num_events++;
@@ -862,6 +873,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 		$my_calendar_body .= __("Unrecognized calendar format. Please use one of 'list','calendar', or 'mini'.",'my-calendar')." '<code>$format</code>.'";
 	}	
 	$category_key = '';
+	$cat_details = '';
 		if ($showkey != 'no') {
 			$cat_limit = mc_select_category($category,'all','category');
 			$sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " $cat_limit ORDER BY category_name ASC";
@@ -882,13 +894,13 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 			}
 			$category_key .= "</ul>\n</div>";
 		}
-		if (!is_object($cat_details)) { $cat_details = ''; }
 		$category_key = apply_filters('mc_cateogry_key',$category_key,$cat_details);
 		$my_calendar_body .= $category_key;
-		if ($format != 'mini') {
-
-			$my_calendar_body .= mc_rss_links();
-		}
+			if ($format != 'mini') {
+				$ical_m = (isset($_GET['month']))?(int) $_GET['month']:date('n');
+				$ical_y = (isset($_GET['yr']))?(int) $_GET['yr']:date('Y');
+				$my_calendar_body .= mc_rss_links($ical_y,$ical_m);
+			}
 		}
 		$my_calendar_body .= "\n</div>";		
 	}
@@ -897,17 +909,12 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
     return $my_calendar_body;
 }
 
-function mc_rss_links() {
-	global $wp_rewrite;
-	if ( $wp_rewrite->using_permalinks() ) {
-		$feed = '/feed/my-calendar-rss';
-		$ics = '/feed/my-calendar-ics';
-	} else {
-		$feed = '?feed=my-calendar-rss';
-		$ics = '?feed=my-calendar-ics';
-	}
-	$rss = (get_option('mc_show_rss')=='true')?"	<li class='rss'><a href='".home_url().$feed."'>".__('Subscribe by <abbr title="Really Simple Syndication">RSS</abbr>','my-calendar')."</a></li>":'';
-	$ical = (get_option('mc_show_ical')=='true')?"	<li class='ics'><a href='".home_url().$ics."'>".__('Download as <abbr title="iCal Events Export">iCal</abbr>','my-calendar')."</a></li>":'';
+function mc_rss_links($y,$m) {
+	$feed = mc_feed_base().'my-calendar-rss';
+	$ics = mc_feed_base()."my-calendar-ics/?yr=$y&amp;month=$m";
+
+	$rss = (get_option('mc_show_rss')=='true')?"	<li class='rss'><a href='".$feed."'>".__('Subscribe by <abbr title="Really Simple Syndication">RSS</abbr>','my-calendar')."</a></li>":'';
+	$ical = (get_option('mc_show_ical')=='true')?"	<li class='ics'><a href='".$ics."'>".__('Download as <abbr title="iCal Events Export">iCal</abbr>','my-calendar')."</a></li>":'';
 	$output = "\n
 <ul id='mc-export'>$rss
 $ical
@@ -920,7 +927,12 @@ $ical
 function mc_feed_base() {
 	global $wp_rewrite;
 	$base = home_url();
-	$base .= ( $wp_rewrite->using_permalinks() )?'/feed/':'?feed=';
+		if ( $wp_rewrite->using_index_permalinks() ) {
+			$append = "index.php/";
+		} else {
+			$append = '';
+		}	
+	$base .= ( $wp_rewrite->using_permalinks() )?'/'.$append.'feed/':'?feed=';
 	return $base;
 }
 
@@ -1026,7 +1038,7 @@ function my_calendar_categories_list($show='list',$context='public') {
 				<div>";
 			$qsa = array();
 			parse_str($_SERVER['QUERY_STRING'],$qsa);
-			if ( !isset( $_GET['cid'] ) ) { $form .= '<input type="hidden" name="cid" value="'.$cid.'" />'; }	
+			if ( !isset( $_GET['cid'] ) ) { $form .= '<input type="hidden" name="cid" value="all" />'; }	
 			foreach ($qsa as $name => $argument) {
 				$name = esc_attr(strip_tags($name));
 				$argument = esc_attr(strip_tags($argument));
@@ -1079,7 +1091,7 @@ function my_calendar_categories_list($show='list',$context='public') {
 function mc_build_url( $add, $subtract, $root='' ) {
 global $wp_rewrite;
 	if ( is_front_page() ) { 
-		$home = get_bloginfo('home') . '/'; 		
+		$home = get_bloginfo('url') . '/'; 		
 	} else if ( is_home() ) {
 		$page = get_option('page_for_posts');
 		$home = get_permalink($page); 	
@@ -1188,19 +1200,20 @@ global $wpdb;
 			$output .= "<ul id='mc-locations-list'>
 			<li><a href='$url'>".__('Show all','my-calendar')."</a></li>\n";
 		} else {
-			$ltype = ($_GET['ltype']=='')?$datatype:$_GET['ltype'];
+			$ltype = (!isset($_GET['ltype']))?$datatype:$_GET['ltype'];
 			$output .= "
 	<div id='mc_locations'>
 		<form action='".$current_url."' method='get'>
 		<div>
 			<input type='hidden' name='ltype' value='$ltype' />";
-		$qsa = array();
-		if ( !isset( $_GET['cid'] ) ) { $output .= '<input type="hidden" name="cid" value="'.$cid.'" />'; }	
+			$qsa = array();
+			parse_str($_SERVER['QUERY_STRING'],$qsa);
+		if ( !isset( $_GET['cid'] ) ) { $output .= '<input type="hidden" name="cid" value="all" />'; }	
 		foreach ($qsa as $name => $argument) {
 			$name = esc_attr(strip_tags($name));
 			$argument = esc_attr(strip_tags($argument));
 				if ($name != 'loc' && $name != 'ltype') {
-					$output .= '		<input type="hidden" name="'.$name.'" value="'.$argument.'" />'."\n";
+					$output .= "\n		".'<input type="hidden" name="'.$name.'" value="'.$argument.'" />';
 				}
 			}
 			$output .= "

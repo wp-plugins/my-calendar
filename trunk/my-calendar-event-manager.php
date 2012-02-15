@@ -68,6 +68,7 @@ function mc_convert( $object, $edit=false ) {
 			'event_url'=>$object->event_url,				
 			'event_endtime'=>$object->event_endtime, 								
 			'event_short'=>$object->event_short,
+			'event_phone'=>$object->event_phone,
 		// integers
 			'event_repeats'=>$object->event_repeats, 
 			'event_author'=>$object->event_author,
@@ -309,7 +310,7 @@ global $wpdb,$event_author;
 	if ( ( $action == 'add' || $action == 'copy' ) && $proceed == true ) {
 		$add = $output[2]; // add format here
 		$formats = array( 
-						'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
+						'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
 						'%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d',
 						'%f','%f'
 						);		
@@ -338,7 +339,7 @@ global $wpdb,$event_author;
 		if ( mc_can_edit_event( $event_author ) ) {	
 			$update = $output[2];
 			$formats = array( 
-						'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
+						'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
 						'%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d',
 						'%f','%f'
 						);
@@ -356,7 +357,7 @@ global $wpdb,$event_author;
 					$message = "<div class='updated'><p>".__('Nothing was changed in that update.','my-calendar')."</p></div>";
 				} else {
 					// do an action using the $action and processed event data
-					do_action( 'mc_save_event', $action, $add );				
+					do_action( 'mc_save_event', $action, $update );				
 					$message = "<div class='updated'><p>".__('Event updated successfully','my-calendar')."</p></div>";
 					mc_delete_cache();
 				}
@@ -637,7 +638,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 					}?>" /> 
 			</p>
 			</div>
-			<?php if ( !( isset($_GET['mode']) && $_GET['mode'] == 'edit' ) ) { ?>
+			<?php if ( $mode != 'edit' ) { ?>
 			<div>
 				<input type="button" id="add_field" value="<?php _e('Add another occurrence','my-calendar'); ?>" class="button" />
 				<input type="button" id="del_field" value="<?php _e('Remove last occurrence','my-calendar'); ?>" class="button" />
@@ -756,6 +757,9 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 			<p>
 			<label for="event_street2"><?php _e('Street Address (2)','my-calendar'); ?></label> <input type="text" id="event_street2" name="event_street2" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_street2)); ?>" />
 			</p>
+			<p>
+			<label for="event_phone"><?php _e('Phone','my-calendar'); ?></label> <input type="text" id="event_phone" name="event_phone" class="input" size="32" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_phone)); ?>" />
+			</p>			
 			<p>
 			<label for="event_city"><?php _e('City','my-calendar'); ?></label> 
 			<?php if ( mc_controlled_field( 'city' ) ) {
@@ -1143,6 +1147,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			$event_longitude = $location->location_longitude;
 			$event_latitude = $location->location_latitude;
 			$event_zoom = $location->location_zoom;
+			$event_phone = $location->location_phone;
 		} else {
 			$event_label = !empty($_POST['event_label']) ? $_POST['event_label'] : '';
 			$event_street = !empty($_POST['event_street']) ? $_POST['event_street'] : '';
@@ -1156,6 +1161,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			$event_longitude = !empty($_POST['event_longitude']) ? $_POST['event_longitude'] : '';	
 			$event_latitude = !empty($_POST['event_latitude']) ? $_POST['event_latitude'] : '';	
 			$event_zoom = !empty($_POST['event_zoom']) ? $_POST['event_zoom'] : '';	
+			$event_phone = !empty($_POST['event_phone'])? $_POST['event_phone'] : '';
 	    }
 	// Perform some validation on the submitted dates - this checks for valid years and months
 	$date_format_one = '/^([0-9]{4})-([0][1-9])-([0-3][0-9])$/';
@@ -1245,6 +1251,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			'event_url'=>$event_url,				
 			'event_recur'=>$recur, 
 			'event_image'=>$event_image,
+			'event_phone'=>$event_phone,
 		// integers
 			'event_repeats'=>$repeats, 
 			'event_author'=>$current_user->ID,
@@ -1291,6 +1298,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 		$users_entries->event_longitude = $event_longitude;		
 		$users_entries->event_latitude = $event_latitude;		
 		$users_entries->event_zoom = $event_zoom;
+		$users_entries->event_phone = $event_phone;
 		$users_entries->event_author = $event_author;
 		$users_entries->event_open = $event_open;
 		$users_entries->event_short = $short;

@@ -123,7 +123,6 @@ check_akismet();
 <?php
 } 
 
-
 function my_calendar_save_group( $action,$output,$event_id=false ) {
 global $wpdb,$event_author;
 	$proceed = $output[0];
@@ -133,7 +132,7 @@ global $wpdb,$event_author;
 		if ( mc_can_edit_event( $event_author ) ) {	
 			$update = $output[2];
 			$formats = array( 
-						'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
+						'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
 						'%d','%d','%d','%d','%d',
 						'%f','%f'
 						);
@@ -190,7 +189,7 @@ function mc_compare_group_members( $group_id ) {
 	$query = "SELECT event_title, event_desc, event_short, event_link, event_label, 
 					event_street, event_street2, event_city, event_state, event_postcode, 
 					event_region, event_country, event_url, event_image, event_category, 
-					event_link_expires, event_zoom, event_open, event_host, event_longitude, event_latitude 
+					event_link_expires, event_zoom, event_phone, event_open, event_host, event_longitude, event_latitude 
 			  FROM ".my_calendar_table()." WHERE event_group_id = $group_id";
 	$results = $wpdb->get_results( $query, ARRAY_N );
 	$count = count($results);
@@ -453,6 +452,9 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			<label for="event_street2"><?php _e('Street Address (2)','my-calendar'); ?></label> <input type="text" id="event_street2" name="event_street2" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_street2)); ?>" />
 			</p>
 			<p>
+			<label for="event_phone"><?php _e('Phone','my-calendar'); ?></label> <input type="text" id="event_phone" name="event_phone" class="input" size="32" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_phone)); ?>" />
+			</p>			
+			<p>
 			<label for="event_city"><?php _e('City','my-calendar'); ?></label> <input type="text" id="event_city" name="event_city" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_city)); ?>" /> <label for="event_state"><?php _e('State/Province','my-calendar'); ?></label> <input type="text" id="event_state" name="event_state" class="input" size="10" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_state)); ?>" /> <label for="event_postcode"><?php _e('Postal Code','my-calendar'); ?></label> <input type="text" id="event_postcode" name="event_postcode" class="input" size="10" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_postcode)); ?>" />
 			</p>
 			<p>
@@ -538,6 +540,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			$event_longitude = $location->location_longitude;
 			$event_latitude = $location->location_latitude;
 			$event_zoom = $location->location_zoom;
+			$event_phone = $location->location_phone;
 		} else {
 			$event_label = !empty($_POST['event_label']) ? $_POST['event_label'] : '';
 			$event_street = !empty($_POST['event_street']) ? $_POST['event_street'] : '';
@@ -551,6 +554,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			$event_longitude = !empty($_POST['event_longitude']) ? $_POST['event_longitude'] : '';	
 			$event_latitude = !empty($_POST['event_latitude']) ? $_POST['event_latitude'] : '';	
 			$event_zoom = !empty($_POST['event_zoom']) ? $_POST['event_zoom'] : '';	
+			$event_phone = !empty($_POST['event_phone']) ? $_POST['event_phone'] : '';
 	    }
 	
 		// We check to make sure the URL is acceptable (blank or starting with http://)                                                        
@@ -588,6 +592,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			'event_country'=>$event_country,
 			'event_url'=>$event_url,	
 			'event_image'=>$event_image,
+			'event_phone'=>$event_phone,
 		// integers
 			'event_category'=>$category, 		
 			'event_link_expires'=>$expires, 				
@@ -620,6 +625,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 		$users_entries->event_longitude = $event_longitude;		
 		$users_entries->event_latitude = $event_latitude;		
 		$users_entries->event_zoom = $event_zoom;
+		$users_entries->event_phone = $event_phone;
 		$users_entries->event_open = $event_open;
 		$users_entries->event_short = $short;
 		$users_entries->event_image = $event_image;

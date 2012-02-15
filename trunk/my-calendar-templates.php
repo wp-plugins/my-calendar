@@ -17,7 +17,7 @@ function jd_draw_template($array,$template,$type='list') {
 }
 
 function mc_maplink( $event, $request='map', $source='event' ) {
-	$connector='to+';
+	$connector=__('to','my-calendar').'+';
 	if ( $source == 'event' ) {
 		$map_string = $event->event_street.' '.$event->event_street2.' '.$event->event_city.' '.$event->event_state.' '.$event->event_postcode.' '.$event->event_country;	
 		$zoom = ($event->event_zoom != 0)?$event->event_zoom:'15';	
@@ -56,8 +56,9 @@ function mc_hcard( $event, $address='true', $map='true', $source='event' ) {
 	$event_state = stripslashes( ($source=='event')?$event->event_state:$event->location_state );
 	$event_postcode = stripslashes( ($source=='event')?$event->event_postcode:$event->location_postcode );
 	$event_country = stripslashes( ($source=='event')?$event->event_country:$event->location_country );
+	$event_phone = stripslashes( ($source=='event')?$event->event_phone:$event->location_phone );
 	
-	if ( !$event_url && !$event_label && !$event_street && !$event_street2 && !$event_city && !$event_state && !$event_postcode && !$event_country ) return;
+	if ( !$event_url && !$event_label && !$event_street && !$event_street2 && !$event_city && !$event_state && !$event_postcode && !$event_country && !$event_phone ) return;
 	
 	$sitelink_html = "<div class='url link'><a href='$event_url' class='location-link external'>".sprintf(__('Visit web site<span>: %s</span>','my-calendar'),$event_label)."</a></div>";
 	$hcard = "<div class=\"address vcard\">";
@@ -70,6 +71,7 @@ function mc_hcard( $event, $address='true', $map='true', $source='event' ) {
 		if ($event_state != "") {$hcard .= "<span class=\"region\">".$event_state."</span> ";}
 		if ($event_postcode != "") {$hcard .= " <span class=\"postal-code\">".$event_postcode."</span>";}	
 		if ($event_country != "") {	$hcard .= "<div class=\"country-name\">".$event_country."</div>";}
+		if ($event_phone != "") { $hcard .= "<div class=\"tel\">".$event_phone."</div>";}
 		$hcard .= "</div>";
 	}
 	if ( $map == 'true' ) {
@@ -183,6 +185,7 @@ function event_as_array($event,$type='html') {
 	$details['location'] = stripslashes($event->event_label);
 	$details['street'] = stripslashes($event->event_street);
 	$details['street2'] = stripslashes($event->event_street2);
+	$details['phone'] = stripslashes($event->event_phone);
 	$details['city'] = stripslashes($event->event_city);
 	$details['state'] = stripslashes($event->event_state);
 	$details['postcode'] = stripslashes($event->event_postcode);
