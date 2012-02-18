@@ -1,7 +1,7 @@
 <?php
 // Used to draw multiple events
 function my_calendar_draw_events($events, $type, $process_date) {
-  if ( $type == 'mini' && ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'listanchor' || get_option('mc_open_day_uri') == 'gridanchor' ) ) return;
+  if ( $type == 'mini' && ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'listanchor' || get_option('mc_open_day_uri') == 'calendaranchor' ) ) return;
   // We need to sort arrays of objects by time
   if ( is_array($events) ) {
  usort($events, "my_calendar_time_cmp");
@@ -733,6 +733,10 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 										if ( strpos ( $class, $author ) === false ) {
 											$class .= $author;
 										}
+										$cat = ' mcat_'.sanitize_title($an_event->category_name);
+										if ( strpos ( $class, $cat ) === false ) {
+											$class .= $cat;
+										}
 									}			
 									$events_class = "has-events$addclass$class";
 									if ($format == 'mini') {
@@ -748,7 +752,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 									}
 										$element = 'a href="'.$link.'"';
 										$close = 'a';
-										$trigger = ' trigger';
+										$trigger = 'trigger';
 									} else {
 										$element = 'span';
 										$trigger = '';
@@ -758,11 +762,11 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 								$dateclass = mc_dateclass( time()+$offset, mktime(0,0,0,$c_month,$thisday, $c_year ) );
 								
 							if ( $start_of_week == 0) {
-								$class = ($ii<6&&$ii>0?"$trigger":" weekend$trigger");
+								$class = ($ii<6&&$ii>0?"$trigger":" weekend $trigger");
 								$is_weekend = ($ii<6&&$ii>0)?false:true;
 								$i++;
 							} else {
-								$class = ($ii<5)?"$trigger":" weekend$trigger";
+								$class = ($ii<5)?"$trigger":" weekend $trigger";
 								$is_weekend = ($ii<5)?false:true;
 								$i++;
 							}
@@ -774,7 +778,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 									echo 'Today: '.date_i18n("Y-m-d h:i",time()+$offset).' -- '.date("Y-m-d h:i", mktime (0,0,0,$c_month,$thisday,$c_year)).'<br />';
 } */
 							if ( ( $is_weekend && get_option('mc_show_weekends') == 'true' ) || !$is_weekend ) {
-					$my_calendar_body .= "\n".'<td id="'.$format.'-'.$process_date.'" class="'.$dayclass.' '.$class.' '.$dateclass.' '.$events_class.'">'."\n<$element class='mc-date".$class."'>".$thisday_heading."</$close>". my_calendar_draw_events($grabbed_events, $format, $process_date)."</td>";
+					$my_calendar_body .= "\n".'<td id="'.$format.'-'.$process_date.'" class="'.$dayclass.' '.$class.' '.$dateclass.' '.$events_class.'">'."\n<$element class='mc-date ".$class."'>".$thisday_heading."</$close>". my_calendar_draw_events($grabbed_events, $format, $process_date)."</td>";
 							}
 					  } else {
 						if ( !isset($now) ) { $now = 1; }
@@ -894,7 +898,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 			}
 			$category_key .= "</ul>\n</div>";
 		}
-		$category_key = apply_filters('mc_cateogry_key',$category_key,$cat_details);
+		$category_key = apply_filters('mc_category_key',$category_key,$cat_details);
 		$my_calendar_body .= $category_key;
 			if ($format != 'mini') {
 				$ical_m = (isset($_GET['month']))?(int) $_GET['month']:date('n');

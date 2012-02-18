@@ -344,6 +344,7 @@ function mc_check_cache($y, $m, $d, $category, $ltype, $lvalue) {
 
 function mc_clean_cache( $cache, $category, $ltype, $lvalue ) {
 	// process cache to strip events which do not meet current restrictions
+	if ( $cache == 'empty' ) return $cache;
 	$type = ($ltype != 'all')?"event_$ltype":"event_state";
 	$return = false;
 	if ( is_array($cache) ) {	

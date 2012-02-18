@@ -75,6 +75,14 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.10.8 =
+
+* Bug fix: upcoming events list breaks if 'This is a multi-day event' is checked for an event with only a single occurrence. 
+* Bug fix: Upcoming events caching did not cache correct data.
+* Modification: eliminated some extraneous database calls
+* Modified: clarifying text edits
+* Added: category classes on calendar date cells
+
 = 1.10.7 =
 
 * Made 'to' value in Google Maps links a translatable value.

@@ -150,11 +150,12 @@ function event_as_array($event,$type='html') {
 	$details['ical_end'] = $dtend;
 		$ical_link = mc_build_url( array('vcal'=>"mc_".$dateid."_".$id), array('month','dy','yr','ltype','loc','mcat','format'), get_option( 'mc_uri' ) );
 	$details['ical'] = $ical_link;
+	$dates = mc_event_date_span( $event->event_group_id, $event->event_span, $date );
 	$details['ical_html'] = "<a class='ical' rel='nofollow' href='$ical_link'>".__('iCal','my-calendar')."</a>";
 	$details['dtstart'] = date( 'Y-m-d\TH:i:s', strtotime($event->event_begin.' '.$event->event_time) );// hcal formatted
 	$details['dtend'] = date( 'Y-m-d\TH:i:s', strtotime($real_end_date.' '.$endtime) );	//hcal formatted end
 	$details['rssdate'] = date( 'D, d M Y H:i:s +0000', strtotime( $event->event_added ) );	
-	$details['date'] = ($event->event_span != 1)?$date:mc_event_date_span( $event->event_group_id, $event->event_span, 'simple', $date );
+	$details['date'] = ($event->event_span != 1)?$date:mc_format_date_span( $dates, 'simple', $date );
 	$details['enddate'] = $date_end;
 	$details['daterange'] = ($date == $date_end)?$date:$date." <span>&ndash;</span> ".$date_end;	
 	$details['cat_id'] = $event->event_category;
@@ -215,8 +216,8 @@ function event_as_array($event,$type='html') {
 	$details['id'] = $id;
 	$details['group'] = $event->event_group_id;
 	$details['event_span'] = $event->event_span;
-	$details['datespan'] = ($event->event_span != 1)?$date:mc_event_date_span( $event->event_group_id, $event->event_span, 'simple' );
-	$details['multidate'] = mc_event_date_span( $event->event_group_id, $event->event_span, 'complex', "<span class='fallback-date'>$date</span><span class='separator'>,</span> <span class='fallback-time'>$details[time]</span>" );
+	$details['datespan'] = ($event->event_span != 1)?$date:mc_format_date_span( $dates );
+	$details['multidate'] = mc_format_date_span( $dates, 'complex', "<span class='fallback-date'>$date</span><span class='separator'>,</span> <span class='fallback-time'>$details[time]</span>" );
 	// RSS guid
 	$details['region'] = $event->event_region;
 	$details['guid'] =( get_option( 'mc_uri' ) != '')?"<guid isPermaLink='true'>$details_link</guid>":"<guid isPermalink='false'>$details_link</guid>";
@@ -229,12 +230,16 @@ function event_as_array($event,$type='html') {
 	return $details;
 }
 
-function mc_event_date_span( $group_id, $event_span, $display='simple', $default='' ) {
+function mc_event_date_span( $group_id, $event_span ) {
 global $wpdb;
 $group_id = (int) $group_id;
-if ( $group_id == 0 || $event_span != 1 ) return $default;
+if ( $group_id == 0 || $event_span != 1 ) return false;
 	$sql = "SELECT event_begin, event_time, event_end, event_endtime FROM ".my_calendar_table()." WHERE event_group_id = $group_id ORDER BY event_begin ASC";
 	$dates = $wpdb->get_results( $sql );
+	return $dates; 
+}
+function mc_format_date_span( $dates, $display='simple',$default='' ) {
+	if ( !$dates ) return $default;
 	$count = count($dates);
 	$last = $count - 1;
 	if ( $display == 'simple' ) {
@@ -259,5 +264,3 @@ if ( $group_id == 0 || $event_span != 1 ) return $default;
 	}
 	return $return;
 }
-
-?>
