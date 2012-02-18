@@ -227,7 +227,7 @@ function mc_footer_js() {
 		$cal_js = stripcslashes( get_option( 'mc_caljs' ) );
 		if ( get_option('mc_open_uri') == 'true') { $cal_js = str_replace('e.preventDefault();','',$cal_js); }
 		$mini_js = stripcslashes( get_option( 'mc_minijs' ) );
-		if ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'listanchor'  || get_option('mc_open_day_uri') == 'gridanchor') { $mini_js = str_replace('e.preventDefault();','',$mini_js); }
+		if ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'listanchor'  || get_option('mc_open_day_uri') == 'calendaranchor') { $mini_js = str_replace('e.preventDefault();','',$mini_js); }
 		$ajax_js = stripcslashes( get_option( 'mc_ajaxjs' ) );
 
 			if (is_object($wp_query)) {

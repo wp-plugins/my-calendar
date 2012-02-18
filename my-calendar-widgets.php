@@ -195,7 +195,6 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
   global $wpdb,$default_template,$defaults;
   $output = '';
   $date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
-
   // This function cannot be called unless calendar is up to date
 	check_my_calendar();
 	$offset = (60*60*get_option('gmt_offset'));	
@@ -273,8 +272,27 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 			}
 		}
 	} else {
-        $events = mc_get_all_events($category);		 // grab all events within reasonable proximity
-		$output .= mc_produce_upcoming_events( $events,$template,$before,$after,'list',$order,$skip,$show_today );
+		$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
+		if ( $caching ) { 
+			$cache = get_transient( 'mc_cache_upcoming' ); 
+			if ( $cache ) {
+				if (isset($cache[$category]) ) {
+					$events = $cache[$category];
+					$cache = false; // take cache out of memory
+				} else {
+					$events = mc_get_all_events($category);
+					$cache[$category] = $events;
+					set_transient( 'mc_cache_upcoming', $cache, 60*30 );
+				}
+			} else {
+				$events = mc_get_all_events($category);
+				$cache[$category] = $events;
+				set_transient( 'mc_cache_upcoming', $cache, 60*30 );			
+			}
+		} else {
+			$events = mc_get_all_events($category);	 // grab all events within reasonable proximity
+		}
+		$output .= mc_produce_upcoming_events( $events,$template,$before,$after,'list',$order,$skip,$show_today,$hash );
 	}
 	if ($output != '') {
 		$output = $header.$output.$footer;
@@ -295,11 +313,7 @@ $group_id = (int) $group_id;
 	return array( $begin, $end );
 }
 // make this function time-sensitive, not date-sensitive.
-function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type='list',$order='asc',$skip=0, $show_today='yes') {
-	
-		$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
-		$cache = ($caching)?get_transient( 'mc_cache_upcoming' ):false;
-		if ( $cache ) return $cache;
+function mc_produce_upcoming_events($e,$template,$before=0,$after=10,$type='list',$order='asc',$skip=0, $show_today='yes', $hash=false) {
 		$output = '';
 		$near_events = array();
 		$temp_array = array();
@@ -307,41 +321,44 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 		$future = 1;
 		$offset = (60*60*get_option('gmt_offset'));
 		$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));		
-         @usort( $events, "my_calendar_timediff_cmp" );// sort all events by proximity to current date
-	     $count = count($events);
+         @usort( $e, "my_calendar_timediff_cmp" );// sort all events by proximity to current date
+	     $count = count($e);
 		 $skip = false;
 		 $group = array();
+		 $spans = array();
 			for ( $i=0;$i<$count;$i++ ) {
-				if ( is_object( $events[$i] ) ) {
+				if ( is_object( $e[$i] ) ) {
 				// if the beginning of an event is after the current time, it is in the future
-					$beginning = $events[$i]->event_begin . ' ' . $events[$i]->event_time;
+					$beginning = $e[$i]->event_begin . ' ' . $e[$i]->event_time;
 					$date = date('Y-m-d', strtotime($beginning));
 				// if the end of an event is before the current time, it is in the past.
-				if ( $events[$i]->event_endtime == '00:00:00' ) { $endtime = $events[$i]->event_time; } else { $endtime = $events[$i]->event_endtime; }
-					$end = $events[$i]->event_end . ' ' . $endtime;
-					/* tiny improvement, I hope: if event ends on same day and has an end-time set, expire it after the end of the event.
-					if ( $events[$i]->event_endtime != '00:00:00' && $events[$i]->event_endtime != null  && $events[$i]->event_begin == $events[$i]->event_end ) {
-						$beginning = $events[$i]->event_end . ' ' . $events[$i]->event_endtime;
-					} */
-					if ( $events[$i]->event_span == 1 ) {
+				if ( $e[$i]->event_endtime == '00:00:00' ) { $endtime = $e[$i]->event_time; } else { $endtime = $e[$i]->event_endtime; }
+					$end = $e[$i]->event_end . ' ' . $endtime;
+					// store span time in an array to avoid repeating database query
+					if ( $e[$i]->event_span == 1 && ( !isset($spans[ $e[$i]->event_group_id ]) ) ) {
 						// this is a multi-day event: treat each event as if it spanned the entire range of the group.
-						$span_time = mc_span_time($events[$i]->event_group_id);
+						$span_time = mc_span_time($e[$i]->event_group_id);
 						$beginning = $span_time[0];
 						$end = $span_time[1];
+						$spans[ $e[$i]->event_group_id ] = $span_time;
+					} else if  ( $e[$i]->event_span == 1 && ( isset($spans[ $e[$i]->event_group_id ]) ) ) {
+						$span_time = $spans[ $e[$i]->event_group_id ];
+						$beginning = $span_time[0];
+						$end = $span_time[1];	
 					}
 					$current = date('Y-m-d H:i',time()+$offset);
-					if ($events[$i]) { 
-						if ( $events[$i]->event_group_id != 0 && $events[$i]->event_span == 1 && in_array( $events[$i]->event_group_id, $group ) || (  my_calendar_date_equal( $date,$today ) && $show_today == 'no' ) ) { $skip = true; 
+					if ($e[$i]) { 
+						if ( $e[$i]->event_group_id != 0 && $e[$i]->event_span == 1 && in_array( $e[$i]->event_group_id, $group ) || (  my_calendar_date_equal( $date,$today ) && $show_today == 'no' ) ) { $skip = true; 
 						} else { 
-							$group[] = $events[$i]->event_group_id; $skip=false; 
+							$group[] = $e[$i]->event_group_id; $skip=false; 
 						}							
 						if ( !$skip ) {
 							if ( ( $past<=$before && $future<=$after ) ) {
-								$near_events[] = $events[$i]; // if neither limit is reached, split off freely
+								$near_events[] = $e[$i]; // if neither limit is reached, split off freely
 							} else if ( $past <= $before && ( my_calendar_date_comp( $beginning,$current ) ) ) {
-								$near_events[] = $events[$i]; // split off another past event
+								$near_events[] = $e[$i]; // split off another past event
 							} else if ( $future <= $after && ( !my_calendar_date_comp( $end,$current ) ) ) {
-								$near_events[] = $events[$i]; // split off another future event
+								$near_events[] = $e[$i]; // split off another future event
 							}				
 							if ( my_calendar_date_comp( $beginning,$current ) ) { 			$past++;
 							} else if ( my_calendar_date_equal( $beginning,$current ) ) {	$present = 1;
@@ -353,6 +370,7 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 					}
 				}
 			}
+			$e = false;
 		  $events = $near_events;
 		  @usort( $events, "my_calendar_datetime_cmp" ); // sort split events by date
 		  
@@ -430,7 +448,6 @@ function mc_produce_upcoming_events($events,$template,$before=0,$after=10,$type=
 		} else {
 			$output .= '';
 		}
-		$set = ($caching)?set_transient( 'mc_cache_upcoming', $output, 60*30 ):false; // only cached for 30 minutes.
 	return $output;
 }
 

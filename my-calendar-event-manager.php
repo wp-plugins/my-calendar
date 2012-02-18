@@ -425,9 +425,6 @@ function jd_events_edit_form($mode='add', $event_id=false) {
 	} else {
 		$data = $users_entries;
 	}
-?>
-
-	<?php 
 	if ( is_object($data) && $data->event_approved != 1 && $mode == 'edit' ) {
 		$message = __('This event must be approved in order for it to appear on the calendar.','my-calendar');
 	} else {
@@ -601,10 +598,6 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 <div class="postbox">	
 <div class="inside">
 			<fieldset><legend><?php _e('Event Date and Time','my-calendar'); ?></legend>
-			<p>
-			<input type="checkbox" value="1" id="event_span" name="event_span"<?php if ( !empty($data) && $data->event_span == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_span' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_span"><?php _e('This is a multi-day event.','my-calendar'); ?></label>
-			</p>
-			<p class="note"><em><?php _e('Enter the beginning and ending information for this occurrence of the event.','my-calendar'); ?> <?php _e('If this is a multi-day event, it will create a single event with multiple times/dates; otherwise this will create separate events for each occurrence.','my-calendar'); ?></em></p>
 			<div id="event1" class="clonedInput">
 			<?php
 			if ( !empty($data) ) {
@@ -638,6 +631,10 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 					}?>" /> 
 			</p>
 			</div>
+			<p>
+			<input type="checkbox" value="1" id="event_span" name="event_span"<?php if ( !empty($data) && $data->event_span == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_span' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_span"><?php _e('This is a multi-day event.','my-calendar'); ?></label>
+			</p>
+			<p class="note"><em><?php _e('Enter the beginning and ending dates/times for each occurrence of the event.','my-calendar'); ?> <?php _e('If this is a multi-day event, it creates a single event with multiple dates/times; otherwise it creates separate events for each occurrence.','my-calendar'); ?></em></p>
 			<?php if ( $mode != 'edit' ) { ?>
 			<div>
 				<input type="button" id="add_field" value="<?php _e('Add another occurrence','my-calendar'); ?>" class="button" />
@@ -1127,10 +1124,11 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 	$event_image = esc_url_raw( $_POST['event_image'] );
 	$event_fifth_week = !empty($_POST['event_fifth_week']) ? 1 : 0;
 	$event_holiday = !empty($_POST['event_holiday']) ? 1 : 0;
-	$event_span = !empty($_POST['event_span']) ? 1 : 0;
 	// get group id: if multiple events submitted, auto group OR if event being submitted is already part of a group; otherwise zero.
 		$group_id_submitted = (int) $_POST['event_group_id'];
 	$event_group_id = ( ( is_array($_POST['event_begin']) && count($_POST['event_begin'])>1 ) || mc_event_is_grouped( $group_id_submitted) )?$group_id_submitted:0;
+	$event_span = (!empty($_POST['event_span']) && $event_group_id != 0 ) ? 1 : 0;
+	
 	// set location
 		if ($location_preset != 'none') {
 			$sql = "SELECT * FROM " . my_calendar_locations_table() . " WHERE location_id = $location_preset";

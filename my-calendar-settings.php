@@ -343,9 +343,6 @@ check_akismet();
 	<input type="text" name="mc_uri" id="mc_uri" size="60" value="<?php echo esc_url($mc_uri); ?>" /><br /><small><?php _e('Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar'); ?> <?php mc_guess_calendar(); ?></small>
 	</li>
 	<li>
-	<input type="checkbox" id="mc_open_uri" name="mc_open_uri" <?php jd_cal_checkCheckbox('mc_open_uri','true'); ?> /> <label for="mc_open_uri"><?php _e('Open calendar links to event details URL','my-calendar'); ?></label><br /><small><?php _e('Replaces pop-up in grid view.','my-calendar'); ?></small>
-	</li>
-	<li>
 	<label for="mc_day_uri"><?php _e('Target <abbr title="Uniform resource locator">URL</abbr> for single day\'s timeline links.','my-calendar'); ?></label> 
 	<input type="text" name="mc_day_uri" id="mc_day_uri" size="60" value="<?php echo esc_url($mc_day_uri); ?>" /><br /><small><?php _e('Can be any Page or Post with the <code>[my_calendar time="day"]</code> shortcode.','my-calendar'); ?></small>
 	</li>
@@ -353,8 +350,12 @@ check_akismet();
 	<label for="mc_mini_uri"><?php _e('Target <abbr title="Uniform resource locator">URL</abbr> for mini calendar in-page anchors:','my-calendar'); ?></label> 
 	<input type="text" name="mc_mini_uri" id="mc_mini_uri" size="60" value="<?php echo esc_url($mc_mini_uri); ?>" /><br /><small><?php _e('Can be any Page or Post with the <code>[my_calendar]</code> shortcode using format selected below','my-calendar'); ?></small>
 	</li>
+	<li><strong><?php _e('With above settings:','my-calendar'); ?></strong></li>
 	<li>
-	<label for="mc_open_day_uri"><?php _e('Mini calendar widget date links to:','my-calendar'); ?></label> <select id="mc_open_day_uri" name="mc_open_day_uri" />
+	<input type="checkbox" id="mc_open_uri" name="mc_open_uri"<?php if ( $mc_uri == '' ) { echo ' disabled="disabled"'; } ?> <?php jd_cal_checkCheckbox('mc_open_uri','true'); ?> /> <label for="mc_open_uri"><?php _e('Open calendar links to event details URL','my-calendar'); ?></label> <small><?php _e('Replaces pop-up in grid view.','my-calendar'); ?></small>
+	</li>
+	<li>
+	<label for="mc_open_day_uri"><?php _e('Mini calendar widget date links to:','my-calendar'); ?></label> <select id="mc_open_day_uri" name="mc_open_day_uri"<?php if ( !$mc_day_uri && !$mc_mini_uri ) { echo ' disabled="disabled"'; } ?> />
 	<option value='false'<?php echo jd_option_selected(get_option('mc_open_day_uri'),'false','option'); ?>><?php _e('jQuery pop-up view','my-calendar'); ?></option>	
 	<option value='true'<?php echo jd_option_selected(get_option('mc_open_day_uri'),'true','option'); ?>><?php _e('daily view page (above)','my-calendar'); ?></option>
 	<option value='listanchor'<?php echo jd_option_selected(get_option('mc_open_day_uri'),'listanchor','option'); ?>><?php _e('in-page anchor on main calendar page (list)','my-calendar'); ?></option>
