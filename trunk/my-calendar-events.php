@@ -4,6 +4,7 @@ function mc_get_all_events( $category ) {
 global $wpdb;
 	$select_category = ( $category!='default' )?mc_select_category($category,'all'):'';
 	$limit_string = mc_limit_string('all');
+	
 	if ($select_category != '' && $limit_string != '') {
 		$join = ' AND ';
 	} else if ($select_category == '' && $limit_string != '' ) {
@@ -12,7 +13,7 @@ global $wpdb;
 		$join = '';
 	}
 	$limits = $select_category . $join . $limit_string;
-    $events = $wpdb->get_results("SELECT *,event_begin as event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $limits");
+    $events = $wpdb->get_results("SELECT *,event_begin as event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $limits AND event_flagged <> 1");
 	$offset = (60*60*get_option('gmt_offset'));
 	$date = date('Y', time()+($offset)).'-'.date('m', time()+($offset)).'-'.date('d', time()+($offset));
 	$arr_events = array();
@@ -63,7 +64,7 @@ function my_calendar_get_event($date,$id,$type='html') {
 	return $value;
 }
 // Grab all events for the requested date from calendar
-function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='') {
+function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='',$source='calendar') {
 			if ( isset($_GET['mcat']) ) { $ccategory = $_GET['mcat']; } else { $ccategory = $category; }
 			if ( isset($_GET['ltype']) ) { $cltype = $_GET['ltype']; } else { $cltype = $ltype; }
 			if ( isset($_GET['loc']) ) { $clvalue = $_GET['loc']; } else { $clvalue = $lvalue; }
@@ -71,50 +72,58 @@ function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='') {
 			if ( $clvalue == '' ) { $clvalue = 'all';  }			
 			if ( $cltype == '' ) { $cltype = 'all'; }
 			if ( $clvalue == 'all' ) { $cltype = 'all'; }
-			
-	$output = mc_check_cache( $y, $m, $d, $ccategory, $cltype, $clvalue );
-	if ( $output && $output != 'empty' ) { return $output; }
-	if ( $output == 'empty' ) { return; }
-    global $wpdb;
 	if (!checkdate($m,$d,$y)) {	return;	} // not a valid date
+	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
+	if ( $source != 'upcoming' ) { // no caching on upcoming events by days widgets or lists
+		if ( $caching ) {
+			$output = mc_check_cache( $y, $m, $d, $ccategory, $cltype, $clvalue );
+			if ( $output && $output != 'empty' ) { return $output; }
+			if ( $output == 'empty' ) { return; }
+		}
+	}
+    global $wpdb;
 	$select_category = ( $category != null )?mc_select_category($category):'';
+	$select_location = mc_limit_string( 'grab', $ltype, $lvalue );
+
+	if ( $caching ) { $select_category = ''; $select_location = ''; } // if caching, then need all categories/locations in cache.
+	
     $arr_events = array();
     // set the date format
     $date = $y . '-' . $m . '-' . $d;
-	$limit_string = mc_limit_string( 'grab', $ltype, $lvalue );
+	$limit_string = "event_flagged <> 1";
 	if ( date( 'w',strtotime( $date ) ) != 0 && date( 'w',strtotime( $date ) ) != 6 ) {
 		$weekday_string = "
-		SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string AND event_recur = 'E' AND event_begin <= '$date' AND event_repeats = 0 UNION
+		SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_recur = 'E' AND event_begin <= '$date' AND event_repeats = 0 UNION
 		SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) 
-		WHERE $select_category $limit_string AND event_recur = 'E' AND '$date' >= event_begin AND event_repeats != 0 
+		WHERE $select_category $select_location $limit_string AND event_recur = 'E' AND '$date' >= event_begin AND event_repeats != 0 
 		AND (event_repeats+1) >= ( (DATEDIFF('$date',event_end)+1) - ((WEEK('$date') - WEEK(event_end))*2) ) UNION ";		
 	} else {
 		$weekday_string = ''; 
 	}
 	$events = $wpdb->get_results($weekday_string . "
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string AND event_begin <= '$date' AND event_end >= '$date' AND event_recur = 'S'
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_begin <= '$date' AND event_end >= '$date' AND event_recur = 'S'
 	UNION
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string AND event_recur = 'Y' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin)
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_recur = 'Y' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin)
 	UNION
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string AND event_recur = 'M' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats = 0
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_recur = 'M' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats = 0
 	UNION
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string AND event_recur = 'M' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats != 0 AND (PERIOD_DIFF(EXTRACT(YEAR_MONTH FROM '$date'),EXTRACT(YEAR_MONTH FROM event_begin))) <= event_repeats
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_recur = 'M' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats != 0 AND (PERIOD_DIFF(EXTRACT(YEAR_MONTH FROM '$date'),EXTRACT(YEAR_MONTH FROM event_begin))) <= event_repeats
 	UNION
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string AND event_recur = 'U' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats = 0
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_recur = 'U' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats = 0
 	UNION
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string AND event_recur = 'U' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats != 0 AND (PERIOD_DIFF(EXTRACT(YEAR_MONTH FROM '$date'),EXTRACT(YEAR_MONTH FROM event_begin))) <= event_repeats
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_recur = 'U' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin) AND event_repeats != 0 AND (PERIOD_DIFF(EXTRACT(YEAR_MONTH FROM '$date'),EXTRACT(YEAR_MONTH FROM event_begin))) <= event_repeats
 	UNION	
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string AND event_recur = 'B' AND '$date' >= event_begin AND event_repeats = 0
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_recur = 'B' AND '$date' >= event_begin AND event_repeats = 0
 	UNION
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string AND event_recur = 'B' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*14) >= (TO_DAYS('$date') - TO_DAYS(event_end))
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_recur = 'B' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*14) >= (TO_DAYS('$date') - TO_DAYS(event_end))
 	UNION
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string AND event_recur = 'W' AND '$date' >= event_begin AND event_repeats = 0
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_recur = 'W' AND '$date' >= event_begin AND event_repeats = 0
 	UNION
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string AND event_recur = 'W' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*7) >= (TO_DAYS('$date') - TO_DAYS(event_end))	
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_recur = 'W' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats*7) >= (TO_DAYS('$date') - TO_DAYS(event_end))	
 	UNION
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string AND event_recur = 'D' AND '$date' >= event_begin AND event_repeats = 0
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_recur = 'D' AND '$date' >= event_begin AND event_repeats = 0
 	UNION
-	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $limit_string AND event_recur = 'D' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats) >= (TO_DAYS('$date') - TO_DAYS(event_end))	
+	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_recur = 'D' AND '$date' >= event_begin AND event_repeats != 0 AND (event_repeats) >= (TO_DAYS('$date') - TO_DAYS(event_end))	
 	ORDER BY event_id");
 
 	if (!empty($events)) {
@@ -323,8 +332,13 @@ function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='') {
 				}
 			}
      	}
-	mc_create_cache( $arr_events, $y, $m, $d );
-    return $arr_events;
+	if ( $source != 'upcoming' && $caching ) { 
+		mc_create_cache( $arr_events, $y, $m, $d );
+		$output = mc_check_cache( $y, $m, $d, $ccategory, $cltype, $clvalue );
+		return $output;
+	} else {
+		return $arr_events;
+	}
 }
 
 function mc_check_cache($y, $m, $d, $category, $ltype, $lvalue) {
@@ -343,18 +357,27 @@ function mc_check_cache($y, $m, $d, $category, $ltype, $lvalue) {
 }
 
 function mc_clean_cache( $cache, $category, $ltype, $lvalue ) {
+global $wpdb;
 	// process cache to strip events which do not meet current restrictions
 	if ( $cache == 'empty' ) return $cache;
 	$type = ($ltype != 'all')?"event_$ltype":"event_state";
 	$return = false;
-	if ( is_array($cache) ) {	
+	if ( is_array($cache) ) {
+			if ( strpos( $category, ',' ) !== false ) {
+				$cats = explode(',',$category);
+			} else {
+				$cats = array( $category );
+			}
 		foreach ( $cache as $key=>$value ) {
-			if ( 
-				( $value->event_category == $category || $category == 'all' ) &&
-				( $value->$type == $lvalue || ( $ltype == 'all' && $lvalue == 'all' ) )
-				) {
-				$val = $value->$type;
-				$return[$key]=$value;
+			foreach ( $cats as $cat ) {
+				if ( is_numeric($cat) ) { $cat = (int) $cat; } 
+				if ( 
+					( $value->event_category == $cat || $category == 'all' || $value->category_name == $cat ) &&
+					( $value->$type == $lvalue || ( $ltype == 'all' && $lvalue == 'all' ) )
+					) {
+					$val = $value->$type;
+					$return[$key]=$value;
+				} 
 			}
 		}
 		return $return;
@@ -379,8 +402,8 @@ function mc_create_cache($arr_events, $y, $m, $d ) {
 function mc_allocated_memory($before, $after) {
     $size = ($after - $before);
 	$total_allocation = str_replace('M','',ini_get('memory_limit'))*1048576; // CONVERT TO BYTES
-	$limit =  $total_allocation/32;
-	// limits each cache to occupying 1/32 of allowed PHP memory (usually will be between 250K and 1MB). 
+	$limit =  $total_allocation/64;
+	// limits each cache to occupying 1/64 of allowed PHP memory (usually will be between 125K and 1MB). 
 	if ( $size > $limit ) { return true; } else { return false; }
 }
 

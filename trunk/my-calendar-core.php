@@ -133,11 +133,13 @@ echo $all_styles;
 }
 
 // Function to deal with events posted by a user when that user is deleted
-function mc_deal_with_deleted_user($id) {
+function mc_deal_with_deleted_user( $id ) {
   global $wpdb;
   check_my_calendar();
-  // Do the query
-  $wpdb->get_results( "UPDATE ".MY_CALENDAR_TABLE." SET event_author=".$wpdb->get_var("SELECT MIN(ID) FROM ".$wpdb->prefix."users",0,0)." WHERE event_author=".$id );
+  // Do the queries
+  // This may not work quite right in multi-site. Need to explore further when I have time.
+  $wpdb->get_results( "UPDATE ".my_calendar_table()." SET event_author=".$wpdb->get_var("SELECT MIN(ID) FROM ".$wpdb->prefix."users",0,0)." WHERE event_author=".$id );
+  $wpdb->get_results( "UPDATE ".my_calendar_table()." SET event_host=".$wpdb->get_var("SELECT MIN(ID) FROM ".$wpdb->prefix."users",0,0)." WHERE event_host=".$id );
 }
 
 // Function to add the javascript to the admin header

@@ -135,11 +135,17 @@ global $wp_plugin_dir;
 <dt><code>{host_email}</code></dt>
 <dd><?php _e('Displays the email address of the person assigned as host for the event.','my-calendar'); ?></dd>
 
-<dt><code>{shortdesc}</code>/<code>{shortdesc_raw}</code></dt>
-<dd><?php _e('Displays the short version of the event description./Displays short description without converting paragraphs.','my-calendar'); ?></dd>
+<dt><code>{shortdesc}</code></dt>
+<dd><?php _e('Displays the short version of the event description.','my-calendar'); ?></dd>
 
-<dt><code>{description}</code>/<code>{description_raw}</code></dt>
-<dd><?php _e('Displays the description of the event./Displays description without converting paragraphs.','my-calendar'); ?></dd>
+<dt><code>{shortdesc_raw}</code></dt>
+<dd><?php _e('Displays short description without converting paragraphs.','my-calendar'); ?></dd>
+
+<dt><code>{description}</code></dt>
+<dd><?php _e('Displays the description of the event.','my-calendar'); ?></dd>
+
+<dt><code>{description_raw}</code></dt>
+<dd><?php _e('Displays description without converting paragraphs.','my-calendar'); ?></dd>
 
 <dt><code>{image}</code></dt>
 <dd><?php _e('Image associated with the event.','my-calendar'); ?></dd>

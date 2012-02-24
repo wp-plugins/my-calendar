@@ -69,12 +69,13 @@ function edit_my_calendar_config() {
 	}
    if (isset($_POST['permissions'])) {
 		// management
+		$clear = '';
 		$new_perms = $_POST['permissions'];
 		$mc_event_approve = ( !empty($_POST['mc_event_approve']) && $_POST['mc_event_approve']=='on')?'true':'false';
 		$mc_event_approve_perms = $_POST['mc_event_approve_perms'];
 		$mc_event_edit_perms = $_POST['mc_event_edit_perms'];
 		$mc_caching_enabled = ( !empty($_POST['mc_caching_enabled']) && $_POST['mc_caching_enabled']=='on')?'true':'false';
-		
+		if ( isset($_POST['mc_clear_cache']) && $_POST['mc_clear_cache'] == 'clear' ) { mc_delete_cache(); $clear = __('My Calendar Cache cleared','my-calendar'); }
 		update_option('mc_event_approve_perms',$mc_event_approve_perms);
 		update_option('mc_event_approve',$mc_event_approve);
 		update_option('mc_can_manage_events',$new_perms);	  	
@@ -85,7 +86,7 @@ function edit_my_calendar_config() {
 			$mc_current_table = (int) $_POST['mc_current_table'];
 			update_option('mc_current_table',$mc_current_table);
 		}
-		echo "<div class='updated'><p><strong>".__('Permissions Settings saved','my-calendar').".</strong></p></div>";
+		echo "<div class='updated'><p><strong>".__('Permissions Settings saved','my-calendar').". $clear</strong></p></div>";
 	}
 	// output
 	if (isset($_POST['mc_show_months']) ) {
@@ -272,6 +273,10 @@ check_akismet();
 	</li>
 	<li><input type="checkbox" id="mc_caching_enabled" name="mc_caching_enabled" <?php jd_cal_checkCheckbox('mc_caching_enabled','true'); ?> /> <label for="mc_caching_enabled"><?php _e('Enable caching.','my-calendar'); ?></label>
 	</li>
+	<?php if ( get_option('mc_caching_enabled') == 'true' ) { ?>
+	<li><input type="checkbox" id="mc_clear_cache" name="mc_clear_cache" value="clear" /> <label for="mc_clear_cache"><?php _e('Clear current cache. (Necessary if you edit shortcodes to change displayed categories, for example.)','my-calendar'); ?></label>
+	</li>	
+	<?php } ?>
 	<?php if ( get_site_option('mc_multisite') == 2 && MY_CALENDAR_TABLE != MY_CALENDAR_GLOBAL_TABLE ) { ?>
 	<li>
 	<input type="radio" name="mc_current_table" id="mc0" value="0"<?php echo jd_option_selected(get_option('mc_current_table'),0); ?> /> <label for="mc0"><?php _e('Currently editing my local calendar','my-calendar'); ?></label>
