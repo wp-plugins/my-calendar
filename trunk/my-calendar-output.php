@@ -722,7 +722,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 							$class = '';
 							$grabbed_events = my_calendar_grab_events($c_year,$c_month,$thisday,$category,$ltype,$lvalue);
 							$events_class = '';
-								if (!count($grabbed_events)) {
+								if (!count($grabbed_events) || !is_array($grabbed_events)) {
 									$events_class = "no-events$addclass";
 									$element = 'span';
 									$trigger = '';
