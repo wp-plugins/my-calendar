@@ -102,8 +102,9 @@ function event_as_array($event,$type='html') {
 		$e = get_userdata($event->event_author);
 		$host = get_userdata($event->event_host);
 		$details['author'] = $e->display_name;
-		$details['host'] = ($host->display_name == '')?$e->display_name:$host->display_name;
-		$details['host_email'] = ($host->user_email == '')?$e->user_email:$host->user_email;
+		$details['host'] = (!$host || $host->display_name == '')?$e->display_name:$host->display_name; 
+		$details['host_email'] = (!$host || $host->user_email == '')?$e->user_email:$host->user_email; 
+		
 	$map = mc_maplink( $event );
 	$map_url = mc_maplink( $event, 'url' );
 	$hcard = mc_hcard( $event );	

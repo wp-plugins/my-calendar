@@ -914,8 +914,10 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 }
 
 function mc_rss_links($y,$m) {
+global $wp_rewrite;
 	$feed = mc_feed_base().'my-calendar-rss';
-	$ics = mc_feed_base()."my-calendar-ics/?yr=$y&amp;month=$m";
+	$ics_extend = ( $wp_rewrite->using_permalinks() )?"my-calendar-ics/?yr=$y&amp;month=$m":"my-calendar-ics&yr=$y&amp;month=$m";
+	$ics = mc_feed_base(). $ics_extend;
 
 	$rss = (get_option('mc_show_rss')=='true')?"	<li class='rss'><a href='".$feed."'>".__('Subscribe by <abbr title="Really Simple Syndication">RSS</abbr>','my-calendar')."</a></li>":'';
 	$ical = (get_option('mc_show_ical')=='true')?"	<li class='ics'><a href='".$ics."'>".__('Download as <abbr title="iCal Events Export">iCal</abbr>','my-calendar')."</a></li>":'';
@@ -1115,9 +1117,9 @@ global $wp_rewrite;
 	unset($variables['page_id']);
 	if ( $root == '' ) {
 	// root is set to empty when I want to reference the current location
-		$char = ( $wp_rewrite->using_permalinks() || is_front_page() || is_archive() )?'?':'&';
+		$char = ( $wp_rewrite->using_permalinks() || is_front_page() || is_archive() )?'?':'&amp;';
 	} else {
-		$char = ( $wp_rewrite->using_permalinks() )?'?':'&'; // this doesn't work correctly -- it may *never* need to be &. Consider	
+		$char = ( $wp_rewrite->using_permalinks() )?'?':'&amp;'; // this doesn't work correctly -- it may *never* need to be &. Consider	
 	}
 return $home.$char.http_build_query($variables, '', '&amp;');
 }
@@ -1266,8 +1268,8 @@ global $wpdb;
 		</form>
 	</div>";
 		}
-		$output = apply_filters('mc_location_selector',$output,$locations);
-		return $output;		
+		$output = apply_filters('mc_location_selector',$output,$locations);	
+		return $output;	
 	} else {
 		return;
 	}

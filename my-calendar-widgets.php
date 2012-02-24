@@ -220,7 +220,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 		$temp_array = array();
 		while ($day_count < $after+1) {
 			list($y,$m,$d) = split("-",date("Y-m-j",mktime($day_count*24,0,0,date("m",time()+$offset),date("d",time()+$offset),date("Y",time()+$offset))));
-			$events = my_calendar_grab_events( $y,$m,$d,$category );
+			$events = my_calendar_grab_events( $y,$m,$d,$category,'','','upcoming' );
 			$current_date = "$y-$m-$d";
 			@usort($events, "my_calendar_time_cmp");
 			if (count($events) != 0) {
@@ -246,7 +246,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 		foreach ( array_keys($temp_array) as $key ) {
 		$details = $temp_array[$key];				
 	
-	// if any event this date is in the holiday category, we are skipping
+		// if any event this date is in the holiday category, we are skipping
 			if ( $details['cat_id'] == get_option('mc_skip_holidays_category') ) {
 				$skipping = true;
 				break;
@@ -467,7 +467,7 @@ if ( $caching && is_array($todays_cache) && $todays_cache[$category] ) { return 
 	$category = ($category == 'default')?$defaults['today']['category']:$category;
 	$no_event_text = ($substitute == '')?$defaults['today']['text']:$substitute;
 
-    $events = my_calendar_grab_events(date("Y",time()+$offset),date("m",time()+$offset),date("d",time()+$offset),$category);
+    $events = my_calendar_grab_events(date("Y",time()+$offset),date("m",time()+$offset),date("d",time()+$offset),$category,'','','upcoming');
 	$header = "<ul id='todays-events'>";
 	$footer = "</ul>";		
 	$holiday_exists = false;
