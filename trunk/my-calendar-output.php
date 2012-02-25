@@ -681,7 +681,8 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 			$firstday = 1;
 			$lastday = $days_in_month;
 		}
-		$useday = $thisday = 1;
+		$thisday = 0;
+		$useday = 1;
 		$inc_month = false;
 		$go = false;
 		$inc = 0;
@@ -916,7 +917,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 function mc_rss_links($y,$m) {
 global $wp_rewrite;
 	$feed = mc_feed_base().'my-calendar-rss';
-	$ics_extend = ( $wp_rewrite->using_permalinks() )?"my-calendar-ics/?yr=$y&amp;month=$m":"my-calendar-ics&yr=$y&amp;month=$m";
+	$ics_extend = ( $wp_rewrite->using_permalinks() )?"my-calendar-ics/?yr=$y&amp;month=$m":"my-calendar-ics&amp;yr=$y&amp;month=$m";
 	$ics = mc_feed_base(). $ics_extend;
 
 	$rss = (get_option('mc_show_rss')=='true')?"	<li class='rss'><a href='".$feed."'>".__('Subscribe by <abbr title="Really Simple Syndication">RSS</abbr>','my-calendar')."</a></li>":'';

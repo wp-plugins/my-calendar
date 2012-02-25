@@ -85,7 +85,8 @@ function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='',$s
 	$select_category = ( $category != null )?mc_select_category($category):'';
 	$select_location = mc_limit_string( 'grab', $ltype, $lvalue );
 
-	if ( $caching ) { $select_category = ''; $select_location = ''; } // if caching, then need all categories/locations in cache.
+	if ( $caching && $source != 'upcoming' ) { $select_category = ''; $select_location = ''; } 
+	// if caching, then need all categories/locations in cache. UNLESS this is an upcoming events list
 	
     $arr_events = array();
     // set the date format
