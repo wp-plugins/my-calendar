@@ -75,6 +75,12 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.10.10 =
+
+* Bug fix: Upcoming events list did not respect category limits.
+* Validation error/bug fix: Date for ID for first of month was incorrect.
+* Validation error: unencoded ampersand in iCal link if permalinks disabled.
+
 = 1.10.9 =
 
 * Added option to clear cache from settings.
@@ -754,7 +760,7 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
-- Version 1.10.9 Fixes some miscellaneous bugs relating to caching.
+- Version 1.10.10 Fixes miscellaneous bugs relating to caching and two validation errors.
 - Version 1.10.2 is a CRITICAL SECURITY UPGRADE. Please upgrade promptly.
 - Version 1.10.0 adds a printable view, multi-day events, and a few additional new options.
 - Version 1.9.0 incorporated many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require updated styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting any custom changes, but you can update styles and scripts on their editing pages. 

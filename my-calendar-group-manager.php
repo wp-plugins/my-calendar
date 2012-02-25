@@ -52,12 +52,13 @@ if ( isset( $_POST['event_action'] ) ) {
 					$formats, 
 					'%d' );
 			//$wpdb->print_error();
+			$url = ( get_option('mc_uri') != '' )?' '.sprintf(__('View <a href="%s">your calendar</a>.','my-calendar'),get_option('mc_uri') ):'';
 				if ( $result === false ) {
-					$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Event not updated.','my-calendar')."</p></div>";
+					$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Event not updated.','my-calendar')."$url</p></div>";
 				} else if ( $result === 0 ) {
-					$message = "<div class='updated'><p>".__('Nothing was changed in that update.','my-calendar')."</p></div>";
+					$message = "<div class='updated'><p>".__('Nothing was changed in that update.','my-calendar')."$url</p></div>";
 				} else {
-					$message = "<div class='updated'><p>".__('Event updated successfully','my-calendar')."</p></div>";
+					$message = "<div class='updated'><p>".__('Event updated successfully','my-calendar').".$url</p></div>";
 				}
 		}
 	break;
@@ -144,12 +145,13 @@ global $wpdb,$event_author;
 					$formats, 
 					'%d' );
 			//$wpdb->print_error();
+			$url = ( get_option('mc_uri') != '' )?' '.sprintf(__('View <a href="%s">your calendar</a>.','my-calendar'),get_option('mc_uri') ):'';
 				if ( $result === false ) {
-					$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Your event was not updated.','my-calendar')."</p></div>";
+					$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Your event was not updated.','my-calendar')."$url</p></div>";
 				} else if ( $result === 0 ) {
-					$message = "<div class='updated'><p>".__('Nothing was changed in that update.','my-calendar')."</p></div>";
+					$message = "<div class='updated'><p>".__('Nothing was changed in that update.','my-calendar')."$url</p></div>";
 				} else {
-					$message = "<div class='updated'><p>".__('Event updated successfully','my-calendar')."</p></div>";
+					$message = "<div class='updated'><p>".__('Event updated successfully','my-calendar').".$url</p></div>";
 					mc_delete_cache();
 				}
 		} else {
