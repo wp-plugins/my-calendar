@@ -836,15 +836,15 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 					} else {
 						$thisday = $i;
 					}		
-			$process_date = date_i18n('Y-m-d',mktime(0,0,0,$c_month,$thisday,$c_year));
+				$process_date = date_i18n('Y-m-d',mktime(0,0,0,$c_month,$thisday,$c_year));
 				$grabbed_events = my_calendar_grab_events($c_year,$c_month,$thisday,$category,$ltype,$lvalue);
-				if (count($grabbed_events)) {
-					if ( get_option('list_javascript') != 1) {
-						$is_anchor = "<a href='#'>";
-						$is_close_anchor = "</a>";
-					} else {
-						$is_anchor = $is_close_anchor = "";
-					}
+				if ( get_option('list_javascript') != 1) {
+					$is_anchor = "<a href='#'>";
+					$is_close_anchor = "</a>";
+				} else {
+					$is_anchor = $is_close_anchor = "";
+				}
+				if ( is_array($grabbed_events) ) {
 					$classes = mc_dateclass( time()+$offset, mktime(0,0,0,$c_month,$thisday, $c_year ) );
 					$classes .= ( my_calendar_date_xcomp( $process_date, date('Y-m-d',time()+$offset) ) )?' past-date':'';
 							usort( $grabbed_events, 'my_calendar_time_cmp' );
@@ -861,14 +861,14 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 							} else {
 								$title = '';
 							}
-					$my_calendar_body .= "
-					<li id='$format-$process_date' class='mc-events $class $classes'>
-					<strong class=\"event-date\">$is_anchor".date_i18n($date_format,mktime(0,0,0,$c_month,$thisday,$c_year))."$is_close_anchor"."$title</strong>".my_calendar_draw_events($grabbed_events, $format, $process_date)."
-					</li>";
-					$num_events++;
-				} 	
+				} 
+				$my_calendar_body .= "
+				<li id='$format-$process_date' class='mc-events $class $classes'>
+				<strong class=\"event-date\">$is_anchor".date_i18n($date_format,mktime(0,0,0,$c_month,$thisday,$c_year))."$is_close_anchor"."$title</strong>".my_calendar_draw_events($grabbed_events, $format, $process_date)."
+				</li>";
+				$num_events++;
 				$class = (my_calendar_is_odd($num_events))?"odd":"even";
-			}	
+			}
 		}
 		if ($num_events == 0) {
 			$my_calendar_body .= "<li class='no-events'>".__('There are no events scheduled during this period.','my-calendar') . "</li>";
@@ -1097,17 +1097,20 @@ function my_calendar_categories_list($show='list',$context='public') {
 
 function mc_build_url( $add, $subtract, $root='' ) {
 global $wp_rewrite;
-	if ( is_front_page() ) { 
-		$home = get_bloginfo('url') . '/'; 		
-	} else if ( is_home() ) {
-		$page = get_option('page_for_posts');
-		$home = get_permalink($page); 	
-	} else if ( is_archive() ) {
-		$home = ''; // an empty string seems to work best; leaving it open.
-	} else {
-		$home = get_permalink(); 		
-	}
+$home = '';
 	if ( $root != '' ) { $home = $root; }
+	if ( $home == '' ) {
+		if ( is_front_page() ) { 
+			$home = get_bloginfo('url') . '/'; 		
+		} else if ( is_home() ) {
+			$page = get_option('page_for_posts');
+			$home = get_permalink($page); 	
+		} else if ( is_archive() ) {
+			$home = ''; // an empty string seems to work best; leaving it open.
+		} else {
+			$home = get_permalink(); 		
+		}
+	}
 	$variables = $_GET;
 	foreach($subtract as $value) {
 		unset($variables[$value]);
@@ -1120,7 +1123,7 @@ global $wp_rewrite;
 	// root is set to empty when I want to reference the current location
 		$char = ( $wp_rewrite->using_permalinks() || is_front_page() || is_archive() )?'?':'&amp;';
 	} else {
-		$char = ( $wp_rewrite->using_permalinks() )?'?':'&amp;'; // this doesn't work correctly -- it may *never* need to be &. Consider	
+		$char = ( $wp_rewrite->using_permalinks() )?'?':'&amp;'; // this doesn't work -- may *never* need to be &. Consider	
 	}
 return $home.$char.http_build_query($variables, '', '&amp;');
 }

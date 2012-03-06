@@ -377,7 +377,7 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option( 'mc_uri','' );	
 	add_option( 'mc_show_event_vcal','false' );
 	add_option( 'mc_draggable',0 );
-	add_option( 'mc_caching_enabled','true' );
+	add_option( 'mc_caching_enabled','false' );
 	add_option( 'mc_week_caption',"The week's events" );
 	add_option( 'mc_multisite_show', 0 );
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');

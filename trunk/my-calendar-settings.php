@@ -534,7 +534,7 @@ check_akismet();
 	<ul>
 	<?php 
 		$input_options = get_option('mc_input_options');
-		$input_labels = array('event_location_dropdown'=>__('Show Event Location Dropdown Menu','my-calendar'),'event_short'=>__('Show Event Short Description field','my-calendar'),'event_desc'=>__('Show Event Description Field','my-calendar'),'event_category'=>__('Show Event Category field','my-calendar'),'event_image'=>__('Show Event image field','my-calendar'),'event_link'=>__('Show Event Link field','my-calendar'),'event_recurs'=>__('Show Event Recurrence Options','my-calendar'),'event_open'=>__('Show Event registration options','my-calendar'),'event_location'=>__('Show Event location fields','my-calendar'),'event_use_editor'=>__('Use HTML Editor in Event Description Field') );
+		$input_labels = array('event_location_dropdown'=>__('Show Event Location Dropdown Menu','my-calendar'),'event_short'=>__('Show Event Short Description field','my-calendar'),'event_desc'=>__('Show Event Description Field','my-calendar'),'event_category'=>__('Show Event Category field','my-calendar'),'event_image'=>__('Show Event image field','my-calendar'),'event_link'=>__('Show Event Link field','my-calendar'),'event_recurs'=>__('Show Event Recurrence Options','my-calendar'),'event_open'=>__('Show Event registration options','my-calendar'),'event_location'=>__('Show Event location fields','my-calendar'),'event_use_editor'=>__('Use HTML Editor in Event Description Field','my-calendar') );
 		$output = '';
 		// if input options isn't an array, we'll assume that this plugin wasn't upgraded properly, and reset them to the default.
 		if ( !is_array($input_options) ) {
