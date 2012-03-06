@@ -334,9 +334,9 @@ function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='',$s
 			}
      	}
 	if ( $source != 'upcoming' && $caching ) { 
-		mc_create_cache( $arr_events, $y, $m, $d );
-		$output = mc_check_cache( $y, $m, $d, $ccategory, $cltype, $clvalue );
-		return $output;
+		$new_cache = mc_create_cache( $arr_events, $y, $m, $d );
+		if ( $new_cache ) { $output = mc_check_cache( $y, $m, $d, $ccategory, $cltype, $clvalue );
+		return $output; } else { return $arr_events; }		
 	} else {
 		return $arr_events;
 	}
@@ -393,7 +393,7 @@ function mc_create_cache($arr_events, $y, $m, $d ) {
 		$ret = get_transient("mc_cache");
 		$after = memory_get_usage();
 		$mem_limit = mc_allocated_memory( $before, $after );
-		if ( $mem_limit ) { return; } // if cache is maxed, don't add additional references. Cache expires every two days.
+		if ( $mem_limit ) { return false; } // if cache is maxed, don't add additional references. Cache expires every two days.
 		$cache = get_transient("mc_cache");		
 		$cache[$y][$m][$d] = $arr_events;
 		set_transient( "mc_cache",$cache, 60*60*48 );

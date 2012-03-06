@@ -52,13 +52,13 @@ Languages available:
 * Czech ([Jan Rybarik](http://janrybarik.cz)) - to 1.6.3
 * Brazilian Portuguese (Leonardo Kfoury) - to 1.6.0?
 
-New or updated translations are always appreciated. The translation files are included in the download.
+New or updated translations are always appreciated. The translation source files are included in the download. [Codestyling Localization](http://wordpress.org/extend/plugins/codestyling-localization/) is a great plug-in for translating plug-ins!
 
 == Installation ==
 
 1. Upload the `/my-calendar/` directory into your WordPress plugins directory.
 
-2. Activate the plugin on your WordPress plugins page
+2. Activate the plugin on your WordPress plugins page 
 
 3. Configure My Calendar using the following pages in the admin panel:
 
@@ -75,6 +75,13 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.10.11 =
+
+* Bug fix: Variable not checked for type threw usort warning.
+* Bug fix: Details links rendered incorrect page if linked from a single post location with permalinks not enabled.
+* Bug fix: Fixed bug where calendar returned no information if cache reached max size.
+* Settings change: Caching is now defaulted to off.
+
 = 1.10.10 =
 
 * Bug fix: Upcoming events list did not respect category limits.
@@ -85,7 +92,7 @@ New or updated translations are always appreciated. The translation files are in
 
 * Added option to clear cache from settings.
 * Bug fix: Error in caching where cache returned false for multi-category limited calendars.
-* Bug fix: Error in caching where cache returned false for category limited calendars using category name as delimiter. Thanks to [Antti Palosaari](crope@iki.fi) for reporting this bug and for testing fixes.
+* Bug fix: Error in caching where cache returned false for category limited calendars using category name as delimiter. Thanks to [Antti Palosaari](crope@iki.fi) for reporting this bug and for testing fixes. altsiedJTF1e72h
 * Bug fix: Error notices if user is deleted who is assigned as host of some events. Thanks to Florian Edelmann for reporting this bug and contributing solution.
 * Bug fix: Upcoming events in dates mode returned null for cached dates.
 
@@ -743,7 +750,7 @@ Because the majority of users end up on my web site asking for help anyway -- an
 
 = This plug-in is really complicated. Why can't you personally help me figure out how to use it? =
 
-I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/articles/my-calendar/users-guide/) for $19. This $19 helps defray the hundreds of hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
+I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/articles/my-calendar/users-guide/) for $19. This $19 helps defray the thousand plus hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
 
 == Screenshots ==
 
@@ -760,7 +767,6 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
-- Version 1.10.10 Fixes miscellaneous bugs relating to caching and two validation errors.
+- Version 1.10.11 Fixes miscellaneous bugs relating to caching and a couple other issues.
 - Version 1.10.2 is a CRITICAL SECURITY UPGRADE. Please upgrade promptly.
 - Version 1.10.0 adds a printable view, multi-day events, and a few additional new options.
-- Version 1.9.0 incorporated many new event editing and management options and a refresh of My Calendar's styles and scripts. Some changes will require updated styles or scripts to work properly. Updated JavaScript and styles <em>will not be installed by default</em>, in order to avoid overwriting any custom changes, but you can update styles and scripts on their editing pages. 

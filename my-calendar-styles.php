@@ -146,7 +146,7 @@ my_calendar_check_db();
 	
 	$files = @my_csslist($custom_directory);
 	if (!empty($files)) {
-	echo "<optgroup label='".__('Your Custom Stylesheets')."'>\n";
+	echo "<optgroup label='".__('Your Custom Stylesheets','my-calendar')."'>\n";
 	foreach ($files as $value) {
 		$test = "mc_custom_".$value;
 		$selected = (get_option('mc_css_file') == $test )?" selected='selected'":"";

@@ -207,7 +207,7 @@ function event_as_array($event,$type='html') {
 		$replacements = array( $event->event_title, $event->event_label, $event->category_color, $event->category_icon );
 		$details_label = str_replace($tags,$replacements,$details_template );
 		if ( $type == 'html' ) {
-			$details_link = mc_build_url( array('mc_id'=>"mc_".$dateid."_".$id), array('month','dy','yr','ltype','loc','mcat','format','feed'), get_option( 'mc_uri' ) );
+			$details_link = mc_build_url( array('mc_id'=>"mc_".$dateid."_".$id), array('month','dy','yr','ltype','loc','mcat','format','feed','page_id','p'), get_option( 'mc_uri' ) );
 		} else {
 			$details_link = '';
 		}
