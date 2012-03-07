@@ -366,17 +366,15 @@ global $wpdb;
 	if ( is_array($cache) ) {
 			if ( strpos( $category, ',' ) !== false ) {
 				$cats = explode(',',$category);
+			} else if ( strpos( $category, '|' ) !== false ) {
+				$cats = explode('|',$category);
 			} else {
 				$cats = array( $category );
 			}
 		foreach ( $cache as $key=>$value ) {
 			foreach ( $cats as $cat ) {
 				if ( is_numeric($cat) ) { $cat = (int) $cat; } 
-				if ( 
-					( $value->event_category == $cat || $category == 'all' || $value->category_name == $cat ) &&
-					( $value->$type == $lvalue || ( $ltype == 'all' && $lvalue == 'all' ) )
-					) {
-					$val = $value->$type;
+				if ( ( $value->event_category == $cat || $category == 'all' || $value->category_name == $cat ) && ( $value->$type == $lvalue || ( $ltype == 'all' && $lvalue == 'all' ) ) ) {
 					$return[$key]=$value;
 				} 
 			}

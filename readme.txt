@@ -75,6 +75,13 @@ New or updated translations are always appreciated. The translation source files
 
 == Changelog ==
 
+= 1.10.12 =
+
+* Bug fix: List format showed all dates, regardless of whether there were events for that date.
+* Bug fix: List format showed incorrect classes.
+* Bug fix: Pipe separator for categories not supported with caching.
+* ARRRRGGGGHHHH!!! I'm sure you're as frustrated about all these little releases as I am. But who wants to sit on known bugs?
+
 = 1.10.11 =
 
 * Bug fix: Variable not checked for type threw usort warning.
@@ -92,7 +99,7 @@ New or updated translations are always appreciated. The translation source files
 
 * Added option to clear cache from settings.
 * Bug fix: Error in caching where cache returned false for multi-category limited calendars.
-* Bug fix: Error in caching where cache returned false for category limited calendars using category name as delimiter. Thanks to [Antti Palosaari](crope@iki.fi) for reporting this bug and for testing fixes. altsiedJTF1e72h
+* Bug fix: Error in caching where cache returned false for category limited calendars using category name as delimiter. Thanks to [Antti Palosaari](crope@iki.fi) for reporting this bug and for testing fixes.
 * Bug fix: Error notices if user is deleted who is assigned as host of some events. Thanks to Florian Edelmann for reporting this bug and contributing solution.
 * Bug fix: Upcoming events in dates mode returned null for cached dates.
 
@@ -767,6 +774,7 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
+- Version 1.10.12 Fixes bugs in list format output (caused by 1.10.11).
 - Version 1.10.11 Fixes miscellaneous bugs relating to caching and a couple other issues.
 - Version 1.10.2 is a CRITICAL SECURITY UPGRADE. Please upgrade promptly.
 - Version 1.10.0 adds a printable view, multi-day events, and a few additional new options.
