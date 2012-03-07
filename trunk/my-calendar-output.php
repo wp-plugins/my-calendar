@@ -570,7 +570,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 		$dayclass = strtolower(date_i18n('D',mktime (0,0,0,$c_month,$c_day,$c_year)));	
 		$grabbed_events = my_calendar_grab_events($c_year,$c_month,$c_day,$category,$ltype,$lvalue);
 		$events_class = '';
-		if (!count($grabbed_events)) {
+		if ( !is_array($grabbed_events) || !count($grabbed_events) ) {
 			$events_class = "no-events";
 		} else {
 			$class = '';
@@ -587,7 +587,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 		$dateclass = mc_dateclass( time()+$offset, mktime(0,0,0,$c_month,$c_day, $c_year ) );
 		$my_calendar_body .= $mc_nav."\n"."<h3 class='mc-single".$class."'>".date_i18n( $date_format,strtotime("$c_year-$c_month-$c_day")).'</h3><div id="mc-day" class="'.$dayclass.' '.$dateclass.' '.$events_class.'">'."\n";
 		$process_date = date_i18n("Y-m-d",strtotime("$c_year-$c_month-$c_day"));		
-		if ( count($grabbed_events) > 0 ) {
+		if ( is_array($grabbed_events) && count($grabbed_events) > 0 ) {
 			foreach ( array_keys($grabbed_events) as $key ) {
 			$now =& $grabbed_events[$key];				
 				$author = ' author'.$now->event_author;
@@ -723,7 +723,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 							$class = '';
 							$grabbed_events = my_calendar_grab_events($c_year,$c_month,$thisday,$category,$ltype,$lvalue);
 							$events_class = '';
-								if (!count($grabbed_events) || !is_array($grabbed_events)) {
+								if ( !is_array($grabbed_events) || !count($grabbed_events) ) {
 									$events_class = "no-events$addclass";
 									$element = 'span';
 									$trigger = '';
@@ -844,28 +844,29 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$toggle,$time='mo
 				} else {
 					$is_anchor = $is_close_anchor = "";
 				}
-				if ( is_array($grabbed_events) ) {
-					$classes = mc_dateclass( time()+$offset, mktime(0,0,0,$c_month,$thisday, $c_year ) );
-					$classes .= ( my_calendar_date_xcomp( $process_date, date('Y-m-d',time()+$offset) ) )?' past-date':'';
-							usort( $grabbed_events, 'my_calendar_time_cmp' );
-							$now = $grabbed_events[0];
-							$count = count( $grabbed_events ) - 1;
-							if ( $count == 0 ) { $cstate = ''; } else 
-							if ( $count == 1 ) { 
-								$cstate = sprintf(__(" and %d other event",'my-calendar'), $count); 
-							} else {
-								$cstate = sprintf(__(" and %d other events",'my-calendar'), $count); 
-							}
-							if ( get_option( 'mc_show_list_info' ) == 'true' ) {
-								$title = ' - '.$is_anchor . stripcslashes($now->event_title).$cstate . $is_close_anchor;
-							} else {
-								$title = '';
-							}
+				$classes = mc_dateclass( time()+$offset, mktime(0,0,0,$c_month,$thisday, $c_year ) );
+				$classes .= ( my_calendar_date_xcomp( $process_date, date('Y-m-d',time()+$offset) ) )?' past-date':'';
+				$title = '';
+				if ( is_array($grabbed_events) && count($grabbed_events) > 0 ) {
+					usort( $grabbed_events, 'my_calendar_time_cmp' );
+					$now = $grabbed_events[0];
+					$count = count( $grabbed_events ) - 1;
+					if ( $count == 0 ) { $cstate = ''; } else 
+					if ( $count == 1 ) { 
+						$cstate = sprintf(__(" and %d other event",'my-calendar'), $count); 
+					} else {
+						$cstate = sprintf(__(" and %d other events",'my-calendar'), $count); 
+					}
+					if ( get_option( 'mc_show_list_info' ) == 'true' ) {
+						$title = ' - '.$is_anchor . stripcslashes($now->event_title).$cstate . $is_close_anchor;
+					} else {
+						$title = '';
+					}
+					$my_calendar_body .= "
+					<li id='$format-$process_date' class='mc-events $class $classes'>
+					<strong class=\"event-date\">$is_anchor".date_i18n($date_format,mktime(0,0,0,$c_month,$thisday,$c_year))."$is_close_anchor"."$title</strong>".my_calendar_draw_events($grabbed_events, $format, $process_date)."
+					</li>";
 				} 
-				$my_calendar_body .= "
-				<li id='$format-$process_date' class='mc-events $class $classes'>
-				<strong class=\"event-date\">$is_anchor".date_i18n($date_format,mktime(0,0,0,$c_month,$thisday,$c_year))."$is_close_anchor"."$title</strong>".my_calendar_draw_events($grabbed_events, $format, $process_date)."
-				</li>";
 				$num_events++;
 				$class = (my_calendar_is_odd($num_events))?"odd":"even";
 			}
