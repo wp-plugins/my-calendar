@@ -335,8 +335,13 @@ function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='',$s
      	}
 	if ( $source != 'upcoming' && $caching ) { 
 		$new_cache = mc_create_cache( $arr_events, $y, $m, $d );
-		if ( $new_cache ) { $output = mc_check_cache( $y, $m, $d, $ccategory, $cltype, $clvalue );
-		return $output; } else { return $arr_events; }		
+		if ( $new_cache ) {
+			$output = mc_check_cache( $y, $m, $d, $ccategory, $cltype, $clvalue );
+			return $output; 
+		} else { 
+			// need to clean cache if the cache is maxed.
+			return mc_clean_cache( $arr_events, $ccategory, $cltype, $clvalue ); 
+		}		
 	} else {
 		return $arr_events;
 	}
@@ -360,7 +365,7 @@ function mc_check_cache($y, $m, $d, $category, $ltype, $lvalue) {
 function mc_clean_cache( $cache, $category, $ltype, $lvalue ) {
 global $wpdb;
 	// process cache to strip events which do not meet current restrictions
-	if ( $cache == 'empty' ) return $cache;
+	if ( $cache == 'empty' ) return false;
 	$type = ($ltype != 'all')?"event_$ltype":"event_state";
 	$return = false;
 	if ( is_array($cache) ) {
@@ -374,7 +379,7 @@ global $wpdb;
 		foreach ( $cache as $key=>$value ) {
 			foreach ( $cats as $cat ) {
 				if ( is_numeric($cat) ) { $cat = (int) $cat; } 
-				if ( ( $value->event_category == $cat || $category == 'all' || $value->category_name == $cat ) && ( $value->$type == $lvalue || ( $ltype == 'all' && $lvalue == 'all' ) ) ) {
+				if ( ( $value->event_category == $cat || $category == 'all' || $value->category_name == $cat ) && ( $value->$type == $lvalue || ( $ltype == 'all' && $lvalue == 'all' ) ) ) {				
 					$return[$key]=$value;
 				} 
 			}
@@ -395,7 +400,9 @@ function mc_create_cache($arr_events, $y, $m, $d ) {
 		$cache = get_transient("mc_cache");		
 		$cache[$y][$m][$d] = $arr_events;
 		set_transient( "mc_cache",$cache, 60*60*48 );
+		return true;
 	}
+	return false;
 }
 
 function mc_allocated_memory($before, $after) {
