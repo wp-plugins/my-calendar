@@ -13,6 +13,8 @@ function widget($args, $instance) {
 	$the_category = ($instance['my_calendar_today_category']=='')?'default':esc_attr($instance['my_calendar_today_category']);
 	$widget_link = (!empty($instance['my_calendar_today_linked']) && $instance['my_calendar_today_linked']=='yes')?get_option('mc_uri'):'';
 	$widget_title = empty($the_title) ? '' : $the_title;
+	$offset = (60*60*get_option('gmt_offset'));		
+	if ( $widget_title == '{date}' ) { $widget_title = date_i18n(get_option('mc_date_format'),time()+$offset); }	
 	$widget_title = ($widget_link=='') ? $widget_title : "<a href='$widget_link'>$widget_title</a>";	
 	$widget_title = ($widget_title!='') ? $before_title . $widget_title . $after_title : '';
 	$the_events = my_calendar_todays_events($the_category,$the_template,$the_substitute);
@@ -193,6 +195,8 @@ function form($instance) {
 // Widget upcoming events
 function my_calendar_upcoming_events($before='default',$after='default',$type='default',$category='default',$template='default',$substitute='',$order='asc',$skip=0, $show_today='yes' ) {
   global $wpdb,$default_template,$defaults;
+  $mcdb = $wpdb;
+  if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
   $output = '';
   $date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
   // This function cannot be called unless calendar is up to date
@@ -275,6 +279,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 		$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
 		if ( $caching ) { 
 			$cache = get_transient( 'mc_cache_upcoming' ); 
+			$output .= "<!-- Cached -->";
 			if ( $cache ) {
 				if (isset($cache[$category]) ) {
 					$events = $cache[$category];
@@ -303,9 +308,12 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 }
 function mc_span_time( $group_id ) {
 global $wpdb;
+  $mcdb = $wpdb;
+  if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+
 $group_id = (int) $group_id;
 	$sql = "SELECT event_begin, event_time, event_end, event_endtime FROM ".my_calendar_table()." WHERE event_group_id = $group_id ORDER BY event_begin ASC";
-	$dates = $wpdb->get_results( $sql );
+	$dates = $mcdb->get_results( $sql );
 	$count = count($dates);
 	$last = $count - 1;
 	$begin = $dates[0]->event_begin . ' ' . $dates[0]->event_time;
@@ -457,6 +465,9 @@ function my_calendar_todays_events($category='default',$template='default',$subs
 	$todays_cache = ($caching)? get_transient('mc_todays_cache') :'';
 if ( $caching && is_array($todays_cache) && $todays_cache[$category] ) { return $todays_cache[$category]; }
 	global $wpdb, $default_template;
+	$mcdb = $wpdb;
+	
+	  if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$output = '';
 	$offset = (60*60*get_option('gmt_offset'));  
 	// This function cannot be called unless calendar is up to date
@@ -537,6 +548,7 @@ function widget($args, $instance) {
 		$name = $format = 'mini';
 		$category = ($instance['my_calendar_mini_category']=='')?'all':esc_attr($instance['my_calendar_mini_category']);
 		$showkey = ($instance['my_calendar_mini_showkey']=='')?'no':esc_attr($instance['my_calendar_mini_showkey']);
+		$showjump = ($instance['my_calendar_mini_showjump']=='')?'no':esc_attr($instance['my_calendar_mini_showjump']);		
 		$shownav = ($instance['my_calendar_mini_shownav']=='')?'no':esc_attr($instance['my_calendar_mini_shownav']);
 		$time = ($instance['my_calendar_mini_time']=='')?'month':esc_attr($instance['my_calendar_mini_time']);
 	} else {
@@ -551,7 +563,7 @@ function widget($args, $instance) {
 	$widget_title = empty($the_title) ? __('Calendar','my-calendar') : $the_title;
 	$widget_title = ($widget_title!='') ? $before_title . $widget_title . $after_title : '';
 	
-	$the_events = my_calendar( $name,$format,$category,$showkey,$shownav,'no',$time );
+	$the_events = my_calendar( $name,$format,$category,$showkey,$shownav,$showjump,'no',$time );
 		if ($the_events != '') {
 		  echo $before_widget;
 		  echo $widget_title;
@@ -563,6 +575,7 @@ function widget($args, $instance) {
 function form($instance) {
 	$widget_title = esc_attr($instance['my_calendar_mini_title']);
 	$widget_key = esc_attr($instance['my_calendar_mini_showkey']);
+	$widget_jump = esc_attr($instance['my_calendar_mini_showjump']);	
 	$widget_nav = esc_attr($instance['my_calendar_mini_shownav']);
 	$widget_time = esc_attr($instance['my_calendar_mini_time']);
 	$widget_category = esc_attr($instance['my_calendar_mini_category']);
@@ -580,13 +593,19 @@ function form($instance) {
 	<option value="yes" <?php echo ($widget_nav == 'yes')?'selected="selected"':''; ?>><?php _e('Yes','my-calendar') ?></option>
 	<option value="no" <?php echo ($widget_nav == 'no')?'selected="selected"':''; ?>><?php _e('No','my-calendar') ?></option>
 	</select>
+	</p>
+	<p>
+	<label for="<?php echo $this->get_field_id('my_calendar_mini_showjump'); ?>"><?php _e('Show Jumpbox','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_mini_showjump'); ?>" name="<?php echo $this->get_field_name('my_calendar_mini_showjump'); ?>">
+	<option value="yes" <?php echo ($widget_jump == 'yes')?'selected="selected"':''; ?>><?php _e('Yes','my-calendar') ?></option>
+	<option value="no" <?php echo ($widget_jump == 'no')?'selected="selected"':''; ?>><?php _e('No','my-calendar') ?></option>
+	</select>
 	</p>	
 	<p>
 	<label for="<?php echo $this->get_field_id('my_calendar_mini_showkey'); ?>"><?php _e('Show Category Key:','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_mini_showkey'); ?>" name="<?php echo $this->get_field_name('my_calendar_mini_showkey'); ?>">
 	<option value="yes" <?php echo ($widget_key == 'yes')?'selected="selected"':''; ?>><?php _e('Yes','my-calendar') ?></option>
 	<option value="no" <?php echo ($widget_key == 'no')?'selected="selected"':''; ?>><?php _e('No','my-calendar') ?></option>
 	</select>
-	</p>
+	</p>	
 	<p>
 	<label for="<?php echo $this->get_field_id('my_calendar_mini_time'); ?>"><?php _e('Mini-Calendar Timespan:','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_mini_time'); ?>" name="<?php echo $this->get_field_name('my_calendar_mini_time'); ?>">
 	<option value="month" <?php echo ($widget_time == 'month')?'selected="selected"':''; ?>><?php _e('Month','my-calendar') ?></option>

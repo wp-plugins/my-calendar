@@ -75,11 +75,12 @@ function is_custom_icon() {
 
 function my_calendar_manage_categories() {
   global $wpdb;
+	$mcdb = $wpdb;  
   $formats = array( '%s', '%s', '%s' );
   // My Calendar must be installed and upgraded before this will work
   check_my_calendar();
 ?>
-<div class="wrap">
+<div class="wrap jd-my-calendar">
 <?php 
 my_calendar_check_db();
 ?>
@@ -97,7 +98,7 @@ my_calendar_check_db();
 		'category_color'=>$_POST['category_color'],
 		'category_icon'=>$_POST['category_icon']
 		);
-		$results = $wpdb->insert( my_calendar_categories_table(), $add, $formats );
+		$results = $mcdb->insert( my_calendar_categories_table(), $add, $formats );
 	  
 		if ( $results ) {
 			echo "<div class=\"updated\"><p><strong>".__('Category added successfully','my-calendar')."</strong></p></div>";
@@ -106,10 +107,10 @@ my_calendar_check_db();
 		}
     } else if ( isset($_GET['mode']) && isset($_GET['category_id']) && $_GET['mode'] == 'delete' ) {
 		$sql = "DELETE FROM " . my_calendar_categories_table() . " WHERE category_id=".mysql_real_escape_string($_GET['category_id']);
-		$results = $wpdb->query($sql);
+		$results = $mcdb->query($sql);
 		if ($results) {
 			$sql = "UPDATE " . my_calendar_table() . " SET event_category=1 WHERE event_category=".mysql_real_escape_string($_GET['category_id']);
-			$cal_results = $wpdb->query($sql);
+			$cal_results = $mcdb->query($sql);
 		}
 		if ($results && $cal_results) {
 			echo "<div class=\"updated\"><p><strong>".__('Category deleted successfully. Categories in calendar updated.','my-calendar')."</strong></p></div>";
@@ -130,7 +131,7 @@ my_calendar_check_db();
 		$where = array(
 		'category_id'=>(int) $_POST['category_id']
 		);	
-		$results = $wpdb->update( my_calendar_categories_table(), $update, $where, $formats, '%d' );
+		$results = $mcdb->update( my_calendar_categories_table(), $update, $where, $formats, '%d' );
 		if ($results) {
 			echo "<div class=\"updated\"><p><strong>".__('Category edited successfully','my-calendar')."</strong></p></div>";
 		} else {
@@ -149,10 +150,11 @@ my_calendar_check_db();
 
 function mc_edit_category_form($view='edit',$catID='') {
 global $wpdb;
+	$mcdb = $wpdb;
 	if ( $catID != '' ) {
 		$catID = (int) $catID; 
 		$sql = "SELECT * FROM " . my_calendar_categories_table() . " WHERE category_id=$catID";
-		$cur_cat = $wpdb->get_row($sql);
+		$cur_cat = $mcdb->get_row($sql);
 	}
 global $path, $wp_plugin_dir,$wp_plugin_url;
 	if ( is_custom_icon() ) {
@@ -172,10 +174,11 @@ global $path, $wp_plugin_dir,$wp_plugin_url;
   <h2><?php _e('Edit Category','my-calendar'); ?></h2>
 <?php } ?>
 
-<?php jd_show_support_box(); ?>   
-<div id="poststuff" class="jd-my-calendar">
-<div class="postbox">
+<div class="postbox-container" style="width: 70%">
+<div class="metabox-holder">
 
+<div class="ui-sortable meta-box-sortables">
+<div class="postbox">
 <h3><?php _e('Category Editor','my-calendar'); ?></h3>
 	<div class="inside">	   
     <form id="my-calendar" method="post" action="<?php echo admin_url('admin.php?page=my-calendar-categories'); ?>">
@@ -196,48 +199,68 @@ global $path, $wp_plugin_dir,$wp_plugin_url;
 				<label for="category_name"><?php _e('Category Name','my-calendar'); ?>:</label> <input type="text" id="category_name" name="category_name" class="input" size="30" value="<?php if ( !empty($cur_cat) && is_object($cur_cat) ) echo stripslashes( esc_attr( $cur_cat->category_name ) ); ?>" /><br />
 				<label for="category_color"><?php _e('Category Color (Hex format)','my-calendar'); ?>:</label> <input type="text" id="category_color" name="category_color" class="input" size="10" maxlength="7" value="<?php if ( !empty($cur_cat) &&  is_object($cur_cat) ) { echo (strpos($cur_cat->category_color,'#') !== 0)?'#':''; echo $cur_cat->category_color; } else { echo '#'; } ?>" /><br />
 				<label for="category_icon"><?php _e('Category Icon','my-calendar'); ?>:</label> <select name="category_icon" id="category_icon">
-<?php
-foreach ($iconlist as $value) {
-	if ( ( !empty($cur_cat) && is_object($cur_cat) ) && $cur_cat->category_icon == $value) {
-		$selected = " selected='selected'";
-	} else {
-		$selected = "";
-	}
-	echo "<option value='$value'$selected style='background: url(".$wp_plugin_url."$path/$value) left 50% no-repeat;'>$value</option>";
-}
-?>			
-				</select>					
-			</fieldset>
-			<p>
-                <input type="submit" name="save" class="button-primary" value="<?php if ($view == 'add') {  _e('Add Category','my-calendar'); } else { _e('Save Changes','my-calendar'); } ?> &raquo;" />
-			</p>
-    </form>
+		<?php
+		foreach ($iconlist as $value) {
+			if ( ( !empty($cur_cat) && is_object($cur_cat) ) && $cur_cat->category_icon == $value) {
+				$selected = " selected='selected'";
+			} else {
+				$selected = "";
+			}
+			echo "<option value='$value'$selected style='background: url(".$wp_plugin_url."$path/$value) left 50% no-repeat;'>$value</option>";
+		}
+		?>			
+					</select>					
+				</fieldset>
+				<p>
+					<input type="submit" name="save" class="button-primary" value="<?php if ($view == 'add') {  _e('Add Category','my-calendar'); } else { _e('Save Changes','my-calendar'); } ?> &raquo;" />
+				</p>
+		</form>
+	</div>
 </div>
 </div>
 <?php if ($view == 'edit') { ?>
 <p><a href="<?php echo admin_url('admin.php?page=my-calendar-categories'); ?>"><?php _e('Add a New Category','my-calendar'); ?> &raquo;</a></p>
 <?php } ?>
+
+<div class="ui-sortable meta-box-sortables">
+<div class="postbox">
+<h3><?php _e('Category List','my-calendar'); ?></h3>
+	<div class="inside">	
 <?php mc_manage_categories(); ?>
+	</div>
+	</div>
+</div>
+
+</div>
+</div>
+	<?php jd_show_support_box(); ?>
+
 </div>
 <?php
 }
 
 function mc_manage_categories() {
 	global $wpdb, $path, $wp_plugin_url;
+	$mcdb = $wpdb;
 ?>
  <h2><?php _e('Manage Categories','my-calendar'); ?></h2>
 <?php
-    
+    $co = ( !isset($_GET['co']) )?1:(int) $_GET['co'];
+	switch ( $co ) {
+		case 1: $cat_order = 'category_id';break;
+		case 2: $cat_order = 'category_name';break;
+		default: $cat_order = 'category_id';
+	}
     // We pull the categories from the database	
-    $categories = $wpdb->get_results("SELECT * FROM " . my_calendar_categories_table() . " ORDER BY category_id ASC");
+    $categories = $mcdb->get_results("SELECT * FROM " . my_calendar_categories_table() . " ORDER BY $cat_order ASC");
 
 	if ( !empty($categories) ) {
 ?>
-	<table class="widefat page fixed" id="my-calendar-admin-table" summary="Manage Categories Listing">
+	<table class="widefat page fixed" id="my-calendar-admin-table">
 	<thead> 
 		<tr>
-			<th class="manage-column" scope="col"><?php _e('ID','my-calendar') ?></th>
-			<th class="manage-column" scope="col"><?php _e('Category Name','my-calendar') ?></th>
+			<th class="manage-column" scope="col"><?php echo ($co==2)?"<a href='".admin_url("admin.php?page=my-calendar-categories&amp;co=1")."'>":''; ?><?php _e('ID','my-calendar') ?><?php echo ($co==2)?'</a>':''; ?></th>
+			<th class="manage-column" scope="col"><?php echo ($co==1)?"<a href='".admin_url("admin.php?page=my-calendar-categories&amp;co=2")."'>":''; ?><?php _e('Category Name','my-calendar') ?><?php echo ($co==1)?'</a>':''; ?></th>
 			<th class="manage-column" scope="col"><?php _e('Category Color','my-calendar') ?></th>
 			<th class="manage-column" scope="col"><?php _e('Category Icon','my-calendar'); ?></th>
 			<th class="manage-column" scope="col"><?php _e('Edit','my-calendar') ?></th>

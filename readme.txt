@@ -4,7 +4,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager
 Requires at least: 2.9.2
-Tested up to: 3.4-alpha
+Tested up to: 3.4-beta4
 Stable tag: trunk
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
@@ -40,16 +40,17 @@ This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.o
 Languages available:
 
 * American English (Default)
+* Hindi ([Outshine Solutions](http://outshinesolutions.com)) - to 1.10.12
+* Danish ([Jakob Smith](http://www.omkalfatring.dk/)) - to 1.10.12
+* Czech ([globus2008](http://wordpress.org/support/profile/globus2008)) - to 1.10.12
 * French (Frederic Escallier) - to 1.9.8
 * Dutch (Luud Heck) - to 1.8.9
-* Danish ([Jakob Smith](http://www.omkalfatring.dk/)) - to 1.8.9
 * Japanese ([Daisuke Abe](http://www.alter-ego.jp/)) - to 1.8.5
 * Russian ([Alex](http://blog.sotvoril.ru/) - to 1.8.5
 * Turkish (Mehmet Ko&ccedil;ali) - to 1.8.4
 * German (Uwe Jonas) - to 1.7.8
 * Swedish (Efva Nyberg) - to 1.7.8
 * Italian ([Sabir Musta](http://mustaphasabir.altervista.org)) - to 1.7.0
-* Czech ([Jan Rybarik](http://janrybarik.cz)) - to 1.6.3
 * Brazilian Portuguese (Leonardo Kfoury) - to 1.6.0?
 
 New or updated translations are always appreciated. The translation source files are included in the download. [Codestyling Localization](http://wordpress.org/extend/plugins/codestyling-localization/) is a great plug-in for translating plug-ins!
@@ -68,12 +69,42 @@ New or updated translations are always appreciated. The translation source files
    My Calendar -> Settings   
    My Calendar -> Style Editor
    My Calendar -> Behavior Editor
+   My Calendar -> Template Editor
    
 4. Edit or create a page on your blog which includes the shortcode [my_calendar] and visit
    the page you have edited or created. You should see your calendar. Visit My Calendar -> Help for assistance
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 1.11.0 =
+
+* Added option to use {date} in Today's Events widget title.
+* Events with the same time are now sub-sorted by title in Upcoming Events lists.
+* Template tag {endtime} returns empty string if same as start time
+* Standard event output returns empty string for event end time if same as start time.
+* Can only check 'multi-day event' option if event has multiple occurrences.
+* Categories in editor now sortable by either ID or category name.
+* Categories in input now sorted by category name.
+* Updated mobile detection class.
+* Major revision to permissions handling to use custom capabilities
+* Redesign of settings pages.
+* Can target tablet devices with CSS by adding a stylesheet called mc-tablet.css to your theme directory.
+* Can target other mobile devices with CSS by adding a stylesheet called mc-mobile.css to your theme directory.
+* Template tags now support before and after attributes: {tag before="<p>" after="</p>"}
+* Added option to retrieve events, categories, and locations from a remote database. (e.g., to share calendar information between 3 related sites.)
+* Eliminated details arrow; forcing anchor element on clickable title. 
+* Added 'id' attribute to My Calendar shortcode, to customize unique ID for calendar and avoid non-compliant duplication of IDs
+* Added 'template' attribute to My Calendar shortcode, so specific calendars can use their own individual custom templates. Templates should be text files (.txt) placed in your theme directory.
+* Reduced specificity in stylesheets by eliminating ID-based references.
+* Fixed bug with day/date consistency in 5-day grid calendars.
+* Added day class to date boxes without dates.
+* Jumpbox is now switchable from the shortcode.
+* Fixed google maps link to use the correct directions targeting method
+* Various changes for WP 3.4 compatibility.
+* Updated Danish Translation
+* Updated Czech Translation 
+* Added Hindi Translation
 
 = 1.10.12 =
 
@@ -757,7 +788,7 @@ Because the majority of users end up on my web site asking for help anyway -- an
 
 = This plug-in is really complicated. Why can't you personally help me figure out how to use it? =
 
-I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/articles/my-calendar/users-guide/) for $19. This $19 helps defray the thousand plus hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
+I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/articles/my-calendar/users-guide/) for $21. ($19 if you're not interested in getting updates.) This helps defray the thousand plus hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
 
 == Screenshots ==
 
@@ -774,7 +805,4 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
-- Version 1.10.12 Fixes bugs in list format output (caused by 1.10.11).
-- Version 1.10.11 Fixes miscellaneous bugs relating to caching and a couple other issues.
-- Version 1.10.2 is a CRITICAL SECURITY UPGRADE. Please upgrade promptly.
-- Version 1.10.0 adds a printable view, multi-day events, and a few additional new options.
+- Version 1.11.0: Major revision to permissions. Significant template customization options added. Various other feature improvements.

@@ -1,5 +1,6 @@
 jQuery(document).ready(function($) {
 	$('#add_field').live('click',function() {
+		$('#event_span').removeAttr('disabled');
 		var num     = $('.clonedInput').length; // how many "duplicatable" input fields we currently have
 		var newNum  = new Number(num + 1);      // the numeric ID of the new input field being added
 		// create the new element via clone(), and manipulate it's ID using newNum value
@@ -23,6 +24,8 @@ jQuery(document).ready(function($) {
 		// if only one element remains, disable the "remove" button
 		if (num-1 == 1)
 			$('#del_field').attr('disabled','disabled');
+			$('#event_span').attr('disabled','disabled');
 	});
 	$('#del_field').attr('disabled','disabled');
+	$('#event_span').attr('disabled','disabled');	
 });

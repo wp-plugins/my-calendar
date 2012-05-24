@@ -1,6 +1,6 @@
 <?php
 // define global variables;
-global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_template,$default_user_settings, $wpdb,$grid_template,$list_template,$mini_template,$single_template, $defaults;
+global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_template,$default_user_settings, $mcdb,$grid_template,$list_template,$mini_template,$single_template, $defaults;
 
 $defaults = array(
 	'upcoming'=>array(	
@@ -63,26 +63,26 @@ $initial_ajaxjs = "jQuery(document).ready(function($){
 	$('.calendar .my-calendar-nav a').live('click', function(e){
 		e.preventDefault();
 		var link = $(this).attr('href');
-		$('#jd-calendar.calendar').html('Loading...');
-		$('#jd-calendar.calendar').load(link+' #jd-calendar.calendar > *', function() {
+		$('.calendar').html('Loading...');
+		$('.calendar').load(link+' .mc-main.calendar > *', function() {
 			$('.calendar-event').children().not('h3').hide();
 		});
 	});	
 	$('.mini .my-calendar-nav a').live('click', function(e){
 		e.preventDefault();
 		var link = $(this).attr('href');
-		$('#jd-calendar.mini').html('Loading...');
-		$('#jd-calendar.mini').load(link+' #jd-calendar.mini > *', function() {
+		$('.mini').html('Loading...');
+		$('.mini').load(link+' .mini > *', function() {
 			$('.mini .has-events').children().not('.trigger').hide();
 		});
 	});	
 	$('.list .my-calendar-nav a').live('click', function(e){
 		e.preventDefault();
 		var link = $(this).attr('href');
-		$('#jd-calendar.list').html('Loading...');
-		$('#jd-calendar.list').load(link+' #jd-calendar.list > *', function() {
-			$('#calendar-list li.mc-events').children().not('.event-date').hide();
-			$('#calendar-list li.current-day').children().show();
+		$('.list').html('Loading...');
+		$('.list').load(link+' .list > *', function() {
+			$('li.mc-events').children().not('.event-date').hide();
+			$('li.current-day').children().show();
 		});
 	});	
 });";
@@ -102,8 +102,8 @@ $initial_caljs = 'jQuery(document).ready(function($) {
 });';  
 
 $initial_listjs = 'jQuery(document).ready(function($) {
-  $("#calendar-list li.mc-events").children().not(".event-date").hide();
-  $("#calendar-list li.current-day").children().show();
+  $("li.mc-events").children().not(".event-date").hide();
+  $("li.current-day").children().show();
   $(".event-date").live("click",
      function(e) {
 	 e.preventDefault();
@@ -127,11 +127,11 @@ $initial_minijs = 'jQuery(document).ready(function($) {
 
 $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{time}, {category}</span>";
 $charset_collate = '';
-if ( ! empty($wpdb->charset) ) {
-	$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+if ( ! empty($mcdb->charset) ) {
+	$charset_collate = "DEFAULT CHARACTER SET $mcdb->charset";
 }
-if ( ! empty($wpdb->collate) ) {
-	$charset_collate .= " COLLATE $wpdb->collate";
+if ( ! empty($mcdb->collate) ) {
+	$charset_collate .= " COLLATE $mcdb->collate";
 }
 
 $event_holiday = (get_option('mc_skip_holidays') == 'true' )?1:0;
@@ -314,7 +314,6 @@ $default_user_settings = array(
 function mc_default_settings( ) {
 global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_user_settings,$grid_template,$list_template,$mini_template,$single_template,$mc_version, $defaults;
 // no arguments
-	add_option('mc_can_manage_events','edit_posts');
 	add_option('mc_display_author','false');
 	add_option('mc_display_jump','false');
 	add_option('mc_version',$mc_version);
@@ -339,6 +338,7 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_site_option('mc_multisite', '0' );
 	add_option('mc_event_mail','false');
 	add_option('mc_desc','true');
+	add_option('mc_process_shortcodes','false');
 	add_option('mc_short','false');
 	add_option('mc_event_mail_subject','');
 	add_option('mc_event_mail_to','');
@@ -357,16 +357,15 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option( 'mc_location_control','' );
 	add_option('mc_date_format',get_option('date_format') );
 	add_option('mc_templates', array(
-		'title'=>'{title}',
+		'title'=>'{details}',
 		'link'=>'{title}',
 		'grid'=>$grid_template,
 		'list'=>$list_template,
 		'mini'=>$mini_template,
 		'details'=>$single_template,
-		'label'=>''
+		'label'=>'{title}'
 	));
 	add_option('mc_skip_holidays','false');
-    add_option('mc_event_edit_perms','manage_options');
 	add_option('mc_css_file','refresh.css');
 	add_option('mc_show_rss','false');
 	add_option('mc_show_ical','false');	
@@ -374,12 +373,14 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option('mc_time_format',get_option('time_format'));
 	add_option( 'mc_widget_defaults',$defaults);
 	add_option( 'mc_show_weekends','true' );
+	add_option( 'mc_convert','true' );	
 	add_option( 'mc_uri','' );	
 	add_option( 'mc_show_event_vcal','false' );
 	add_option( 'mc_draggable',0 );
 	add_option( 'mc_caching_enabled','false' );
 	add_option( 'mc_week_caption',"The week's events" );
 	add_option( 'mc_multisite_show', 0 );
+	mc_add_roles();
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($initial_db);
 	dbDelta($initial_cat_db);

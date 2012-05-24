@@ -1,7 +1,9 @@
 <?php
 function my_calendar_check_db() {
-global $wpdb;
-$row = $wpdb->get_row( 'SELECT event_id,event_group_id FROM '.my_calendar_table() );
+if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { return; }
+	global $wpdb;
+	$mcdb = $wpdb;
+$row = $mcdb->get_row( 'SELECT event_id,event_group_id FROM '.my_calendar_table() );
 if ( isset( $_POST['upgrade'] ) && $_POST['upgrade'] == 'true' ) {
 	my_calendar_upgrade_db();
 }
