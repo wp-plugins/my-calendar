@@ -2,6 +2,8 @@
 // used to generate upcoming events lists
 function mc_get_all_events( $category ) {
 global $wpdb;
+	$mcdb = $wpdb;
+if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$select_category = ( $category!='default' )?mc_select_category($category,'all'):'';
 	$limit_string = mc_limit_string('all');
 	
@@ -13,7 +15,7 @@ global $wpdb;
 		$join = '';
 	}
 	$limits = $select_category . $join . $limit_string;
-    $events = $wpdb->get_results("SELECT *,event_begin as event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $limits AND event_flagged <> 1");
+    $events = $mcdb->get_results("SELECT *,event_begin as event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $limits AND event_flagged <> 1");
 	$offset = (60*60*get_option('gmt_offset'));
 	$date = date('Y', time()+($offset)).'-'.date('m', time()+($offset)).'-'.date('d', time()+($offset));
 	$arr_events = array();
@@ -35,8 +37,10 @@ global $wpdb;
 
 function mc_get_rss_events( $cat_id=false) {
 	global $wpdb;
+	$mcdb = $wpdb;
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	if ( $cat_id ) { $cat = "WHERE event_category = $cat_id"; } else { $cat = ''; }
-	$events = $wpdb->get_results("SELECT *,event_begin as event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $cat ORDER BY event_added DESC LIMIT 0,15" );
+	$events = $mcdb->get_results("SELECT *,event_begin as event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $cat ORDER BY event_added DESC LIMIT 0,15" );
 	foreach ( array_keys($events) as $key ) {
 		$event =& $events[$key];	
 		$output[] = $event;
@@ -46,6 +50,8 @@ function mc_get_rss_events( $cat_id=false) {
 
 function my_calendar_get_event($date,$id,$type='html') {
 	global $wpdb;
+	$mcdb = $wpdb;
+	  if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$date = explode("-",$date);
 	$m = (int) $date[1];
 	$d = (int) $date[2];
@@ -53,7 +59,7 @@ function my_calendar_get_event($date,$id,$type='html') {
 	if (!checkdate($m,$d,$y)) {
 		return;
 	}
-    $event = $wpdb->get_row("SELECT * FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE event_id=$id");
+    $event = $mcdb->get_row("SELECT * FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE event_id=$id");
 	$event->event_start_ts = strtotime( $event->event_begin . ' ' . $event->event_time );
 	if ( $type == 'object' ) { return $event; }
 	if ($event) {
@@ -82,6 +88,8 @@ function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='',$s
 		}
 	}
     global $wpdb;
+	$mcdb = $wpdb;
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$select_category = ( $category != null )?mc_select_category($category):'';
 	$select_location = mc_limit_string( 'grab', $ltype, $lvalue );
 
@@ -101,7 +109,7 @@ function my_calendar_grab_events($y,$m,$d,$category=null,$ltype='',$lvalue='',$s
 	} else {
 		$weekday_string = ''; 
 	}
-	$events = $wpdb->get_results($weekday_string . "
+	$events = $mcdb->get_results($weekday_string . "
 	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_begin <= '$date' AND event_end >= '$date' AND event_recur = 'S'
 	UNION
 	SELECT *,event_begin AS event_original_begin FROM " . MY_CALENDAR_TABLE . " JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE $select_category $select_location $limit_string AND event_recur = 'Y' AND EXTRACT(YEAR FROM '$date') >= EXTRACT(YEAR FROM event_begin)
@@ -364,6 +372,7 @@ function mc_check_cache($y, $m, $d, $category, $ltype, $lvalue) {
 
 function mc_clean_cache( $cache, $category, $ltype, $lvalue ) {
 global $wpdb;
+	$mcdb = $wpdb;
 	// process cache to strip events which do not meet current restrictions
 	if ( $cache == 'empty' ) return false;
 	$type = ($ltype != 'all')?"event_$ltype":"event_state";

@@ -48,20 +48,23 @@ function my_calendar_date_equal($early,$late) {
 
 // Function to compare time in event objects
 function my_calendar_time_cmp($a, $b) {
-  if ($a->event_time == $b->event_time) {
-    return 0;
-  }
-  return ($a->event_time < $b->event_time) ? -1 : 1;
+	if ($a->event_time == $b->event_time) {
+		return 0;
+	}
+	return ($a->event_time < $b->event_time) ? -1 : 1;
 }
 
 // Function to compare datetime in event objects
 function my_calendar_datetime_cmp($a, $b) {
-	$event_dt_a = strtotime($a->event_begin .' '. $a->event_time);
-	$event_dt_b = strtotime($b->event_begin .' '. $b->event_time);
-  if ($event_dt_a == $event_dt_b ) {
-    return 0;
-  }
-  return ( $event_dt_a < $event_dt_b ) ? -1 : 1;
+	$event_dt_a = strtotime( $a->event_begin .' '. $a->event_time );
+	$event_dt_b = strtotime( $b->event_begin .' '. $b->event_time );
+	if ( $event_dt_a == $event_dt_b ) {
+	// this should sub-sort by title if date is the same. But it doesn't seem to...
+		$ta = $a->event_title;
+		$tb = $b->event_title;
+		return strcmp( $ta, $tb );
+	}
+	return ( $event_dt_a < $event_dt_b ) ? -1 : 1;
 }
 
 // reverse Function to compare datetime in event objects

@@ -86,6 +86,13 @@ do_action('admin_head');
                     </select> 
 					</p>
 					<p>
+					<label for="showjump"><?php _e('Show Jumpbox', 'my-calendar'); ?></label>
+                    <select name="showjump" id="showjump">
+                        <option value="yes"><?php _e('Yes','my-calendar'); ?></option>
+                        <option value="no" selected="selected"><?php _e('No','my-calendar'); ?></option> 
+                    </select> 
+					</p>					
+					<p>
 					<label for="toggle"><?php _e('Show Format Toggle', 'my-calendar'); ?></label>
                     <select name="toggle" id="toggle">
                         <option value="yes"><?php _e('Yes','my-calendar'); ?></option>

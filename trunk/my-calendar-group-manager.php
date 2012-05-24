@@ -5,6 +5,7 @@ if (!empty($_SERVER['SCRIPT_FILENAME']) && 'my-calendar-group-manager.php' == ba
 
 function edit_my_calendar_groups() {
     global $current_user, $wpdb, $users_entries;
+	$mcdb = $wpdb;
 	
 // First some quick cleaning up 
 $edit = $save = false;
@@ -44,14 +45,14 @@ if ( isset( $_POST['event_action'] ) ) {
 		foreach ( $_POST['break'] as $event_id ) {
 			$update = array( 'event_group_id'=>0 );
 			$formats = array( '%d' );
-			//$wpdb->show_errors();
-			$result = $wpdb->update( 
+			//$mcdb->show_errors();
+			$result = $mcdb->update( 
 					my_calendar_table(), 
 					$update, 
 					array( 'event_id'=>$event_id ),
 					$formats, 
 					'%d' );
-			//$wpdb->print_error();
+			//$mcdb->print_error();
 			$url = ( get_option('mc_uri') != '' )?' '.sprintf(__('View <a href="%s">your calendar</a>.','my-calendar'),get_option('mc_uri') ):'';
 				if ( $result === false ) {
 					$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Event not updated.','my-calendar')."$url</p></div>";
@@ -71,14 +72,14 @@ if ( isset( $_POST['event_action'] ) ) {
 			$group_id = $events[0];
 			$update = array( 'event_group_id'=>$group_id );
 			$formats = array( '%d' );
-			//$wpdb->show_errors();
-			$result = $wpdb->update( 
+			//$mcdb->show_errors();
+			$result = $mcdb->update( 
 					my_calendar_table(), 
 					$update, 
 					array( 'event_id'=>$event_id ),
 					$formats, 
 					'%d' );
-			//$wpdb->print_error();
+			//$mcdb->print_error();
 				if ( $result === false ) {
 					$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Event not grouped.','my-calendar')."</p></div>";
 				} else if ( $result === 0 ) {
@@ -93,39 +94,36 @@ if ( isset( $_POST['event_action'] ) ) {
 
 ?>
 
-<div class="wrap" id="my-calendar">
-<?php 
-my_calendar_check_db();
-check_akismet();
-?>
+<div class="wrap jd-my-calendar" id="my-calendar">
+<?php my_calendar_check_db();?>
 	<?php
 	if ( $action == 'edit' || ($action == 'edit' && $error_with_saving == 1) ) {
 		?>
 <div id="icon-edit" class="icon32"></div>		
 		<h2><?php _e('Edit Event Group','my-calendar'); ?></h2>
-		<?php jd_show_support_box(); ?>
 		<?php
 		if ( empty($event_id) || empty($group_id) ) {
 			echo "<div class=\"error\"><p>".__("You must provide an event group id in order to edit it",'my-calendar')."</p></div>";
 		} else {
 			jd_groups_edit_form('edit', $event_id, $group_id );
 		}	
-		jd_groups_display_list();
 	} else {
 	?>	
 <div id="icon-edit" class="icon32"></div>	
 		<h2><?php _e('Manage Event Groups','my-calendar'); ?></h2>
-		<?php jd_show_support_box(); ?>
 		<p><?php _e('Grouped events can be edited simultaneously. When you choose a group of events to edit, the form will be pre-filled with the content applicable to the member of the event group you started from. (e.g., if you click on the "Edit Group" link for the 3rd of a set of events, the boxes will use the content applicable to that event.). You will also receive a set of checkboxes which will indicate which events in the group should have these changes applied. (All grouped events can also be edited individually.)','my-calendar'); ?></p>
 		<p><?php _e('The following fields will never be changed when editing groups: registration availability, event publication status, spam flagging, event recurrence, event repetitions, and the start and end dates and times for that event.','my-calendar'); ?></p>
-		<?php jd_groups_display_list(); ?>
 	<?php } ?>
+	
+	<?php jd_show_support_box(); ?>
+	<?php jd_groups_display_list(); ?>
 </div>
 <?php
 } 
 
 function my_calendar_save_group( $action,$output,$event_id=false ) {
 global $wpdb,$event_author;
+	$mcdb = $wpdb;
 	$proceed = $output[0];
 	$message = '';
 	if ( $action == 'edit' && $proceed == true ) {
@@ -137,14 +135,14 @@ global $wpdb,$event_author;
 						'%d','%d','%d','%d','%d',
 						'%f','%f'
 						);
-			//$wpdb->show_errors();
-			$result = $wpdb->update( 
+			//$mcdb->show_errors();
+			$result = $mcdb->update( 
 					my_calendar_table(), 
 					$update, 
 					array( 'event_id'=>$event_id ),
 					$formats, 
 					'%d' );
-			//$wpdb->print_error();
+			//$mcdb->print_error();
 			$url = ( get_option('mc_uri') != '' )?' '.sprintf(__('View <a href="%s">your calendar</a>.','my-calendar'),get_option('mc_uri') ):'';
 				if ( $result === false ) {
 					$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Your event was not updated.','my-calendar')."$url</p></div>";
@@ -164,11 +162,12 @@ global $wpdb,$event_author;
 
 function jd_acquire_group_data($event_id=false) {
 global $wpdb,$users_entries;
+	$mcdb = $wpdb;
 	if ( $event_id !== false ) {
 		if ( intval($event_id) != $event_id ) {
 			return "<div class=\"error\"><p>".__('Sorry! That\'s an invalid event key.','my-calendar')."</p></div>";
 		} else {
-			$data = $wpdb->get_results("SELECT * FROM " . my_calendar_table() . " WHERE event_id='" . (int) $event_id . "' LIMIT 1");
+			$data = $mcdb->get_results("SELECT * FROM " . my_calendar_table() . " WHERE event_id='" . (int) $event_id . "' LIMIT 1");
 			if ( empty($data) ) {
 				return "<div class=\"error\"><p>".__("Sorry! We couldn't find an event with that ID.",'my-calendar')."</p></div>";
 			}
@@ -188,12 +187,13 @@ global $wpdb,$users_entries;
 
 function mc_compare_group_members( $group_id ) {
 	global $wpdb;
+	$mcdb = $wpdb;
 	$query = "SELECT event_title, event_desc, event_short, event_link, event_label, 
 					event_street, event_street2, event_city, event_state, event_postcode, 
 					event_region, event_country, event_url, event_image, event_category, 
 					event_link_expires, event_zoom, event_phone, event_open, event_host, event_longitude, event_latitude 
 			  FROM ".my_calendar_table()." WHERE event_group_id = $group_id";
-	$results = $wpdb->get_results( $query, ARRAY_N );
+	$results = $mcdb->get_results( $query, ARRAY_N );
 	$count = count($results);
 	for($i=0;$i<$count;$i++) {
 		$n = (($i+1)>$count-1)?0:$i+1;
@@ -206,10 +206,11 @@ function mc_compare_group_members( $group_id ) {
 
 function mc_group_form( $group_id, $type='break' ) {
 	global $wpdb;
+	$mcdb = $wpdb;
 	$event_id = (int) $_GET['event_id'];
 	$nonce = wp_create_nonce('my-calendar-nonce');
 	$query = "SELECT event_id, event_begin, event_time FROM ".my_calendar_table()." WHERE event_group_id = $group_id";
-	$results = $wpdb->get_results($query);
+	$results = $mcdb->get_results($query);
 	if ( $type == 'apply' ) {
 		$warning = (!mc_compare_group_members($group_id))?"<p class='warning'>".__('<strong>NOTE:</strong> The group editable fields for the events in this group do not match','my-calendar')."</p>":'<p>'.__('The group editable fields for the events in this group match.','my-calendar').'</p>';
 	} else {
@@ -222,7 +223,7 @@ function mc_group_form( $group_id, $type='break' ) {
 	$group .= ($type == 'break')?"<form method='post' action='".admin_url("admin.php?page=my-calendar-groups&amp;mode=edit&amp;event_id=$event_id&amp;group_id=$group_id")."'>
 	<div><input type='hidden' value='$group_id' name='group_id' /><input type='hidden' value='$type' name='event_action' /><input type='hidden' name='_wpnonce' value='$nonce' />
 </div>":'';
-	$group .= "<ul>";
+	$group .= "<ul class='columns'>";
 	$checked = ( $type=='apply' )?' checked="checked"':'';
 	foreach ( $results as $result ) {
 		$date = date_i18n( 'D, j M, Y', strtotime( $result->event_begin ) );
@@ -239,6 +240,7 @@ function mc_group_form( $group_id, $type='break' ) {
 // The event edit form for the manage events admin page
 function jd_groups_edit_form( $mode='edit', $event_id=false, $group_id=false ) {
 	global $wpdb,$users_entries,$user_ID, $output;
+	$mcdb = $wpdb;
 	$message = '';
 	if ($event_id != false) {
 		$data = jd_acquire_group_data( $event_id );
@@ -255,23 +257,23 @@ function jd_groups_edit_form( $mode='edit', $event_id=false, $group_id=false ) {
 
 	<?php echo ($message != '')?"<div class='error'><p>$message</p></div>":''; ?>
 	<?php echo $group; ?>
-	<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;mode=edit&amp;event_id=$event_id&amp;group_id=$group_id"); ?>">
 	<?php my_calendar_print_group_fields($data,$mode,$event_id, $group_id); ?>
-			<p>
-                <input type="submit" name="save" class="button-primary" value="<?php _e('Edit Event Group','my-calendar'); ?>" />
-			</p>
-	</form>
 
 <?php
 }
 
 function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 	global $user_ID, $wpdb;
+	$mcdb = $wpdb;
 	get_currentuserinfo();
 	$user = get_userdata($user_ID);		
 	$mc_input_administrator = (get_option('mc_input_options_administrators')=='true' && current_user_can('manage_options'))?true:false;
 	$mc_input = get_option('mc_input_options');
 ?>
+
+<div class="postbox-container" style="width: 70%">
+<div class="metabox-holder">
+<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;mode=edit&amp;event_id=$event_id&amp;group_id=$group_id"); ?>">
 <div>
 <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />
 <input type="hidden" name="group_id" value="<?php if ( !empty( $data->event_group_id ) ) { echo $data->event_group_id; } else { mc_group_id(); } ?>" />
@@ -280,16 +282,17 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 <input type="hidden" name="event_author" value="<?php echo $user_ID; ?>" />
 <input type="hidden" name="event_nonce_name" value="<?php echo wp_create_nonce('event_nonce'); ?>" />
 </div>
-<div id="poststuff" class="jd-my-calendar">
+<div class="ui-sortable meta-box-sortables">
 <div class="postbox">	
+	<h3><?php _e('Manage Event Groups','my-calendar'); ?></h3>
 	<div class="inside">
-				<p>
+			<p>
                 <input type="submit" name="save" class="button-primary" value="<?php _e('Edit Event Group','my-calendar'); ?>" />
 			</p>
         <fieldset>
 		<legend><?php _e('Enter your Event Information','my-calendar'); ?></legend>
 		<p>
-		<label for="event_title"><?php _e('Event Title','my-calendar'); ?><span><?php _e('(required)','my-calendar'); ?></span></label> <input type="text" id="event_title" name="event_title" class="input" size="60" value="<?php if ( !empty($data) ) echo stripslashes(esc_attr($data->event_title)); ?>" />
+		<label for="event_title"><?php _e('Event Title','my-calendar'); ?><span><?php _e('(required)','my-calendar'); ?></span></label><br /><input type="text" id="event_title" name="event_title" class="input" size="60" value="<?php if ( !empty($data) ) echo stripslashes(esc_attr($data->event_title)); ?>" />
 		</p>
 			<?php 
 			$apply = mc_group_form( $group_id, 'apply' ); 
@@ -301,10 +304,10 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 		</p>
 		<?php } ?>
 		<?php if ($mc_input['event_desc'] == 'on' || $mc_input_administrator ) { ?>
-		<p id="group_description">
+		<div id="group_description">
 		<?php if ( !empty($data) ) { $description = $data->event_desc; } else { $description = ''; } ?>
-		<label for="content"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><?php if ( $mc_input['event_use_editor'] == 'on' ) {  the_editor( stripslashes($description) ); }  else { ?><textarea id="content" name="content" class="event_desc" rows="5" cols="80"><?php echo stripslashes(esc_attr($description)); ?></textarea><?php if ( $mc_input['event_use_editor'] == 'on' ) { ?></div><?php } } ?>
-		</p>		
+		<label for="content"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><?php if ( $mc_input['event_use_editor'] == 'on' ) {  if ( version_compare( get_bloginfo( 'version' ) , '3.3' , '<' ) ) { wp_editor( stripslashes($description), 'content', array( 'textarea_rows'=>10 ) ); } else { the_editor( stripslashes($description) ); } }  else { ?><textarea id="content" name="content" class="event_desc" rows="5" cols="80"><?php echo stripslashes(esc_attr($description)); ?></textarea><?php if ( $mc_input['event_use_editor'] == 'on' ) { ?></div><?php } } ?>
+		</div>		
 		<?php } ?>
 		<?php 
 		// If the editor is enabled, shouldn't display the image uploader. 
@@ -348,20 +351,20 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			}
 		?>
 	</select>
-	</p>			
+	</p>		
 		<?php if ($mc_input['event_category'] == 'on' || $mc_input_administrator ) { ?>
         <p>
 		<label for="event_category"><?php _e('Event Category','my-calendar'); ?></label>
 		<select id="event_category" name="event_category">
 			<?php
 			// Grab all the categories and list them
-			$sql = "SELECT * FROM " . my_calendar_categories_table();
-				$cats = $wpdb->get_results($sql);
+			$sql = "SELECT * FROM " . my_calendar_categories_table() . " ORDER BY category_name ASC";
+				$cats = $mcdb->get_results($sql);
 				foreach($cats as $cat) {
 					echo '<option value="'.$cat->category_id.'"';
 					if (!empty($data)) {
 						if ($data->event_category == $cat->category_id){
-						 echo 'selected="selected"';
+						 echo ' selected="selected"';
 						}
 					}
 					echo '>'.stripslashes($cat->category_name).'</option>';
@@ -382,9 +385,12 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			</fieldset>
 </div>
 </div>
+</div>
 <?php if ($mc_input['event_open'] == 'on' || $mc_input_administrator ) { 
 // add a "don't change" option here ?>		
+<div class="ui-sortable meta-box-sortables">
 <div class="postbox">
+<h3><?php _e('Event Registration Options','my-calendar'); ?></h3>
 <div class="inside">
 			<fieldset>
 			<legend><?php _e('Event Registration Status','my-calendar'); ?></legend>
@@ -399,7 +405,8 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			</p>				
 			</fieldset>
 </div>
-</div>			
+</div>	
+</div>		
 			<?php } else { ?>
 			<div>
 			<input type="hidden" name="event_open" value="2" />
@@ -409,13 +416,15 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 
 			<?php if ( ($mc_input['event_location'] == 'on' || $mc_input['event_location_dropdown'] == 'on') || $mc_input_administrator ) { ?>
 
+<div class="ui-sortable meta-box-sortables">
 <div class="postbox">
+<h3><?php _e('Event Location','my-calendar'); ?></h3>
 <div class="inside">
 			<fieldset>
 			<legend><?php _e('Event Location','my-calendar'); ?></legend>
 			<?php } ?>
 			<?php if ($mc_input['event_location_dropdown'] == 'on' || $mc_input_administrator ) { ?>
-			<?php $locations = $wpdb->get_results("SELECT location_id,location_label FROM " . my_calendar_locations_table() . " ORDER BY location_label ASC");
+			<?php $locations = $mcdb->get_results("SELECT location_id,location_label FROM " . my_calendar_locations_table() . " ORDER BY location_label ASC");
 				if ( !empty($locations) ) {
 			?>				
 			<p>
@@ -457,9 +466,10 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			<label for="event_phone"><?php _e('Phone','my-calendar'); ?></label> <input type="text" id="event_phone" name="event_phone" class="input" size="32" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_phone)); ?>" />
 			</p>			
 			<p>
-			<label for="event_city"><?php _e('City','my-calendar'); ?></label> <input type="text" id="event_city" name="event_city" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_city)); ?>" /> <label for="event_state"><?php _e('State/Province','my-calendar'); ?></label> <input type="text" id="event_state" name="event_state" class="input" size="10" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_state)); ?>" /> <label for="event_postcode"><?php _e('Postal Code','my-calendar'); ?></label> <input type="text" id="event_postcode" name="event_postcode" class="input" size="10" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_postcode)); ?>" />
+			<label for="event_city"><?php _e('City','my-calendar'); ?></label> <input type="text" id="event_city" name="event_city" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_city)); ?>" /> <label for="event_state"><?php _e('State/Province','my-calendar'); ?></label> <input type="text" id="event_state" name="event_state" class="input" size="10" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_state)); ?>" /> 
 			</p>
 			<p>
+			<label for="event_postcode"><?php _e('Postal Code','my-calendar'); ?></label> <input type="text" id="event_postcode" name="event_postcode" class="input" size="10" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_postcode)); ?>" />
 			<label for="event_region"><?php _e('Region','my-calendar'); ?></label> <input type="text" id="event_region" name="event_region" class="input" size="40" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_region)); ?>" />
 			</p>
 			<p>
@@ -493,12 +503,19 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			</fieldset>
 		</div>
 		</div>
+	</div>
+			<p>
+                <input type="submit" name="save" class="button-secondary" value="<?php _e('Edit Event Group','my-calendar'); ?>" />
+			</p>
+	</form>		
 			<?php } ?>
+</div>
 </div>
 <?php }
 
 function mc_check_group_data( $action,$_POST ) {
 	global $wpdb, $current_user, $users_entries;
+	$mcdb = $wpdb;
 
 	$url_ok = 0;
 	$title_ok = 0;
@@ -518,7 +535,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 	$desc = !empty($_POST['content']) ? trim($_POST['content']) : '';
 	$short = !empty($_POST['event_short']) ? trim($_POST['event_short']) : '';
 	$repeats = !empty($_POST['event_repeats']) ? trim($_POST['event_repeats']) : 0;
-	$host = !empty($_POST['event_host']) ? $_POST['event_host'] : $current_user->ID;	
+	$host = !empty($_POST['event_host']) ? $_POST['event_host'] : $current_user->ID;
 	$category = !empty($_POST['event_category']) ? $_POST['event_category'] : '';
     $linky = !empty($_POST['event_link']) ? trim($_POST['event_link']) : '';
     $expires = !empty($_POST['event_link_expires']) ? $_POST['event_link_expires'] : '0';
@@ -529,7 +546,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 	// set location
 		if ($location_preset != 'none') {
 			$sql = "SELECT * FROM " . my_calendar_locations_table() . " WHERE location_id = $location_preset";
-			$location = $wpdb->get_row($sql);
+			$location = $mcdb->get_row($sql);
 			$event_label = $location->location_label;
 			$event_street = $location->location_street;
 			$event_street2 = $location->location_street2;
@@ -642,6 +659,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 // Used on the manage events admin page to display a list of events
 function jd_groups_display_list() {
 	global $wpdb;
+	$mcdb = $wpdb;
 	
 		$sortby = ( isset( $_GET['sort'] ) )?(int) $_GET['sort']:get_option('mc_default_sort');
 
@@ -680,14 +698,14 @@ function jd_groups_display_list() {
 		$sortbydirection = $sortdir;
 	}
 	
-	$events = $wpdb->get_results("SELECT * FROM " . my_calendar_table() . " ORDER BY $sortbyvalue $sortbydirection");
+	$events = $mcdb->get_results("SELECT * FROM " . my_calendar_table() . " ORDER BY $sortbyvalue $sortbydirection");
 	if ($sortbydirection == 'DESC') {
 		$sorting = "&amp;order=ASC";
 	} else {
 		$sorting = '';
 	}
 	?>
-	<h2><?php _e('Create/Modify Groups','my-calendar'); ?></h2>
+	<h2 class="mc-clear"><?php _e('Create/Modify Groups','my-calendar'); ?></h2>
 	<p><?php _e('Check a set of events to group them for mass editing.','my-calendar'); ?></p>
 	<?php
 	if ( !empty($events) ) {
@@ -697,28 +715,28 @@ function jd_groups_display_list() {
 		<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />
 		<input type="hidden" name="event_action" value="group" />
 		</div>
-		<p>
+		<p style="position:relative;">
 		<input type="submit" class="button-primary group" value="<?php _e('Group checked events for mass editing','my-calendar'); ?>" />
 		</p>		
-<table class="widefat page fixed" id="my-calendar-admin-table" summary="<?php _e('Table of Calendar Events','my-calendar'); ?>">
+<table class="widefat page fixed" id="my-calendar-admin-table">
 	<thead>
 	<tr>
-		<th class="manage-column n4" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=1$sorting"); ?>"><?php _e('ID','my-calendar') ?></a></th>
-		<th class="manage-column n4" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=8$sorting"); ?>"><?php _e('Group','my-calendar') ?></a></th>
+		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=1$sorting"); ?>"><?php _e('ID','my-calendar') ?></a></th>
+		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=8$sorting"); ?>"><?php _e('Group','my-calendar') ?></a></th>
 		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=2$sorting"); ?>"><?php _e('Title','my-calendar') ?></a></th>
-		<th class="manage-column n1" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=7$sorting"); ?>"><?php _e('Location','my-calendar') ?></a></th>
-		<th class="manage-column n8" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=3$sorting"); ?>"><?php _e('Description','my-calendar') ?></a></th>
-		<th class="manage-column n5" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=4$sorting"); ?>"><?php _e('Start Date','my-calendar') ?></a></th>
-		<th class="manage-column n6" scope="col"><?php _e('Recurs','my-calendar') ?></th>
-		<th class="manage-column n3" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=5$sorting"); ?>"><?php _e('Author','my-calendar') ?></a></th>
-		<th class="manage-column n2" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=6$sorting"); ?>"><?php _e('Category','my-calendar') ?></a></th>
-		<th class="manage-column n7" scope="col"><?php _e('Edit','my-calendar') ?></th>
+		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=7$sorting"); ?>"><?php _e('Where','my-calendar') ?></a></th>
+		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=3$sorting"); ?>"><?php _e('Description','my-calendar') ?></a></th>
+		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=4$sorting"); ?>"><?php _e('Starts','my-calendar') ?></a></th>
+		<th class="manage-column" scope="col"><?php _e('Recurs','my-calendar') ?></th>
+		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=5$sorting"); ?>"><?php _e('Author','my-calendar') ?></a></th>
+		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=6$sorting"); ?>"><?php _e('Category','my-calendar') ?></a></th>
+		<th class="manage-column" scope="col"><?php _e('Edit','my-calendar') ?></th>
 	</tr>
 	</thead>
 		<?php
 		$class = '';
 		$sql = "SELECT * FROM " . my_calendar_categories_table() ;
-        $categories = $wpdb->get_results($sql);
+        $categories = $mcdb->get_results($sql);
 			
 		foreach ( $events as $event ) {
 			$class = ($class == 'alternate') ? '' : 'alternate';
@@ -784,7 +802,7 @@ function jd_groups_display_list() {
 ?>
 		</table>
 		<p>
-		<input type="submit" class="button-primary group" value="<?php _e('Group checked events for mass editing','my-calendar'); ?>" />
+		<input type="submit" class="button-secondary group" value="<?php _e('Group checked events for mass editing','my-calendar'); ?>" />
 		</p>
 		</form>
 <?php

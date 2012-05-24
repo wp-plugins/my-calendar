@@ -2,6 +2,8 @@
 function mc_select_category($category, $type='event', $group='events' ) {
 $category = urldecode($category);
 global $wpdb;
+	$mcdb = $wpdb;
+	  if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$select_category = '';
 	$data = ($group=='category')?'category_id':'event_category';
 	if ( isset( $_GET['mcat'] ) ) { $category = $_GET['mcat']; }
@@ -29,7 +31,7 @@ global $wpdb;
 			$i++;
 			} else {
 				$key = esc_sql(trim($key));
-				$cat = $wpdb->get_row("SELECT category_id FROM " . my_calendar_categories_table() . " WHERE category_name = '$key'");
+				$cat = $mcdb->get_row("SELECT category_id FROM " . my_calendar_categories_table() . " WHERE category_name = '$key'");
 				$category_id = $cat->category_id;
 				if ($i == 1) {	$select_category .= ($type=='all')?" WHERE (":' (';	}
 				$select_category .= " $data = $category_id";
@@ -45,7 +47,7 @@ global $wpdb;
 		if ( is_numeric( $category ) ) {
 			$select_category = ($type=='all')?" WHERE $data = $category":" event_category = $category AND";
 		} else {
-		$cat = $wpdb->get_row("SELECT category_id FROM " . my_calendar_categories_table() . " WHERE category_name = '$category'");
+		$cat = $mcdb->get_row("SELECT category_id FROM " . my_calendar_categories_table() . " WHERE category_name = '$category'");
 			if ( is_object($cat) ) {
 				$category_id = $cat->category_id;
 				$select_category = ($type=='all')?" WHERE $data = $category_id":" $data = $category_id AND";
@@ -100,5 +102,38 @@ global $user_ID;
 				//$limit_string .= ($type=='all')?' AND':"";
 		}
 	 }
+	 if ( $limit_string != '' ) {
+		if ( isset($_GET['loc2']) && isset($_GET['ltype2']) ) {
+			$limit_string .= mc_secondary_limit( $_GET['ltype2'],$_GET['loc2'] );
+		}
+	 }
 	 return $limit_string;
+}
+
+// set up a secondary limit on location
+function mc_secondary_limit($ltype='',$lvalue='') {
+	$limit_string = "";
+	$current_location = urldecode( $lvalue );
+	$location = urldecode( $ltype );
+	switch ($location) {
+		case "name":$location_type = "event_label";
+		break;
+		case "city":$location_type = "event_city";
+		break;
+		case "state":$location_type = "event_state";
+		break;
+		case "zip":$location_type = "event_postcode";
+		break;
+		case "country":$location_type = "event_country";
+		break;
+		case "region":$location_type = "event_region";
+		break;
+		default:$location_type = "event_label";
+		break;
+	}	
+	if ($current_location != 'all' && $current_location != '') {
+			$limit_string = " $location_type='$current_location' AND ";
+			//$limit_string .= ($type=='all')?' AND':"";
+	}
+	return $limit_string;
 }

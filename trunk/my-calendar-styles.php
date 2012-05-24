@@ -61,6 +61,7 @@ function mc_write_styles($stylefile, $my_calendar_style) {
 function edit_my_calendar_styles() {
 	$message = '';
 	global $wpdb,$wp_plugin_dir;
+	$mcdb = $wpdb;
 	// We can't use this page unless My Calendar is installed/upgraded
 	check_my_calendar();
 	if ( isset( $_POST['mc_edit_style'] ) ) {
@@ -122,13 +123,15 @@ function edit_my_calendar_styles() {
 	}
 	
 ?>
-<div class="wrap">
+<div class="wrap jd-my-calendar">
 <?php 
 my_calendar_check_db();
 ?>
 <h2><?php _e('My Calendar Styles','my-calendar'); ?></h2>
-    <?php jd_show_support_box(); ?>
-<div id="poststuff" class="jd-my-calendar">
+<div class="postbox-container" style="width: 70%">
+<div class="metabox-holder">
+
+<div class="ui-sortable meta-box-sortables">   
 <div class="postbox">
 	<h3><?php _e('Calendar Style Settings','my-calendar'); ?></h3>
 	<div class="inside">	
@@ -204,15 +207,15 @@ my_calendar_check_db();
 	$left_string  = normalize_whitespace($my_calendar_style);
 	$right_string = normalize_whitespace($mc_current_style);
 	if ( isset( $_GET['diff'] ) ) {
-		echo '<div class="wrap" id="diff">';
+		echo '<div class="wrap jd-my-calendar" id="diff">';
 		echo wp_text_diff( $left_string,$right_string, array( 'title' => __('Comparing Your Style with latest installed version of My Calendar','my-calendar'), 'title_right' => __('Latest (from plugin)','my-calendar'), 'title_left' => __('Current (in use)','my-calendar') ) );
 		echo '</div>';
 	} else if ( trim($left_string)!=trim($right_string) ) {
-		echo '<div class="wrap">';
+		echo '<div class="wrap jd-my-calendar">';
 		echo '<div class="updated"><p>'.__('There have been updates to the stylesheet.','my-calendar').' <a href="'.admin_url("admin.php?page=my-calendar-styles&amp;diff#diff").'">'.__('Compare Your Stylesheet with latest installed version of My Calendar.','my-calendar').'</a></p></div>';
 		echo '</div>';
 	} else {
-		echo '<div class="wrap">';
+		echo '<div class="wrap jd-my-calendar">';
 		echo '<p>'.__('Your stylesheet matches that included with My Calendar.','my-calendar').'</p>';
 		echo '</div>';
 	}
@@ -223,6 +226,11 @@ my_calendar_check_db();
  </div>
 <p><?php _e('Resetting your stylesheet will set your stylesheet to the version of that style currently distributed with the plug-in.','my-calendar'); ?></p>
  </div>
+ </div>
+ </div>
+ 
+ 	<?php jd_show_support_box(); ?>
+
  </div>
   <?php
 
