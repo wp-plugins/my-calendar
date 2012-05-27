@@ -380,6 +380,7 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option( 'mc_caching_enabled','false' );
 	add_option( 'mc_week_caption',"The week's events" );
 	add_option( 'mc_multisite_show', 0 );
+	add_option( 'mc_event_link', 'true' );
 	mc_add_roles();
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($initial_db);

@@ -459,7 +459,8 @@ function check_my_calendar() {
 		if ( version_compare( $current_version, "1.9.3", "<" ) ) {  $upgrade_path[] = "1.9.3"; }
 		if ( version_compare( $current_version, "1.10.0", "<" ) ) { $upgrade_path[] = "1.10.0"; }
 		if ( version_compare( $current_version, "1.10.7", "<" ) ) { $upgrade_path[] = "1.10.7"; }	
-		if ( version_compare( $current_version, "1.11.0", "<" ) ) { $upgrade_path[] = "1.11.0"; }	
+		if ( version_compare( $current_version, "1.11.0", "<" ) ) { $upgrade_path[] = "1.11.0"; }
+		if ( version_compare( $current_version, "1.11.1", "<" ) ) { $upgrade_path[] = "1.11.1"; }
 	}
 	// having determined upgrade path, assign new version number
 	update_option( 'mc_version' , $mc_version );
@@ -477,6 +478,9 @@ function check_my_calendar() {
 	foreach ($upgrade_path as $upgrade) {
 		switch ($upgrade) {
 		// only upgrade db on most recent version
+			case '1.11.1':
+				add_option( 'mc_event_link', 'true' );
+				break;
 			case '1.11.0':
 				add_option( 'mc_convert','true');
 				add_option('mc_process_shortcodes','false');
