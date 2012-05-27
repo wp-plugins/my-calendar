@@ -153,6 +153,7 @@ function edit_my_calendar_config() {
 		update_option('mc_desc',( !empty($_POST['mc_desc']) && $_POST['mc_desc']=='on')?'true':'false');
 		update_option('mc_process_shortcodes',( !empty($_POST['mc_process_shortcodes']) && $_POST['mc_process_shortcodes']=='on')?'true':'false');
 		update_option('mc_details',( !empty($_POST['mc_details']) && $_POST['mc_details']=='on')?'true':'false');
+		update_option('mc_event_link',( !empty($_POST['mc_event_link']) && $_POST['mc_event_link']=='on')?'true':'false');		
 		update_option('mc_show_weekends',( !empty($_POST['mc_show_weekends']) && $_POST['mc_show_weekends']=='on')?'true':'false');
 		update_option('mc_convert',( !empty($_POST['mc_convert']) && $_POST['mc_convert']=='on')?'true':'false');
 		update_option('mc_no_fifth_week',( !empty($_POST['mc_no_fifth_week']) && $_POST['mc_no_fifth_week']=='on')?'true':'false');
@@ -499,13 +500,13 @@ function edit_my_calendar_config() {
 	</ul>
 	<ul class="columns">
 	<li>
-	<input type="checkbox" id="mc_display_author" name="mc_display_author" <?php jd_cal_checkCheckbox('mc_display_author','true'); ?> /> <label for="mc_display_jump"><?php _e('Display author\'s name','my-calendar'); ?></label>
+	<input type="checkbox" id="mc_display_author" name="mc_display_author" <?php jd_cal_checkCheckbox('mc_display_author','true'); ?> /> <label for="mc_display_jump"><?php _e('Show author\'s name','my-calendar'); ?></label>
 	</li>
 	<li>
-	<input type="checkbox" id="mc_show_event_vcal" name="mc_show_event_vcal" <?php jd_cal_checkCheckbox('mc_show_event_vcal','true'); ?> /> <label for="mc_show_ical"><?php _e('Display link to single event iCal download.','my-calendar'); ?></label> 
+	<input type="checkbox" id="mc_show_event_vcal" name="mc_show_event_vcal" <?php jd_cal_checkCheckbox('mc_show_event_vcal','true'); ?> /> <label for="mc_show_ical"><?php _e('Show link to single event iCal download','my-calendar'); ?></label> 
 	</li>		
 	<li>
-	<input type="checkbox" id="mc_hide_icons" name="mc_hide_icons" <?php jd_cal_checkCheckbox('mc_hide_icons','true'); ?> /> <label for="mc_hide_icons"><?php _e('Hide category icons','my-calendar'); ?></label>
+	<input type="checkbox" id="mc_hide_icons" name="mc_hide_icons" <?php jd_cal_checkCheckbox('mc_hide_icons','false'); ?> /> <label for="mc_hide_icons"><?php _e('Show category icons','my-calendar'); ?></label>
 	</li>
 	<li>
 	<input type="checkbox" id="mc_show_map" name="mc_show_map" <?php jd_cal_checkCheckbox('mc_show_map','true'); ?> /> <label for="mc_show_map"><?php _e('Show Link to Google Map','my-calendar'); ?></label>
@@ -514,17 +515,20 @@ function edit_my_calendar_config() {
 	<input type="checkbox" id="mc_show_address" name="mc_show_address" <?php jd_cal_checkCheckbox('mc_show_address','true'); ?> /> <label for="mc_show_address"><?php _e('Show Event Address','my-calendar'); ?></label>
 	</li>
 	<li>
-	<input type="checkbox" id="mc_short" name="mc_short" <?php jd_cal_checkCheckbox('mc_short','true'); ?> /> <label for="mc_short"><?php _e('Show short description.','my-calendar'); ?></label>
+	<input type="checkbox" id="mc_short" name="mc_short" <?php jd_cal_checkCheckbox('mc_short','true'); ?> /> <label for="mc_short"><?php _e('Show short description','my-calendar'); ?></label>
 	</li>
 	<li>
-	<input type="checkbox" id="mc_desc" name="mc_desc" <?php jd_cal_checkCheckbox('mc_desc','true'); ?> /> <label for="mc_desc"><?php _e('Show full description.','my-calendar'); ?></label>
+	<input type="checkbox" id="mc_desc" name="mc_desc" <?php jd_cal_checkCheckbox('mc_desc','true'); ?> /> <label for="mc_desc"><?php _e('Show full description','my-calendar'); ?></label>
 	</li>
 	<li>
-	<input type="checkbox" id="mc_process_shortcodes" name="mc_process_shortcodes" <?php jd_cal_checkCheckbox('mc_process_shortcodes','true'); ?> /> <label for="mc_process_shortcodes"><?php _e('Process WordPress shortcodes in description fields.','my-calendar'); ?></label>
+	<input type="checkbox" id="mc_process_shortcodes" name="mc_process_shortcodes" <?php jd_cal_checkCheckbox('mc_process_shortcodes','true'); ?> /> <label for="mc_process_shortcodes"><?php _e('Process WordPress shortcodes in description fields','my-calendar'); ?></label>
 	</li>	
 	<li>
-	<input type="checkbox" id="mc_details" name="mc_details" <?php jd_cal_checkCheckbox('mc_details','true'); ?> /> <label for="mc_details"><?php _e('Show link to single-event details. (requires <a href=\'#mc_uri\'>URL</a>)','my-calendar'); ?></label>
-	</li>		
+	<input type="checkbox" id="mc_details" name="mc_details" <?php jd_cal_checkCheckbox('mc_details','true'); ?> /> <label for="mc_details"><?php _e('Show link to single-event details (requires <a href=\'#mc_uri\'>URL</a>)','my-calendar'); ?></label>
+	</li>
+	<li>
+	<input type="checkbox" id="mc_event_link" name="mc_event_link" <?php jd_cal_checkCheckbox('mc_event_link','true'); ?> /> <label for="mc_event_link"><?php _e('Show external link','my-calendar'); ?></label>
+	</li>
 	<li>
 	<input type="checkbox" id="mc_event_link_expires" name="mc_event_link_expires" <?php jd_cal_checkCheckbox('mc_event_link_expires','true'); ?> /> <label for="mc_event_link_expires"><?php _e('Event links expire after event passes.','my-calendar'); ?></label>
 	</li>

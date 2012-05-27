@@ -151,7 +151,17 @@ jQuery(document).ready(function($) {
 	$templates = get_option('mc_templates');
 	$title_template = ($templates['title'] == '' )?'{title}':$templates['title'];
 	$mytitle = jd_draw_template($data,$title_template);
-	if ( strpos( $mytitle,'http' ) === false ) { $wrap = "<a href='#$uid-$type-details'>"; $balance = "</a>"; } else { $wrap = $balance = ''; }
+	if ( strpos( $mytitle,'http' ) === false ) { 
+		if ( get_option('mc_open_uri') == 'true' ) {
+		$details_link = mc_build_url( array('mc_id'=>$uid), array('month','dy','yr','ltype','loc','mcat'), get_option( 'mc_uri' ) );
+		$wrap = "<a href='$details_link'>"; $balance = "</a>";
+		} else {
+		$wrap = "<a href='#$uid-$type-details'>"; $balance = "</a>"; 
+		}
+	} else { 
+		$wrap = $balance = ''; 
+	}
+	
 	//$toggle = ($type == 'calendar')?"&nbsp;<a href='#' class='mc-toggle'><img src='".MY_CALENDAR_DIRECTORY."/images/event-details.png' alt='".__('Event Details','my-calendar')."' /></a>":'';
 	//$toggle =  (get_option('mc_open_uri')=='true')?'':$toggle;
 	$current_date = date_i18n($date_format,strtotime($process_date));
@@ -166,15 +176,15 @@ jQuery(document).ready(function($) {
 	// need to figure out what this is. I don't remember it, and it isn't being used...
 	//$closure = ( $details === false )?'</div>':"";
 	$dateid = date('Y-m-d',$event->event_start_ts);		
-	
+	$container = '';
 	if ( $details === false ) {
 		// put together address information as vcard
 		if (($display_address == 'true' || $display_map == 'true') ) {
 			$address .= mc_hcard( $event, $display_address, $display_map );
 		}
 		// end vcard
-		$body_details .= "	<div id='$uid-$type-details' class='details'>\n"; 
-		$body_details .= apply_filters('mc_before_event','',$event);
+		$container .= "	<div id='$uid-$type-details' class='details'>\n"; 
+		$container .= apply_filters('mc_before_event','',$event);
 		$body_details .= ($type == 'calendar' || $type == 'mini' )?"<span class='close'><a href='#' class='mc-toggle mc-close'><img src='".MY_CALENDAR_DIRECTORY."/images/event-close.png' alt='".__('Close','my-calendar')."' /></a></span>":'';
 		$body_details .= "<div class='time-block'>";
 			if ( $event->event_time != "00:00:00" && $event->event_time != '' ) {
@@ -197,17 +207,17 @@ jQuery(document).ready(function($) {
 				$body_details .= "</span>";
 			}
 			$body_details .= "
-			</div>
-			<div class='sub-details'>";
+			</div>";
+			$subdetails = '';
 			if ($type == "list") {
-				$body_details .= "<h3 class='event-title summary'>$image".$mytitle."</h3>\n";
+				$subdetails .= "<h3 class='event-title summary'>$image".$mytitle."</h3>\n";
 			}
 			if ($mc_display_author == 'true') {
 				$e = get_userdata($event->event_author);
-				$body_details .= '<span class="event-author">'.__('Posted by', 'my-calendar').': <span class="author-name">'.$e->display_name."</span></span><br />\n";
+				$subdetails .= '<span class="event-author">'.__('Posted by', 'my-calendar').': <span class="author-name">'.$e->display_name."</span></span><br />\n";
 			}	
 		if (($display_address == 'true' || $display_map == 'true') ) {
-			$body_details .= $address;
+			$subdetails .= $address;
 		}
 		if ($display_details == 'true' && !isset($_GET['mc_id']) ) {
 			$id = $event->event_id;
@@ -217,7 +227,7 @@ jQuery(document).ready(function($) {
 			$replacements = array( stripslashes($event->event_title), stripslashes($event->event_label), $event->category_color, $event->category_icon, $current_date, $current_time );
 			$details_label = str_replace($tags,$replacements,$details_template );	
 			$details_link = mc_build_url( array('mc_id'=>$uid), array('month','dy','yr','ltype','loc','mcat'), get_option( 'mc_uri' ) );
-			$body_details .= ( get_option( 'mc_uri' ) != '' )?"<p class='mc_details'><a href='$details_link'>$details_label</a></p>\n":'';
+			$subdetails .= ( get_option( 'mc_uri' ) != '' )?"<p class='mc_details'><a href='$details_link'>$details_label</a></p>\n":'';
 		}
 	  // handle link expiration
 		if ( $event->event_link_expires == 0 ) {
@@ -233,7 +243,7 @@ jQuery(document).ready(function($) {
 		if ( function_exists('my_calendar_generate_vcal') && get_option('mc_show_event_vcal') == 'true' ) {
 			$nonce = wp_create_nonce('my-calendar-nonce');
 			$vcal_link = "<p class='ical'><a rel='nofollow' href='".home_url()."?vcal=$uid"."'>".__('iCal','my-calendar')."</a></p>\n";
-			$body_details .= $vcal_link;
+			$subdetails .= $vcal_link;
 		}
 
 		$event_image = ($event->event_image!='')?"<img src='$event->event_image' alt='' class='mc-image' />":'';
@@ -276,16 +286,16 @@ jQuery(document).ready(function($) {
 		// if we're opening in a new page, there's no reason to display any of that. Later, re-write this section to make this easier to skip.
 		if ( $type == 'calendar' && get_option('mc_open_uri') == 'true' && $time != 'day' ) $body_details = $description = $short = $status = '';
 
-		if ($event_link != '') {
+		$subdetails = ( get_option('mc_open_uri') =='true')?"":"<div class='sub-details'>$subdetails</div>";
+		$body_details .= $subdetails;
+		if ( $event_link != '' && get_option( 'mc_event_link' ) != 'false' ) {
 			$is_external = mc_external_link( $event_link );	
 			$link_template = ( isset($templates['link']))?$templates['link']:'{title}';
 			$link_text = jd_draw_template($data,$link_template);
-			$details = "\n". $header_details . $body_details . $description . $short . $status."<p><a href='$event_link' $is_external>".$link_text.'</a></p>'.$return;
+			$details = "\n". $header_details . $container . $body_details . $description . $short . $status."<p><a href='$event_link' $is_external>".$link_text.'</a></p>'.$return;
 		} else {
-			$details = "\n". $header_details . $body_details . $description . $short . $status . $return;	
+			$details = "\n". $header_details . $container . $body_details . $description . $short . $status . $return;	
 		}
-		$details .= "
-			</div><!--ends .sub-details-->\n";
 	} else {
 		$toggle = ($type == 'calendar' || $type == 'mini' )?"<a href='#' class='mc-toggle mc-close close'><img src='".MY_CALENDAR_DIRECTORY."/images/event-close.png' alt='".__('Close','my-calendar')."' /></a>":'';	
 		$details = $header_details."\n<div id='$uid-$type-details' class='details'>\n	".$toggle.$details."\n";
@@ -447,7 +457,7 @@ echo '
 }
 
 // Actually do the printing of the calendar
-function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle,$time='month',$ltype='',$lvalue='',$id='jd-calendar',$template='') {
+function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle,$time='month',$ltype='',$lvalue='',$id='jd-calendar',$template='',$content='') {
     global $wpdb, $wp_plugin_url;
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
@@ -880,13 +890,14 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 					<li id='$format-$process_date' class='mc-events $class $classes'>
 					<strong class=\"event-date\">$is_anchor".date_i18n($date_format,mktime(0,0,0,$c_month,$thisday,$c_year))."$is_close_anchor"."$title</strong>".my_calendar_draw_events($grabbed_events, $format, $process_date,$template)."
 					</li>";
-				} 
 				$num_events++;
 				$class = (my_calendar_is_odd($num_events))?"odd":"even";
+				} 
 			}
 		}
 		if ($num_events == 0) {
-			$my_calendar_body .= "<li class='no-events'>".__('There are no events scheduled during this period.','my-calendar') . "</li>";
+			$no_events = ( $content == '' )?__('There are no events scheduled during this period.','my-calendar'):$content;
+			$my_calendar_body .= "<li class='no-events'>$no_events</li>";
 		}
 		$my_calendar_body .= "</ul>";
 	} else {

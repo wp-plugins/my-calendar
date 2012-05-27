@@ -77,6 +77,14 @@ New or updated translations are always appreciated. The translation source files
 
 == Changelog ==
 
+= 1.11.1 =
+
+* HTML validation issue fixed in calendar output.
+* Added option to hide display of external event links in calendar output. 
+* Bug fix: Mini calendar should not toggle from mini view when main view switched.
+* Bug fix: Week time frame of list view did not return the 'no events' message.
+* Feature: No events message can be customized by using an enclosing shortcode: [my_calendar]No events this week![/my_calendar]
+
 = 1.11.0 =
 
 * Added option to use {date} in Today's Events widget title.

@@ -1,7 +1,7 @@
 <?php
 
 
-function my_calendar_insert($atts) {
+function my_calendar_insert($atts,$content=null) {
 	extract(shortcode_atts(array(
 				'name' => 'all',
 				'format' => 'calendar',
@@ -16,11 +16,13 @@ function my_calendar_insert($atts) {
 				'id' => 'jd-calendar',
 				'template' => ''
 			), $atts));
-	if ( isset($_GET['format']) ) {
-		$format = mysql_real_escape_string($_GET['format']);
+	if ( $format != 'mini' ) {
+		if ( isset($_GET['format']) ) {
+			$format = mysql_real_escape_string($_GET['format']);
+		}
 	}
 	//apply_filters( 'mc_filter_calendar_name',$all_styles,$styles );
-	return my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle,$time, $ltype, $lvalue, $id, $template );
+	return my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle,$time, $ltype, $lvalue, $id, $template,$content );
 }
 
 function my_calendar_insert_upcoming($atts) {

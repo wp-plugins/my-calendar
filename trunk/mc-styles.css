@@ -37,7 +37,8 @@ ul.links li {float: left;margin: 0 5px 10px;font-size: .9em;}
 .template-editor, .style-editor { width: 98%; }
 .roles { width: 24%; float: left; min-height: 300px; }
 .mc-settings li { display: inline; padding: 3px; margin: 3px; }
-.jd-my-calendar .postbox { margin: 10px 10px 0 0;	}
+.jd-my-calendar .postbox { margin: 10px 10px 0 0;}
+.jd-my-calendar .postbox .inside { overflow: visible!important; } /* some plugins change this, but I need it at WP default. */
 .jd-my-calendar .meta-box-sortables { min-height: 0; }
 .jd-my-calendar textarea { width: 100%; }
 .mc-clear { clear: both; }
