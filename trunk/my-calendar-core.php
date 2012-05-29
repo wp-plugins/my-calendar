@@ -108,7 +108,8 @@ function my_calendar_wp_head() {
 			$type = 'background';
 		}
 		if ( get_option( 'mc_apply_color' )  == 'font' || get_option( 'mc_apply_color' ) == 'background' ) {
-		$category_styles .= "\n.mc-main .$class .event-title { $type: $color; }";
+		// always an anchor as of 1.11.0
+		$category_styles .= "\n.mc-main .$class .event-title a { $type: $color; }";
 		}
 	}
 	$add = '';
@@ -317,6 +318,26 @@ function csv_to_array($csv, $delimiter = ',', $enclosure = '"', $escape = '\\', 
     return $r;
 }
 
+function mc_if_needs_permissions() {
+	// this prevents administrators from losing privileges to edit my calendar
+	$role = get_role( 'administrator' );
+	$caps = $role->capabilities;
+	if ( isset($caps['mc_add_events']) ) {
+		return; 
+	} else {
+		$role->add_cap( 'mc_add_events' );
+		$role->add_cap( 'mc_approve_events' );
+		$role->add_cap( 'mc_manage_events' );
+		$role->add_cap( 'mc_edit_cats' );
+		$role->add_cap( 'mc_edit_styles' );
+		$role->add_cap( 'mc_edit_behaviors' );
+		$role->add_cap( 'mc_edit_templates' );
+		$role->add_cap( 'mc_edit_settings' );
+		$role->add_cap( 'mc_edit_locations' );
+		$role->add_cap( 'mc_view_help' );	
+	}
+}
+
 function mc_add_roles( $add=false, $manage=false, $approve=false ) {
 	// grant administrator role all event permissions
 	$role = get_role( 'administrator' );
@@ -412,6 +433,7 @@ function mc_add_roles( $add=false, $manage=false, $approve=false ) {
 function check_my_calendar() {
 	global $wpdb, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs,$mc_version,$grid_template,$list_template,$mini_template,$single_template, $defaults;
 	$mcdb = $wpdb;
+	mc_if_needs_permissions();
 	$current_version = ( get_option('mc_version') == '') ? get_option('my_calendar_version') : get_option('mc_version');
 	// If current version matches, don't bother running this.
 	if ($current_version == $mc_version) {
@@ -487,7 +509,7 @@ function check_my_calendar() {
 				$add = get_option('mc_can_manage_events'); // yes, this is correct.
 				$manage = get_option('mc_event_edit_perms');
 				$approve = get_option('mc_event_approve_perms');
-				mc_add_roles( $add, $manage, $approve );				
+				mc_add_roles( $add, $manage, $approve );		
 				delete_option( 'mc_can_manage_events' );
 				delete_option( 'mc_event_edit_perms' );
 				delete_option( 'mc_event_approve_perms' );			

@@ -229,7 +229,8 @@ if ( isset( $_POST['event_action'] ) ) {
     if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
 	$proceed = false;
 	global $mc_output;
-	if ( is_array( $_POST['event_begin'] ) ) {
+	$count = 0;
+	if ( isset($_POST['event_begin']) && is_array( $_POST['event_begin'] ) ) {
 		$count = count($_POST['event_begin']);
 	} else {
 		$response = my_calendar_save($action,$mc_output,(int) $_POST['event_id']);
@@ -516,7 +517,18 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 		<?php if ($mc_input['event_desc'] == 'on' || $mc_input_administrator ) { ?>
 		<div class="event_description">
 		<?php if ( !empty($data) ) { $description = $data->event_desc; } else { $description = ''; } ?>
-		<label for="content"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><?php if ( $mc_input['event_use_editor'] == 'on' ) {  if ( version_compare( get_bloginfo( 'version' ) , '3.3' , '<' ) ) { wp_editor( stripslashes($description), 'content', array( 'textarea_rows'=>10 ) ); } else { the_editor( stripslashes($description) ); } }  else { ?><textarea id="content" name="content" class="event_desc" rows="5" cols="80"><?php echo stripslashes(esc_attr($description)); ?></textarea><?php if ( $mc_input['event_use_editor'] == 'on' ) { ?></div><?php } } ?>
+		<label for="content"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br />
+		<?php 
+		if ( $mc_input['event_use_editor'] == 'on' ) {  
+			if ( version_compare( get_bloginfo( 'version' ) , '3.3' , '>=' ) ) {
+				wp_editor( stripslashes($description), 'content', array( 'textarea_rows'=>10 ) ); 
+			} else { 
+				the_editor( stripslashes($description) ); 
+			} 
+		} else {
+			?><textarea id="content" name="content" class="event_desc" rows="5" cols="80"><?php echo stripslashes(esc_attr($description)); ?></textarea>
+			<?php if ( $mc_input['event_use_editor'] == 'on' ) { ?></div><?php } 
+		} ?>
 		</div>
 		<?php } ?>
 		<?php

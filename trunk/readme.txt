@@ -77,6 +77,12 @@ New or updated translations are always appreciated. The translation source files
 
 == Changelog ==
 
+= 1.11.2 =
+
+* Bug fix: Called wp_editor on versions below 3.3
+* Bug fix: assorted PHP notices cleaned up.
+* 
+
 = 1.11.1 =
 
 * HTML validation issue fixed in calendar output.

@@ -11,12 +11,13 @@ function jd_draw_template($array,$template,$type='list') {
 			}
 			preg_match_all('/{'.$key.'\b(?>\s+(?:before="([^"]*)"|after="([^"]*)"|format="([^"]*)")|[^\s]+|\s+){0,2}}/', $template, $matches, PREG_PATTERN_ORDER );
 			if ( $matches ) {
-				$before = $matches[1][0];
-				$after = $matches[2][0];
-				$format = $matches[3][0];
+				$before = @$matches[1][0];
+				$after = @$matches[2][0];
+				$format = @$matches[3][0];
 				if ( $format != '' ) { $value = date( stripslashes($format),strtotime(stripslashes($value)) ); }
 				$value = ( $value == '' )?'':$before.$value.$after;
-				$template = str_replace( $matches[0][0], $value, $template );
+				$search = @$matches[0][0];
+				$template = str_replace( $search, $value, $template );
 				// secondary search for RSS output
 				$rss_search = "{rss_$key}";
 				$value = utf8_encode(htmlentities( $value,ENT_COMPAT,get_bloginfo('charset') ) );

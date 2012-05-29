@@ -297,7 +297,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 		} else {
 			$events = mc_get_all_events($category);	 // grab all events within reasonable proximity
 		}
-		$output .= mc_produce_upcoming_events( $events,$template,$before,$after,'list',$order,$skip,$show_today,$hash );
+		$output .= mc_produce_upcoming_events( $events,$template,$before,$after,'list',$order,$skip,$show_today );
 	}
 	if ($output != '') {
 		$output = $header.$output.$footer;
@@ -463,7 +463,7 @@ function mc_produce_upcoming_events($e,$template,$before=0,$after=10,$type='list
 function my_calendar_todays_events($category='default',$template='default',$substitute='') {
 	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
 	$todays_cache = ($caching)? get_transient('mc_todays_cache') :'';
-if ( $caching && is_array($todays_cache) && $todays_cache[$category] ) { return $todays_cache[$category]; }
+if ( $caching && is_array($todays_cache) && @$todays_cache[$category] ) { return @$todays_cache[$category]; }
 	global $wpdb, $default_template;
 	$mcdb = $wpdb;
 	

@@ -986,7 +986,7 @@ msgstr "Administrator"
 #: my-calendar-settings.php:310
 #@ my-calendar
 msgid "Previous Events"
-msgstr "Vorherige Events"
+msgstr "Frühere Termine"
 
 #: my-calendar-settings.php:313
 #@ my-calendar
@@ -1330,27 +1330,27 @@ msgstr "<abbr title=\"Sonntag\">So</abbr>"
 #: my-calendar-output.php:493
 #@ my-calendar
 msgid "<abbr title=\"Monday\">M</abbr>"
-msgstr "<abbr title=\"Montag\">M</abbr>"
+msgstr "<abbr title=\"Montag\">Mo</abbr>"
 
 #: my-calendar-output.php:494
 #@ my-calendar
 msgid "<abbr title=\"Tuesday\">T</abbr>"
-msgstr "<abbr title=\"Dienstag\">M</abbr>"
+msgstr "<abbr title=\"Dienstag\">Di</abbr>"
 
 #: my-calendar-output.php:495
 #@ my-calendar
 msgid "<abbr title=\"Wednesday\">W</abbr>"
-msgstr "<abbr title=\"Mittwoch\">M</abbr>"
+msgstr "<abbr title=\"Mittwoch\">Mi</abbr>"
 
 #: my-calendar-output.php:496
 #@ my-calendar
 msgid "<abbr title=\"Thursday\">T</abbr>"
-msgstr "<abbr title=\"Donnerstag\">D</abbr>"
+msgstr "<abbr title=\"Donnerstag\">Do</abbr>"
 
 #: my-calendar-output.php:497
 #@ my-calendar
 msgid "<abbr title=\"Friday\">F</abbr>"
-msgstr "<abbr title=\"Freitag\">F</abbr>"
+msgstr "<abbr title=\"Freitag\">Fr</abbr>"
 
 #: my-calendar-output.php:498
 #@ my-calendar
@@ -2741,13 +2741,13 @@ msgstr ""
 #, php-format
 #@ my-calendar
 msgid " and %d other event"
-msgstr ""
+msgstr " und %d weiterer Termin"
 
 #: my-calendar-output.php:857
 #, php-format
 #@ my-calendar
 msgid " and %d other events"
-msgstr ""
+msgstr " und %d weitere Termine"
 
 #: my-calendar-output.php:1043
 #@ my-calendar
@@ -2803,7 +2803,7 @@ msgstr ""
 #: my-calendar-settings.php:310
 #@ my-calendar
 msgid "Previous events link"
-msgstr ""
+msgstr "Frühere Termine Link"
 
 #: my-calendar-settings.php:313
 #@ my-calendar
@@ -3267,7 +3267,7 @@ msgstr ""
 #: my-calendar-templating.php:163
 #@ my-calendar
 msgid "Link to Google Map to the event, if address information is available."
-msgstr ""
+msgstr "Link zur Google Map des Termins, wenn die Adress-Informationen vorhanden sind"
 
 #: my-calendar-templating.php:169
 #@ my-calendar
@@ -3435,7 +3435,7 @@ msgstr ""
 #: my-calendar-widgets.php:579
 #@ my-calendar
 msgid "Show Next/Previous Navigation:"
-msgstr ""
+msgstr "Zurück/Weiter Navigation zeigen"
 
 #: my-calendar-widgets.php:585
 #@ my-calendar
@@ -3626,7 +3626,7 @@ msgstr ""
 #: my-calendar-output.php:993
 #@ my-calendar
 msgid "&laquo; Previous events"
-msgstr ""
+msgstr "&laquo; Frühere Termine"
 
 #: my-calendar-settings.php:78
 #@ my-calendar
