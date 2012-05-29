@@ -306,7 +306,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 		<?php if ($mc_input['event_desc'] == 'on' || $mc_input_administrator ) { ?>
 		<div id="group_description">
 		<?php if ( !empty($data) ) { $description = $data->event_desc; } else { $description = ''; } ?>
-		<label for="content"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><?php if ( $mc_input['event_use_editor'] == 'on' ) {  if ( version_compare( get_bloginfo( 'version' ) , '3.3' , '<' ) ) { wp_editor( stripslashes($description), 'content', array( 'textarea_rows'=>10 ) ); } else { the_editor( stripslashes($description) ); } }  else { ?><textarea id="content" name="content" class="event_desc" rows="5" cols="80"><?php echo stripslashes(esc_attr($description)); ?></textarea><?php if ( $mc_input['event_use_editor'] == 'on' ) { ?></div><?php } } ?>
+		<label for="content"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><?php if ( $mc_input['event_use_editor'] == 'on' ) {  if ( version_compare( get_bloginfo( 'version' ) , '3.3' , '>=' ) ) { wp_editor( stripslashes($description), 'content', array( 'textarea_rows'=>10 ) ); } else { the_editor( stripslashes($description) ); } }  else { ?><textarea id="content" name="content" class="event_desc" rows="5" cols="80"><?php echo stripslashes(esc_attr($description)); ?></textarea><?php if ( $mc_input['event_use_editor'] == 'on' ) { ?></div><?php } } ?>
 		</div>		
 		<?php } ?>
 		<?php 

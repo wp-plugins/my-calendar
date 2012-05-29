@@ -920,6 +920,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 function my_category_key( $showkey, $category ) {
 global $wpdb,$wp_plugin_url;
 	$mcdb = $wpdb;
+	$category_key = '';
 if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$cat_details = '';
 		if ($showkey == 'no') { 

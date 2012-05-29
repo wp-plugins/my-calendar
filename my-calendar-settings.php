@@ -122,7 +122,7 @@ function edit_my_calendar_config() {
 		$mc_title_template = $_POST['mc_title_template'];
 		$mc_details_label = $_POST['mc_details_label'];
 		$mc_link_label = $_POST['mc_link_label'];
-		if ( !empty($_POST['mc_open_day_uri']) ) { $mc_open_day_uri = $_POST['mc_open_day_uri']; }
+		$mc_open_day_uri = ( !empty($_POST['mc_open_day_uri']) )?$_POST['mc_open_day_uri']:'';
 		$templates = get_option('mc_templates');
 		$templates['title'] = $mc_title_template;
 		$templates['label'] = $mc_details_label;
@@ -145,7 +145,7 @@ function edit_my_calendar_config() {
 		update_option('mc_time_format',stripslashes($_POST['mc_time_format']));
 		update_option('mc_show_map',( !empty($_POST['mc_show_map']) && $_POST['mc_show_map']=='on')?'true':'false');
 		update_option('mc_show_address',( !empty($_POST['mc_show_address']) && $_POST['mc_show_address']=='on')?'true':'false'); 
-		update_option('mc_hide_icons',( !empty($_POST['mc_hide_icons']) && $_POST['mc_hide_icons']=='on')?'true':'false');
+		update_option('mc_hide_icons',( !empty($_POST['mc_hide_icons']) && $_POST['mc_hide_icons']=='on')?'false':'true');
 		update_option('mc_event_link_expires',( !empty($_POST['mc_event_link_expires']) && $_POST['mc_event_link_expires']=='on')?'true':'false');
 		update_option('mc_apply_color',$_POST['mc_apply_color']);
 		update_option('mc_event_registration',( !empty($_POST['mc_event_registration']) && $_POST['mc_event_registration']=='on')?'true':'false');
