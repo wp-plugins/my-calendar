@@ -4,7 +4,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager
 Requires at least: 2.9.2
-Tested up to: 3.4-beta4
+Tested up to: 3.4.1
 Stable tag: trunk
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
@@ -15,25 +15,37 @@ My Calendar provides event management and numerous methods to display your event
 
 Basic Features:
 
+* 	[User's Guide available for purchase](http://www.joedolson.com/articles/my-calendar/users-guide/) for assistance in set up and use.
 *	Standard calendar grid or list views of events
 * 	Show events in monthly, weekly, or daily view.
-* 	Mini-calendar view for compact displays (as widget or as shortcode)
-*	Widget to show today's events
-*	Widget to show upcoming or past events 
-*	Template tags to control the HTML and information produced in most output areas.
-*	Calendar can be limited to a single category, all categories, or a selection of categories
-* 	Calendar can be limited to events in specific locations
+* 	Mini-calendar view for compact displays (widget or as shortcode)
+*	Widget with today's events
+*	Widget with upcoming or past events 
+*	Custom templates for event layout
+*	Limit by category/categories
+* 	Limit by location
 *	Disable default CSS and default JavaScript or display only on specific Pages/Posts
 *	Editable CSS styles and JavaScript behaviors
-*	Recurring events can be scheduled daily, weekly, on weekdays only, biweekly, monthly by date, monthly by day/week and annually.
-*	Individual occurrences of recurring events can be modified individually
-* 	Events can be configured to be added by any level of user; directly to calendar or reserved for administrative approval
-* 	Store and display the following information for each event: title, description, alternate description, event category, URL, start date, start time, end date, end time, registration status (open, closed or irrelevant), event location.
+*	Schedule a wide variety of recurring events.
+*	Individual occurrences of recurring events can be edited individually
+* 	Access to most aspects of My Calendar can be restricted by role. (Adding events, editing events, editing styles, changing settings, etc.)
+* 	Choose which of the following fields you want to enter and display for each event:
+	* title, 
+	* description, 
+	* event image,
+	* alternate description, 
+	* event host,
+	* event category, 
+	* URL, 
+	* registration status (open, closed or irrelevant), 
+	* event location
 * 	Email notification to administrator when events are scheduled or reserved
 *	Location Manager for storing frequently used venues
+*   Fetch events from a remote MySQL database. (Sharing events in a network of sites.)
 *   Import method from Kieran O'Shea's Calendar plugin
-* 	Integrated Help file to guide in use of shortcodes and template tags
-* 	[User's Guide available for purchase](http://www.joedolson.com/articles/my-calendar/users-guide/) with extensive assistance in set up and use.
+* 	Integrated Help page to guide in use of shortcodes and template tags
+
+The [User's Guide](http://www.joedolson.com/articles/my-calendar/users-guide/) provides 70 pages of troubleshooting, customization, and setup information. 
 
 This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/) in April 2010. You can import any previous scheduled events from Kieran's calendar into My Calendar.
 
@@ -77,11 +89,20 @@ New or updated translations are always appreciated. The translation source files
 
 == Changelog ==
 
+= 1.11.3 =
+
+* Fatal error in PHP 5.4+ https://bugs.php.net/bug.php?id=54657
+* Bug fix: {date} and {time} template tags not rendered in details link when run in a template.
+* Bug fix: upgrade database button placement off-screen 
+* Bug fix: layout on stylesheet editor caused usability problems
+* Bug fix: added line break in iCal output.
+* Change: added alt attribute to category icons in appropriate contexts.
+* [My Calendar 2.0 beta](http://downloads.wordpress.org/plugin/my-calendar.2.0.0.zip) added to subversion repository. Here there be bugs. 
+
 = 1.11.2 =
 
 * Bug fix: Called wp_editor on versions below 3.3
 * Bug fix: assorted PHP notices cleaned up.
-* 
 
 = 1.11.1 =
 
@@ -818,5 +839,5 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 10. Template editing
 
 == Upgrade Notice ==
-
+- Version 1.11.3: Minor bug fixes.
 - Version 1.11.0: Major revision to permissions. Significant template customization options added. Various other feature improvements.
