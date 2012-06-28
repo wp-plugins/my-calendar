@@ -1102,7 +1102,7 @@ function mc_event_is_grouped( $group_id ) {
 	}
 }
 
-function mc_check_data($action,$_POST, $i) {
+function mc_check_data($action,$post, $i) {
 global $wpdb, $current_user, $users_entries;
 $mcdb = $wpdb;
 
@@ -1116,33 +1116,33 @@ $recurring_ok = 0;
 $submit=array();
 
 if ( get_magic_quotes_gpc() ) {
-    $_POST = array_map( 'stripslashes_deep', $_POST );
+    $post = array_map( 'stripslashes_deep', $post );
 }
 
-if (!wp_verify_nonce($_POST['event_nonce_name'],'event_nonce')) {
+if (!wp_verify_nonce($post['event_nonce_name'],'event_nonce')) {
 	return;
 }
 
 $errors = "";
 if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
-	$title = !empty($_POST['event_title']) ? trim($_POST['event_title']) : '';
-	$desc = !empty($_POST['content']) ? trim($_POST['content']) : '';
-	$short = !empty($_POST['event_short']) ? trim($_POST['event_short']) : '';
-	$recur = !empty($_POST['event_recur']) ? trim($_POST['event_recur']) : '';
+	$title = !empty($post['event_title']) ? trim($post['event_title']) : '';
+	$desc = !empty($post['content']) ? trim($post['content']) : '';
+	$short = !empty($post['event_short']) ? trim($post['event_short']) : '';
+	$recur = !empty($post['event_recur']) ? trim($post['event_recur']) : '';
 	// if this is a all weekdays event, and it's been scheduled to start on a weekend, the math gets nasty. 
 	// ...AND there's no reason to allow it, since weekday events will NEVER happen on the weekend.
-	if ( $recur == 'E' && ( date( 'w', strtotime( $_POST['event_begin'][$i] ) ) == 0 || date( 'w', strtotime( $_POST['event_begin'][$i] ) ) == 6 ) ) {
-		if ( date( 'w', strtotime( $_POST['event_begin'][$i] ) ) == 0 ) {
-			$newbegin = my_calendar_add_date( $_POST['event_begin'][$i], 1 );
-			if ( !empty( $_POST['event_end'][$i] ) ) {
-				$newend = my_calendar_add_date( $_POST['event_end'][$i], 1 );
+	if ( $recur == 'E' && ( date( 'w', strtotime( $post['event_begin'][$i] ) ) == 0 || date( 'w', strtotime( $post['event_begin'][$i] ) ) == 6 ) ) {
+		if ( date( 'w', strtotime( $post['event_begin'][$i] ) ) == 0 ) {
+			$newbegin = my_calendar_add_date( $post['event_begin'][$i], 1 );
+			if ( !empty( $post['event_end'][$i] ) ) {
+				$newend = my_calendar_add_date( $post['event_end'][$i], 1 );
 			} else {
 				$newend = $newbegin;
 			}
-		} else if ( date( 'w', strtotime( $_POST['event_begin'][$i] ) ) == 6 ) {
-			$newbegin = my_calendar_add_date( $_POST['event_begin'][$i], 2 );
-			if ( !empty( $_POST['event_end'][$i] ) ) {
-				$newend = my_calendar_add_date( $_POST['event_end'][$i], 2 );
+		} else if ( date( 'w', strtotime( $post['event_begin'][$i] ) ) == 6 ) {
+			$newbegin = my_calendar_add_date( $post['event_begin'][$i], 2 );
+			if ( !empty( $post['event_end'][$i] ) ) {
+				$newend = my_calendar_add_date( $post['event_end'][$i], 2 );
 			} else {
 				$newend = $newbegin;
 			}		
@@ -1150,29 +1150,29 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 		$begin = $newbegin;
 		$end = $newend;
 	} else {
-		$begin = !empty($_POST['event_begin'][$i]) ? trim($_POST['event_begin'][$i]) : '';
-		$end = !empty($_POST['event_end'][$i]) ? trim($_POST['event_end'][$i]) : $begin;
+		$begin = !empty($post['event_begin'][$i]) ? trim($post['event_begin'][$i]) : '';
+		$end = !empty($post['event_end'][$i]) ? trim($post['event_end'][$i]) : $begin;
 	}
-	$time = !empty($_POST['event_time'][$i]) ? trim($_POST['event_time'][$i]) : '';
-	$endtime = !empty($_POST['event_endtime'][$i]) ? trim($_POST['event_endtime'][$i]) : '';
-	$repeats = !empty($_POST['event_repeats']) ? trim($_POST['event_repeats']) : 0;
-	$host = !empty($_POST['event_host']) ? $_POST['event_host'] : $current_user->ID;	
-	$category = !empty($_POST['event_category']) ? $_POST['event_category'] : '';
-    $linky = !empty($_POST['event_link']) ? trim($_POST['event_link']) : '';
-    $expires = !empty($_POST['event_link_expires']) ? $_POST['event_link_expires'] : '0';
-    $approved = !empty($_POST['event_approved']) ? $_POST['event_approved'] : '0';
-	$location_preset = !empty($_POST['location_preset']) ? $_POST['location_preset'] : '';
-    $event_author = !empty($_POST['event_author']) ? $_POST['event_author'] : $current_user->ID;
-	$event_open = (isset($_POST['event_open']) && $_POST['event_open']!==0) ? $_POST['event_open'] : '2';
-	$event_group = !empty($_POST['event_group']) ? 1 : 0;
-	$event_flagged = ( !isset($_POST['event_flagged']) || $_POST['event_flagged']===0 )?0:1;
-	$event_image = esc_url_raw( $_POST['event_image'] );
-	$event_fifth_week = !empty($_POST['event_fifth_week']) ? 1 : 0;
-	$event_holiday = !empty($_POST['event_holiday']) ? 1 : 0;
+	$time = !empty($post['event_time'][$i]) ? trim($post['event_time'][$i]) : '';
+	$endtime = !empty($post['event_endtime'][$i]) ? trim($post['event_endtime'][$i]) : '';
+	$repeats = !empty($post['event_repeats']) ? trim($post['event_repeats']) : 0;
+	$host = !empty($post['event_host']) ? $post['event_host'] : $current_user->ID;	
+	$category = !empty($post['event_category']) ? $post['event_category'] : '';
+    $linky = !empty($post['event_link']) ? trim($post['event_link']) : '';
+    $expires = !empty($post['event_link_expires']) ? $post['event_link_expires'] : '0';
+    $approved = !empty($post['event_approved']) ? $post['event_approved'] : '0';
+	$location_preset = !empty($post['location_preset']) ? $post['location_preset'] : '';
+    $event_author = !empty($post['event_author']) ? $post['event_author'] : $current_user->ID;
+	$event_open = (isset($post['event_open']) && $post['event_open']!==0) ? $post['event_open'] : '2';
+	$event_group = !empty($post['event_group']) ? 1 : 0;
+	$event_flagged = ( !isset($post['event_flagged']) || $post['event_flagged']===0 )?0:1;
+	$event_image = esc_url_raw( $post['event_image'] );
+	$event_fifth_week = !empty($post['event_fifth_week']) ? 1 : 0;
+	$event_holiday = !empty($post['event_holiday']) ? 1 : 0;
 	// get group id: if multiple events submitted, auto group OR if event being submitted is already part of a group; otherwise zero.
-		$group_id_submitted = (int) $_POST['event_group_id'];
-	$event_group_id = ( ( is_array($_POST['event_begin']) && count($_POST['event_begin'])>1 ) || mc_event_is_grouped( $group_id_submitted) )?$group_id_submitted:0;
-	$event_span = (!empty($_POST['event_span']) && $event_group_id != 0 ) ? 1 : 0;
+		$group_id_submitted = (int) $post['event_group_id'];
+	$event_group_id = ( ( is_array($post['event_begin']) && count($post['event_begin'])>1 ) || mc_event_is_grouped( $group_id_submitted) )?$group_id_submitted:0;
+	$event_span = (!empty($post['event_span']) && $event_group_id != 0 ) ? 1 : 0;
 	
 	// set location
 		if ($location_preset != 'none') {
@@ -1192,19 +1192,19 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			$event_zoom = $location->location_zoom;
 			$event_phone = $location->location_phone;
 		} else {
-			$event_label = !empty($_POST['event_label']) ? $_POST['event_label'] : '';
-			$event_street = !empty($_POST['event_street']) ? $_POST['event_street'] : '';
-			$event_street2 = !empty($_POST['event_street2']) ? $_POST['event_street2'] : '';
-			$event_city = !empty($_POST['event_city']) ? $_POST['event_city'] : '';
-			$event_state = !empty($_POST['event_state']) ? $_POST['event_state'] : '';
-			$event_postcode = !empty($_POST['event_postcode']) ? $_POST['event_postcode'] : '';
-			$event_region = !empty($_POST['event_region']) ? $_POST['event_region'] : '';
-			$event_country = !empty($_POST['event_country']) ? $_POST['event_country'] : '';
-			$event_url = !empty($_POST['event_url']) ? $_POST['event_url'] : '';			
-			$event_longitude = !empty($_POST['event_longitude']) ? $_POST['event_longitude'] : '';	
-			$event_latitude = !empty($_POST['event_latitude']) ? $_POST['event_latitude'] : '';	
-			$event_zoom = !empty($_POST['event_zoom']) ? $_POST['event_zoom'] : '';	
-			$event_phone = !empty($_POST['event_phone'])? $_POST['event_phone'] : '';
+			$event_label = !empty($post['event_label']) ? $post['event_label'] : '';
+			$event_street = !empty($post['event_street']) ? $post['event_street'] : '';
+			$event_street2 = !empty($post['event_street2']) ? $post['event_street2'] : '';
+			$event_city = !empty($post['event_city']) ? $post['event_city'] : '';
+			$event_state = !empty($post['event_state']) ? $post['event_state'] : '';
+			$event_postcode = !empty($post['event_postcode']) ? $post['event_postcode'] : '';
+			$event_region = !empty($post['event_region']) ? $post['event_region'] : '';
+			$event_country = !empty($post['event_country']) ? $post['event_country'] : '';
+			$event_url = !empty($post['event_url']) ? $post['event_url'] : '';			
+			$event_longitude = !empty($post['event_longitude']) ? $post['event_longitude'] : '';	
+			$event_latitude = !empty($post['event_latitude']) ? $post['event_latitude'] : '';	
+			$event_zoom = !empty($post['event_zoom']) ? $post['event_zoom'] : '';	
+			$event_phone = !empty($post['event_phone'])? $post['event_phone'] : '';
 	    }
 	// Perform some validation on the submitted dates - this checks for valid years and months
 	$date_format_one = '/^([0-9]{4})-([0][1-9])-([0-3][0-9])$/';

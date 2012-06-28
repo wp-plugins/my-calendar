@@ -32,7 +32,7 @@ PRODID:-//Accessible Web Design//My Calendar//http://www.mywpcal.com//v'.$mc_ver
 				$event =& $events[$key];
 				if ( is_object($event) ) {
 					$array = event_as_array($event);
-					$output .= jd_draw_template($array,$template,'ical');
+					$output .= "\n".jd_draw_template($array,$template,'ical');
 				}
 			}
 		}

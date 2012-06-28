@@ -131,7 +131,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $templa
 	    if ($event->category_icon != "") {
 			$path = (is_custom_icon())?$wp_plugin_url.'/my-calendar-custom/':plugins_url('icons',__FILE__).'/';
 			$hex = (strpos($event->category_color,'#') !== 0)?'#':'';
-			$image = '<img src="'.$path.$event->category_icon.'" alt="" class="category-icon" style="background:'.$hex.$event->category_color.';" />';
+			$image = '<img src="'.$path.$event->category_icon.'" alt="'.__('Category','my-calendar').': '.esc_attr($event->category_name).'" class="category-icon" style="background:'.$hex.$event->category_color.';" />';
 		} else {
 			$image = "";
 		}
@@ -458,7 +458,7 @@ echo '
 
 // Actually do the printing of the calendar
 function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle,$time='month',$ltype='',$lvalue='',$id='jd-calendar',$template='',$content='') {
-    global $wpdb, $wp_plugin_url;
+	global $wpdb, $wp_plugin_url;
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$my_calendar_body = '';

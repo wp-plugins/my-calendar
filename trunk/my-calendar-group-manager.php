@@ -513,7 +513,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 </div>
 <?php }
 
-function mc_check_group_data( $action,$_POST ) {
+function mc_check_group_data( $action,$post ) {
 	global $wpdb, $current_user, $users_entries;
 	$mcdb = $wpdb;
 
@@ -522,27 +522,27 @@ function mc_check_group_data( $action,$_POST ) {
 	$submit=array();
 
 	if ( get_magic_quotes_gpc() ) {
-		$_POST = array_map( 'stripslashes_deep', $_POST );
+		$post = array_map( 'stripslashes_deep', $post );
 	}
 
-	if (!wp_verify_nonce($_POST['event_nonce_name'],'event_nonce')) {
+	if (!wp_verify_nonce($post['event_nonce_name'],'event_nonce')) {
 		return;
 	}
 
 $errors = "";
 if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
-	$title = !empty($_POST['event_title']) ? trim($_POST['event_title']) : '';
-	$desc = !empty($_POST['content']) ? trim($_POST['content']) : '';
-	$short = !empty($_POST['event_short']) ? trim($_POST['event_short']) : '';
-	$repeats = !empty($_POST['event_repeats']) ? trim($_POST['event_repeats']) : 0;
-	$host = !empty($_POST['event_host']) ? $_POST['event_host'] : $current_user->ID;
-	$category = !empty($_POST['event_category']) ? $_POST['event_category'] : '';
-    $linky = !empty($_POST['event_link']) ? trim($_POST['event_link']) : '';
-    $expires = !empty($_POST['event_link_expires']) ? $_POST['event_link_expires'] : '0';
-	$location_preset = !empty($_POST['location_preset']) ? $_POST['location_preset'] : '';
-	$event_open = !empty($_POST['event_open']) ? $_POST['event_open'] : '2';
-	$event_image = esc_url_raw( $_POST['event_image'] );
-	$event_span = !empty($_POST['event_span']) ? 1 : 0;
+	$title = !empty($post['event_title']) ? trim($post['event_title']) : '';
+	$desc = !empty($post['content']) ? trim($post['content']) : '';
+	$short = !empty($post['event_short']) ? trim($post['event_short']) : '';
+	$repeats = !empty($post['event_repeats']) ? trim($post['event_repeats']) : 0;
+	$host = !empty($post['event_host']) ? $post['event_host'] : $current_user->ID;
+	$category = !empty($post['event_category']) ? $post['event_category'] : '';
+    $linky = !empty($post['event_link']) ? trim($post['event_link']) : '';
+    $expires = !empty($post['event_link_expires']) ? $post['event_link_expires'] : '0';
+	$location_preset = !empty($post['location_preset']) ? $post['location_preset'] : '';
+	$event_open = !empty($post['event_open']) ? $post['event_open'] : '2';
+	$event_image = esc_url_raw( $post['event_image'] );
+	$event_span = !empty($post['event_span']) ? 1 : 0;
 	// set location
 		if ($location_preset != 'none') {
 			$sql = "SELECT * FROM " . my_calendar_locations_table() . " WHERE location_id = $location_preset";
@@ -561,19 +561,19 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			$event_zoom = $location->location_zoom;
 			$event_phone = $location->location_phone;
 		} else {
-			$event_label = !empty($_POST['event_label']) ? $_POST['event_label'] : '';
-			$event_street = !empty($_POST['event_street']) ? $_POST['event_street'] : '';
-			$event_street2 = !empty($_POST['event_street2']) ? $_POST['event_street2'] : '';
-			$event_city = !empty($_POST['event_city']) ? $_POST['event_city'] : '';
-			$event_state = !empty($_POST['event_state']) ? $_POST['event_state'] : '';
-			$event_postcode = !empty($_POST['event_postcode']) ? $_POST['event_postcode'] : '';
-			$event_region = !empty($_POST['event_region']) ? $_POST['event_region'] : '';
-			$event_country = !empty($_POST['event_country']) ? $_POST['event_country'] : '';
-			$event_url = !empty($_POST['event_url']) ? $_POST['event_url'] : '';			
-			$event_longitude = !empty($_POST['event_longitude']) ? $_POST['event_longitude'] : '';	
-			$event_latitude = !empty($_POST['event_latitude']) ? $_POST['event_latitude'] : '';	
-			$event_zoom = !empty($_POST['event_zoom']) ? $_POST['event_zoom'] : '';	
-			$event_phone = !empty($_POST['event_phone']) ? $_POST['event_phone'] : '';
+			$event_label = !empty($post['event_label']) ? $post['event_label'] : '';
+			$event_street = !empty($post['event_street']) ? $post['event_street'] : '';
+			$event_street2 = !empty($post['event_street2']) ? $post['event_street2'] : '';
+			$event_city = !empty($post['event_city']) ? $post['event_city'] : '';
+			$event_state = !empty($post['event_state']) ? $post['event_state'] : '';
+			$event_postcode = !empty($post['event_postcode']) ? $post['event_postcode'] : '';
+			$event_region = !empty($post['event_region']) ? $post['event_region'] : '';
+			$event_country = !empty($post['event_country']) ? $post['event_country'] : '';
+			$event_url = !empty($post['event_url']) ? $post['event_url'] : '';			
+			$event_longitude = !empty($post['event_longitude']) ? $post['event_longitude'] : '';	
+			$event_latitude = !empty($post['event_latitude']) ? $post['event_latitude'] : '';	
+			$event_zoom = !empty($post['event_zoom']) ? $post['event_zoom'] : '';	
+			$event_phone = !empty($post['event_phone']) ? $post['event_phone'] : '';
 	    }
 	
 		// We check to make sure the URL is acceptable (blank or starting with http://)                                                        

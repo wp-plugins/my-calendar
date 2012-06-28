@@ -170,7 +170,7 @@ my_calendar_check_db();
 	</p>	
 	</fieldset>
 	</form>
-	
+	<hr />
     <form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-styles"); ?>">
 	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<div><input type="hidden" value="true" name="mc_edit_style" />
@@ -186,10 +186,10 @@ my_calendar_check_db();
 		</div>";
 	}
 	?>
-	<fieldset>
+	<fieldset style="position:relative;">
     <legend><?php _e('CSS Style Options','my-calendar'); ?></legend>
 	<p>
-	<label for="mc_show_css"><?php _e('Apply CSS only on these pages (comma separated page IDs)','my-calendar'); ?></label> <input type="text" id="mc_show_css" name="mc_show_css" value="<?php echo $mc_show_css; ?>" />
+	<label for="mc_show_css"><?php _e('Apply CSS on these pages (comma separated IDs)','my-calendar'); ?></label> <input type="text" id="mc_show_css" name="mc_show_css" value="<?php echo $mc_show_css; ?>" />
 	</p> 	
 	<p>
 	<input type="checkbox" id="reset_styles" name="reset_styles" <?php if (mc_is_custom_style(get_option('mc_css_file'))) { echo "disabled='disabled'"; } ?> /> <label for="reset_styles"><?php _e('Restore My Calendar stylesheet','my-calendar'); ?></label> <input type="checkbox" id="use_styles" name="use_styles" <?php jd_cal_checkCheckbox('mc_use_styles','true'); ?> /> <label for="use_styles"><?php _e('Disable My Calendar Stylesheet','my-calendar'); ?></label>
@@ -198,7 +198,7 @@ my_calendar_check_db();
 	<label for="style"><?php _e('Edit the stylesheet for My Calendar','my-calendar'); ?></label><br /><textarea class="style-editor" id="style" name="style" rows="30" cols="80"<?php if ( get_option('mc_use_styles') == 'true' ) { echo "disabled='disabled'"; } ?>><?php echo $my_calendar_style; ?></textarea>
 	</p>	
 	<p>
-		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Changes','my-calendar'); ?>" />
+		<input type="submit" name="save" class="button-primary button-adjust" value="<?php _e('Save Changes','my-calendar'); ?>" />
 	</p>	
 	</fieldset>
   </form>

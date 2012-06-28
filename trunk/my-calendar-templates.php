@@ -210,14 +210,14 @@ function event_as_array($event,$type='html') {
 	$details['shortdesc_raw'] = stripslashes($event->event_short);
 	$details['event_open'] = $event_open;
 	$details['icon'] = $category_icon;
-	$details['icon_html'] = "<img src='$category_icon' class='mc-category-icon' alt='' />";
+	$details['icon_html'] = "<img src='$category_icon' class='mc-category-icon' alt='".__('Category','my-calendar').": ".esc_attr($event->category_name)."' />";
 	$details['color'] = $event->category_color;
 	$details['event_status'] = ( $event->event_approved == 1 )?__('Published','my-calendar'):__('Reserved','my-calendar');
 		$templates = get_option('mc_templates');
 		$details_template = ( !empty($templates['label']) )? stripcslashes($templates['label']):__('Details about','my-calendar').' {title}';
-		$tags = array( "{title}","{location}","{color}","{icon}" );
-		$replacements = array( $event->event_title, $event->event_label, $event->category_color, $event->category_icon );
-		$details_label = str_replace($tags,$replacements,$details_template );
+		$tags = array( "{title}","{location}","{color}","{icon}","{date}","{time}" );
+		$replacements = array( stripslashes($event->event_title), stripslashes($event->event_label), $event->category_color, $event->category_icon, $details['date'], $details['time'] );
+		$details_label = str_replace($tags,$replacements,$details_template );		
 		if ( $type == 'html' ) {
 			$details_link = mc_build_url( array('mc_id'=>"mc_".$dateid."_".$id), array('month','dy','yr','ltype','loc','mcat','format','feed','page_id','p'), get_option( 'mc_uri' ) );
 		} else {
