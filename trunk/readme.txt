@@ -65,7 +65,7 @@ Languages available:
 * Italian ([Sabir Musta](http://mustaphasabir.altervista.org)) - to 1.7.0
 * Brazilian Portuguese (Leonardo Kfoury) - to 1.6.0?
 
-New or updated translations are always appreciated. The translation source files are included in the download. [Codestyling Localization](http://wordpress.org/extend/plugins/codestyling-localization/) is a great plug-in for translating plug-ins!
+New or updated translations are always appreciated. Visit <a href="http://translate.joedolson.com">my translations site</a> to start getting your language into shape!
 
 == Installation ==
 
