@@ -117,6 +117,7 @@ my_calendar_check_db();
 		if ($results) {
 			$sql = "UPDATE " . my_calendar_table() . " SET event_category=1 WHERE event_category=$cat_ID";
 			$cal_results = $mcdb->query($sql);
+			mc_delete_cache();
 		}
 		if ( get_option('mc_default_category') == $cat_ID ) { 
 			update_option( 'mc_default_category',1 );
@@ -138,15 +139,14 @@ my_calendar_check_db();
 		'category_icon'=>$_POST['category_icon'],
 		'category_private'=>( (isset( $_POST['category_private'] ))?1:0 )
 		);
-		$where = array(
-		'category_id'=>(int) $_POST['category_id']
-		);	
+		$where = array( 'category_id'=>(int) $_POST['category_id'] );	
 		$append = '';
 		if ( isset($_POST['mc_default_category']) ) {
 			update_option( 'mc_default_category',(int) $_POST['category_id'] );
 			$append = __('Default category changed.','my-calendar');
 		}		
 		$results = $mcdb->update( my_calendar_categories_table(), $update, $where, $formats, '%d' );
+		mc_delete_cache();
 		if ($results) {
 			echo "<div class=\"updated\"><p><strong>".__('Category edited successfully.','my-calendar')." $append</strong></p></div>";
 		} else {

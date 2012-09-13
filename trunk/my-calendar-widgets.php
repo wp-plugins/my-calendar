@@ -11,7 +11,7 @@ function widget($args, $instance) {
 	$the_template = $instance['my_calendar_today_template'];
 	$the_substitute = $instance['my_calendar_no_events_text'];
 	$the_category = ($instance['my_calendar_today_category']=='')?'default':esc_attr($instance['my_calendar_today_category']);
-	$author = ( !isset($instance['my_calendar_today_author']) || $instance['my_calendar_today_author']=='')?'default':esc_attr($instance['my_calendar_today_author']);
+	$author = ( !isset($instance['my_calendar_today_author']) || $instance['my_calendar_today_author']=='')?'all':esc_attr($instance['my_calendar_today_author']);
 	$widget_link = (!empty($instance['my_calendar_today_linked']) && $instance['my_calendar_today_linked']=='yes')?get_option('mc_uri'):'';
 	$widget_title = empty($the_title) ? '' : $the_title;
 	$offset = (60*60*get_option('gmt_offset'));
@@ -46,7 +46,7 @@ function form($instance) {
 	<label for="<?php echo $this->get_field_id('my_calendar_today_template'); ?>"><?php _e('Template','my-calendar'); ?></label><br />
 	<textarea class="widefat" rows="8" cols="20" id="<?php echo $this->get_field_id('my_calendar_today_template'); ?>" name="<?php echo $this->get_field_name('my_calendar_today_template'); ?>"><?php echo $widget_template; ?></textarea>
 	</p>
-	<?php if ( get_option('mc_uri') == '' ) { $disabled = " disabled='disabled'"; $warning = _e('Add calendar URL to use this option.','my-calendar');  } else { ""; } ?>
+	<?php if ( get_option('mc_uri') == '' ) { $disabled = " disabled='disabled'"; $warning = _e('Add calendar URL to use this option.','my-calendar');  } else { $disabled = $warning = ""; } ?>
 	<p>
 	<label for="<?php echo $this->get_field_id('my_calendar_today_linked'); ?>"><?php _e('Link widget title to calendar:','my-calendar'); ?></label> <select<?php echo $disabled; ?> id="<?php echo $this->get_field_id('my_calendar_today_linked'); ?>" name="<?php echo $this->get_field_name('my_calendar_today_linked'); ?>">
 	<option value="no" <?php echo ($widget_linked == 'no')?'selected="selected"':''; ?>><?php _e('Not Linked','my-calendar') ?></option>
@@ -469,7 +469,7 @@ function mc_produce_upcoming_events($e,$template,$type='list',$order='asc',$skip
 }
 
 // Widget todays events
-function my_calendar_todays_events($category='default',$template='default',$substitute='',$author='default') {
+function my_calendar_todays_events($category='default',$template='default',$substitute='',$author='all') {
 	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
 	$todays_cache = ($caching)? get_transient('mc_todays_cache') :'';
 if ( $caching && is_array($todays_cache) && @$todays_cache[$category] ) { return @$todays_cache[$category]; }
