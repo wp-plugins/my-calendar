@@ -483,7 +483,8 @@ function mc_date_array( $timestamp,$period ) {
 			$from = date('Y-m-d',strtotime( "-$n days", $timestamp ) );
 				$endtime = mktime(0,0,0,date('m',$timestamp),date('t',$timestamp),date('Y',$timestamp) );
 				$last = date('N', $endtime ); $n = ( get_option('start_of_week')==1 )?7-$last:6-$last;
-			$to =  date('Y-m-d',strtotime( "+$n days", $endtime ) );	
+			if ( $n == '-1' && date('N',$endtime ) == '7' ) { $n = 6; }
+			$to =  date('Y-m-d',strtotime( "+$n days", $endtime ) );
 			return array( 'from'=>$from,'to'=>$to );
 		break;
 		case "week":
@@ -657,7 +658,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 
 		$from = $this_dates['from'];
 		$to = $this_dates['to'];
-		//echo "<pre>$from, $to ($c_month,$c_day,$c_year)</pre>";
+		//echo "<pre>$num $from, $to ($c_month,$c_day,$c_year)</pre>";
 		$events = my_calendar_grab_events( $from, $to, $category, $ltype, $lvalue,'calendar',$author );
 		// get events into an easily parseable set, keyed by date.
 		$event_array = array();
