@@ -21,8 +21,8 @@ function my_calendar_send_vcal( $event_id ) {
 
 function my_calendar_generate_vcal( $event_id ) {
 	global $mc_version;
-		$mc_id = (int) $_GET['mc_id'];
-		$my_calendar_body .= mc_get_event( $mc_id,'object' );
+		$mc_id = (int) str_replace( 'mc_','',$_GET['vcal']);
+		$event = mc_get_event( $mc_id,'object' );
 		// need to modify date values to match real values using date above
 	$array = event_as_array($event, 'ical' );
 

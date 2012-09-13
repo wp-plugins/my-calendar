@@ -89,7 +89,14 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
-= 2.0 =
+= 2.0.1 =
+
+* Bug fix: Error in default settings for event titles.
+* Bug fix: Single Event iCal export broken
+* Bug fix: Today's Events shortcode broken if author not specified
+* Change: Deleting or updating categories now refreshes the cache.
+
+= 2.0.0 =
 
 * Completely re-written database model for events.
 * Added: pagination on event manager list of events.

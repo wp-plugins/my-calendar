@@ -369,7 +369,7 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option( 'mc_location_control','' );
 	add_option('mc_date_format',get_option('date_format') );
 	add_option('mc_templates', array(
-		'title'=>'{details}',
+		'title'=>'{title}',
 		'link'=>'{title}',
 		'grid'=>$grid_template,
 		'list'=>$list_template,

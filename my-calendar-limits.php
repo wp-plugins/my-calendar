@@ -63,6 +63,7 @@ global $wpdb;
 
 function mc_select_author( $author, $type='event' ) {
 $author = urldecode($author);
+$key = '';
 if ( $author == '' || $author == 'all' || $author == 'default' || $author == null ) { return; }
 global $wpdb;
 	$mcdb = $wpdb;
