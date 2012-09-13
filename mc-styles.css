@@ -1,5 +1,9 @@
 #my-calendar legend {font-weight: 700;font-size: 1em;}
 .mcbuy {font-size: 1.4em; line-height: 1.5;}
+.mcsbuy { font-size: 1.3em; line-height: 1.5; }
+.mc-button { text-align: center; font-size: 1.4em; padding: 10px 0 0; }
+.mc-button a { padding: 3px 8px; border: 1px solid; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; background: #fff;}
+.mcsbuy img { margin-right: 10px; border: 1px solid #ccc; }
 .mcd { text-align: center; font-size: 1.2em;}
 .templating .resources {width: 250px; }
 .resources form {margin: 0!important;}	
@@ -15,7 +19,9 @@ ul.links li {float: left;margin: 0 5px 10px;font-size: .9em;}
 #my_calendar_old_styles {float: right;margin-left: 660px;}
 #toggle {height: 2em;}
 #toggle li {float: left;margin-right: 5px;}
-.spam {background: #ffa;}
+.jd-my-calendar .spam {background: #ffa;}
+.jd-my-calendar .pending { background: #eee; }
+.jd-my-calendar .pending td {color: #777;}
 .jd-my-calendar legend {position: absolute;left: -999em;}
 .jd-my-calendar fieldset fieldset legend {position: static;font-weight: 700;width: 99%;}
 .jd-my-calendar fieldset fieldset {margin: 0 0 20px 0;padding-top: 2px;}
@@ -44,6 +50,7 @@ ul.links li {float: left;margin: 0 5px 10px;font-size: .9em;}
 .mc-clear { clear: both; }
 .jd-my-calendar pre { background: #fff; padding: 5px; border: 1px solid #ddd; box-shadow: 1px 1px 2px #ddd; }
 .jd-my-calendar label span { font-size: .9em; color: #c33; }
-.jd-my-calendar #message .button-primary { position: static; }
+.jd-my-calendar #message .button-primary,.upgrade-db .button-primary  { position: static; }
 .jd-my-calendar .default { background: #fff; }
 .jd-my-calendar .button-adjust { top: 10px; right: 0; }
+.jd-my-calendar hr { width: 20%; margin: 0 auto; border: none; border-top: 1px solid #ccc;}

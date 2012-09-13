@@ -7,7 +7,7 @@ global $wpdb;
 	$select_category = '';
 	$data = ($group=='category')?'category_id':'event_category';
 	if ( isset( $_GET['mcat'] ) ) { $category = $_GET['mcat']; }
-	if ( $category == 'all' || strpos( $category, "all" ) !== false ) {
+	if ( preg_match('/^all$|^all,|,all$|,all,/i', $category) > 0 ) {
 		return '';
 	} else {
  	if ( strpos( $category, "|" ) || strpos( $category, "," ) ) {
@@ -57,6 +57,70 @@ global $wpdb;
 		}
 	}
 	return $select_category;
+	}
+}
+
+
+function mc_select_author( $author, $type='event' ) {
+$author = urldecode($author);
+if ( $author == '' || $author == 'all' || $author == 'default' || $author == null ) { return; }
+global $wpdb;
+	$mcdb = $wpdb;
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+	$select_author = '';
+	$data = 'event_author';
+	if ( isset( $_GET['mc_auth'] ) ) { $author = $_GET['mc_auth']; }
+	if ( preg_match( '/^all$|^all,|,all$|,all,/i', $author ) > 0 ) {
+		return '';
+	} else {
+ 	if ( strpos( $author, "|" ) || strpos( $author, "," ) ) {
+		if ( strpos($author, "|" ) ) {
+			$authors = explode( "|", $author );
+		} else {
+			$authors = explode( ",", $author );		
+		}
+		$numauth = count($authors);
+		$i = 1;
+		foreach ($authors as $key) {
+			if ( is_numeric($key) ) {
+				$key = (int) $key;
+				if ($i == 1) { $select_author .= ($type=='all')?" WHERE (":' ('; }				
+				$select_author .= " $data = $key";
+				if ($i < $numauth) {
+					$select_author .= " OR ";
+				} else if ($i == $numauth) {
+					$select_author .= ($type=='all')?") ":' ) AND';
+				}
+			$i++;
+			} else {
+				$key = esc_sql(trim($key));
+				$author = get_user_by( 'login', $key ); // get author by username
+				$author_id = $author->ID;
+				if ($i == 1) {	$select_author .= ($type=='all')?" WHERE (":' (';	}
+				$select_author .= " $data = $author_id";
+				if ($i < $numauth) {
+					$select_author .= " OR ";
+				} else if ($i == $numauth) {
+					$select_author .= ($type=='all')?") ":' ) AND';
+				}
+				$i++;						
+			}
+		}
+	} else {
+		if ( is_numeric( $author ) ) {
+			$select_author = ($type=='all')?" WHERE $data = $author":" event_author = $author AND";
+		} else {
+			$key = esc_sql(trim($key));
+			$author = get_user_by( 'login', $key ); // get author by username
+			if ( is_object($author) ) {
+				$author_id = $author->ID;
+				$select_author = ($type=='all')?" WHERE $data = $author_id":" $data = $author_id AND";
+			} else {
+				$select_author = '';
+			}
+		}
+	}
+	return $select_author;
 	}
 }
 

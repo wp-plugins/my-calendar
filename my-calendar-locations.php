@@ -10,8 +10,6 @@ function my_calendar_manage_locations() {
   // My Calendar must be installed and upgraded before this will work
   check_my_calendar();
 	$formats = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%d', '%s' )
-  
-  
 ?>
 <div class="wrap jd-my-calendar">
 <?php 

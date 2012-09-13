@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager
 Requires at least: 2.9.2
-Tested up to: 3.4
+Tested up to: 3.4.2
 License: GPLv2 or later
 Stable tag: trunk
 
@@ -23,6 +23,7 @@ Basic Features:
 *	Custom templates for event output
 *	Limit by category/categories
 * 	Limit by location
+* 	Limit by author
 *	Disable default CSS and default JavaScript or display only on specific Pages/Posts
 *	Editable CSS styles and JavaScript behaviors
 *	Schedule a wide variety of recurring events.
@@ -44,6 +45,7 @@ Basic Features:
 *   Import method from Kieran O'Shea's Calendar plugin
 * 	Integrated Help page to guide in use of shortcodes and template tags
 * 	[User's Guide available for purchase](http://www.joedolson.com/articles/my-calendar/users-guide/) with extensive assistance in set up and use.
+*   [Paid plug-in to add front-end event contributions](https://www.joedolson.com/articles/my-calendar/submissions/)
 
 This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/) in April 2010. You can import any previous scheduled events from Kieran's calendar into My Calendar.
 
@@ -63,7 +65,7 @@ Languages available:
 * Italian ([Sabir Musta](http://mustaphasabir.altervista.org)) - to 1.7.0
 * Brazilian Portuguese (Leonardo Kfoury) - to 1.6.0?
 
-New or updated translations are always appreciated. The translation source files are included in the download. [Codestyling Localization](http://wordpress.org/extend/plugins/codestyling-localization/) is a great plug-in for translating plug-ins!
+Translating my plug-ins is always appreciated. Visit <a href="http://translate.joedolson.com">my translations site</a> to start getting your language into shape!
 
 == Installation ==
 
@@ -89,16 +91,35 @@ New or updated translations are always appreciated. The translation source files
 
 = 2.0 =
 
-* Completely re-written database model.
+* Completely re-written database model for events.
+* Added: pagination on event manager list of events.
+* Added: Restrict groups manager lists to currently grouped/ungrouped lists of events.
 * Added links to other event instances visible when editing events with multiple instances.
 * Added default category selection.
-* Added alt attribute text to category icon in calendar output.
+* Added feature: limit calendar views by event author.
+* Added feature: filter event manager view by location, author, or category.
+* Added feature: mark categories as private, to only show those events to logged-in users.
+* Added templating to locations list so user can produce list of any set of location data.
+* Added option in event manager to copy location data into Locations table
+* Added [my_calendar_event] shortcode to fetch information for a single event.
+* Added template tag {timerange} to display start-end times.
+* Change: all events now have an end time. Option to hide end times to maintain current display. 
+* Bug fix: iCal had missing newline; events now return labeled UTC time
+* Bug fix: RSS does better job of clearing non-XML special characters.
+* Bug fix: If preset location was selected, no other edits to locations could be done. 
+* Bug fix: when copying an event, the new event was grouped in the same group as the source event. 
+* Bug fix: if stylesheet was disabled, stylesheet was erased on next save of style settings.
+* Bug fix to category limiting which matched category names like 'baseball' to show 'all' categories.
 
 = 1.11.3 =
 
 * Fatal error in PHP 5.4+ https://bugs.php.net/bug.php?id=54657
-* Bug fix: {date} and {time} template tags not rendered in Details link when run in a template.
+* Bug fix: {date} and {time} template tags not rendered in details link when run in a template.
 * Bug fix: upgrade database button placement off-screen 
+* Bug fix: layout on stylesheet editor caused usability problems
+* Bug fix: added line break in iCal output.
+* Change: added alt attribute to category icons in appropriate contexts.
+* [My Calendar 2.0 beta](http://downloads.wordpress.org/plugin/my-calendar.2.0.0.zip) added to subversion repository. Here there be bugs. 
 
 = 1.11.2 =
 
@@ -826,6 +847,10 @@ Because the majority of users end up on my web site asking for help anyway -- an
 
 I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/articles/my-calendar/users-guide/) for $21. ($19 if you're not interested in getting updates.) This helps defray the thousand plus hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
 
+= How can visitors to my site submit events? =
+
+I've written a paid plug-in that adds this feature to My Calendar, called My Calendar: Submissions. You can [buy it at my web site](https://www.joedolson.com/articles/my-calendar/submissions/)!
+
 == Screenshots ==
 
 1. Calendar using calendar list format.
@@ -841,8 +866,8 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 
 == Upgrade Notice ==
 
-= 1.11.0 =
-Major revision to permissions. Significant template customization options added. Various other feature improvements.
+= 2.0.0 =
+Major database redesign. Some new features, including single event view and pagination in events lists. Database update is non-destructive; no data will be deleted.
 
 = 1.10.6 = 
 Fixes major XSS security flaw.

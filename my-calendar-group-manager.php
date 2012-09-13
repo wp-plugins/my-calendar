@@ -281,7 +281,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 <form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;mode=edit&amp;event_id=$event_id&amp;group_id=$group_id"); ?>">
 <div>
 <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />
-<input type="hidden" name="group_id" value="<?php if ( !empty( $data->event_group_id ) ) { echo $data->event_group_id; } else { mc_group_id(); } ?>" />
+<input type="hidden" name="group_id" value="<?php if ( !empty( $data->event_group_id ) ) { echo $data->event_group_id; } else { echo mc_group_id(); } ?>" />
 <input type="hidden" name="event_action" value="<?php echo $mode; ?>" />
 <input type="hidden" name="event_id" value="<?php echo $event_id; ?>" />
 <input type="hidden" name="event_author" value="<?php echo $user_ID; ?>" />
@@ -424,8 +424,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 				<option value="none"> -- </option>
 				<?php
 				foreach ( $locations as $location ) {
-					$selected = ($data->event_label == $location->location_label)?" selected='selected'":'';
-					echo "<option value=\"".$location->location_id."\"$selected>".stripslashes($location->location_label)."</option>";
+					echo "<option value=\"".$location->location_id."\">".stripslashes($location->location_label)."</option>";
 				}
 ?>
 			</select>
@@ -496,11 +495,12 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 		</div>
 		</div>
 	</div>
+			<?php } ?>	
 			<p>
                 <input type="submit" name="save" class="button-secondary" value="<?php _e('Edit Event Group','my-calendar'); ?>" />
 			</p>
 	</form>		
-			<?php } ?>
+
 </div>
 </div>
 <?php }
@@ -690,14 +690,29 @@ function jd_groups_display_list() {
 		$sortbydirection = $sortdir;
 	}
 	
-	$events = $mcdb->get_results("SELECT * FROM " . my_calendar_table() . " ORDER BY $sortbyvalue $sortbydirection");
 	if ($sortbydirection == 'DESC') {
 		$sorting = "&amp;order=ASC";
 	} else {
 		$sorting = '';
 	}
+	$limit = ( isset($_GET['limit']) )?$_GET['limit']:'all';
+	switch ( $limit ) {
+		case 'all':$limit = '';break;
+		case 'grouped':$limit = 'WHERE event_group_id <> 0';break;
+		case 'ungrouped':$limit = 'WHERE event_group_id = 0';break;
+		default:$limit = '';
+	}
+	$events = $mcdb->get_results("SELECT * FROM " . my_calendar_table() . " $limit ORDER BY $sortbyvalue $sortbydirection");
 	?>
 	<h2 class="mc-clear"><?php _e('Create/Modify Groups','my-calendar'); ?></h2>
+	<?php if ( get_option('mc_event_approve') == 'true' ) { ?>
+		<ul class="links">
+		<li><a <?php echo ( isset($_GET['limit']) && $_GET['limit']=='groupeed' )?' class="active-link"':''; ?> href="<?php echo admin_url('admin.php?page=my-calendar-groups&amp;limit=grouped#my-calendar-admin-table'); ?>"><?php _e('Grouped Events','my-calendar'); ?></a></li>
+		<li><a <?php echo ( isset($_GET['limit']) && $_GET['limit']=='ungrouped')?' class="active-link"':''; ?>  href="<?php echo admin_url('admin.php?page=my-calendar-groups&amp;limit=ungrouped#my-calendar-admin-table'); ?>"><?php _e('Ungrouped Events','my-calendar'); ?></a></li> 
+		<li><a <?php echo ( isset($_GET['limit']) && $_GET['limit']=='all' || !isset($_GET['limit']))?' class="active-link"':''; ?>  href="<?php echo admin_url('admin.php?page=my-calendar-groups#my-calendar-admin-table'); ?>"><?php _e('All','my-calendar'); ?></a></li>
+		</ul>
+	<?php } ?>
+	
 	<p><?php _e('Check a set of events to group them for mass editing.','my-calendar'); ?></p>
 	<?php
 	if ( !empty($events) ) {
@@ -734,7 +749,7 @@ function jd_groups_display_list() {
 			$class = ($class == 'alternate') ? '' : 'alternate';
 			$spam = ($event->event_flagged == 1) ? ' spam' : '';
 			$spam_label = ($event->event_flagged == 1) ? '<strong>Possible spam:</strong> ' : '';
-			$author = get_userdata($event->event_author);
+			$author = ( $event->event_author != 0 )?get_userdata($event->event_author):'Public Submitter';
 			if ($event->event_link != '') { 
 			$title = "<a href='".esc_attr($event->event_link)."'>$event->event_title</a>";
 			} else {
@@ -767,7 +782,7 @@ function jd_groups_display_list() {
 					else if ( $event->event_repeats > 0 ) { printf(__('%d Times','my-calendar'),$event->event_repeats ); }					
 				?>				
 				</td>
-				<td><?php echo $author->display_name; ?></td>
+				<td><?php echo ( is_object($author) )?$author->display_name:$author; ?></td>
                                 <?php
 								$this_category = $event->event_category;
 								foreach ($categories as $key=>$value) {
