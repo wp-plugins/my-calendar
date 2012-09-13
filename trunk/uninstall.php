@@ -93,6 +93,7 @@ delete_option( 'mc_open_day_uri' );
 delete_option( 'mc_open_uri' );
 delete_option( 'mc_show_list_info' );
 delete_option( 'mc_event_link' );
+delete_option( 'mc_default_category' );
 add_option( 'mc_uninstalled','true' );
 }
 ?>

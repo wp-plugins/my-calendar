@@ -20,21 +20,7 @@ function my_calendar_add_feed() {
 	if ( get_option('mc_show_print') == 'true' ) {
 		add_feed( 'my-calendar-print', 'my_calendar_print' );
 	}	
-	/* removed 2/11/2012.
-	if ( get_option('mc_show_rss') == 'true' || get_option('mc_show_ical') == 'true' || get_option('mc_show_print') == true ) {
-		add_action('generate_rewrite_rules', 'mc_rewrite_rules');
-		$wp_rewrite->flush_rules();	
-	}
-	*/
 }
-/* I believe that this is obsolete, at least as far back as 2.9.2
-function mc_rewrite_rules( $wp_rewrite ) {
-  $new_rules = array(
-    'feed/(.+)' => 'index.php?feed='.$wp_rewrite->preg_index(1)
-  );
-  $wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
-}
-*/
 
 if ( ! function_exists( 'is_ssl' ) ) {
 	function is_ssl() {
@@ -135,7 +121,11 @@ if ( mc_is_tablet() && file_exists( get_stylesheet_directory() . '/mc-tablet.css
 }
 if ( mc_is_mobile() && file_exists( get_stylesheet_directory() . '/mc-mobile.css' ) ) {
 	$all_styles .=  get_stylesheet_directory_uri() . '/mc-mobile.css';
-} 
+}
+if ( function_exists( 'mcs_submissions' ) ) {
+$all_styles .= "<link rel=\"stylesheet\" href=\"".plugins_url('/my-calendar-submissions/mcs-styles.css')."\" type=\"text/css\" media=\"all\" />";
+$all_styles .= "<link rel=\"stylesheet\" href=\"".plugins_url('/my-calendar-submissions/css/smoothness/jquery-ui-1.8.23.custom.css')."\" type=\"text/css\" media=\"all\" />";
+}
 $all_styles = apply_filters( 'mc_filter_styles',$all_styles,$styles );
 echo $all_styles;
 		}
@@ -191,7 +181,7 @@ function my_calendar_write_js() {
 	if ( isset($_GET['page']) && $_GET['page']=='my-calendar-help') {
 	?>
 	<script type="text/javascript">
-	jQuery(document).ready(function($) {
+	jQuery(document).ready( function($) {
 		$('dd:even').css('background','#f6f6f6');
 	});
 	</script>
@@ -212,27 +202,7 @@ function mc_plugin_update_message() {
 	}
 }
 
-function mc_header_js() {
-global $wp_query;
-	wp_enqueue_script('jquery');
-	if ( get_option('mc_draggable') == '1' && !is_admin() ) { 
-		$this_post = $wp_query->get_queried_object();
-		if (is_object($this_post)) {
-			$id = $this_post->ID;
-		} 
-		if ( get_option( 'mc_show_js' ) != '' ) {
-		$array = explode( ",",get_option( 'mc_show_js' ) );
-			if (!is_array($array)) {
-				$array = array();
-			}
-		}
-		if ( @in_array( $id, $array ) || get_option( 'mc_show_js' ) == '' ) {
-			wp_enqueue_script('jquery.easydrag',plugins_url( 'js/jquery.easydrag.js', __FILE__ ), array('jquery') );
-		}
-	}
-}
-
-function mc_footer_js() {
+function mc_footer_js() { // need to enqueue these in shortcodes. May need to go to file editing?
 	if ( mc_is_mobile() && get_option('mc_mobile') == 'true' ) {
 		return;
 	} else {
@@ -240,7 +210,7 @@ function mc_footer_js() {
 		global $wpdb, $wp_query;
 		$mcdb = $wpdb;
 		if ( get_option('mc_calendar_javascript') != 1 || get_option('mc_list_javascript') != 1 || get_option('mc_mini_javascript') != 1 || get_option('mc_ajax_javascript') != 1 ) {
-		  
+
 		$list_js = stripcslashes( get_option( 'mc_listjs' ) );
 		$cal_js = stripcslashes( get_option( 'mc_caljs' ) );
 		if ( get_option('mc_open_uri') == 'true') { $cal_js = str_replace('e.preventDefault();','',$cal_js); }
@@ -321,20 +291,24 @@ function csv_to_array($csv, $delimiter = ',', $enclosure = '"', $escape = '\\', 
 function mc_if_needs_permissions() {
 	// this prevents administrators from losing privileges to edit my calendar
 	$role = get_role( 'administrator' );
-	$caps = $role->capabilities;
-	if ( isset($caps['mc_add_events']) ) {
-		return; 
+	if ( is_object( $role ) ) {
+		$caps = $role->capabilities;
+		if ( isset($caps['mc_add_events']) ) {
+			return; 
+		} else {
+			$role->add_cap( 'mc_add_events' );
+			$role->add_cap( 'mc_approve_events' );
+			$role->add_cap( 'mc_manage_events' );
+			$role->add_cap( 'mc_edit_cats' );
+			$role->add_cap( 'mc_edit_styles' );
+			$role->add_cap( 'mc_edit_behaviors' );
+			$role->add_cap( 'mc_edit_templates' );
+			$role->add_cap( 'mc_edit_settings' );
+			$role->add_cap( 'mc_edit_locations' );
+			$role->add_cap( 'mc_view_help' );	
+		}
 	} else {
-		$role->add_cap( 'mc_add_events' );
-		$role->add_cap( 'mc_approve_events' );
-		$role->add_cap( 'mc_manage_events' );
-		$role->add_cap( 'mc_edit_cats' );
-		$role->add_cap( 'mc_edit_styles' );
-		$role->add_cap( 'mc_edit_behaviors' );
-		$role->add_cap( 'mc_edit_templates' );
-		$role->add_cap( 'mc_edit_settings' );
-		$role->add_cap( 'mc_edit_locations' );
-		$role->add_cap( 'mc_view_help' );	
+		return;
 	}
 }
 
@@ -439,7 +413,6 @@ function check_my_calendar() {
 	if ($current_version == $mc_version) {
 		return true;
 	}
-
   // Lets see if this is first run and create a table if it is!
   // Assume this is not a new install until we prove otherwise
   $new_install = false;
@@ -483,6 +456,7 @@ function check_my_calendar() {
 		if ( version_compare( $current_version, "1.10.7", "<" ) ) { $upgrade_path[] = "1.10.7"; }	
 		if ( version_compare( $current_version, "1.11.0", "<" ) ) { $upgrade_path[] = "1.11.0"; }
 		if ( version_compare( $current_version, "1.11.1", "<" ) ) { $upgrade_path[] = "1.11.1"; }
+		if ( version_compare( $current_version, "2.0.0", "<" ) ) { $upgrade_path[] = "2.0.0"; }		
 	}
 	// having determined upgrade path, assign new version number
 	update_option( 'mc_version' , $mc_version );
@@ -500,6 +474,16 @@ function check_my_calendar() {
 	foreach ($upgrade_path as $upgrade) {
 		switch ($upgrade) {
 		// only upgrade db on most recent version
+			case '2.0.0':
+				mc_upgrade_db();
+				mc_migrate_db();			
+				update_option( 'mc_db_version','2.0.0' );
+				$mc_input = get_option( 'mc_input_options' );
+				if ( !isset( $mc_input['event_specials'] ) ) {
+					$mc_input['event_specials'] = 'on';
+					update_option( 'mc_input_options',$mc_input );
+				}				
+				break;
 			case '1.11.1':
 				add_option( 'mc_event_link', 'true' );
 				break;
@@ -515,15 +499,12 @@ function check_my_calendar() {
 				delete_option( 'mc_event_approve_perms' );			
 				break;
 			case '1.10.7':
-				upgrade_db();
 				update_option( 'mc_multisite_show', 0 );
 				break;
 			case '1.10.0':
-				upgrade_db();
 				update_option( 'mc_caching_enabled','true' );
 				update_option( 'mc_week_caption',"The week's events" );
 				update_option( 'mc_show_print','false' );
-				update_option( 'mc_db_version','1.10.0' );			
 				break;
 			case '1.9.3':
 				update_option( 'mc_draggable', 1 );
@@ -605,7 +586,7 @@ function check_my_calendar() {
 				$mc_input = get_option( 'mc_input_options' );
 				$mc_input['event_image'] = 'on';
 				update_option( 'mc_input_options',$mc_input );				
-				upgrade_db();
+				mc_upgrade_db();
 				update_option('mc_db_version','1.9.0');			
 			case '1.8.0':
 				$mc_input = get_option( 'mc_input_options' );
@@ -816,7 +797,7 @@ function check_my_calendar() {
 				add_option('mc_no_fifth_week','true');				
 			break;
 			case '1.4.8':
-				add_option('mc_input_options',array('event_short'=>'on','event_desc'=>'on','event_category'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'on','event_location'=>'on','event_location_dropdown'=>'on') );	
+				add_option('mc_input_options',array('event_short'=>'on','event_desc'=>'on','event_category'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'on','event_location'=>'on','event_location_dropdown'=>'on','event_use_editor'=>'off','event_specials'=>'on') );	
 				add_option('mc_input_options_administrators','false');
 			break;
 			case '1.4.7':
@@ -847,22 +828,68 @@ function check_my_calendar() {
 		delete_option( 'mc_uninstalled' );
 	}
 }
+// @data object with event_category value
+function mc_category_select( $data=false ) {
+	global $wpdb;
+	$mcdb=$wpdb;
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+	// Grab all the categories and list them
+	$list = $default = '';
+	$sql = "SELECT * FROM " . my_calendar_categories_table() . " ORDER BY category_name ASC";
+		$cats = $mcdb->get_results($sql);
+		foreach($cats as $cat) {
+			$c = '<option value="'.$cat->category_id.'"';
+			if ( !empty($data) ) {
+				if ( !is_object($data) ) { $category = $data; } else { $category = $data->event_category; }				
+				if ($category == $cat->category_id){
+					$c .= ' selected="selected"';
+				}
+			}
+			$c .= '>'.stripslashes($cat->category_name).'</option>';
+			if ( $cat->category_id != get_option('mc_default_category') ) {
+				$list .= $c;
+			} else {
+				$default = $c;
+			}
+		}
+		return $default.$list;
+}
 
+// @data object with event_location value
+function mc_location_select( $location=false ) {
+	global $wpdb;
+	$mcdb=$wpdb;
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+	// Grab all locations and list them
+	$list = '';
+	$sql = "SELECT * FROM " . my_calendar_locations_table() . " ORDER BY location_label ASC";
+		$locs = $mcdb->get_results($sql);
+		foreach($locs as $loc) {
+			$l = '<option value="'.$loc->location_id.'"';
+			if ( $location ) {
+				if ($location == $loc->location_id){
+				 $l .= ' selected="selected"';
+				}
+			}
+			$l .= '>'.stripslashes($loc->location_label).'</option>';
+			$list .= $l;
+		}
+		return $list;
+}
 
-
-function jd_cal_checkCheckbox( $theFieldname,$theValue,$theArray='' ){
+function mc_is_checked( $theFieldname,$theValue,$theArray='',$return=false ){
 	if (!is_array( get_option( $theFieldname ) ) ) {
 	if( get_option( $theFieldname ) == $theValue ){
-		echo 'checked="checked"';
+		if ( $return ) { return 'checked="checked"'; } else { echo 'checked="checked"'; }
 	}
 	} else {
 		$theSetting = get_option( $theFieldname );
 		if ( !empty($theSetting[$theArray]['enabled']) && $theSetting[$theArray]['enabled'] == $theValue ) {
-			echo 'checked="checked"';
+			if ( $return ) { return 'checked="checked"'; } else { echo 'checked="checked"'; }
 		}
 	}
 }
-function jd_cal_checkSelect( $theFieldname,$theValue,$theArray='' ){
+function mc_is_selected( $theFieldname,$theValue,$theArray='' ){
 	if (!is_array( get_option( $theFieldname ) ) ) {
 	if( get_option( $theFieldname ) == $theValue ){
 			echo 'selected="selected"';
@@ -883,18 +910,19 @@ global $wp_query;
 		$scripting .= "jQuery(document).ready(function($) { \$('html').removeClass('mcjs') });\n";
 		$scripting .= "jQuery.noConflict();\n";
 		$scripting .= "</script>\n";
-
-		if (is_object($wp_query)) {
-			$id = $wp_query->post->ID;
-		} 
-		if ( get_option( 'mc_show_js' ) != '' ) {
-		$array = explode( ",",get_option( 'mc_show_js' ) );
-			if ( !is_array( $array ) ) {
-				$array = array();
+		if ( !is_404() ) { // don't do this on 404 page
+			if ( is_object($wp_query) ) {
+				$id = $wp_query->post->ID;
+			} 
+			if ( get_option( 'mc_show_js' ) != '' ) {
+			$array = explode( ",",get_option( 'mc_show_js' ) );
+				if ( !is_array( $array ) ) {
+					$array = array();
+				}
 			}
-		}
-		if ( @in_array( $id, $array ) || trim ( get_option( 'mc_show_js' ) ) == '' ) {	
-			echo $scripting;
+			if ( @in_array( $id, $array ) || trim ( get_option( 'mc_show_js' ) ) == '' ) {	
+				echo $scripting;
+			}
 		}
 	}
 }
@@ -933,20 +961,20 @@ function mc_event_repeats_forever( $recur, $repeats ) {
 			return false;
 		break;
 		case "D": // daily
-			return ($repeats == 999)?true:false;
+			return ($repeats == 500)?true:false;
 		break;
 		case "W": // weekly
-			return ($repeats == 500)?true:false;		
+			return ($repeats == 240)?true:false;		
 		break;
 		case "B": // biweekly
-			return ($repeats == 250)?true:false;		
+			return ($repeats == 120)?true:false;		
 		break;
 		case "M": // monthly
 		case "U":
-			return ($repeats == 120)?true:false;		
+			return ($repeats == 60)?true:false;		
 		break;
 		case "Y":
-			return ($repeats == 10)?true:false;		
+			return ($repeats == 5)?true:false;		
 		break;
 		default: false;		
 	}
@@ -1017,6 +1045,16 @@ function my_calendar_table() {
 		case 1:return MY_CALENDAR_GLOBAL_TABLE;break;
 		case 2:return ($choice==1)?MY_CALENDAR_GLOBAL_TABLE:MY_CALENDAR_TABLE;break;
 		default:return MY_CALENDAR_TABLE;
+	}
+}
+function my_calendar_event_table() {
+	$option = (int) get_site_option('mc_multisite');
+	$choice = (int) get_option('mc_current_table');
+	switch ($option) {
+		case 0:return MY_CALENDAR_EVENTS_TABLE;break;
+		case 1:return MY_CALENDAR_GLOBAL_EVENT_TABLE;break;
+		case 2:return ($choice==1)?MY_CALENDAR_GLOBAL_EVENT_TABLE:MY_CALENDAR_EVENTS_TABLE;break;
+		default:return MY_CALENDAR_EVENTS_TABLE;
 	}
 }
 function my_calendar_categories_table() {
@@ -1377,6 +1415,300 @@ $plugins_string
 	</form>";
 }
 
+
+function mc_recur_options( $value ) {
+	$s = ( $value == 'S' )?" selected='selected'":'';
+	$d = ( $value == 'D' )?" selected='selected'":'';
+	$e = ( $value == 'E' )?" selected='selected'":'';
+	$w = ( $value == 'W' )?" selected='selected'":'';
+	$b = ( $value == 'B' )?" selected='selected'":'';
+	$m = ( $value == 'M' )?" selected='selected'":'';
+	$u = ( $value == 'U' )?" selected='selected'":'';
+	$y = ( $value == 'Y' )?" selected='selected'":'';
+	
+	$return = "
+				<option class='input' value='S'$s>".__('Does not recur','my-calendar')."</option>
+				<option class='input' value='D'$d>".__('Daily','my-calendar')."</option>
+				<option class='input' value='E'$e>".__('Daily, weekdays only','my-calendar')."</option>
+				<option class='input' value='W'$w>".__('Weekly','my-calendar')."</option>
+				<option class='input' value='B'$b>".__('Bi-weekly','my-calendar')."</option>
+				<option class='input' value='M'$m>".__('Date of Month (e.g., the 24th of each month)','my-calendar')."</option>
+				<option class='input' value='U'$u>".__('Day of Month (e.g., the 3rd Monday of each month)','my-calendar')."</option>
+				<option class='input' value='Y'$y>".__('Annually','my-calendar')."</option>
+	";
+	return $return;
+}
+//".$select = ( $value == 'D' )?$selected:''."
+
+function _mc_increment_values( $recur ) {
+	switch ($recur) {
+		case "S": // single
+			return 0;
+		break;
+		case "D": // daily
+			return 500;
+		break;
+		case "E": // weekdays
+			return 400;
+		break;
+		case "W": // weekly
+			return 240;
+		break;
+		case "B": // biweekly
+			return 120;
+		break;
+		case "M": // monthly
+		case "U":
+			return 60;
+		break;
+		case "Y":
+			return 10;
+		break;
+		default: false;
+	}
+}
+
+/*
+@param event_id, number of repetitions
+@return true/false
+*/
+function mc_change_instances( $id, $repeats, $begin=false ) {
+	global $wpdb;
+	$mcdb = $wpdb;
+	$events = $mcdb->get_results("SELECT * FROM ".my_calendar_event_table()." WHERE occur_event_id = $id ORDER BY occur_begin DESC");
+	$count = count($events);
+	$last = $count-1;
+	if ( $begin == false ) {
+		if ( $count > $repeats ) {
+			// if higher than previous: delete
+			$diff = $count - $repeats;
+			for ( $i=0;$i<$diff;$i++ ) {
+				$oid = $events[$i]->occur_id;
+				$sql = "DELETE FROM ".my_calendar_event_table()." WHERE occur_id = $oid";
+				$result = $mcdb->query($sql);
+			}
+		} else 
+		if ( $count < $repeats ) {
+		// if lower: add more by incrementing from the last date available.
+			$dates = array( 'event_begin'=>date('Y-m-d',strtotime($events[0]->occur_begin) ), 'event_time'=>date('H:i:s',strtotime($events[0]->occur_begin) ),
+					'event_end'=>date('Y-m-d',strtotime($events[0]->occur_end) ),'event_endtime'=>date('H:i:s',strtotime($events[0]->occur_end) ) );
+			mc_increment_event( $id, $dates );
+		} else {
+			return false;
+		}
+	} else {
+		$sql = "DELETE FROM ".my_calendar_event_table()." WHERE occur_event_id = $id";
+		$delete = $mcdb->query($sql);
+		$dates = array( 'event_begin'=>date('Y-m-d',strtotime($events[$last]->occur_begin) ), 'event_time'=>date('H:i:s',strtotime($events[$last]->occur_begin) ),
+					'event_end'=>date('Y-m-d',strtotime($events[$last]->occur_end) ),'event_endtime'=>date('H:i:s',strtotime($events[$last]->occur_end) ) );
+		mc_increment_event( $id, $dates );
+	}
+	return true;
+}
+
+/* indiscriminately deletes all instances of an event without deleting the event details. Sets stage for rebuilding event instances. */
+function mc_delete_instances( $id ) { 
+	global $wpdb;
+	$id = (int) $id;
+	$sql = "DELETE FROM ".my_calendar_event_table()." WHERE occur_event_id = $id";
+	$delete = $wpdb->query( $sql );
+	return;
+}
+
+/* 
+@param: an array of POST data (or array containing dates); an event ID;
+@return: undetermined
+*/
+function mc_increment_event( $id, $post=array() ) {
+	global $wpdb;
+	$event = mc_get_event_core( $id );
+	$data = array();
+	if ( empty($post) ) {
+		$orig_begin = $event->event_begin .' '. $event->event_time;
+		$orig_end = $event->event_end . ' ' . $event->event_endtime;
+	} else {
+		$orig_begin = @$post['event_begin'] . ' ' . @$post['event_time'];
+		$orig_end = @$post['event_end'] . ' ' . @$post['event_endtime'];
+	}
+	$group_id = $event->event_group_id;
+	$format = array( '%d','%s','%s','%d' );
+	if ($event->event_recur != "S") {
+		$numback = 0;
+		// if this event had a rep of 0, translate that.
+		$event_repetition = ( $event->event_repeats != 0)?$event->event_repeats:_mc_increment_values( $event->event_recur );
+		$numforward = $event_repetition;
+		if ( $event->event_recur != 'S' ) {
+			switch ($event->event_recur) {
+				case "D":
+				case "E":
+					for ($i=$numback;$i<=$numforward;$i++) {
+						$begin = my_calendar_add_date($orig_begin,$i,0,0);
+						$end = my_calendar_add_date($orig_end,$i,0,0);		
+						if ( ( $event->event_recur == 'E' && ( date('w',$begin ) != 0 && date('w',$begin ) != 6 ) ) || $event->event_recur == 'D' ) {
+							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
+							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+						} else {
+							$numforward++;
+						}
+					}
+					break;
+				case "W":
+					for ($i=$numback;$i<=$numforward;$i++) {
+						$begin = my_calendar_add_date($orig_begin,($i*7),0,0);
+						$end = my_calendar_add_date($orig_end,($i*7),0,0);
+						$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
+						$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+					}
+					break;
+				case "B":
+					for ($i=$numback;$i<=$numforward;$i++) {
+						$begin = my_calendar_add_date($orig_begin,($i*14),0,0);
+						$end = my_calendar_add_date($orig_end,($i*14),0,0);							
+							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
+							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+					}
+					
+					break;							
+				case "M":
+					for ($i=$numback;$i<=$numforward;$i++) {
+						$begin = my_calendar_add_date($orig_begin,0,$i,0);
+						$end = my_calendar_add_date($orig_end,0,$i,0);
+							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
+							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+					}
+					break;
+				case "U": //important to keep track of which date variables are strings and which are timestamps
+					$week_of_event = week_of_month( date('d',strtotime($event->event_begin) ) );
+					$newbegin = my_calendar_add_date($orig_begin,28,0,0);
+					$newend = my_calendar_add_date($orig_end,28,0,0);
+					$fifth_week = $event->event_fifth_week;
+					$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',strtotime($orig_begin)), 'occur_end'=>date('Y-m-d  H:i:s',strtotime($orig_end)), 'occur_group_id'=>$group_id );
+					$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+					$numforward = $numforward - 1;
+					for ($i=$numback;$i<=$numforward;$i++) {
+						$next_week_diff = ( date('m',$newbegin) == date('m',my_calendar_add_date( date('Y-m-d',$newbegin),7,0,0) ) )?false:true;
+						$move_event = ( ( $fifth_week == 1) && ( $week_of_event == ( week_of_month( date('d',$newbegin ) )+1 ) ) && $next_week_diff == true )?true:false;
+						if ( $week_of_event == week_of_month( date('d',$newbegin) ) || $move_event == true ) {
+						// continue;
+						} else {
+							$newbegin = my_calendar_add_date(date('Y-m-d  H:i:s',$newbegin),7,0,0);
+							$newend = my_calendar_add_date(date('Y-m-d  H:i:s',$newend),7,0,0);
+							$move_event = ( $fifth_week == 1 && $week_of_event == week_of_month( date('d',$newbegin ) )+1 )?true:false;
+							if ( $week_of_event == week_of_month( date('d',$newbegin) ) || $move_event == true ) {
+							// continue;
+							} else {
+								$newbegin = my_calendar_add_date(date('Y-m-d  H:i:s',$newbegin),14,0,0);
+								$newend = my_calendar_add_date(date('Y-m-d  H:i:s',$newend),14,0,0);
+							}
+						}
+						$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$newbegin), 'occur_end'=>date('Y-m-d  H:i:s',$newend), 'occur_group_id'=>$group_id );
+						$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+						$newbegin = my_calendar_add_date(date('Y-m-d  H:i:s',$newbegin),28,0,0);
+						$newend = my_calendar_add_date(date('Y-m-d  H:i:s',$newend),28,0,0);
+					// JCD NOTE old method of calculating month-by-day events, keeping in case of problems with new method. (Replaced in version 2.0.0)
+				 	//$day_diff = jd_date_diff($approxbegin, $approxend);						
+						//$day_of_event = date('D',strtotime($event->event_begin) );
+						/*for ($n=-6;$n<=6;$n++) {								
+							$timestamp = strtotime(my_calendar_add_date($approxbegin,$n,0,0));
+							$current_day = date('D',$timestamp);
+							if ($current_day == $day_of_event) {
+							$current_week = week_of_month( date( 'd',$timestamp));
+							$current_date = date( 'd',$timestamp);
+								if ($current_day == $day_of_event && $current_week == $week_of_event) {
+									$this_date = $current_date;
+								} else {
+									$first = $week_of_event*7;
+									$last = $first+7;
+									for ($s=$first;$s<=$last;$s++) {
+										if ( $s > date('t',$timestamp) ) {
+											$day = $s-date('t',$timestamp);
+											$month = (date('m',$timestamp) == 12)?1:date('m',$timestamp)+1;
+										} else {
+											$day = $s;
+											$month = date( 'm', $timestamp);
+										}
+										$string = date( 'Y', $timestamp ).'-'.$month.'-'.$day;
+										$week = week_of_month($s);
+											if ( date('D',strtotime($string)) == $day_of_event && $week == $week_of_event ) {
+												$this_date = $s; break;
+											} 
+									}
+									if ( $fifth_week == 1 && $this_date > date('t',$timestamp) ) {
+										$first = $first;
+										$last = $first-7;
+										for ($s=$last;$s<=$first;$s++) {
+											$string = date( 'Y', $timestamp ).'-'.date('m', $timestamp).'-'.$s;
+											if ( date('D',strtotime($string)) == $day_of_event ) {
+												$this_date = $s; break;
+											}
+										}
+									}
+								}
+								if ( ($current_day == $day_of_event && $current_week == $week_of_event) || ($current_date >= $this_date && $current_date <= $this_date+$day_diff && $this_date != '' ) ) {				
+									$begin = my_calendar_add_date($approxbegin,$n,0,0);
+									$end = my_calendar_add_date($approxend,$n,0,0);																		
+										$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
+										$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+								}
+							}
+						}*/
+					}
+				break;
+				case "Y":
+					for ($i=$numback;$i<=$numforward;$i++) {
+						$begin = my_calendar_add_date($orig_begin,0,0,$i);
+						$end = my_calendar_add_date($orig_end,0,0,$i);						
+							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
+							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+					}
+				break;
+			}
+		}
+	} else {
+		$begin = strtotime($orig_begin);
+		$end = strtotime($orig_end);
+		$data = array( 
+			'occur_event_id'=>$id,
+			'occur_begin'=>date('Y-m-d H:i:s',$begin), 
+			'occur_end'=>date('Y-m-d H:i:s',$end), 
+			'occur_group_id'=>$group_id );
+		$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+	}
+	return $data;
+}
+
+function xml_entity_decode($text, $charset = 'UTF-8'){
+    // Double decode, so if the value was &amp;trade; it will become Trademark
+    $text = html_entity_decode($text, ENT_COMPAT, $charset);
+    $text = html_entity_decode($text, ENT_COMPAT, $charset);
+    return $text;
+}
+
+function xml_entities($text, $charset = 'UTF-8'){
+     // Debug and Test
+    // $text = "test &amp; &trade; &amp;trade; abc &reg; &amp;reg; &#45;";
+    // First we encode html characters that are also invalid in xml
+    $text = htmlentities($text, ENT_COMPAT, $charset, false);
+   
+    // XML character entity array from Wiki
+    // Note: &apos; is useless in UTF-8 or in UTF-16
+    $arr_xml_special_char = array("&quot;","&amp;","&apos;","&lt;","&gt;");
+   
+    // Building the regex string to exclude all strings with xml special char
+    $arr_xml_special_char_regex = "(?";
+    foreach($arr_xml_special_char as $key => $value){
+        $arr_xml_special_char_regex .= "(?!$value)";
+    }
+    $arr_xml_special_char_regex .= ")";
+   
+    // Scan the array for &something_not_xml; syntax
+    $pattern = "/$arr_xml_special_char_regex&([a-zA-Z0-9]+;)/";
+   
+    // Replace the &something_not_xml; with &amp;something_not_xml;
+    $replacement = '&amp;${1}';
+	//echo $text;
+    return preg_replace($pattern, $replacement, $text);
+}
 // Actions -- these are action hooks attached to My Calendar events, usable to add additional actions during those events.
 // Actions are only performed after their respective My Calendar events have been successfully completed.
 // If there are errors in the My Calendar event, the action hook will not fire.

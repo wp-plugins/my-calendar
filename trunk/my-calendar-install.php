@@ -1,6 +1,6 @@
 <?php
 // define global variables;
-global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_template,$default_user_settings, $mcdb,$grid_template,$list_template,$mini_template,$single_template, $defaults;
+global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $default_template,$default_user_settings, $mcdb,$grid_template,$list_template,$mini_template,$single_template, $defaults;
 
 $defaults = array(
 	'upcoming'=>array(	
@@ -173,6 +173,7 @@ $initial_db = "CREATE TABLE " . my_calendar_table() . " (
  event_span INT(1) NOT NULL DEFAULT '0',
  event_approved INT(1) NOT NULL DEFAULT '1',
  event_flagged INT(1) NOT NULL DEFAULT '0',
+ event_hide_end INT(1) NOT NULL DEFAULT '0',
  event_holiday INT(1) NOT NULL DEFAULT '$event_holiday',
  event_fifth_week INT(1) NOT NULL DEFAULT '$event_fifth_week',
  event_image TEXT,
@@ -180,12 +181,23 @@ $initial_db = "CREATE TABLE " . my_calendar_table() . " (
  PRIMARY KEY  (event_id),
  KEY event_recur (event_recur)
  ) $charset_collate;";
- 
+
+$initial_occur_db = "CREATE TABLE " . my_calendar_event_table() . " ( 
+ occur_id INT(11) NOT NULL AUTO_INCREMENT,
+ occur_event_id INT(11) NOT NULL,
+ occur_begin DATETIME NOT NULL,
+ occur_end DATETIME NOT NULL,
+ occur_group_id INT(11) NOT NULL DEFAULT '0',
+ PRIMARY KEY  (occur_id),
+ KEY occur_event_id (occur_event_id)
+ ) $charset_collate;";
+
 $initial_cat_db = "CREATE TABLE " . my_calendar_categories_table() . " ( 
  category_id INT(11) NOT NULL AUTO_INCREMENT, 
  category_name VARCHAR(255) NOT NULL, 
  category_color VARCHAR(7) NOT NULL, 
  category_icon VARCHAR(128) NOT NULL,
+ category_private INT(1) NOT NULL DEFAULT '0',
  PRIMARY KEY  (category_id) 
  ) $charset_collate;";
  
@@ -312,7 +324,7 @@ $default_user_settings = array(
 	); 
 
 function mc_default_settings( ) {
-global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_loc_db, $initial_cat_db, $default_user_settings,$grid_template,$list_template,$mini_template,$single_template,$mc_version, $defaults;
+global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $default_user_settings,$grid_template,$list_template,$mini_template,$single_template,$mc_version, $defaults;
 // no arguments
 	add_option('mc_display_author','false');
 	add_option('mc_display_jump','false');
@@ -333,7 +345,7 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option('mc_hide_icons','false');
 	add_option('mc_event_link_expires','no');
 	add_option('mc_apply_color','default');
-	add_option('mc_input_options',array('event_short'=>'on','event_desc'=>'on','event_category'=>'on','event_image'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'on','event_location'=>'on','event_location_dropdown'=>'on','event_use_editor'=>'off') );
+	add_option('mc_input_options',array('event_short'=>'on','event_desc'=>'on','event_category'=>'on','event_image'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'on','event_location'=>'on','event_location_dropdown'=>'on','event_use_editor'=>'off','event_specials'=>'on') );
 	add_option('mc_input_options_administrators','false');
 	add_site_option('mc_multisite', '0' );
 	add_option('mc_event_mail','false');
@@ -384,17 +396,70 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	mc_add_roles();
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($initial_db);
+	dbDelta($initial_occur_db);
 	dbDelta($initial_cat_db);
 	dbDelta($initial_loc_db);	
 	
 }
 
-function upgrade_db() {
-global $initial_db, $initial_loc_db, $initial_cat_db;
+function mc_migrate_db() {
+	global $wpdb, $initial_occur_db;
+	//require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+	// this function migrates the DB from version 1.10.x to version 2.0.
+	$tables = $wpdb->get_results("show tables;");
+		foreach ( $tables as $table ) {
+			foreach ( $table as $value )  {
+				if ( $value == my_calendar_event_table() ) {
+					$count = $wpdb->get_var( 'SELECT count(1) from '.my_calendar_event_table() );
+					$count2 = $wpdb->get_var( 'SELECT count(1) from '.my_calendar_table() );
+					if ( $count2 > 0 && $count > 0 ) {
+						$migrated = true; // both tables have event data
+						return;
+					}
+					if ( $count2 == 0 && $count == 0 ) {
+						return; // no events, migration unnecessary
+					}
+					break 2;
+				}
+			}
+		}
+		// 2) create new occurrences database, if necessary
+		//dbDelta($initial_occur_db);
+		// 3) migrate events
+		$sql = "SELECT event_id, event_begin, event_time, event_end, event_endtime FROM ".my_calendar_table();
+		$events = $wpdb->get_results($sql);
+		foreach ( $events as $event ) {
+			// assign endtimes to all events
+			if ( $event->event_endtime == '00:00:00' && $event->event_time != '00:00:00' ) {
+				$event->event_endtime = date('H:i:s',strtotime( "$event->event_time +1 hour" ) );
+				mc_flag_event( $event->event_id, $event->event_endtime );
+			}
+			$dates = array( 'event_begin'=>$event->event_begin,'event_end'=>$event->event_end,'event_time'=>$event->event_time,'event_endtime'=>$event->event_endtime );
+			$event = mc_increment_event( $event->event_id, $dates );
+		}
+}
+
+function mc_flag_event( $id,$time ) {
+	global $wpdb;
+	$data = array( 'event_hide_end'=>1,'event_endtime'=>$time );
+	$formats = array( '%d','%s' );
+	$result = $wpdb->update(
+		my_calendar_table(),
+		$data,
+		array( 'event_id'=>$id ),
+		$formats,
+		'%d' );	
+	return;	
+}
+
+function mc_upgrade_db() {
+global $mc_version, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db;
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($initial_db);
+	dbDelta($initial_occur_db);
 	dbDelta($initial_cat_db);
-	dbDelta($initial_loc_db);	
+	dbDelta($initial_loc_db);
+	update_option('mc_db_version',$mc_version);	
 }
 
 function my_calendar_copyr($source, $dest) {

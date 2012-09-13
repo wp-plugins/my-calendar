@@ -20,7 +20,7 @@ global $wp_plugin_dir;
 <p>
 <?php _e('This basic shortcode will show the calendar on a post or page including all categories and the category key, in a traditional month-by-month format.','my-calendar'); ?>
 </p>
-<p><code>[my_calendar category="General|Other" format="list" showkey="yes" shownav="yes" showjump="(settings value)" toggle="no" time="week"]</code></p>
+<p><code>[my_calendar format="list" showkey="yes" shownav="yes" toggle="no" time="week"]</code></p>
 <p>
 <?php _e('The shortcode supports nine attributes:','my-calendar'); ?>
 </p>
@@ -34,21 +34,26 @@ global $wp_plugin_dir;
 	<li><code>time</code>: <?php _e('Set to "week" to show a one week view or to "day" to show a single day view. Any other value will show a month view. (Day view shows as a list regardless of format setting.)','my-calendar'); ?></li>
 	<li><code>ltype</code>: <?php _e('The type of location data to restrict by.','my-calendar'); ?></li>
 	<li><code>lvalue</code>: <?php _e('The specific location information to filter to.','my-calendar'); ?></li>
+	<li><code>author</code>: <?php _e('Author or comma-separated list of authors (usernames or IDs) to show events from.','my-calendar'); ?></li>
 	</ul>
 <p>
 <em><?php _e('The main My Calendar short code can be generated from a button in your post and page editor. The mini calendar can also be accessed and configured as a widget.','my-calendar'); ?></em>
 </p>
 <h4><?php _e('Additional Calendar Views (Upcoming events, today\'s events)','my-calendar'); ?></h4>
-<p><code>[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" template="{title} {date}" order="asc" skip="0"]</code></p>
+<p><code>[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" author="1" template="{title} {date}" order="asc" skip="0"]</code></p>
 <p>
-	<?php _e('This shortcode displays the output of the Upcoming Events widget. The <code>before</code> and <code>after</code> attributes should be numbers; the <code>type</code> attribute can be either "event" or "days", and the <code>category</code> attribute works the same way as the category attribute on the main calendar shortcode. Templates work using the template codes listed below. <code>fallback</code> provides text in case there are no events meeting your criteria. Order provides a sort order for the events list &ndash; either ascending (<code>asc</code>) or descending (<code>desc</code>). <code>Skip</code> is the number of events to skip in the upcoming events.','my-calendar'); ?>
+	<?php _e('This shortcode displays the output of the Upcoming Events widget. The <code>before</code> and <code>after</code> attributes should be numbers; the <code>type</code> attribute can be either "event" or "days", and the <code>category</code> and <code>author</code> attributes work the same way as on the main calendar shortcode. Templates work using the template codes listed below. <code>fallback</code> provides text in case there are no events meeting your criteria. Order provides a sort order for the events list &ndash; either ascending (<code>asc</code>) or descending (<code>desc</code>). <code>Skip</code> is the number of events to skip in the upcoming events.','my-calendar'); ?>
 </p>
-<p><code>[my_calendar_today category="" fallback="Nothing today!" template="{title} {date}"]</code></p>
+<p><code>[my_calendar_today category="" author="1" fallback="Nothing today!" template="{title} {date}"]</code></p>
 <p>
-	<?php _e('Predictably enough, this shortcode displays the output of the Today\'s Events widget, with three configurable attributes: category, template and fallback text.','my-calendar'); ?>
+	<?php _e('Predictably enough, this shortcode displays the output of the Today\'s Events widget, with four configurable attributes: category, author, template and fallback text.','my-calendar'); ?>
 </p>
 <p>
 <em><?php _e('Both Upcoming Events and Today\'s Events can also be configured using widgets.','my-calendar'); ?></em>
+</p>
+<p><code>[my_calendar_event event="" template="&lt;h3&gt;{title}&lt;/h3&gt;{description}" list="&lt;li&gt;{date}, {time}&lt;/li&gt;" before="&lt;ul&gt;" after="&lt;/ul&gt;"]</code></p>
+<p>
+	<?php _e('Displays a single event and/or all dates for that event. If template is set to a blank value, will only display the list of occurrences. If the list attribute is set blank, will only show the event template','my-calendar'); ?>
 </p>
 
 <h4><?php _e('Supplement Features (Locations filter, Categories filter)','my-calendar'); ?></h4>
@@ -57,10 +62,11 @@ global $wp_plugin_dir;
 <p>
 	<?php _e('This shortcode produces a list of event locations, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>, <code>type</code> is either <code>saved</code> (to show items from your stored locations), or <code>custom</code> (to show the options configured in your user settings). <code>datatype</code> must be the type of data your limits are choosing from: <code>name</code> (business name), <code>city</code>, <code>state</code>, <code>country</code>, <code>zip</code> (postal code), or <code>region</code>.','my-calendar'); ?>
 </p>
-<p><code>[my_calendar_show_locations datatype=""]</code></p>
+<p><code>[my_calendar_show_locations datatype="" template=""]</code></p>
 <p>
 	<?php _e('If you want to display a list of locations in your database, use this shortcode. The <code>datatype</code> is the type of data displayed; all lists will include a link to the map of that location. In addition to basic location information as in the above shortcode, you can also use "hcard" to display all available location information.','my-calendar'); ?>
-</p>
+	<?php _e('Use the <code>template</code> attribute to show your own customized set of data. The data will be sorted by the <code>datatype</code> value.','my-calendar'); ?>
+	</p>
 <p><code>[my_calendar_categories show="list"]</code></p>
 <p>
 	<?php _e('This shortcode produces a list of event categories, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>.','my-calendar'); ?>
@@ -144,6 +150,9 @@ global $wp_plugin_dir;
 		<dt><code>{daterange}</code></dt>
 		<dd><?php _e('Displays the beginning date to the end date for events. Does not show end date if same as start date.','my-calendar'); ?></dd>
 
+		<dt><code>{timerange}</code></dt>
+		<dd><?php _e('Displays the beginning and end times for events. Does not show end time if same as start or if marked as hidden.','my-calendar'); ?></dd>	
+		
 		<dt><code>{dtstart}</code></dt>
 		<dd><?php _e('Timestamp for beginning of event.','my-calendar'); ?></dd>
 		
@@ -231,6 +240,9 @@ global $wp_plugin_dir;
 		<dt><code>{sitelink}</code></dt>
 		<dd><?php _e('Output the URL for the location link.','my-calendar'); ?></dd>
 
+		<dt><code>{phone}</code></dt>
+		<dd><?php _e('Output the stored phone number for the location.','my-calendar'); ?></dd>
+		
 		<dt><code>{sitelink_html}</code></dt>
 		<dd><?php _e('Output a hyperlink to the location\'s listed link with default link text.','my-calendar'); ?></dd>
 
