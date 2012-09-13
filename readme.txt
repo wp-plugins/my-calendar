@@ -49,7 +49,7 @@ Basic Features:
 
 This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/) in April 2010. You can import any previous scheduled events from Kieran's calendar into My Calendar.
 
-Languages available:
+Languages available: [visit the My Calendar translations page to view](http://translate.joedolson.com/projects/my-calendar).
 
 * American English (Default)
 * Hindi ([Outshine Solutions](http://outshinesolutions.com)) - to 1.10.12
@@ -88,6 +88,11 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.0.2 =
+
+* Bug fix: My Calendar did not enqueue jQuery
+* Bug fix: Grid view did not display last day of month if first day of week and last day of month were both Sunday
 
 = 2.0.1 =
 

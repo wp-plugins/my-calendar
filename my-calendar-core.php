@@ -920,13 +920,19 @@ global $wp_query;
 					$array = array();
 				}
 			}
-			if ( @in_array( $id, $array ) || trim ( get_option( 'mc_show_js' ) ) == '' ) {	
+			if ( @in_array( $id, $array ) || trim ( get_option( 'mc_show_js' ) ) == '' ) {
 				echo $scripting;
 			}
 		}
 	}
 }
 
+function mc_enqueue() {
+global $wp_query;
+	if ( get_option('mc_calendar_javascript') != 1 || get_option('mc_list_javascript') != 1 || get_option('mc_mini_javascript') != 1 || get_option('mc_ajax_javascript') != 1 ) {
+		wp_enqueue_script('jquery');
+	}
+}
 
 function mc_month_comparison($month) {
 	$offset = (60*60*get_option('gmt_offset'));
