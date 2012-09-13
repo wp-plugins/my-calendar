@@ -1,10 +1,10 @@
-
 === My Calendar ===
 Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager
 Requires at least: 2.9.2
-Tested up to: 3.4.1
+Tested up to: 3.4.2
+License: GPLv2 or later
 Stable tag: trunk
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
@@ -15,15 +15,15 @@ My Calendar provides event management and numerous methods to display your event
 
 Basic Features:
 
-* 	[User's Guide available for purchase](http://www.joedolson.com/articles/my-calendar/users-guide/) for assistance in set up and use.
 *	Standard calendar grid or list views of events
 * 	Show events in monthly, weekly, or daily view.
-* 	Mini-calendar view for compact displays (widget or as shortcode)
-*	Widget with today's events
-*	Widget with upcoming or past events 
-*	Custom templates for event layout
+* 	Mini-calendar view for compact displays (as widget or as shortcode)
+*	Widget to show today's events
+*	Widget to show upcoming or past events 
+*	Custom templates for event output
 *	Limit by category/categories
 * 	Limit by location
+* 	Limit by author
 *	Disable default CSS and default JavaScript or display only on specific Pages/Posts
 *	Editable CSS styles and JavaScript behaviors
 *	Schedule a wide variety of recurring events.
@@ -44,8 +44,8 @@ Basic Features:
 *   Fetch events from a remote MySQL database. (Sharing events in a network of sites.)
 *   Import method from Kieran O'Shea's Calendar plugin
 * 	Integrated Help page to guide in use of shortcodes and template tags
-
-The [User's Guide](http://www.joedolson.com/articles/my-calendar/users-guide/) provides 70 pages of troubleshooting, customization, and setup information. 
+* 	[User's Guide available for purchase](http://www.joedolson.com/articles/my-calendar/users-guide/) with extensive assistance in set up and use.
+*   [Paid plug-in to add front-end event contributions](https://www.joedolson.com/articles/my-calendar/submissions/)
 
 This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/) in April 2010. You can import any previous scheduled events from Kieran's calendar into My Calendar.
 
@@ -65,7 +65,7 @@ Languages available:
 * Italian ([Sabir Musta](http://mustaphasabir.altervista.org)) - to 1.7.0
 * Brazilian Portuguese (Leonardo Kfoury) - to 1.6.0?
 
-New or updated translations are always appreciated. Visit <a href="http://translate.joedolson.com">my translations site</a> to start getting your language into shape!
+Translating my plug-ins is always appreciated. Visit <a href="http://translate.joedolson.com">my translations site</a> to start getting your language into shape!
 
 == Installation ==
 
@@ -88,6 +88,28 @@ New or updated translations are always appreciated. Visit <a href="http://transl
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.0 =
+
+* Completely re-written database model for events.
+* Added: pagination on event manager list of events.
+* Added: Restrict groups manager lists to currently grouped/ungrouped lists of events.
+* Added links to other event instances visible when editing events with multiple instances.
+* Added default category selection.
+* Added feature: limit calendar views by event author.
+* Added feature: filter event manager view by location, author, or category.
+* Added feature: mark categories as private, to only show those events to logged-in users.
+* Added templating to locations list so user can produce list of any set of location data.
+* Added option in event manager to copy location data into Locations table
+* Added [my_calendar_event] shortcode to fetch information for a single event.
+* Added template tag {timerange} to display start-end times.
+* Change: all events now have an end time. Option to hide end times to maintain current display. 
+* Bug fix: iCal had missing newline; events now return labeled UTC time
+* Bug fix: RSS does better job of clearing non-XML special characters.
+* Bug fix: If preset location was selected, no other edits to locations could be done. 
+* Bug fix: when copying an event, the new event was grouped in the same group as the source event. 
+* Bug fix: if stylesheet was disabled, stylesheet was erased on next save of style settings.
+* Bug fix to category limiting which matched category names like 'baseball' to show 'all' categories.
 
 = 1.11.3 =
 
@@ -126,7 +148,7 @@ New or updated translations are always appreciated. Visit <a href="http://transl
 * Redesign of settings pages.
 * Can target tablet devices with CSS by adding a stylesheet called mc-tablet.css to your theme directory.
 * Can target other mobile devices with CSS by adding a stylesheet called mc-mobile.css to your theme directory.
-* Template tags now support before and after attributes: {tag before="<p>" after="</p>"}
+* Template tags now support before and after attributes: {tag before=&quot;&lt;p&gt;&quot; after=&quot;&lt;/p&gt;&quot;}
 * Added option to retrieve events, categories, and locations from a remote database. (e.g., to share calendar information between 3 related sites.)
 * Eliminated details arrow; forcing anchor element on clickable title. 
 * Added 'id' attribute to My Calendar shortcode, to customize unique ID for calendar and avoid non-compliant duplication of IDs
@@ -825,6 +847,10 @@ Because the majority of users end up on my web site asking for help anyway -- an
 
 I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/articles/my-calendar/users-guide/) for $21. ($19 if you're not interested in getting updates.) This helps defray the thousand plus hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
 
+= How can visitors to my site submit events? =
+
+I've written a paid plug-in that adds this feature to My Calendar, called My Calendar: Submissions. You can [buy it at my web site](https://www.joedolson.com/articles/my-calendar/submissions/)!
+
 == Screenshots ==
 
 1. Calendar using calendar list format.
@@ -839,5 +865,9 @@ I can! Just not in person. I've written a User's Guide for My Calendar, which yo
 10. Template editing
 
 == Upgrade Notice ==
-- Version 1.11.3: Minor bug fixes.
-- Version 1.11.0: Major revision to permissions. Significant template customization options added. Various other feature improvements.
+
+= 2.0.0 =
+Major database redesign. Some new features, including single event view and pagination in events lists. Database update is non-destructive; no data will be deleted.
+
+= 1.10.6 = 
+Fixes major XSS security flaw.

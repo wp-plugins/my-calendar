@@ -18,7 +18,7 @@ padding: 0;
 .mc-main .list-event .details, .mc-main td {border:1px solid #eee; }
 .mc-main .calendar-event .details, .mc-main .calendar-events {color:#000;}
 .mc-main .my-calendar-nav li a, .mc-main .calendar-event .details, .mc-main .calendar-events  {border:1px solid #bbb; }
-.mc-main .list-event .details, .mc-main .day-without-date {background:#fafafa;}
+.mc-main .list-event .details {background:#fafafa;}
 .mc-main .nextmonth, .mc-main .nextmonth .weekend {color: #777;}
 .mc-main .mc-list .odd {background:#e3e3e3; }
 .mc-main .odd .list-event .details {
@@ -188,7 +188,6 @@ vertical-align: top;
 }
 .mc-main .my-calendar-nav ul {
 height: 2.95em;
-list-style-type:none;
 margin:0;
 padding:0;
 }
@@ -196,7 +195,7 @@ padding:0;
 
 .mc-main .my-calendar-nav li {
 float:left;
-list-style-type: none;
+list-style-type: none!important; /* It really is pretty important. */;
 }
 
 .mc-main .my-calendar-nav li:before {

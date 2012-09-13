@@ -81,7 +81,7 @@ function edit_mc_templates() {
 		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-templates"); ?>">
 		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 		<p>
-		<input type="checkbox" id="mc_use_grid_template" name="mc_use_grid_template" value="1"  <?php jd_cal_checkCheckbox('mc_use_grid_template',1); ?>/> <label for="mc_use_grid_template"><?php _e('Use this grid event template','my-calendar'); ?></label>
+		<input type="checkbox" id="mc_use_grid_template" name="mc_use_grid_template" value="1"  <?php mc_is_checked('mc_use_grid_template',1); ?>/> <label for="mc_use_grid_template"><?php _e('Use this grid event template','my-calendar'); ?></label>
 		</p>
 		<p>
 		<label for="mc_grid_template"><?php _e('Your custom template for events in the calendar grid output.','my-calendar'); ?></label><br /><textarea id="mc_grid_template" name="mc_grid_template" class="template-editor" rows="12" cols="76"><?php echo $mc_grid_template; ?></textarea>
@@ -101,7 +101,7 @@ function edit_mc_templates() {
 		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-templates"); ?>">
 		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 		<p>
-		<input type="checkbox" id="mc_use_list_template" name="mc_use_list_template" value="1"  <?php jd_cal_checkCheckbox('mc_use_list_template',1); ?>/> <label for="mc_use_list_template"><?php _e('Use this list event template','my-calendar'); ?></label>
+		<input type="checkbox" id="mc_use_list_template" name="mc_use_list_template" value="1"  <?php mc_is_checked('mc_use_list_template',1); ?>/> <label for="mc_use_list_template"><?php _e('Use this list event template','my-calendar'); ?></label>
 		</p>
 		<p>
 		<label for="mc_list_template"><?php _e('Your custom template for events in calendar list output.','my-calendar'); ?></label><br /><textarea id="mc_list_template" name="mc_list_template" class="template-editor" rows="12" cols="76"><?php echo $mc_list_template; ?></textarea>
@@ -121,7 +121,7 @@ function edit_mc_templates() {
 		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-templates"); ?>">
 		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 		<p>
-		<input type="checkbox" id="mc_use_mini_template" name="mc_use_mini_template" value="1"  <?php jd_cal_checkCheckbox('mc_use_mini_template',1); ?>/> <label for="mc_use_mini_template"><?php _e('Use this mini event template','my-calendar'); ?></label>
+		<input type="checkbox" id="mc_use_mini_template" name="mc_use_mini_template" value="1"  <?php mc_is_checked('mc_use_mini_template',1); ?>/> <label for="mc_use_mini_template"><?php _e('Use this mini event template','my-calendar'); ?></label>
 		</p>
 		<p>
 		<label for="mc_mini_template"><?php _e('Your custom template for events in sidebar/mini calendar output.','my-calendar'); ?></label><br /><textarea id="mc_mini_template" name="mc_mini_template" rows="12" cols="76" class="template-editor"><?php echo $mc_mini_template; ?></textarea>
@@ -141,7 +141,7 @@ function edit_mc_templates() {
 		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-templates"); ?>">
 		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 		<p>
-		<input type="checkbox" id="mc_use_details_template" name="mc_use_details_template" value="1"  <?php jd_cal_checkCheckbox('mc_use_details_template',1); ?>/> <label for="mc_use_details_template"><?php _e('Use this details template','my-calendar'); ?></label>
+		<input type="checkbox" id="mc_use_details_template" name="mc_use_details_template" value="1"  <?php mc_is_checked('mc_use_details_template',1); ?>/> <label for="mc_use_details_template"><?php _e('Use this details template','my-calendar'); ?></label>
 		</p>
 		<p>
 		<label for="mc_details_template"><?php _e('Your custom template for events on the event details page.','my-calendar'); ?></label><br /><textarea id="mc_details_template" name="mc_details_template" rows="12" cols="76" class="template-editor"><?php echo $mc_details_template; ?></textarea>
