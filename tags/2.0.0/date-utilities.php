@@ -17,6 +17,7 @@ function my_calendar_add_date($givendate,$day=0,$mth=0,$yr=0) {
 	$newdate = mktime(date('H',$cd),date('i',$cd), date('s',$cd), date('m',$cd)+$mth,date('d',$cd)+$day, date('Y',$cd)+$yr);
 	return $newdate;
 }
+//returns true if the date is before or equal,
 function my_calendar_date_comp($early,$late) {
 	$firstdate = strtotime($early);
 	$lastdate = strtotime($late);
@@ -26,7 +27,7 @@ function my_calendar_date_comp($early,$late) {
 		return false;
 	}
 }
-// where the above returns true if the date is before or equal, this one only returns if before
+// true if first date before second date
 function my_calendar_date_xcomp($early,$late) {
 	$firstdate = strtotime($early);
 	$lastdate = strtotime($late);
@@ -36,7 +37,7 @@ function my_calendar_date_xcomp($early,$late) {
 		return false;
 	}
 }
-
+// true if dates are the same
 function my_calendar_date_equal($early,$late) {
 	$firstdate = strtotime($early);
 	$lastdate = strtotime($late);

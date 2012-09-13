@@ -12,7 +12,7 @@ padding: 0;
 }
 .mc-main .my-calendar-date-switcher .button {font-size: .9em;}
 .mc-main .calendar-event .details, .mc-main .calendar-events {color:#000;}
-.mc-main .list-event .details, .mc-main .day-without-date {background:#fafafa;}
+.mc-main .list-event .details {background:#fafafa;}
 .mc-main .nextmonth, .mc-main .nextmonth .weekend {color: #777;}
 .mc-main .mc-list .odd {background:#d3e3e3;}
 .mc-main .odd .list-event .details {background:#e3f3f3;}

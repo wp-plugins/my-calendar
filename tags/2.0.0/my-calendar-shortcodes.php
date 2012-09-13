@@ -13,6 +13,7 @@ function my_calendar_insert($atts,$content=null) {
 				'time' => 'month',
 				'ltype' => '',
 				'lvalue' => '',
+				'author' => 'all',
 				'id' => 'jd-calendar',
 				'template' => ''
 			), $atts));
@@ -22,7 +23,7 @@ function my_calendar_insert($atts,$content=null) {
 		}
 	}
 	//apply_filters( 'mc_filter_calendar_name',$all_styles,$styles );
-	return my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle,$time, $ltype, $lvalue, $id, $template,$content );
+	return my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle,$time, $ltype, $lvalue, $id, $template,$content,$author );
 }
 
 function my_calendar_insert_upcoming($atts) {
@@ -35,17 +36,19 @@ function my_calendar_insert_upcoming($atts) {
 				'fallback' => '',
 				'order' => 'asc',
 				'skip' => '0',
+				'author' => 'default'				
 			), $atts));
-	return my_calendar_upcoming_events($before, $after, $type, $category, $template, $fallback, $order, $skip);
+	return my_calendar_upcoming_events($before, $after, $type, $category, $template, $fallback, $order, $skip, $author );
 }
 
 function my_calendar_insert_today($atts) {
 	extract(shortcode_atts(array(
 				'category' => 'default',
+				'author' => 'default',
 				'template' => 'default',
 				'fallback' => ''
 			), $atts));
-	return my_calendar_todays_events($category, $template, $fallback);
+	return my_calendar_todays_events($category, $author, $template, $fallback);
 }
 
 function my_calendar_locations($atts) {
@@ -60,9 +63,10 @@ function my_calendar_locations($atts) {
 function my_calendar_show_locations_list($atts) {
 	extract(shortcode_atts(array(
 				'show' => 'list',
-				'datatype' => 'name'
+				'datatype' => 'name',
+				'template' => ''
 			), $atts));
-	return my_calendar_show_locations($show,$datatype);
+	return my_calendar_show_locations($show,$datatype,$template);
 }
 
 function my_calendar_categories($atts) {
@@ -72,4 +76,13 @@ function my_calendar_categories($atts) {
 	return my_calendar_categories_list( $show );
 }
 
-?>
+function my_calendar_show_event($atts) {
+	extract(shortcode_atts(array(
+				'event' => '',
+				'template' => '<h3>{title}</h3>{description}',
+				'list' => '<li>{date}, {time}</li>',
+				'before' => '<ul>',
+				'after' => '</ul>'
+			), $atts));
+	return mc_instance_list( $event, false, $template, $list, $before, $after );
+}

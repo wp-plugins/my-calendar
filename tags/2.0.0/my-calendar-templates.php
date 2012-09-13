@@ -21,6 +21,9 @@ function jd_draw_template($array,$template,$type='list') {
 				// secondary search for RSS output
 				$rss_search = "{rss_$key}";
 				$charset = get_option('blog_charset');
+				//$value = htmlspecialchars( $value, ENT_QUOTES, $charset );
+				//$value = htmlentities( $value, ENT_XML1, $charset );
+			//	if ( $key == 'description' ) { echo $value; }
 				$value = xml_entities( $value, $charset );
 				$value = xml_entity_decode( $value, $charset );
 				$template = stripcslashes(str_replace($rss_search,$value,$template));
@@ -96,10 +99,9 @@ function mc_hcard( $event, $address='true', $map='true', $source='event' ) {
 	return $hcard;
 }
 
-// Draw an event but customise the HTML for use in the widget
+// Produces the array of event details used for drawing templates
 function event_as_array($event,$type='html') {
-	global $wpdb,$wp_plugin_dir,$wp_plugin_url;
-	$mcdb = $wpdb;
+	global $wp_plugin_dir,$wp_plugin_url;
 	// My Calendar must be updated to run this function
 	check_my_calendar();
 	$details = array();
@@ -111,13 +113,19 @@ function event_as_array($event,$type='html') {
 	$id = $event->event_id;
 	$offset = (60*60*get_option('gmt_offset'));  
 	$category_icon = esc_attr($event->category_icon);
-	$path = (is_custom_icon())?plugins_url('/my-calendar-custom/'):plugins_url('icons',__FILE__).'/';
+	$path = ( is_custom_icon() )?plugins_url('/my-calendar-custom/'):plugins_url('icons',__FILE__).'/';
 	$category_icon = $path . $category_icon;
-		$e = get_userdata($event->event_author);
-		$host = get_userdata($event->event_host);
-		$details['author'] = $e->display_name;
-		$details['host'] = (!$host || $host->display_name == '')?$e->display_name:$host->display_name; 
-		$details['host_email'] = (!$host || $host->user_email == '')?$e->user_email:$host->user_email; 
+		if ( $event->event_author != 0 ) {
+			$e = get_userdata($event->event_author);
+			$host = get_userdata($event->event_host);
+			$details['author'] = $e->display_name;
+			$details['host'] = (!$host || $host->display_name == '')?$e->display_name:$host->display_name; 
+			$details['host_email'] = (!$host || $host->user_email == '')?$e->user_email:$host->user_email;
+		} else {
+			$details['author'] = 'Public Submitter';
+			$details['host'] = 'Public Submitter';
+			$details['host_email'] = '';
+		}
 		
 	$map = mc_maplink( $event );
 	$map_url = mc_maplink( $event, 'url' );
@@ -144,7 +152,7 @@ function event_as_array($event,$type='html') {
 	$details['image'] = ( $event->event_image != '' )?"<img src='$event->event_image' alt='' class='mc-image' />":'';
 	$details['time'] = ( date( 'H:i:s', strtotime($event->occur_begin) ) == '00:00:00' )?get_option( 'mc_notime_text' ):date(get_option('mc_time_format'),strtotime($event->occur_begin));
 	$endtime = ( date( 'H:i:s', strtotime($event->occur_end) ) == '00:00:00')?'23:59:00':date( 'H:i:s',strtotime($event->occur_end) );	
-	$details['endtime'] = ( $event->occur_end == $event->occur_begin )?'':date_i18n( get_option('mc_time_format'),strtotime( $endtime ));
+	$details['endtime'] = ( $event->occur_end == $event->occur_begin || $event->event_hide_end == 1 )?'':date_i18n( get_option('mc_time_format'),strtotime( $endtime ));
 	$tz = mc_user_timezone();
 	if ($tz != '') {
 		$local_begin = date_i18n( get_option('mc_time_format'), strtotime($event->occur_begin ."+$tz hours") );
@@ -161,8 +169,8 @@ function event_as_array($event,$type='html') {
 	$oe = strtotime($event->occur_end);
 	$dtstart = date("Ymd\THi00", (mktime(date('H',$os),date('i',$os), date('s',$os), date('m',$os),date('d',$os), date('Y',$os) ) - ($offset*60*60) ) ); 
 	$dtend = date("Ymd\THi00", (mktime(date('H',$oe),date('i',$oe), date('s',$oe), date('m',$oe),date('d',$oe), date('Y',$oe) ) - ($offset*60*60) ) );
-	$details['ical_start'] = $dtstart;
-	$details['ical_end'] = $dtend;
+	$details['ical_start'] = $dtstart."Z";
+	$details['ical_end'] = $dtend."Z";
 		$ical_link = mc_build_url( array('vcal'=>$dateid), array('month','dy','yr','ltype','loc','mcat','format'), get_option( 'mc_uri' ) );
 	$details['ical'] = $ical_link;
 	$dates = mc_event_date_span( $event->event_group_id, $event->event_span, $date );
@@ -172,7 +180,8 @@ function event_as_array($event,$type='html') {
 	$details['rssdate'] = date( 'D, d M Y H:i:s +0000', strtotime( $event->event_added ) );	
 	$details['date'] = ($event->event_span != 1)?$date:mc_format_date_span( $dates, 'simple', $date );
 	$details['enddate'] = $date_end;
-	$details['daterange'] = ($date == $date_end)?$date:$date." <span>&ndash;</span> ".$date_end;	
+	$details['daterange'] = ($date == $date_end)?$date:"<span class='mc_db'>$date</span> <span>&ndash;</span> <span class='mc_de'>$date_end</span>";
+	$details['timerange'] = ( ($details['time'] == $details['endtime'] ) || $event->event_hide_end == 1 )?$details['time']:"<span class='mc_tb'>".$details['time']."</span> <span>&ndash;</span> <span class='mc_te'>".$details['endtime']."</span>";
 	$details['cat_id'] = $event->event_category;
 	$details['category'] = stripslashes($event->category_name);
 	$details['title'] = stripcslashes($event->event_title);

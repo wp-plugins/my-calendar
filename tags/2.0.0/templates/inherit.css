@@ -177,17 +177,11 @@ vertical-align: top;
 
 .mc-main .my-calendar-nav ul {
 height: 2.95em;
-list-style-type:none;
 margin:0;
 padding:0;
 }
-
 .mini .my-calendar-nav ul { height: 2em!important; }
-
-.mc-main .my-calendar-nav li {
-float:left;
-list-style-type: none;
-}
+.mc-main .my-calendar-nav li {float:left;list-style-type: none!important; /* It really is pretty important. */;}
 .mc-main .my-calendar-nav li:before { content:''; }
 .mc-main .my-calendar-nav li a {
 display:block;

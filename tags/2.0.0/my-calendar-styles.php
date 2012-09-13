@@ -67,18 +67,21 @@ function edit_my_calendar_styles() {
 	if ( isset( $_POST['mc_edit_style'] ) ) {
 		$nonce=$_REQUEST['_wpnonce'];
 		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
-		$my_calendar_style = stripcslashes( $_POST['style'] );
+		$my_calendar_style = ( isset($_POST['style']) )?stripcslashes( $_POST['style'] ):false;
 		$mc_show_css = stripcslashes( $_POST['mc_show_css'] );
 		$mc_css_file = stripcslashes( $_POST['mc_css_file'] );
 		
 		$stylefile = mc_get_style_path($mc_css_file);	
-		$wrote_styles = mc_write_styles($stylefile, $my_calendar_style);
+		$wrote_styles = ( $my_calendar_style !== false )?mc_write_styles($stylefile, $my_calendar_style):'disabled';
 		if ($wrote_styles == true) {
 			delete_option('mc_file_permissions');
 			delete_option('mc_style');
 		}
-		$message .= ( $wrote_styles == true)?'<p>'. __('The stylesheet has been updated.', 'my-calendar') .'</p>':'<p><strong>'. __('Write Error! Please verify write permissions on the style file.', 'my-calendar') .'</strong></p>';
-
+		if ( $wrote_styles == 'disabled' ) {
+			$message .= "<p>".__('Styles are disabled, and were not edited.','my-calendar')."</p>";
+		} else {
+			$message .= ( $wrote_styles == true)?'<p>'. __('The stylesheet has been updated.', 'my-calendar') .'</p>':'<p><strong>'. __('Write Error! Please verify write permissions on the style file.', 'my-calendar') .'</strong></p>';
+		}
 	
 		$mc_show_css = ( empty($_POST['mc_show_css']))?'':$_POST['mc_show_css'];
 		update_option('mc_show_css',$mc_show_css);
@@ -170,7 +173,7 @@ my_calendar_check_db();
 	</p>	
 	</fieldset>
 	</form>
-	
+	<hr />
     <form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-styles"); ?>">
 	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<div><input type="hidden" value="true" name="mc_edit_style" />
@@ -189,10 +192,10 @@ my_calendar_check_db();
 	<fieldset style="position:relative;">
     <legend><?php _e('CSS Style Options','my-calendar'); ?></legend>
 	<p>
-	<label for="mc_show_css"><?php _e('Apply CSS only on these pages (comma separated page IDs)','my-calendar'); ?></label> <input type="text" id="mc_show_css" name="mc_show_css" value="<?php echo $mc_show_css; ?>" />
+	<label for="mc_show_css"><?php _e('Apply CSS on these pages (comma separated IDs)','my-calendar'); ?></label> <input type="text" id="mc_show_css" name="mc_show_css" value="<?php echo $mc_show_css; ?>" />
 	</p> 	
 	<p>
-	<input type="checkbox" id="reset_styles" name="reset_styles" <?php if (mc_is_custom_style(get_option('mc_css_file'))) { echo "disabled='disabled'"; } ?> /> <label for="reset_styles"><?php _e('Restore My Calendar stylesheet','my-calendar'); ?></label> <input type="checkbox" id="use_styles" name="use_styles" <?php jd_cal_checkCheckbox('mc_use_styles','true'); ?> /> <label for="use_styles"><?php _e('Disable My Calendar Stylesheet','my-calendar'); ?></label>
+	<input type="checkbox" id="reset_styles" name="reset_styles" <?php if ( mc_is_custom_style( get_option('mc_css_file') ) ) { echo "disabled='disabled'"; } ?> /> <label for="reset_styles"><?php _e('Restore My Calendar stylesheet','my-calendar'); ?></label> <input type="checkbox" id="use_styles" name="use_styles" <?php mc_is_checked('mc_use_styles','true'); ?> /> <label for="use_styles"><?php _e('Disable My Calendar Stylesheet','my-calendar'); ?></label>
 	</p>	
 	<p>
 	<label for="style"><?php _e('Edit the stylesheet for My Calendar','my-calendar'); ?></label><br /><textarea class="style-editor" id="style" name="style" rows="30" cols="80"<?php if ( get_option('mc_use_styles') == 'true' ) { echo "disabled='disabled'"; } ?>><?php echo $my_calendar_style; ?></textarea>

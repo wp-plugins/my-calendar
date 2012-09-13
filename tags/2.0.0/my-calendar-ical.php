@@ -6,7 +6,7 @@ $y = ( isset($_GET['yr']) )?$_GET['yr']:date('Y');
 
 global $mc_version;
 // establish template
-	$template = "\nBEGIN:VEVENT
+	$template = "BEGIN:VEVENT
 UID:{dateid}-{id}
 LOCATION:{ical_location}
 SUMMARY:{title}
@@ -32,8 +32,10 @@ PRODID:-//Accessible Web Design//My Calendar//http://www.mywpcal.com//v'.$mc_ver
 		foreach ( array_keys($events) as $key) {
 			$event =& $events[$key];
 			if ( is_object($event) ) {
+				if ( !( $event->category_private == 1 && !is_user_logged_in() ) ) {
 				$array = event_as_array($event);
-				$output .= jd_draw_template($array,$template,'ical');
+				$output .= "\n".jd_draw_template($array,$template,'ical');
+				}
 			}
 		}
 	}
