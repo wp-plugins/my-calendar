@@ -36,9 +36,10 @@ function my_calendar_insert_upcoming($atts) {
 				'fallback' => '',
 				'order' => 'asc',
 				'skip' => '0',
-				'author' => 'default'				
+				'show_today' => 'yes',
+				'author' => 'default'			
 			), $atts));
-	return my_calendar_upcoming_events($before, $after, $type, $category, $template, $fallback, $order, $skip, $author );
+	return my_calendar_upcoming_events($before, $after, $type, $category, $template, $fallback, $order, $skip, $show_today, $author );
 }
 
 function my_calendar_insert_today($atts) {

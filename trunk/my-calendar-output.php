@@ -145,6 +145,7 @@ jQuery(document).ready(function($) {
 	$templates = get_option('mc_templates');
 	$title_template = ($templates['title'] == '' )?'{title}':$templates['title'];
 	$mytitle = jd_draw_template($data,$title_template);
+	if ( $mytitle == '' ) { $mytitle = jd_draw_template($data,'{title}'); } //prevent empty titles
 	if ( strpos( $mytitle,'http' ) === false ) { 
 		if ( get_option('mc_open_uri') == 'true' ) {
 		$details_link = mc_build_url( array('mc_id'=>$mc_id), array('month','dy','yr','ltype','loc','mcat'), get_option( 'mc_uri' ) );
@@ -184,7 +185,7 @@ jQuery(document).ready(function($) {
 			if ( $event->event_time != "00:00:00" && $event->event_time != '' ) {
 				$body_details .= "\n	<span class='event-time dtstart' title='".$id_start.'T'.$event->event_time."'>$event_date".date_i18n(get_option('mc_time_format'), strtotime($event->event_time));
 				if ( $event->event_hide_end == 0 ) {
-					if ($event->event_endtime != "00:00:00" && $event->event_endtime != '' && $event->event_endtime != $event->event_time ) {
+					if ($event->event_endtime != '' && $event->event_endtime != $event->event_time ) {
 						$body_details .= "<span class='time-separator'> &ndash; </span><span class='end-time dtend' title='".$id_end.'T'.$event->event_endtime."'>".date_i18n(get_option('mc_time_format'), strtotime($event->event_endtime))."</span>";
 					}
 				}
