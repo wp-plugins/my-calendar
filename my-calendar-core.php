@@ -69,7 +69,6 @@ function my_calendar_wp_head() {
   check_my_calendar();
   $styles = mc_get_style_path( get_option( 'mc_css_file' ),'url' );
 	if ( get_option('mc_use_styles') != 'true' ) {
-	
 		$this_post = $wp_query->get_queried_object();
 		if (is_object($this_post)) {
 			$id = $this_post->ID;

@@ -615,7 +615,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 			<label for="event_begin" id="eblabel"><?php _e('Start Date (YYYY-MM-DD)','my-calendar'); ?> <span><?php _e('(required)','my-calendar'); ?></span></label> <input type="text" id="event_begin" name="event_begin[]" class="event_begin calendar_input" size="11" value="<?php echo $event_begin; ?>" /> <label for="event_time"><?php _e('Time (hh:mm am/pm)','my-calendar'); ?></label> <input type="text" id="event_time" name="event_time[]" class="input" size="10"	value="<?php 
 					$offset = (60*60*get_option('gmt_offset'));
 					if ( !empty($data) ) {
-						echo ($data->event_time == "00:00:00")?'':date("h:i a",strtotime($data->event_time));
+						echo ($data->event_time == "00:00:00" && $data->event_endtime == "00:00:00")?'':date("h:i a",strtotime($data->event_time));
 					} else {
 						echo date_i18n("h:i a",time()+$offset);
 					}?>" /> 
@@ -623,7 +623,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 			<p>
 			<label for="event_end" id="eelabel"><?php _e('End Date (YYYY-MM-DD)','my-calendar'); ?></label> <input type="text" name="event_end[]" id="event_end" class="event_end calendar_input" size="11" value="<?php echo $event_end; ?>" /> <label for="event_endtime"><?php _e('End Time (hh:mm am/pm)','my-calendar'); ?></label> <input type="text" id="event_endtime" name="event_endtime[]" class="input" size="10" value="<?php
 					if ( !empty($data) ) {
-						echo ($data->event_endtime == "00:00:00")?'':date("h:i a",strtotime($data->event_endtime));
+						echo ($data->event_endtime == "00:00:00" && $data->event_time == "00:00:00")?'':date("h:i a",strtotime($data->event_endtime));
 					} else {
 						echo date("h:i a",strtotime( "+1 hour" )+$offset );
 					}?>" /> <input type="checkbox" value="1" id="event_hide_end" name="event_hide_end"<?php if ( !empty($data) && $data->event_hide_end == '1' ) { echo " checked=\"checked\""; } ?> /> <label for="event_hide_end"><?php _e('Hide end time','my-calendar'); ?></label>

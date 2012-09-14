@@ -1,7 +1,7 @@
 === My Calendar ===
 Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
-Tags: calendar, dates, times, events, scheduling, event manager
+Tags: calendar, dates, times, events, scheduling, event manager, event calendar
 Requires at least: 2.9.2
 Tested up to: 3.4.2
 License: GPLv2 or later
@@ -88,6 +88,12 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.0.3 =
+
+* Bug fix: Upcoming events widget did not support the "show_today's events" option correctly.
+* Bug fix: Was not possible to set 12:00 am as the end time for an event.
+* Bug fix: prevented blank title in main calendar due to faulty template.
 
 = 2.0.2 =
 
