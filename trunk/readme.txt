@@ -89,6 +89,11 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.0.4 =
+
+* Bug fix: template variable misassigned in the Today's Events shortcode.
+* Change: Added option to output iCal either in UTC or with times as entered. (Previously only UTC)
+
 = 2.0.3 =
 
 * Bug fix: Upcoming events widget did not support the "show_today's events" option correctly.

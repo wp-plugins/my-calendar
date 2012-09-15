@@ -49,7 +49,7 @@ function my_calendar_insert_today($atts) {
 				'template' => 'default',
 				'fallback' => ''
 			), $atts));
-	return my_calendar_todays_events($category, $author, $template, $fallback);
+	return my_calendar_todays_events($category, $template, $fallback, $author);
 }
 
 function my_calendar_locations($atts) {
