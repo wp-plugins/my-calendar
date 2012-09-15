@@ -167,10 +167,10 @@ function event_as_array($event,$type='html') {
 	$offset = get_option('gmt_offset'); // reset offset in hours
 	$os = strtotime($event->occur_begin);
 	$oe = strtotime($event->occur_end);
-	$dtstart = date("Ymd\THi00", (mktime(date('H',$os),date('i',$os), date('s',$os), date('m',$os),date('d',$os), date('Y',$os) ) - ($offset*60*60) ) ); 
-	$dtend = date("Ymd\THi00", (mktime(date('H',$oe),date('i',$oe), date('s',$oe), date('m',$oe),date('d',$oe), date('Y',$oe) ) - ($offset*60*60) ) );
-	$details['ical_start'] = $dtstart."Z";
-	$details['ical_end'] = $dtend."Z";
+	$dtstart = ( get_option('mc_ical_utc')=='true')?date("Ymd\THi00", (mktime(date('H',$os),date('i',$os), date('s',$os), date('m',$os),date('d',$os), date('Y',$os) ) - ($offset*60*60) ) )."Z":date("Ymd\THi00", (mktime(date('H',$os),date('i',$os), date('s',$os), date('m',$os),date('d',$os), date('Y',$os) ) ) ); 
+	$dtend = ( get_option('mc_ical_utc')=='true')?date("Ymd\THi00", (mktime(date('H',$oe),date('i',$oe), date('s',$oe), date('m',$oe),date('d',$oe), date('Y',$oe) ) - ($offset*60*60) ) )."Z":date("Ymd\THi00", (mktime(date('H',$oe),date('i',$oe), date('s',$oe), date('m',$oe),date('d',$oe), date('Y',$oe) ) ) );
+	$details['ical_start'] = $dtstart;
+	$details['ical_end'] = $dtend;
 		$ical_link = mc_build_url( array('vcal'=>$dateid), array('month','dy','yr','ltype','loc','mcat','format'), get_option( 'mc_uri' ) );
 	$details['ical'] = $ical_link;
 	$dates = mc_event_date_span( $event->event_group_id, $event->event_span, $date );

@@ -472,11 +472,11 @@ function mc_produce_upcoming_events($e,$template,$type='list',$order='asc',$skip
 function my_calendar_todays_events($category='default',$template='default',$substitute='',$author='all') {
 	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
 	$todays_cache = ($caching)? get_transient('mc_todays_cache') :'';
+
 if ( $caching && is_array($todays_cache) && @$todays_cache[$category] ) { return @$todays_cache[$category]; }
 	global $wpdb, $default_template;
 	$mcdb = $wpdb;
-	
-	  if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$output = '';
 	$offset = (60*60*get_option('gmt_offset'));  
 	// This function cannot be called unless calendar is up to date
@@ -484,6 +484,7 @@ if ( $caching && is_array($todays_cache) && @$todays_cache[$category] ) { return
     $defaults = get_option('mc_widget_defaults');
 	$template = ($template == 'default')?$defaults['today']['template']:$template;
 	if ($template == '' ) { $template = "$default_template"; };	
+
 	$category = ($category == 'default')?$defaults['today']['category']:$category;
 	$no_event_text = ($substitute == '')?$defaults['today']['text']:$substitute;
 
@@ -533,6 +534,7 @@ if ( $caching && is_array($todays_cache) && @$todays_cache[$category] ) { return
 			}
 			}
         }
+
 		if (count($events) != 0) {
 			$return = $header.$output.$footer;
 		} else {

@@ -159,12 +159,14 @@ function edit_my_calendar_config() {
 		update_option('mc_no_fifth_week',( !empty($_POST['mc_no_fifth_week']) && $_POST['mc_no_fifth_week']=='on')?'true':'false');
 			$mc_show_rss = ( !empty($_POST['mc_show_rss']) && $_POST['mc_show_rss']=='on')?'true':'false';
 			$mc_show_ical = ( !empty($_POST['mc_show_ical']) && $_POST['mc_show_ical']=='on')?'true':'false';
+			$mc_ical_utc = ( !empty($_POST['mc_ical_utc']) && $_POST['mc_ical_utc']=='on')?'true':'false';
 			$mc_show_print = ( !empty($_POST['mc_show_print']) && $_POST['mc_show_print']=='on')?'true':'false';
 			// just paste 'em together as a string. All that matters is whether any of them have changed.
 			$prev_show = get_option('mc_show_rss').'-'.get_option('mc_show_ical').'-'.get_option('mc_show_print');
 			$curr_show = "$mc_show_rss-$mc_show_ical-$mc_show_print";
 		update_option('mc_show_rss',$mc_show_rss);
 		update_option('mc_show_ical',$mc_show_ical);
+		update_option('mc_ical_utc',$mc_ical_utc);
 		update_option('mc_show_print',$mc_show_print);
 		if ( $prev_show != $curr_show ) { $update_text = " ".sprintf(__('Visit your <a href="%s">permalinks settings</a> and re-save them.','my-calendar'),admin_url('options-permalink.php')); } else { $update_text = ''; } 
 		echo "<div class=\"updated\"><p><strong>".__('Output Settings saved','my-calendar').".$update_text</strong></p></div>";
@@ -451,7 +453,8 @@ function edit_my_calendar_config() {
 	<input type="checkbox" id="mc_show_rss" name="mc_show_rss" <?php mc_is_checked('mc_show_rss','true'); ?> /> <label for="mc_show_rss"><?php _e('Show link to My Calendar RSS feed.','my-calendar'); ?></label> <small><?php _e('RSS feed shows recently added events.','my-calendar'); ?></small>
 	</li>
 	<li>
-	<input type="checkbox" id="mc_show_ical" name="mc_show_ical" <?php mc_is_checked('mc_show_ical','true'); ?> /> <label for="mc_show_ical"><?php _e('Show link to iCal format download.','my-calendar'); ?></label> <small><?php _e('iCal outputs events occurring in the current calendar month.','my-calendar'); ?></small>
+	<input type="checkbox" id="mc_show_ical" name="mc_show_ical" <?php mc_is_checked('mc_show_ical','true'); ?> /> <label for="mc_show_ical"><?php _e('Show link to iCal format download.','my-calendar'); ?></label> <small><?php _e('iCal outputs events occurring in the current calendar month.','my-calendar'); ?></small> <input type="checkbox" id="mc_ical_utc" name="mc_ical_utc" <?php mc_is_checked('mc_ical_utc','true'); ?> /> <label for="mc_ical_utc"><?php _e('iCal times are UTC','my-calendar'); ?></label>
+
 	</li>
 	<li>
 	<input type="checkbox" id="mc_show_print" name="mc_show_print" <?php mc_is_checked('mc_show_print','true'); ?> /> <label for="mc_show_print"><?php _e('Show link to print-formatted view of calendar','my-calendar'); ?></label>
