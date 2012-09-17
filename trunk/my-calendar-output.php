@@ -1,7 +1,7 @@
 <?php
 // Used to draw multiple events
 function my_calendar_draw_events($events, $type, $process_date, $time, $template='') {
-  if ( $type == 'mini' && ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'listanchor' || get_option('mc_open_day_uri') == 'calendaranchor' ) ) return;
+  if ( $type == 'mini' && ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'listanchor' || get_option('mc_open_day_uri') == 'calendaranchor' ) ) return true;
   // We need to sort arrays of objects by time
   if ( is_array($events) ) {
  usort($events, "my_calendar_time_cmp");
@@ -818,9 +818,10 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 						$thisday_heading = ($time == 'week')?"<small>$week_date_format</small>":date( 'j',$start );
 						$events = @$event_array[$date];
 							if ( !empty($events) ) {
-								$event_output = my_calendar_draw_events($events, $format, $date, $time, $template);									
+								$event_output = my_calendar_draw_events($events, $format, $date, $time, $template);
+								if ( $event_output === true ) { $event_output = ' '; }
 								$events_class = ( $event_output != '' )?mc_events_class($events):'no-events';
-								if ($format == 'mini' && $event_output != '') {
+								if ($format == 'mini' && $event_output != '' ) {
 									if ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'false' ) {
 										$target = array('yr'=>$c_year,'month'=>$c_month,'dy'=>date( 'j',$start ) );
 										if ( $category != '' ) { $target['mcat'] = $category; }

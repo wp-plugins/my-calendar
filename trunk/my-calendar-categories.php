@@ -104,7 +104,7 @@ my_calendar_check_db();
 			$cat_ID = $mcdb->insert_id;
 			update_option( 'mc_default_category',$cat_ID );
 			$append = __('Default category changed.','my-calendar');			
-		}
+		} else { $append = ''; }
 		if ( $results ) {
 			echo "<div class=\"updated\"><p><strong>".__('Category added successfully','my-calendar')." $append</strong></p></div>";
 		} else {
