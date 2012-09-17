@@ -89,6 +89,11 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.0.5 =
+
+* Bug fix: Date links were eliminated in mini calendar if option to link to day-view was enabled.
+* Bug fix: Today's events drew events based on UTC instead of current timezone.
+
 = 2.0.4 =
 
 * Bug fix: template variable misassigned in the Today's Events shortcode.

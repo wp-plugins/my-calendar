@@ -488,7 +488,7 @@ if ( $caching && is_array($todays_cache) && @$todays_cache[$category] ) { return
 	$category = ($category == 'default')?$defaults['today']['category']:$category;
 	$no_event_text = ($substitute == '')?$defaults['today']['text']:$substitute;
 
-	$from = $to = date('Y-m-d');
+	$from = $to = date( 'Y-m-d',time()+$offset );
     $events = my_calendar_grab_events($from, $to,$category,'','','upcoming',$author);
 	$header = "<ul id='todays-events'>";
 	$footer = "</ul>";		
@@ -508,11 +508,7 @@ if ( $caching && is_array($todays_cache) && @$todays_cache[$category] ) { return
 			if ( !in_array( $event->event_group_id, $groups ) )	{	
 				$event_details = event_as_array($event);
 				$date = date_i18n(get_option('mc_date_format'),time()+$offset);
-		
-				// correct displayed time to today - necessary for recurring events, problematic with multi-day events
-				if ( $event_details['event_span'] != 1 ) {
-					$event_details['date'] = $date;
-				}
+
 				$this_event = '';
 				if ( $event->event_holiday == 0 ) {
 					if ( get_option( 'mc_event_approve' ) == 'true' ) {
