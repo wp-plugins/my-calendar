@@ -548,8 +548,10 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 	$args = array('name'=>$name,'format'=>$format,'category'=>$category,'showkey'=>$showkey,'shownav'=>$shownav,'toggle'=>$toggle,'time'=>$time,'ltype'=>$ltype,'lvalue'=>$lvalue, 'author'=>$author);
 	$my_calendar_body .= apply_filters('mc_before_calendar','',$args);
 	
+	//echo "<p>Debug:<br /><pre>".print_r( $args, 1 )."</pre></p>";
+
 	$main_class = ( $name !='' )?sanitize_title($name):'all';
-	$cid = ( isset( $_GET['cid'] ) )?esc_attr(strip_tags($_GET['cid'])):'all';
+	$cid = ( isset( $_GET['cid'] ) )?esc_attr(strip_tags($_GET['cid'])):$main_class;
 	
 	// mc body wrapper
 	$mc_wrapper = "<div id=\"$id\" class=\"mc-main $format $time $main_class\">";
@@ -601,7 +603,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 		}
 		// If we don't pass arguments we want a calendar that is relevant to today (current time period)
 		$c_m = 0;
-		if ( isset($_GET['dy']) && $main_class == $cid ) {
+		if ( isset($_GET['dy']) && $main_class == $cid && $time == 'day' ) { //
 			$c_day = (int) $_GET['dy'];
 		} else {
 			if ($time == 'week' ) {
@@ -641,6 +643,13 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 		$n_month = ( $c_month + 1 > 12 )?1:$c_month+1;
 		$p_month = ( $c_month - 1 < 1 )?12:$c_month-1;
 		$current_date = mktime( 0,0,0,$c_month,$c_day,$c_year );
+		$c_month = str_pad( $c_month, 2, '0', STR_PAD_LEFT );
+		$n_month = str_pad( $n_month, 2, '0', STR_PAD_LEFT );
+		$p_month = str_pad( $p_month, 2, '0', STR_PAD_LEFT );
+		
+		//echo "<p>Debug:<br />Day: $c_day<br />Month: $c_month<br />Year: $c_year<br />Date: ".date('Y-m-d',$current_date)."</p>";
+
+		
 		if ( $format == "list" && $time != 'week' ) {
 			$num = get_option( 'mc_show_months' ) - 1; // the number set is how months to show; but this value is how many *additional* months to show.
 			if ( $num > 0 && $time != 'day' && $time != 'week' ) {
@@ -723,7 +732,10 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 			// single day uses independent cycling.
 			$dayclass = strtolower(date_i18n('D',mktime (0,0,0,$c_month,$c_day,$c_year)));	
 			$from = $to = "$c_year-$c_month-$c_day";
+			//echo "<p>Debug: $from, $to, $category, $ltype, $lvalue, $author</p>";
+			// Need to find a way for this to catch events which occur on this day, but neither start nor finish on it....
 			$events = my_calendar_grab_events($from,$to,$category,$ltype,$lvalue,'calendar',$author);
+			//echo "<pre>".print_r($events,1)."</pre>";
 			$events_class = mc_events_class( $events );
 			$dateclass = mc_dateclass( time()+$offset, mktime(0,0,0,$c_month,$c_day, $c_year ) );
 			$mc_events = '';
@@ -822,10 +834,10 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 								if ( $event_output === true ) { $event_output = ' '; }
 								$events_class = ( $event_output != '' )?mc_events_class($events):'no-events';
 								if ($format == 'mini' && $event_output != '' ) {
-									if ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'false' ) {
-										$target = array('yr'=>$c_year,'month'=>$c_month,'dy'=>date( 'j',$start ) );
+									if ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'false' ) { // yes, this is weird. it's from some old settings...
+										$target = array('yr'=>date('Y',$start),'month'=>date('m',$start),'dy'=>date( 'j',$start ) );
 										if ( $category != '' ) { $target['mcat'] = $category; }
-										$day_url = mc_build_url( $target, array('month','dy','yr','ltype','loc','mcat'), get_option( 'mc_day_uri' ) );
+										$day_url = mc_build_url( $target, array('month','dy','yr','ltype','loc','mcat','cid'), get_option( 'mc_day_uri' ) );
 										$link = ( get_option('mc_day_uri') != '' )?$day_url:'#';
 									} else {
 										$atype = str_replace( 'anchor','',get_option('mc_open_day_uri') );
