@@ -13,6 +13,9 @@ Accessible WordPress event calendar plugin. Show events from multiple calendars 
 
 My Calendar provides event management and numerous methods to display your events. The plug-in can support individual site calendars within WordPress Multi-User, or multiple calendars displayed by categories of or locations for events. 
 
+* 	[User's Guide available for purchase](http://www.joedolson.com/articles/my-calendar/users-guide/) with extensive assistance in set up and use.
+*   [Paid plug-in to add front-end event contributions](https://www.joedolson.com/articles/my-calendar/submissions/)
+
 Basic Features:
 
 *	Standard calendar grid or list views of events
@@ -42,12 +45,8 @@ Basic Features:
 * 	Email notification to administrator when events are scheduled or reserved
 *	Location Manager for storing frequently used venues
 *   Fetch events from a remote MySQL database. (Sharing events in a network of sites.)
-*   Import method from Kieran O'Shea's Calendar plugin
+*   Import from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/)
 * 	Integrated Help page to guide in use of shortcodes and template tags
-* 	[User's Guide available for purchase](http://www.joedolson.com/articles/my-calendar/users-guide/) with extensive assistance in set up and use.
-*   [Paid plug-in to add front-end event contributions](https://www.joedolson.com/articles/my-calendar/submissions/)
-
-This calendar branched from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/) in April 2010. You can import any previous scheduled events from Kieran's calendar into My Calendar.
 
 Languages available: [visit the My Calendar translations page to view](http://translate.joedolson.com/projects/my-calendar).
 
@@ -88,6 +87,15 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.0.6 =
+
+* Bug fix: Mini calendar links pointed to current display month regardless of current display date.
+* Bug fix: if day parameter was set, the main calendar views showed events for month starting from that date.
+* Bug fix: if day view was targeted from mini calendar with default cid parameter set, would not react 
+* Bug fix: Calendar could not show events which had start and end dates which spanned the displayed period but were not included in the displayed period.
+* Moved screenshots into assets folder in version repository.
+* Translation source updated at http://translate.joedolson.com/ - now the translations need refreshing!
 
 = 2.0.5 =
 
@@ -893,6 +901,9 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 10. Template editing
 
 == Upgrade Notice ==
+
+= 2.0.6 =
+Thanks for your patience! With this major rewrite, I've wanted to clear out new bugs as fast as possible. 
 
 = 2.0.0 =
 Major database redesign. Some new features, including single event view and pagination in events lists. Database update is non-destructive; no data will be deleted.

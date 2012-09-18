@@ -129,7 +129,10 @@ function my_calendar_grab_events($from, $to,$category=null,$ltype='',$lvalue='',
 					JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
 					ON (event_category=category_id) 
 					WHERE $select_category $select_location $select_author $limit_string 
-					AND ( DATE(occur_begin) BETWEEN '$from 00:00:00' AND '$to 23:59:59' OR DATE(occur_end) BETWEEN '$from 00:00:00' and '$to 23:59:59' )";
+					AND ( DATE(occur_begin) BETWEEN '$from 00:00:00' AND '$to 23:59:59' 
+						OR DATE(occur_end) BETWEEN '$from 00:00:00' and '$to 23:59:59' 
+						OR ( DATE('$from') BETWEEN DATE(occur_begin) AND DATE(occur_end) ) 
+						OR ( DATE('$to') BETWEEN DATE(occur_begin) AND DATE(occur_end) ))";
 	$events = $mcdb->get_results( $event_query );
 	if (!empty($events)) {
 			foreach( array_keys($events) as $key) {
