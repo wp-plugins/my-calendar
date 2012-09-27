@@ -29,7 +29,6 @@ function my_calendar_generate_vcal( $event_id ) {
 $template = "BEGIN:VCALENDAR
 VERSION:2.0
 METHOD:PUBLISH
-X-WR-CALNAME: ". get_bloginfo('name') ." Calendar
 PRODID:-//Accessible Web Design//My Calendar//http://www.mywpcal.com//v$mc_version//EN';
 BEGIN:VEVENT
 UID:{dateid}-{id}

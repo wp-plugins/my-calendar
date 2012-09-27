@@ -331,7 +331,7 @@ $group_id = (int) $group_id;
 function mc_produce_upcoming_events($e,$template,$type='list',$order='asc',$skip=0,$before, $after, $hash=false) {
 	// $e has +5 before and +5 after if those values are non-zero.
 	// $e equals array of events based on before/after queries. Nothing has been skipped, order is not set, holidays are not dealt with.
-		$output = '';$near_events = array();$temp_array = array();$past = 1;$future = 1;
+		$output = '';$near_events = $temp_array = array();$past = $future = 1;
 		$offset = (60*60*get_option('gmt_offset'));
 		$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));		
          @usort( $e, "my_calendar_timediff_cmp" );// sort all events by proximity to current date
@@ -375,10 +375,10 @@ function mc_produce_upcoming_events($e,$template,$type='list',$order='asc',$skip
 								$near_events[] = $e[$i]; // split off another past event
 							} else if ( $future <= $after && ( !my_calendar_date_comp( $end,$current ) ) ) {
 								$near_events[] = $e[$i]; // split off another future event
-							}
+							} 
 							if ( my_calendar_date_comp( $beginning,$current ) ) { 			$past++;
-							} else if ( my_calendar_date_equal( $beginning,$current ) ) {	$present = 1;
-							} else {	$future++; }
+							} else if ( my_calendar_date_equal( $beginning,$current ) ) {  $present = 1;
+							} else { $future++; }
 						}
 						if ($past > $before && $future > $after) {
 							break;
@@ -390,7 +390,6 @@ function mc_produce_upcoming_events($e,$template,$type='list',$order='asc',$skip
 			$e = false;
 		  $events = $near_events;
 		  @usort( $events, "my_calendar_datetime_cmp" ); // sort split events by date
-		  
 		  // If there are more items in the list than there should be (which is possible, due to handling of current-day's events), pop them off.
 		  $intended = $before + $after;
 		  $actual = count($events);

@@ -122,7 +122,7 @@ if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'delete' ) {
 		<input type="hidden" name="event_instance" value="<?php echo (int) $_GET['date']; ?>" />
 		<?php } ?>
 		<input type="hidden" value="<?php echo (int) $_GET['event_id']; ?>" name="event_id" />
-		<input type="submit" name="submit" class="button-secondary delete" value="<?php _e('Delete','my-calendar'); echo " &quot;".$result[0]['event_title']."&quot;"; ?>" />
+		<input type="submit" name="submit" class="button-secondary delete" value="<?php _e('Delete','my-calendar'); echo " &quot;".stripslashes($result[0]['event_title'])."&quot;"; ?>" />
 		</form></p>
 		</div>
 	<?php
@@ -618,7 +618,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 						echo ($data->event_time == "00:00:00" && $data->event_endtime == "00:00:00")?'':date("h:i a",strtotime($data->event_time));
 					} else {
 						echo date_i18n("h:i a",time()+$offset);
-					}?>" /> 
+					}?>" /> <input type="checkbox" value="1" id="event_allday" name="event_allday"<?php if ( $data->event_time == '00:00:00' && $data->event_endtime == '00:00:00' ) { echo " checked=\"checked\""; } ?> /> <label for="event_allday"><?php _e('All day event','my-calendar'); ?></label>
 			</p>
 			<p>
 			<label for="event_end" id="eelabel"><?php _e('End Date (YYYY-MM-DD)','my-calendar'); ?></label> <input type="text" name="event_end[]" id="event_end" class="event_end calendar_input" size="11" value="<?php echo $event_end; ?>" /> <label for="event_endtime"><?php _e('End Time (hh:mm am/pm)','my-calendar'); ?></label> <input type="text" id="event_endtime" name="event_endtime[]" class="input" size="10" value="<?php
@@ -1154,7 +1154,9 @@ function mc_check_data($action,$post, $i) {
 		$end = date( 'Y-m-d',strtotime($end) );// regardless of entry format, convert.
 		$time = !empty($post['event_time'][$i]) ? trim($post['event_time'][$i]) : '';
 		$endtime = !empty($post['event_endtime'][$i]) ? trim($post['event_endtime'][$i]) : date('H:i:s',strtotime( $time . ' +1 hour' ) );
-		$repeats = !empty($post['event_repeats']) ? trim($post['event_repeats']) : 0;
+			$endtime = ( $time == '' || $time == '00:00:00' )?'00:00:00':$endtime; // set at midnight if all day.
+			if ( isset($post['event_allday']) ) { $time = $endtime = '00:00:00'; }
+		$repeats = ( !empty($post['event_repeats']) || trim($post['event_repeats'])=='' ) ? trim($post['event_repeats']) : 0;
 		$host = !empty($post['event_host']) ? $post['event_host'] : $current_user->ID;	
 		$category = !empty($post['event_category']) ? $post['event_category'] : '';
 		$linky = !empty($post['event_link']) ? trim($post['event_link']) : '';
@@ -1173,6 +1175,7 @@ function mc_check_data($action,$post, $i) {
 		$event_group_id = ( ( is_array($post['event_begin']) && count($post['event_begin'])>1 ) || mc_event_is_grouped( $group_id_submitted) )?$group_id_submitted:0;
 		$event_span = (!empty($post['event_span']) && $event_group_id != 0 ) ? 1 : 0;
 		$event_hide_end	= (!empty($post['event_hide_end']) ) ? 1 : 0;
+			$event_hide_end = ( $time == '' || $time == '00:00:00' )?1:0; // hide end time automatically on all day events
 		// set location
 			if ($location_preset != 'none') {
 				$sql = "SELECT * FROM " . my_calendar_locations_table() . " WHERE location_id = $location_preset";
