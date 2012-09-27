@@ -202,7 +202,7 @@ function mc_plugin_update_message() {
 }
 
 function mc_footer_js() { // need to enqueue these in shortcodes. May need to go to file editing?
-	if ( mc_is_mobile() && get_option('mc_mobile') == 'true' ) {
+	if ( mc_is_mobile() && get_option('mc_convert') == 'true' ) {
 		return;
 	} else {
 		$scripting = '';
@@ -1545,7 +1545,7 @@ function mc_increment_event( $id, $post=array() ) {
 		$numback = 0;
 		// if this event had a rep of 0, translate that.
 		$event_repetition = ( $event->event_repeats != 0)?$event->event_repeats:_mc_increment_values( $event->event_recur );
-		$numforward = $event_repetition;
+		$numforward = (int) $event_repetition;
 		if ( $event->event_recur != 'S' ) {
 			switch ($event->event_recur) {
 				case "D":

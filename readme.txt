@@ -48,21 +48,22 @@ Basic Features:
 *   Import from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/)
 * 	Integrated Help page to guide in use of shortcodes and template tags
 
-Languages available: [visit the My Calendar translations page to view](http://translate.joedolson.com/projects/my-calendar).
+Languages available: [visit the My Calendar translations page to see how complete these are](http://translate.joedolson.com/projects/my-calendar).
 
 * American English (Default)
-* Hindi ([Outshine Solutions](http://outshinesolutions.com)) - to 1.10.12
-* Danish ([Jakob Smith](http://www.omkalfatring.dk/)) - to 1.10.12
-* Czech ([globus2008](http://wordpress.org/support/profile/globus2008)) - to 1.10.12
-* French (Frederic Escallier) - to 1.9.8
-* Dutch (Luud Heck) - to 1.8.9
-* Japanese ([Daisuke Abe](http://www.alter-ego.jp/)) - to 1.8.5
-* Russian ([Alex](http://blog.sotvoril.ru/) - to 1.8.5
-* Turkish (Mehmet Ko&ccedil;ali) - to 1.8.4
-* German (Uwe Jonas) - to 1.7.8
-* Swedish (Efva Nyberg) - to 1.7.8
-* Italian ([Sabir Musta](http://mustaphasabir.altervista.org)) - to 1.7.0
-* Brazilian Portuguese (Leonardo Kfoury) - to 1.6.0?
+* Spanish ([Ale Gonzalez](http://60rpm.tv/i))
+* Hindi ([Outshine Solutions](http://outshinesolutions.com))
+* Danish ([Jakob Smith](http://www.omkalfatring.dk/))
+* Czech ([globus2008](http://wordpress.org/support/profile/globus2008))
+* French (Frederic Escallier)
+* Dutch (Luud Heck, Wim Strijbos)
+* Japanese ([Daisuke Abe](http://www.alter-ego.jp/))
+* Russian ([Alex](http://blog.sotvoril.ru/)
+* Turkish (Mehmet Ko&ccedil;ali)
+* German (Uwe Jonas, Florian Edelmann)
+* Swedish (Efva Nyberg)
+* Italian ([Sabir Musta](http://mustaphasabir.altervista.org), Massimo Sgobino)
+* Brazilian Portuguese (Leonardo Kfoury)
 
 Translating my plug-ins is always appreciated. Visit <a href="http://translate.joedolson.com">my translations site</a> to start getting your language into shape!
 
@@ -87,6 +88,16 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.0.7 =
+
+* Bug fix: Show list view on mobile devices option did not work.
+* Bug fix: No longer forcing links on titles in list or mini view.
+* Bug fix: All-day events came up with random end times.
+* Change: All-day checkbox added.
+* Change: All-day events automatically forced to hide end times.
+* Change: removed X-WR-CALNAME field from iCal output for improved compatibility
+* Updates: Partial updates to Spanish, Italian, and Dutch translations.
 
 = 2.0.6 =
 

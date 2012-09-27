@@ -146,7 +146,7 @@ jQuery(document).ready(function($) {
 	$title_template = ($templates['title'] == '' )?'{title}':$templates['title'];
 	$mytitle = jd_draw_template($data,$title_template);
 	if ( $mytitle == '' ) { $mytitle = jd_draw_template($data,'{title}'); } //prevent empty titles
-	if ( strpos( $mytitle,'http' ) === false ) { 
+	if ( strpos( $mytitle,'http' ) === false && $type != 'mini' && $type != 'list' ) { 
 		if ( get_option('mc_open_uri') == 'true' ) {
 		$details_link = mc_build_url( array('mc_id'=>$mc_id), array('month','dy','yr','ltype','loc','mcat'), get_option( 'mc_uri' ) );
 		$wrap = "<a href='$details_link'>"; $balance = "</a>";
@@ -557,7 +557,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 	$mc_wrapper = "<div id=\"$id\" class=\"mc-main $format $time $main_class\">";
 	$mc_closer = "</div>";
 	
-	if ( get_option('mc_mobile') == 'true' ) {	$format = ( mc_is_mobile() )?'list':$format; }
+	if ( get_option('mc_convert') == 'true' ) {	$format = ( mc_is_mobile() )?'list':$format; }
 	
 	$date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
 
@@ -603,7 +603,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 		}
 		// If we don't pass arguments we want a calendar that is relevant to today (current time period)
 		$c_m = 0;
-		if ( isset($_GET['dy']) && $main_class == $cid && $time == 'day' ) { //
+		if ( isset($_GET['dy']) && $main_class == $cid && ( $time == 'day' || $time == 'week' ) ) { //
 			$c_day = (int) $_GET['dy'];
 		} else {
 			if ($time == 'week' ) {

@@ -472,7 +472,7 @@ function edit_my_calendar_config() {
 	<li>
 	<input type="checkbox" id="mc_show_weekends" name="mc_show_weekends" <?php mc_is_checked('mc_show_weekends','true'); ?> /> <label for="mc_show_weekends"><?php _e('Show Weekends on Calendar','my-calendar'); ?></label>
 	</li>
-		<li>
+	<li>
 	<input type="checkbox" id="mc_convert" name="mc_convert" <?php mc_is_checked('mc_convert','true'); ?> /> <label for="mc_convert"><?php _e('Switch to list view on mobile devices','my-calendar'); ?></label>
 	</li>	
 	</ul>	
