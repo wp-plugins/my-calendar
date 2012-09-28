@@ -133,7 +133,7 @@ if ( current_user_can('mc_view_help') ) {
 			<div class="postbox support">
 			<h3><strong><?php _e('My Calendar: Submissions','my-calendar'); ?></strong></h3>
 			<div class="inside resources">
-				<p class="mcsbuy"><img src="<?php echo plugins_url('my-calendar/images/submissions.png'); ?>" alt="My Calendar: Submissions" class="alignleft" /><?php _e("Buy the <a href='http://www.joedolson.com/articles/my-calendar/users-guide/' rel='external'>My Calendar: Submissions add-on</a> &mdash; let your site's visitors help build your calendar.",'my-calendar'); ?></p>
+				<p class="mcsbuy"><img src="<?php echo plugins_url('my-calendar/images/submissions.png'); ?>" alt="My Calendar: Submissions" class="alignleft" /><?php _e("Buy the <a href='http://www.joedolson.com/articles/my-calendar/submissions/' rel='external'>My Calendar: Submissions add-on</a> &mdash; let your site's visitors help build your calendar.",'my-calendar'); ?></p>
 				<p class="mc-button"><a href="http://www.joedolson.com/articles/my-calendar/users-guide/" rel="external"><?php _e('Learn more!','my-calendar'); ?></a></p>
 			</div>
 			</div>
