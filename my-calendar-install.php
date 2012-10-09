@@ -404,7 +404,6 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 
 function mc_migrate_db() {
 	global $wpdb, $initial_occur_db;
-	//require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	// this function migrates the DB from version 1.10.x to version 2.0.
 	$tables = $wpdb->get_results("show tables;");
 		foreach ( $tables as $table ) {

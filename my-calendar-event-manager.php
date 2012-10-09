@@ -108,10 +108,18 @@ if ( !empty($_POST['mass_edit']) && isset($_POST['mass_approve']) ) {
 	echo $message;
 }
 
-if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'delete' ) {
+if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'delete' ) { 
 	    $sql = "SELECT event_title, event_author FROM " . my_calendar_table() . " WHERE event_id=" . (int) $_GET['event_id'];
 	   $result = $mcdb->get_results( $sql, ARRAY_A );
 	if ( mc_can_edit_event( $result[0]['event_author'] ) ) {
+		if ( isset( $_GET['date'] ) ) {
+			$event_instance = (int) $_GET['date'];
+			$sql = "SELECT occur_begin FROM " . my_calendar_event_table() . " WHERE occur_id=" . $event_instance;
+			$inst = $mcdb->get_var( $sql );
+			$instance_date = date('Y-m-d',strtotime($inst) );
+		} else {
+			$instance_date = '';
+		}
 	?>
 		<div class="error">
 		<form action="<?php echo admin_url('admin.php?page=my-calendar'); ?>" method="post">
@@ -119,20 +127,17 @@ if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'delete' ) {
 		<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />		
 		<input type="hidden" value="delete" name="event_action" />
 		<?php if ( !empty( $_GET['date'] ) ) { ?> 
-		<input type="hidden" name="event_instance" value="<?php echo (int) $_GET['date']; ?>" />
+			<input type="hidden" name="event_instance" value="<?php echo (int) $_GET['date']; ?>" />
 		<?php } ?>
 		<input type="hidden" value="<?php echo (int) $_GET['event_id']; ?>" name="event_id" />
-		<input type="submit" name="submit" class="button-secondary delete" value="<?php _e('Delete','my-calendar'); echo " &quot;".stripslashes($result[0]['event_title'])."&quot;"; ?>" />
+		<input type="submit" name="submit" class="button-secondary delete" value="<?php _e('Delete','my-calendar'); echo " &quot;".stripslashes( $result[0]['event_title'] )."&quot; ($instance_date)"; ?>" />
 		</form></p>
 		</div>
-	<?php
-	} else {
-	?>
+<?php } else { ?>
 		<div class="error">
-		<p><strong><?php _e('You do not have permission to delete that event.','my-calendar'); ?></strong></p>
+		<p><strong><?php _e( 'You do not have permission to delete that event.','my-calendar' ); ?></strong></p>
 		</div>
-	<?php
-	}
+<?php }
 }
 
 // Approve and show an Event ...originally by Roland
@@ -347,12 +352,17 @@ global $wpdb,$event_author;
 		if ( empty($event_id) )	{
 			$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__("You can't delete an event if you haven't submitted an event id",'my-calendar')."</p></div>";
 		} else {
-			$sql = "DELETE FROM " . my_calendar_table() . " WHERE event_id='" . (int) $event_id . "'";
-			$delete_occurrences = "DELETE FROM ".my_calendar_event_table()." WHERE occur_event_id = ".(int) $event_id;
-			$delete = $mcdb->query($delete_occurrences);			
-			$mcdb->query($sql);
-			$sql = "SELECT event_id FROM " . my_calendar_table() . " WHERE event_id='" . (int) $event_id . "'";
-			$result = $mcdb->get_results($sql);
+			if ( empty( $_POST['event_instance'] ) ) {
+				$sql = "DELETE FROM " . my_calendar_table() . " WHERE event_id='" . (int) $event_id . "'";
+				$delete_occurrences = "DELETE FROM ".my_calendar_event_table()." WHERE occur_event_id = ".(int) $event_id;
+				$delete = $mcdb->query($delete_occurrences);			
+				$mcdb->query($sql);
+				$sql = "SELECT event_id FROM " . my_calendar_table() . " WHERE event_id='" . (int) $event_id . "'";
+				$result = $mcdb->get_results($sql);
+			} else {
+				$delete = "DELETE FROM " . my_calendar_event_table(). " WHERE occur_id = ".(int) $_POST['event_instance'];
+				$result = $mcdb->get_results($delete);
+			}
 			if ( empty($result) || empty($result[0]->event_id) ) {
 				mc_delete_cache();
 				// do an action using the event_id
@@ -427,7 +437,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 	$mc_input = get_option('mc_input_options');
 	
 	$instance = ( isset($_GET['date'] ) )?(int) $_GET['date']:false;
-	if ( $instance ) { $ins = mc_get_instance_data( $instance ); $event_id = $ins->occur_event_id; $data = mc_get_event_core( $event_id ); $instance=false; }
+	if ( $instance ) { $ins = mc_get_instance_data( $instance ); $event_id = $ins->occur_event_id; $data = mc_get_event_core( $event_id );}
 	?>
 
 <div class="postbox-container" style="width: 70%">
@@ -435,9 +445,9 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 
 <?php if ( $mode == 'add' || $mode == 'copy' ) { $edit_args = ''; } else {
 	$edit_args = "&amp;mode=$mode&amp;event_id=$event_id";
-	if ( isset( $_GET['date'] ) && !empty($_GET['date']) ) { $date_id = (int) $_GET['date']; $edit_args .= "&amp;date=$date_id"; }
-} ?>
-
+	if ( $instance ) { $edit_args .= "&amp;date=$instance"; }
+} 
+?>
 <form id="my-calendar" method="post" action="<?php echo admin_url('admin.php?page=my-calendar').$edit_args; ?>">
 
 <div>
@@ -462,10 +472,10 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 			</p>	
 <?php
 	if ( !empty( $_GET['date'] ) && $data->event_recur != 'S' ) {
-		$event = mc_get_event( $date_id );
+		$event = mc_get_event( $instance );
 		$date = date_i18n( get_option('mc_date_format'),strtotime( $event->occur_begin ) );
 		$message = __("You are editing the <strong>$date</strong> instance of this event. Other instances of this event will not be changed.",'my-calendar');
-		echo "<div><input type='hidden' name='event_instance' value='$date_id' /></div>";
+		echo "<div><input type='hidden' name='event_instance' value='$instance' /></div>";
 		echo "<div class='message updated'><p>$message</p></div>";
 	} else if ( isset( $_GET['date'] ) && empty( $_GET['date'] ) ) {
 		echo "<div class='message updated'><p>".__('There was an error acquiring information about this event instance. The ID for this event instance was not provided. <strong>You are editing this entire recurrence set.</strong>','my-calendar')."</p></div>";
@@ -602,7 +612,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 				$event_begin = esc_attr($data->event_begin); 
 				$event_end = esc_attr($data->event_end);
 				if ( !empty($_GET['date'] ) ) {
-					$event = mc_get_event( $date_id ); 				
+					$event = mc_get_event( $instance ); 				
 					$event_begin = date( 'Y-m-d', strtotime( $event->occur_begin ) );
 					$event_end = date( 'Y-m-d', strtotime( $event->occur_end ) );
 				} 
@@ -618,7 +628,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 						echo ($data->event_time == "00:00:00" && $data->event_endtime == "00:00:00")?'':date("h:i a",strtotime($data->event_time));
 					} else {
 						echo date_i18n("h:i a",time()+$offset);
-					}?>" /> <input type="checkbox" value="1" id="event_allday" name="event_allday"<?php if ( $data->event_time == '00:00:00' && $data->event_endtime == '00:00:00' ) { echo " checked=\"checked\""; } ?> /> <label for="event_allday"><?php _e('All day event','my-calendar'); ?></label>
+					}?>" /> <input type="checkbox" value="1" id="event_allday" name="event_allday"<?php if ( !empty($data) && ( $data->event_time == '00:00:00' && $data->event_endtime == '00:00:00' ) ) { echo " checked=\"checked\""; } ?> /> <label for="event_allday"><?php _e('All day event','my-calendar'); ?></label>
 			</p>
 			<p>
 			<label for="event_end" id="eelabel"><?php _e('End Date (YYYY-MM-DD)','my-calendar'); ?></label> <input type="text" name="event_end[]" id="event_end" class="event_end calendar_input" size="11" value="<?php echo $event_end; ?>" /> <label for="event_endtime"><?php _e('End Time (hh:mm am/pm)','my-calendar'); ?></label> <input type="text" id="event_endtime" name="event_endtime[]" class="input" size="10" value="<?php
@@ -939,7 +949,7 @@ function jd_events_display_list( $type='normal' ) {
 	}
 	if ( $filter == '' ) { $filtered = ""; } else { $filtered = "<a href='".admin_url('admin.php?page=my-calendar')."'>".__('Clear filters','my-calendar')."</a>"; }
 	$current = empty($_GET['paged']) ? 1 : intval($_GET['paged']);
-	$items_per_page = 50;	
+	$items_per_page = ( get_option('mc_num_per_page') == '' )?50:get_option('mc_num_per_page');	
 	$events = $mcdb->get_results("SELECT SQL_CALC_FOUND_ROWS * FROM " . my_calendar_table() . " $limit ORDER BY $sortbyvalue $sortbydirection LIMIT ".(($current-1)*$items_per_page).", ".$items_per_page );
 	$found_rows = $wpdb->get_col("SELECT FOUND_ROWS();");
 	$items = $found_rows[0];
@@ -1175,7 +1185,7 @@ function mc_check_data($action,$post, $i) {
 		$event_group_id = ( ( is_array($post['event_begin']) && count($post['event_begin'])>1 ) || mc_event_is_grouped( $group_id_submitted) )?$group_id_submitted:0;
 		$event_span = (!empty($post['event_span']) && $event_group_id != 0 ) ? 1 : 0;
 		$event_hide_end	= (!empty($post['event_hide_end']) ) ? 1 : 0;
-			$event_hide_end = ( $time == '' || $time == '00:00:00' )?1:0; // hide end time automatically on all day events
+		$event_hide_end = ( $time == '' || $time == '00:00:00' )?1:$event_hide_end; // hide end time automatically on all day events
 		// set location
 			if ($location_preset != 'none') {
 				$sql = "SELECT * FROM " . my_calendar_locations_table() . " WHERE location_id = $location_preset";
