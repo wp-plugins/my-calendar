@@ -1,35 +1,47 @@
 <?php
 function jd_draw_template($array,$template,$type='list') {
+	//$mtime = microtime( true); // DEBUG PERFORMANCE
 	//1st argument: array of details
 	//2nd argument: template to print details into
 	$template = stripcslashes($template);	
-	foreach ($array as $key=>$value) {
+	foreach ( $array as $key=>$value ) {
 		if ( !is_object($value) ) {
-			if ($type != 'list') {
-				if ( $key == 'link' && $value == '') { $value = ( get_option('mc_uri') != '' )?get_option('mc_uri'):get_bloginfo('url'); }
-				if ( $key != 'guid') { $value = htmlentities($value); }
-			}
-			preg_match_all('/{'.$key.'\b(?>\s+(?:before="([^"]*)"|after="([^"]*)"|format="([^"]*)")|[^\s]+|\s+){0,2}}/', $template, $matches, PREG_PATTERN_ORDER );
-			if ( $matches ) {
-				$before = @$matches[1][0];
-				$after = @$matches[2][0];
-				$format = @$matches[3][0];
-				if ( $format != '' ) { $value = date( stripslashes($format),strtotime(stripslashes($value)) ); }
-				$value = ( $value == '' )?'':$before.$value.$after;
-				$search = @$matches[0][0];
-				$template = str_replace( $search, $value, $template );
-				// secondary search for RSS output
-				$rss_search = "{rss_$key}";
-				$charset = get_option('blog_charset');
-				//$value = htmlspecialchars( $value, ENT_QUOTES, $charset );
-				//$value = htmlentities( $value, ENT_XML1, $charset );
-			//	if ( $key == 'description' ) { echo $value; }
-				$value = xml_entities( $value, $charset );
-				$value = xml_entity_decode( $value, $charset );
-				$template = stripcslashes(str_replace($rss_search,$value,$template));
-			}
+			if ( strpos( $template, "{".$key ) !== false ) {
+				if ($type != 'list') {
+					if ( $key == 'link' && $value == '') { $value = ( get_option('mc_uri') != '' )?get_option('mc_uri'):get_bloginfo('url'); }
+					if ( $key != 'guid') { $value = htmlentities($value); }
+				}
+				if ( strpos( $template, "{".$key." " ) !== false ) { // only do preg_match if appropriate
+					preg_match_all('/{'.$key.'\b(?>\s+(?:before="([^"]*)"|after="([^"]*)"|format="([^"]*)")|[^\s]+|\s+){0,2}}/', $template, $matches, PREG_PATTERN_ORDER );
+					if ( $matches ) {
+						$before = @$matches[1][0];
+						$after = @$matches[2][0];
+						$format = @$matches[3][0];
+						if ( $format != '' ) { $value = date( stripslashes($format),strtotime(stripslashes($value)) ); }
+						$value = ( $value == '' )?'':$before.$value.$after;
+						$search = @$matches[0][0];
+						$template = str_replace( $search, $value, $template );
+					}
+				} else { // don't do preg match (never required for RSS)
+					$template = stripcslashes(str_replace( "{".$key."}", $value, $template ));
+					// secondary search for RSS output
+					$rss_search = "{rss_$key}";
+					if ( strpos( $template, $rss_search ) !== false ) {
+						$charset = get_option('blog_charset');
+						//$value = htmlspecialchars( $value, ENT_QUOTES, $charset );
+						//$value = htmlentities( $value, ENT_XML1, $charset );
+						//	if ( $key == 'description' ) { echo $value; }
+						$value = xml_entities( $value, $charset );
+						$value = xml_entity_decode( $value, $charset );
+						$template = stripcslashes(str_replace($rss_search,$value,$template));
+					}					
+				}
+			} // end {$key check
 		} 
 	}
+//$new = microtime( true );
+//$length = $new - $mtime;
+//echo $length . ' seconds<br />'; //DEBUG		
 	return stripslashes(trim($template));
 }
 

@@ -7,32 +7,38 @@ function my_calendar_import() {
 		define('KO_CALENDAR_TABLE', $mcdb->prefix . 'calendar');
 		define('KO_CALENDAR_CATS', $mcdb->prefix . 'calendar_categories');
 		$events = $mcdb->get_results("SELECT * FROM " . KO_CALENDAR_TABLE, 'ARRAY_A');
-		$sql = "";
+		$event_ids = array();
 		foreach ($events as $key) {
-			$title = mysql_real_escape_string($key['event_title']);
-			$desc = mysql_real_escape_string($key['event_desc']);
-			$begin = mysql_real_escape_string($key['event_begin']);
-			$end = mysql_real_escape_string($key['event_end']);
-			$time = mysql_real_escape_string($key['event_time']);
-			$recur = mysql_real_escape_string($key['event_recur']);
-			$repeats = mysql_real_escape_string($key['event_repeats']);
-			$author = mysql_real_escape_string($key['event_author']);
-			$category = mysql_real_escape_string($key['event_category']);
-			$linky = mysql_real_escape_string($key['event_link']);
-		    $sql = "INSERT INTO " . my_calendar_table() . " SET 
-			event_title='" . ($title) . "', 
-			event_desc='" . ($desc) . "', 
-			event_begin='" . ($begin) . "', 
-			event_end='" . ($end) . "', 
-			event_time='" . ($time) . "', 
-			event_recur='" . ($recur) . "', 
-			event_repeats='" . ($repeats) . "', 
-			event_author=".($author).", 
-			event_category=".($category).", 
-			event_link='".($linky)."';
-			";
-			$events_results = $mcdb->query($sql);		
-		}	
+			if ( $key['event_time'] == '00:00:00' ) {
+				$endtime = '00:00:00';
+			} else {
+				$endtime = date('H:i:s',strtotime( "$key[event_time] +1 hour" ) );
+			}
+			$data = array(
+				'event_title'=>$key['event_title'],
+				'event_desc'=>$key['event_desc'], 
+				'event_begin'=>$key['event_begin'], 
+				'event_end'=>$key['event_end'], 
+				'event_time'=>$key['event_time'], 
+				'event_endtime'=>$endtime,
+				'event_recur'=>$key['event_recur'], 
+				'event_repeats'=>$key['event_repeats'], 
+				'event_author'=>$key['event_author'], 
+				'event_category'=>$key['event_category'],
+				'event_hide_end'=>1,
+				'event_link'=>( isset($key['event_link']) )?$key['event_link']:'' );
+			$format = array( '%s','%s','%s','%s','%s','%s','%s','%d','%d','%d','%d','%s' );
+			$update = $mcdb->insert( my_calendar_table(), $data, $format );
+			$event_ids[] = $mcdb->insert_id;
+		}
+
+		foreach ( $event_ids as $value ) { // propagate event instances.
+				$sql = "SELECT event_begin, event_time, event_end, event_endtime FROM ".my_calendar_table()." WHERE event_id = $value";
+				echo "$sql<br />";
+				$event = $wpdb->get_results($sql);
+				$dates = array( 'event_begin'=>$event->event_begin,'event_end'=>$event->event_end,'event_time'=>$event->event_time,'event_endtime'=>$event->event_endtime );
+				$event = mc_increment_event( $value, $dates );				
+		}
 		$cats = $mcdb->get_results("SELECT * FROM " . KO_CALENDAR_CATS, 'ARRAY_A');	
 		$catsql = "";
 		foreach ($cats as $key) {
@@ -60,6 +66,12 @@ function my_calendar_import() {
 	} 
 }
 
+function mc_drop_table( $table ) {
+	global $wpdb;
+	$sql = "DROP TABLE ".$table();
+	$wpdb->query($sql);
+}
+
 function edit_my_calendar_config() {
 	global $wpdb,$default_user_settings;
 	$mcdb = $wpdb;
@@ -67,7 +79,20 @@ function edit_my_calendar_config() {
 	check_my_calendar();
 	if (!empty($_POST)) {
 		$nonce=$_REQUEST['_wpnonce'];
-		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");  
+		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed"); 
+		if ( isset($_POST['remigrate']) ) { 
+			echo "<div class='updated fade'><ol>";
+			echo "<li>".__('Dropping occurrences database table','my-calendar')."</li>";
+			mc_drop_table( 'my_calendar_event_table' );
+			sleep(1);
+			echo "<li>".__('Reinstalling occurrences database table.','my-calendar')."</li>";
+			mc_upgrade_db(); 
+			sleep(1);
+			echo "<li>".__('Generating event occurrences.','my-calendar')."</li>";
+			mc_migrate_db();
+			echo "<li>".__('Event generation completed.','my-calendar')."</li>";
+			echo "</ol></div>";
+		}
 	}
    if (isset($_POST['mc_manage'])) {
 		// management
@@ -81,7 +106,7 @@ function edit_my_calendar_config() {
 		update_option('mc_remote',$mc_remote);
 		update_option('mc_caching_enabled',$mc_caching_enabled);
 		update_option('mc_default_sort',$_POST['mc_default_sort']);
-		
+		update_option('mc_num_per_page',(int) $_POST['mc_num_per_page']);
 		
 		if ( get_site_option('mc_multisite') == 2 ) {
 			$mc_current_table = (int) $_POST['mc_current_table'];
@@ -268,14 +293,41 @@ function edit_my_calendar_config() {
 	$mc_uri = get_option('mc_uri');
 	$mc_day_uri = get_option('mc_day_uri');
 	$mc_mini_uri = get_option('mc_mini_uri');
+	$mc_num_per_page = ( get_option('mc_num_per_page') == '' )?50:get_option('mc_num_per_page');
 ?> 
 
-    <div class="wrap jd-my-calendar" id="mc_settings">
+<div class="wrap jd-my-calendar" id="mc_settings">
 <?php my_calendar_check_db();?>
     <div id="icon-options-general" class="icon32"><br /></div>
 	<h2><?php _e('My Calendar Options','my-calendar'); ?></h2>
 <div class="postbox-container" style="width: 70%">
 <div class="metabox-holder">
+  <?php
+update_option( 'ko_calendar_imported','false' );
+if (isset($_POST['import']) && $_POST['import'] == 'true') {
+	$nonce=$_REQUEST['_wpnonce'];
+    if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
+	my_calendar_import();
+}
+if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
+  	if (function_exists('check_calendar')) {
+?>
+	<div class='import upgrade-db'>
+	<p>
+	<?php _e('My Calendar has identified that you have the Calendar plugin by Kieran O\'Shea installed. You can import those events and categories into the My Calendar database. Would you like to import these events?','my-calendar'); ?>
+	</p>
+		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-config"); ?>">
+		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>		
+		<div>
+		<input type="hidden" name="import" value="true" />
+		<input type="submit" value="<?php _e('Import from Calendar','my-calendar'); ?>" name="import-calendar" class="button-primary" />
+		</div>
+		</form>
+	</div>
+<?php
+	}
+}
+?>
 
 <div class="ui-sortable meta-box-sortables">   
 <div class="postbox">
@@ -335,6 +387,9 @@ function edit_my_calendar_config() {
 		<option value='7' <?php mc_is_selected( 'mc_default_sort','7'); ?>><?php _e('Location Name','my-calendar'); ?></option>
 	</select>	
 	</li>
+	<li>
+	<label for='mc_num_per_page'><?php _e('Number of events per page in admin events list','my-calendar'); ?></label> <input type='text' name='mc_num_per_page' id='mc_num_per_page' value='<?php echo $mc_num_per_page; ?>' />
+	</li>
 		<?php if ( get_site_option('mc_multisite') == 2 && MY_CALENDAR_TABLE != MY_CALENDAR_GLOBAL_TABLE ) { ?>
 	<li>
 	<input type="radio" name="mc_current_table" id="mc0" value="0"<?php echo jd_option_selected(get_option('mc_current_table'),0); ?> /> <label for="mc0"><?php _e('Currently editing my local calendar','my-calendar'); ?></label>
@@ -347,6 +402,8 @@ function edit_my_calendar_config() {
 	<li><?php _e('You are currently working in the primary site for this network; your local calendar is also the global table.','my-calendar'); ?></li>
 		<?php } ?>
 	<?php } ?>
+	<li><input type="checkbox" id="remigrate" name="remigrate" value="migrate" /> <label for="remigrate"><?php _e('Re-generate event occurrences table.','my-calendar'); ?></label>
+	</li>
 	</ul>
 	</fieldset>
 		<p>
@@ -837,36 +894,10 @@ $locations .= stripslashes("$key,$value")."\n";
 <?php } else { ?>
 	<?php _e('Only users with the ability to edit user accounts may modify user settings.','my-calendar'); ?>
 <?php } ?>
-  <?php
-//update_option( 'ko_calendar_imported','false' );
-if (isset($_POST['import']) && $_POST['import'] == 'true') {
-	$nonce=$_REQUEST['_wpnonce'];
-    if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
-	my_calendar_import();
-}
-if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
-  	if (function_exists('check_calendar')) {
-	echo "<div class='import'>";
-	echo "<p>";
-	_e('My Calendar has identified that you have the Calendar plugin by Kieran O\'Shea installed. You can import those events and categories into the My Calendar database. Would you like to import these events?','my-calendar');
-	echo "</p>";
-?>
-		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-config"); ?>">
-		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>		
-		<div>
-		<input type="hidden" name="import" value="true" />
-		<input type="submit" value="<?php _e('Import from Calendar','my-calendar'); ?>" name="import-calendar" class="button-primary" />
-		</div>
-		</form>
-<?php
-	echo "</div>";
-	}
-}
-?>
 	</div>
 </div>
 
-<?php $mc_settings = apply_filters( 'mc_after_settings',$mc_settings ); echo $mc_settings; ?>
+<?php $mc_settings = apply_filters( 'mc_after_settings','' ); echo $mc_settings; ?>
 
 </div>
 </div>

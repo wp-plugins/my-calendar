@@ -89,6 +89,15 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.0.8 =
+
+* Re-written (simplified) holiday exclusion mechanism.
+* Performance improvements to templating and event processing.
+* Bug fix: Import from Kieran's "Calendar" plug-in was broken.
+* Bug fix: 'nextmonth' class was attached to events in weekly view; not appropriate to view.
+* Bug fix: Deleting single instance deleted entire event series.
+* Added option: number of events per page in admin events list
+
 = 2.0.7 =
 
 * Bug fix: Show list view on mobile devices option did not work.
