@@ -15,19 +15,21 @@ function mc_holiday_limit( $events, $holidays ) {
 
 function mc_set_date_array( $events ) {
 	$event_array = array();
-	foreach ( $events as $event ) {
-		$date = date( 'Y-m-d',strtotime($event->occur_begin) );
-		$end = date( 'Y-m-d',strtotime($event->occur_end) );
-		if ( $date != $end ) {
-			$start = strtotime($date);
-			$end = strtotime($end);
-			do {
-				$date = date('Y-m-d',$start);
+	if ( is_array($events) ) {
+		foreach ( $events as $event ) {
+			$date = date( 'Y-m-d',strtotime($event->occur_begin) );
+			$end = date( 'Y-m-d',strtotime($event->occur_end) );
+			if ( $date != $end ) {
+				$start = strtotime($date);
+				$end = strtotime($end);
+				do {
+					$date = date('Y-m-d',$start);
+					$event_array[$date][] = $event; 
+					$start = strtotime( "+1 day",$start );			
+				} while ( $start <= $end );	
+			} else {
 				$event_array[$date][] = $event; 
-				$start = strtotime( "+1 day",$start );			
-			} while ( $start <= $end );	
-		} else {
-			$event_array[$date][] = $event; 
+			}
 		}
 	}
 	return $event_array;
