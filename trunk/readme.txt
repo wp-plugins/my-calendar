@@ -63,7 +63,7 @@ Languages available: [visit the My Calendar translations page to see how complet
 * German (Uwe Jonas, Florian Edelmann)
 * Swedish (Efva Nyberg)
 * Italian ([Sabir Musta](http://mustaphasabir.altervista.org), Massimo Sgobino)
-* Brazilian Portuguese (Leonardo Kfoury)
+* Brazilian Portuguese (Leonardo Kfoury, Alexandre Carvalho)
 
 Translating my plug-ins is always appreciated. Visit <a href="http://translate.joedolson.com">my translations site</a> to start getting your language into shape!
 
@@ -88,6 +88,14 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.0.9 =
+
+* Bug fix: Email notification on event addition to admin did not receive event data.
+* Bug fix: Accidentally eliminated weekend class. Now it's back!
+* Bug fix: Events crossing multiple dates need per-date unique IDs
+* Code change: Some code simplification for current URL and plugin URL references.
+* Updated languages: Portuguese, Dutch, Italian
 
 = 2.0.8 =
 
