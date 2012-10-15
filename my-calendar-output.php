@@ -153,6 +153,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 	$id_start 			= date('Y-m-d',strtotime($event->event_begin));
 	$id_end 			= date('Y-m-d',strtotime($event->event_end));
 	$uid 				= 'mc_'.$event->occur_id;
+	$day_id				= date('d',strtotime($process_date) );
 	$mc_id 				= $event->occur_id;
 	$this_category 		= $event->event_category; 
     // get user-specific data
@@ -174,13 +175,13 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 	$header_details .= "
 <script type='text/javascript'>
 jQuery(document).ready(function($) {
-	$('#$uid-$type-details').easydrag();
+	$('#$uid-$day_id-$type-details').easydrag();
 });
 </script>";
 		}
 	}
 // move this div start for custom.
-    $header_details .=  "<div id='$uid-$type' class='$type-event $category vevent'>\n";
+    $header_details .=  "<div id='$uid-$day_id-$type' class='$type-event $category vevent'>\n";
 	$templates = get_option('mc_templates');
 	$title_template = ($templates['title'] == '' )?'{title}':$templates['title'];
 	$mytitle = jd_draw_template($data,$title_template);
@@ -190,7 +191,7 @@ jQuery(document).ready(function($) {
 		$details_link = mc_build_url( array('mc_id'=>$mc_id), array('month','dy','yr','ltype','loc','mcat'), get_option( 'mc_uri' ) );
 		$wrap = "<a href='$details_link'>"; $balance = "</a>";
 		} else {
-		$wrap = "<a href='#$uid-$type-details'>"; $balance = "</a>"; 
+		$wrap = "<a href='#$uid-$day_id-$type-details'>"; $balance = "</a>"; 
 		}
 	} else { 
 		$wrap = $balance = ''; 
@@ -216,9 +217,9 @@ jQuery(document).ready(function($) {
 			$address .= mc_hcard( $event, $display_address, $display_map );
 		}
 		// end vcard
-		$container .= "	<div id='$uid-$type-details' class='details'>\n"; 
+		$container .= "	<div id='$uid-$day_id-$type-details' class='details'>\n"; 
 		$container .= apply_filters('mc_before_event','',$event);
-		$body_details .= ($type == 'calendar' || $type == 'mini' )?"<span class='close'><a href='#' class='mc-toggle mc-close'><img src='".MY_CALENDAR_DIRECTORY."/images/event-close.png' alt='".__('Close','my-calendar')."' /></a></span>":'';
+		$body_details .= ($type == 'calendar' || $type == 'mini' )?"<span class='close'><a href='#' class='mc-toggle mc-close'><img src='".plugin_dir_url(__FILE__)."images/event-close.png' alt='".__('Close','my-calendar')."' /></a></span>":'';
 		$body_details .= "<div class='time-block'>";
 			if ( $event->event_time != "00:00:00" && $event->event_time != '' ) {
 				$body_details .= "\n	<span class='event-time dtstart' title='".$id_start.'T'.$event->event_time."'>$event_date".date_i18n(get_option('mc_time_format'), strtotime($event->event_time));
@@ -335,8 +336,8 @@ jQuery(document).ready(function($) {
 			$details = "\n". $header_details . $container . $body_details . $description . $short . $status . $return;	
 		}
 	} else {
-		$toggle = ($type == 'calendar' || $type == 'mini' )?"<a href='#' class='mc-toggle mc-close close'><img src='".MY_CALENDAR_DIRECTORY."/images/event-close.png' alt='".__('Close','my-calendar')."' /></a>":'';	
-		$details = $header_details."\n<div id='$uid-$type-details' class='details'>\n	".$toggle.$details."\n";
+		$toggle = ($type == 'calendar' || $type == 'mini' )?"<a href='#' class='mc-toggle mc-close close'><img src='".plugin_dir_url(__FILE__)."images/event-close.png' alt='".__('Close','my-calendar')."' /></a>":'';	
+		$details = $header_details."\n<div id='$uid-$day_id-$type-details' class='details'>\n	".$toggle.$details."\n";
 	}
 	// create edit links
 		if ( mc_can_edit_event( $event->event_author ) && get_option('mc_remote') != 'true' ) {
@@ -894,6 +895,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 								}
 								// set up events
 								if ( ( $is_weekend && get_option('mc_show_weekends') == 'true' ) || !$is_weekend ) {
+									$weekend_class = ( $is_weekend )?'weekend':'';
 									if ( $format == "list" ) {
 										if ( get_option('list_javascript') != 1) {
 											$is_anchor = "<a href='#'>";
@@ -918,7 +920,7 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 										//}
 									} else {
 										$my_calendar_body .= "
-											<td id='$format-$date' class='$dayclass $dateclass $monthclass $events_class day-with-date'>"."
+											<td id='$format-$date' class='$dayclass $dateclass $weekend_class $monthclass $events_class day-with-date'>"."
 												<$element class='mc-date $trigger'>$thisday_heading</$close>".
 												$event_output."
 											</td>\n";										

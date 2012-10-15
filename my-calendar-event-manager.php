@@ -116,7 +116,7 @@ if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'delete' ) {
 			$event_instance = (int) $_GET['date'];
 			$sql = "SELECT occur_begin FROM " . my_calendar_event_table() . " WHERE occur_id=" . $event_instance;
 			$inst = $mcdb->get_var( $sql );
-			$instance_date = date('Y-m-d',strtotime($inst) );
+			$instance_date = ' ('.date('Y-m-d',strtotime($inst) ).')';
 		} else {
 			$instance_date = '';
 		}
@@ -130,7 +130,7 @@ if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'delete' ) {
 			<input type="hidden" name="event_instance" value="<?php echo (int) $_GET['date']; ?>" />
 		<?php } ?>
 		<input type="hidden" value="<?php echo (int) $_GET['event_id']; ?>" name="event_id" />
-		<input type="submit" name="submit" class="button-secondary delete" value="<?php _e('Delete','my-calendar'); echo " &quot;".stripslashes( $result[0]['event_title'] )."&quot; ($instance_date)"; ?>" />
+		<input type="submit" name="submit" class="button-secondary delete" value="<?php _e('Delete','my-calendar'); echo " &quot;".stripslashes( $result[0]['event_title'] )."&quot;$instance_date"; ?>" />
 		</form></p>
 		</div>
 <?php } else { ?>
@@ -267,9 +267,8 @@ global $wpdb,$event_author;
 			do_action( 'mc_save_event', $action, $add );				
 			// Call mail function
 			if ( get_option('mc_event_mail') == 'true' ) {				
-				$sql = "SELECT * FROM ". my_calendar_event_table() . " JOIN ". my_calendar_table()."  ON (event_id=occur_event_id) JOIN " . my_calendar_categories_table() . " ON (event_category=category_id) WHERE event_id = ".$mcdb->insert_id;
-				$event = $mcdb->get_results($sql);
-				my_calendar_send_email( $event[0] );
+				$event = mc_get_event( $mcdb->insert_id ); // insert_id is last occurrence inserted in the db
+				my_calendar_send_email( $event );
 			}
 			if ( $add['event_approved'] == 0 ) {
 				$message = "<div class='updated notice'><p>".__('Event saved. An administrator will review and approve your event.','my-calendar')."</p></div>";
@@ -1136,7 +1135,7 @@ function mc_check_data($action,$post, $i) {
 		$desc = !empty($post['content']) ? trim($post['content']) : '';
 		$short = !empty($post['event_short']) ? trim($post['event_short']) : '';
 		$recur = !empty($post['event_recur']) ? trim($post['event_recur']) : '';
-		// if this is a all weekdays event, and it's been scheduled to start on a weekend, the math gets nasty. 
+		// if this is an all weekdays event, and it's been scheduled to start on a weekend, the math gets nasty. 
 		// ...AND there's no reason to allow it, since weekday events will NEVER happen on the weekend.
 		if ( $recur == 'E' && ( date( 'w', strtotime( $post['event_begin'][$i] ) ) == 0 || date( 'w', strtotime( $post['event_begin'][$i] ) ) == 6 ) ) {
 			if ( date( 'w', strtotime( $post['event_begin'][$i] ) ) == 0 ) {

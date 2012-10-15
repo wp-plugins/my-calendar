@@ -260,19 +260,24 @@ function my_calendar_add_styles() {
 }
 
 function mc_get_current_url() {
-	$pageURL = 'http';
-	if ( !empty($_SERVER['HTTPS']) && $_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
-		$pageURL .= "://";
+global $wp; 
+$current_url = add_query_arg( $wp->query_string, '', home_url( $wp->request ) );
+return $current_url; 
+/* deprecated 10/15/2012. Hope this works as reliably as it seems.
+	$url = 'http';
+	if ( !empty($_SERVER['HTTPS']) && $_SERVER["HTTPS"] == "on") {$url .= "s";}
+		$url .= "://";
 		if ( !empty( $_SERVER['SERVER_PORT']) && $_SERVER["SERVER_PORT"] != "80") {
 			if ( strpos( $_SERVER["HTTP_HOST"], $_SERVER["SERVER_PORT"] ) === FALSE ) { 
-				$pageURL .= $_SERVER["HTTP_HOST"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+				$url .= $_SERVER["HTTP_HOST"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
 			} else { 
-				$pageURL .= $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]; 
+				$url .= $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]; 
 			}	
 		} else {
-			$pageURL .= $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
+			$url .= $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
 		}
-	return esc_url($pageURL);
+	return esc_url($url);
+	*/
 }
 
 function csv_to_array($csv, $delimiter = ',', $enclosure = '"', $escape = '\\', $terminator = "\n") {
