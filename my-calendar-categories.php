@@ -222,7 +222,7 @@ global $path, $wp_plugin_dir,$wp_plugin_url;
 			} else {
 				$selected = "";
 			}
-			echo "<option value='$value'$selected style='background: url(".$wp_plugin_url."$path/$value) left 50% no-repeat;'>$value</option>";
+			echo "<option value='$value'$selected style='background: url(".str_replace('my-calendar/','',$wp_plugin_url)."$path/$value) left 50% no-repeat;'>$value</option>";
 		}
 		?>			
 					</select>
@@ -256,7 +256,6 @@ global $path, $wp_plugin_dir,$wp_plugin_url;
 </div>
 	<?php jd_show_support_box(); ?>
 
-</div>
 <?php
 }
 
@@ -295,13 +294,13 @@ function mc_manage_categories() {
 	   $class = ($class == 'alternate') ? '' : 'alternate';
 	   $default = ( $category->category_id == get_option('mc_default_category') )?' default':'';
            ?>
-           <tr class="<?php echo $class.$default; ?>">
-	     <th scope="row"><?php echo $category->category_id; ?></th>
-	     <td><?php echo stripslashes( esc_attr( $category->category_name ) ); ?></td>
-	     <td style="background-color:<?php echo (strpos($category->category_color,'#') !== 0)?'#':''; echo $category->category_color; ?>;">&nbsp;</td>
-	     <td style="background-color:<?php echo (strpos($category->category_color,'#') !== 0)?'#':''; echo $category->category_color; ?>;"><img src="<?php echo $wp_plugin_url . $path; ?>/<?php echo stripslashes( esc_attr( $category->category_icon ) ); ?>" alt="" /></td>		 
+		<tr class="<?php echo $class.$default; ?>">
+		<th scope="row"><?php echo $category->category_id; ?></th>
+		<td><?php echo stripslashes( esc_attr( $category->category_name ) ); ?></td>
+		<td style="background-color:<?php echo (strpos($category->category_color,'#') !== 0)?'#':''; echo $category->category_color; ?>;">&nbsp;</td>
+	    <td style="background-color:<?php echo (strpos($category->category_color,'#') !== 0)?'#':''; echo $category->category_color; ?>;"><img src="<?php echo str_replace('my-calendar/','',$wp_plugin_url). $path; ?>/<?php echo stripslashes( esc_attr( $category->category_icon ) ); ?>" alt="" /></td>		 
 		<td><?php echo ( $category->category_private == 1 )?'Yes':'No'; ?></td>
-	     <td><a href="<?php echo admin_url("admin.php?page=my-calendar-categories&amp;mode=edit&amp;category_id=$category->category_id"); ?>" class='edit'><?php _e('Edit','my-calendar'); ?></a></td>
+		<td><a href="<?php echo admin_url("admin.php?page=my-calendar-categories&amp;mode=edit&amp;category_id=$category->category_id"); ?>" class='edit'><?php _e('Edit','my-calendar'); ?></a></td>
 	     <?php
 		       if ($category->category_id == 1) {
 					echo '<td>'.__('N/A','my-calendar').'</td>';

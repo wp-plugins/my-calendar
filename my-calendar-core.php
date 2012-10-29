@@ -63,7 +63,7 @@ function jd_calendar_plugin_action($links, $file) {
 
 // Function to add the calendar style into the header
 function my_calendar_wp_head() {
-  global $wpdb, $wp_query, $wp_plugin_url;
+  global $wpdb, $wp_query;
 	$mcdb = $wpdb;
   // If the calendar isn't installed or upgraded this won't work
   check_my_calendar();
@@ -144,7 +144,6 @@ function mc_deal_with_deleted_user( $id ) {
 
 // Function to add the javascript to the admin header
 function my_calendar_add_javascript() { 
-global $wp_plugin_url;
 	if ( isset($_GET['page']) && $_GET['page'] == 'my-calendar' ) {
 		wp_enqueue_script('jquery.calendrical',plugins_url( 'js/jquery.calendrical.js', __FILE__ ), array('jquery') );
 		wp_enqueue_script('jquery.addfields',plugins_url( 'js/jquery.addfields.js', __FILE__ ), array('jquery') );
@@ -918,10 +917,12 @@ global $wp_query;
 		$scripting .= "jQuery(document).ready(function($) { \$('html').removeClass('mcjs') });\n";
 		$scripting .= "jQuery.noConflict();\n";
 		$scripting .= "</script>\n";
-		if ( !is_404() ) { // don't do this on 404 page
-			if ( is_object($wp_query) ) {
+		if ( !is_404() ) {
+			if ( is_object($wp_query) && isset($wp_query->post) ) {
 				$id = $wp_query->post->ID;
-			} 
+			} else {
+				$id = '';
+			}
 			if ( get_option( 'mc_show_js' ) != '' ) {
 			$array = explode( ",",get_option( 'mc_show_js' ) );
 				if ( !is_array( $array ) ) {
@@ -1192,8 +1193,6 @@ function mc_tiny_mce_version( ) {
 
 // Load the custom TinyMCE plugin
 function mc_plugin( $plugins ) {
-global $wp_plugin_url;
-
 	$plugins['mcqt'] = plugins_url('button/tinymce3/editor_plugin.js', __FILE__ );
 	return $plugins;
 }
@@ -1239,7 +1238,6 @@ function mc_newline_replace($string) {
 
 // Set URL for the generator page
 function mc_admin_js_vars(){
-global $wp_plugin_url;
 ?>
 <script type="text/javascript">
 // <![CDATA[

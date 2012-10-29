@@ -975,8 +975,8 @@ function jd_events_display_list( $type='normal' ) {
 			$page_links = paginate_links( array(
 				'base' => add_query_arg( 'paged', '%#%' ),
 				'format' => '',
-				'prev_text' => __('&laquo; Previous Page'),
-				'next_text' => __('Next Page &raquo;'),
+				'prev_text' => __('&laquo; Previous Page','my-calendar'),
+				'next_text' => __('Next Page &raquo;','my-calendar'),
 				'total' => $num_pages,
 				'current' => $current
 			));
@@ -1137,18 +1137,20 @@ function mc_check_data($action,$post, $i) {
 		$recur = !empty($post['event_recur']) ? trim($post['event_recur']) : '';
 		// if this is an all weekdays event, and it's been scheduled to start on a weekend, the math gets nasty. 
 		// ...AND there's no reason to allow it, since weekday events will NEVER happen on the weekend.
-		if ( $recur == 'E' && ( date( 'w', strtotime( $post['event_begin'][$i] ) ) == 0 || date( 'w', strtotime( $post['event_begin'][$i] ) ) == 6 ) ) {
-			if ( date( 'w', strtotime( $post['event_begin'][$i] ) ) == 0 ) {
-				$newbegin = my_calendar_add_date( $post['event_begin'][$i], 1 );
+			$begin = trim($post['event_begin'][$i]);
+			$end = trim($post['event_end'][$i]);
+		if ( $recur == 'E' && ( date( 'w', strtotime( $begin ) ) == 0 || date( 'w', strtotime( $begin ) ) == 6 ) ) {
+			if ( date( 'w', strtotime( $begin ) ) == 0 ) {
+				$newbegin = my_calendar_add_date( $begin, 1 );
 				if ( !empty( $post['event_end'][$i] ) ) {
-					$newend = my_calendar_add_date( $post['event_end'][$i], 1 );
+					$newend = my_calendar_add_date( $end, 1 );
 				} else {
 					$newend = $newbegin;
 				}
-			} else if ( date( 'w', strtotime( $post['event_begin'][$i] ) ) == 6 ) {
-				$newbegin = my_calendar_add_date( $post['event_begin'][$i], 2 );
+			} else if ( date( 'w', strtotime( $begin ) ) == 6 ) {
+				$newbegin = my_calendar_add_date( $begin, 2 );
 				if ( !empty( $post['event_end'][$i] ) ) {
-					$newend = my_calendar_add_date( $post['event_end'][$i], 2 );
+					$newend = my_calendar_add_date( $end, 2 );
 				} else {
 					$newend = $newbegin;
 				}		
@@ -1265,14 +1267,14 @@ function mc_check_data($action,$post, $i) {
 			if (preg_match($time_format_one,$time) || preg_match($time_format_two,$time) || $time == '') {
 				$time_ok = 1;
 			} else {
-				$errors .= "<div class='error'><p><strong>".__('Error','my-calendar').":</strong> ".__('The time field must either be blank or be entered in the format hh:mm','my-calendar')."</p></div>";
+				$errors .= "<div class='error'><p><strong>".__('Error','my-calendar').":</strong> ".__('The time field must either be blank or be entered in the format hh:mm am/pm','my-calendar')."</p></div>";
 			}
 			// We check for a valid end time, or an empty one
 			$endtime = ($endtime == '')?'00:00:00':date( 'H:i:00',strtotime($endtime) );
 			if (preg_match($time_format_one,$endtime) || preg_match($time_format_two,$endtime) || $endtime == '') {
 				$endtime_ok = 1;
 			} else {
-				$errors .= "<div class='error'><p><strong>".__('Error','my-calendar').":</strong> ".__('The end time field must either be blank or be entered in the format hh:mm','my-calendar')."</p></div>";
+				$errors .= "<div class='error'><p><strong>".__('Error','my-calendar').":</strong> ".__('The end time field must either be blank or be entered in the format hh:mm am/pm','my-calendar')."</p></div>";
 			}		
 			// We check to make sure the URL is acceptable (blank or starting with http://)                                                        
 			if ($linky == '') {

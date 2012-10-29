@@ -111,8 +111,9 @@ global $wpdb;
 		if ( is_numeric( $author ) ) {
 			$select_author = ($type=='all')?" WHERE $data = $author":" event_author = $author AND";
 		} else {
-			$key = esc_sql(trim($key));
-			$author = get_user_by( 'login', $key ); // get author by username
+			$author = esc_sql(trim($author));
+			$author = get_user_by( 'login', $author ); // get author by username
+			
 			if ( is_object($author) ) {
 				$author_id = $author->ID;
 				$select_author = ($type=='all')?" WHERE $data = $author_id":" $data = $author_id AND";
