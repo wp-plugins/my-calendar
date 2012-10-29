@@ -2,7 +2,7 @@
 Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager, event calendar
-Requires at least: 2.9.2
+Requires at least: 3.0.6
 Tested up to: 3.4.2
 License: GPLv2 or later
 Stable tag: trunk
@@ -88,6 +88,16 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.0.10 =
+
+* Updated Japanese, Turkish, and Italian translations
+* Bug fix: Upcoming Events list could not be limited to a single author.
+* Bug fix: Un-approved events were being displayed in some public contexts.
+* Bug fix: Problem with RSS feed template elements not rendering in some cases.
+* Bug fix: Upcoming Events removed events inappropriately in certain situations when 'skip on holidays' was checked
+* Bug fix: Updated method for getting current plugin URL.
+* Deprecated support for WordPress versions before 3.0.6.
 
 = 2.0.9 =
 

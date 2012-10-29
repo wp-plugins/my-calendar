@@ -1,5 +1,4 @@
 <?php
-// Used to draw multiple events
 function mc_holiday_limit( $events, $holidays ) {
 	foreach ( array_keys($events) as $key ) {
 		if ( !empty($holidays[$key]) ) {
@@ -12,7 +11,7 @@ function mc_holiday_limit( $events, $holidays ) {
 	}
 	return $events;
 }
-
+// Used to draw multiple events
 function mc_set_date_array( $events ) {
 	$event_array = array();
 	if ( is_array($events) ) {
@@ -163,7 +162,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 		$image = "";
 	} else {
 	    if ($event->category_icon != "") {
-			$path = (is_custom_icon())?$wp_plugin_url.'/my-calendar-custom/':plugins_url('icons',__FILE__).'/';
+			$path = (is_custom_icon())?str_replace('my-calendar','',$wp_plugin_url).'my-calendar-custom/':plugins_url('icons',__FILE__).'/';
 			$hex = (strpos($event->category_color,'#') !== 0)?'#':'';
 			$image = '<img src="'.$path.$event->category_icon.'" alt="'.__('Category','my-calendar').': '.esc_attr($event->category_name).'" class="category-icon" style="background:'.$hex.$event->category_color.';" />';
 		} else {
@@ -263,8 +262,9 @@ jQuery(document).ready(function($) {
 			$tags = array( "{title}","{location}","{color}","{icon}","{date}","{time}" );
 			$current_time = date_i18n(get_option('mc_time_format'), strtotime($event->event_time));			
 			$replacements = array( stripslashes($event->event_title), stripslashes($event->event_label), $event->category_color, $event->category_icon, $current_date, $current_time );
-			$details_label = str_replace($tags,$replacements,$details_template );	
-			$details_link = mc_build_url( array('mc_id'=>$uid), array('month','dy','yr','ltype','loc','mcat'), get_option( 'mc_uri' ) );
+			$details_label = str_replace($tags,$replacements,$details_template );
+			// this should be drawn from templating
+			$details_link = mc_build_url( array('mc_id'=>$mc_id), array('month','dy','yr','ltype','loc','mcat'), get_option( 'mc_uri' ) );
 			$subdetails .= ( get_option( 'mc_uri' ) != '' )?"<p class='mc_details'><a href='$details_link'>$details_label</a></p>\n":'';
 		}
 	  // handle link expiration
@@ -479,7 +479,7 @@ echo '<!DOCTYPE html>
 if ( file_exists( get_stylesheet_directory() . '/mc-print.css' ) ) {
 	$stylesheet = get_stylesheet_directory_uri() . '/mc-print.css';
 } else {
-	$stylesheet = $wp_plugin_url."/my-calendar/mc-print.css";
+	$stylesheet = $wp_plugin_url."mc-print.css";
 }
 echo "
 <!-- Copy mc-print.css to your theme directory if you wish to replace the default print styles -->
@@ -929,7 +929,8 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 							} else {
 								// set up no events
 								if ( $format != "list" ) {
-									$my_calendar_body .= "\n<td class='no-events $dayclass $dateclass $monthclass day-with-date'><span class='mc-date no-events'>$thisday_heading</span></td>\n";
+									$weekend_class = ( $is_weekend )?'weekend':'';
+									$my_calendar_body .= "\n<td class='no-events $dayclass $dateclass $weekend_class $monthclass day-with-date'><span class='mc-date no-events'>$thisday_heading</span></td>\n";
 								}
 							}
 
@@ -976,8 +977,8 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 			$cat_details = $mcdb->get_results($sql);
 			$category_key .= '<div class="category-key">
 			<h3>'.__('Category Key','my-calendar')."</h3>\n<ul>\n";
-				$subpath = (is_custom_icon())?'/my-calendar-custom/':'/my-calendar/icons/';
-				$path = $wp_plugin_url . $subpath;
+				$subpath = (is_custom_icon())?'my-calendar-custom/':'my-calendar/icons/';
+				$path = str_replace('my-calendar','',$wp_plugin_url) .'/'. $subpath;
 			foreach($cat_details as $cat_detail) {
 				$hex = ( strpos( $cat_detail->category_color,'#' ) !== 0 )?'#':'';
 				$title_class = sanitize_title($cat_detail->category_name);

@@ -5,7 +5,7 @@ function mc_get_style_path($filename,$type='path') {
 global $wp_plugin_url,$wp_plugin_dir;
 		if ( strpos( $filename,'mc_custom_' ) === 0 ) {
 			$filename = str_replace('mc_custom_','',$filename);
-			$stylefile = ($type=='path')?$wp_plugin_dir.'/my-calendar-custom/styles/'.$filename:$wp_plugin_url.'/my-calendar-custom/styles/'.$filename;
+			$stylefile = ($type=='path')?str_replace('my-calendar','',$wp_plugin_url).'/my-calendar-custom/styles/'.$filename:str_replace('my-calendar','',$wp_plugin_url).'/my-calendar-custom/styles/'.$filename;
 		} else {
 			$stylefile = ($type=='path')?dirname(__FILE__).'/styles/' . $filename:plugins_url('styles',__FILE__).'/'.$filename;
 		}

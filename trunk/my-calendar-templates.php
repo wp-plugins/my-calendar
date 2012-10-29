@@ -5,7 +5,9 @@ function jd_draw_template($array,$template,$type='list') {
 	//2nd argument: template to print details into
 	$template = stripcslashes($template);	
 	foreach ( $array as $key=>$value ) {
-		if ( !is_object($value) ) {
+		if ( is_object($value) && !empty($value) ) {
+			// null values return false...
+		} else {
 			if ( strpos( $template, "{".$key ) !== false ) {
 				if ($type != 'list') {
 					if ( $key == 'link' && $value == '') { $value = ( get_option('mc_uri') != '' )?get_option('mc_uri'):get_bloginfo('url'); }
@@ -23,20 +25,20 @@ function jd_draw_template($array,$template,$type='list') {
 						$template = str_replace( $search, $value, $template );
 					}
 				} else { // don't do preg match (never required for RSS)
-					$template = stripcslashes(str_replace( "{".$key."}", $value, $template ));
-					// secondary search for RSS output
-					$rss_search = "{rss_$key}";
-					if ( strpos( $template, $rss_search ) !== false ) {
-						$charset = get_option('blog_charset');
-						//$value = htmlspecialchars( $value, ENT_QUOTES, $charset );
-						//$value = htmlentities( $value, ENT_XML1, $charset );
-						//	if ( $key == 'description' ) { echo $value; }
-						$value = xml_entities( $value, $charset );
-						$value = xml_entity_decode( $value, $charset );
-						$template = stripcslashes(str_replace($rss_search,$value,$template));
-					}					
-				}
+					$template = stripcslashes(str_replace( "{".$key."}", $value, $template ));					
+				}			
 			} // end {$key check
+			// secondary search for RSS output
+			$rss_search = "{rss_$key}";
+			if ( strpos( $template, $rss_search ) !== false ) {
+				$charset = get_option('blog_charset');
+				//$value = htmlspecialchars( $value, ENT_QUOTES, $charset );
+				//$value = htmlentities( $value, ENT_XML1, $charset );
+				//	if ( $key == 'description' ) { echo $value; }
+				$value = xml_entities( $value, $charset );
+				$value = xml_entity_decode( $value, $charset );
+				$template = stripcslashes(str_replace($rss_search,$value,$template));
+			}				
 		} 
 	}
 //$new = microtime( true );

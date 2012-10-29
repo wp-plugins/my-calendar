@@ -238,50 +238,39 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 		$temp_array = array();
 			$from = date('Y-m-d',strtotime("-$before days") );
 			$to = date('Y-m-d',strtotime("+$after days") );
-			$events = my_calendar_grab_events( $from, $to, $category,'','','upcoming',$author );
-			//$current_date = "$y-$m-$d";
-			@usort($events, "my_calendar_time_cmp");
-			if (count($events) != 0) {
-				foreach( array_keys($events) as $key) {
-					$event = $events[$key];		
-					$event_details = event_as_array($event);
-					if ( get_option( 'mc_event_approve' ) == 'true' ) {
-						if ( $event->event_approved != 0 ) { $temp_array[] = $event_details; }
-					} else {
-						$temp_array[] = $event_details;
-					}
-				}
-			} 
-		// By default, skip no events.
-		$skipping = false;
-		foreach ( array_keys($temp_array) as $key ) {
-		$details = $temp_array[$key];
-	
-		// if any event this date is in the holiday category, we are skipping
-			if ( $details['cat_id'] == get_option('mc_skip_holidays_category') ) {
-				$skipping = true;
-				break;
-			}
-		}
-		// check each event, if we're skipping, only include the holiday events.
-		$i = 0;
-		foreach ( reverse_array($temp_array, true, $order) as $details ) {
-			if ( $i < $skip && $skip != 0 ) {
-				$i++;
+			$events = my_calendar_grab_events( $from, $to, $category,'','','upcoming',$author );			
+			if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
+				$holidays = array();
 			} else {
-				if ($skipping == true) {
-					if ($details['cat_id'] == get_option('mc_skip_holidays_category') ) {
-						$output .= "<li>".jd_draw_template($details,$template)."</li>";		  
-					} else {
-						if ( $details['skip_holiday'] == 'false' ) { // 'true' means "is canceled"
-							$output .= "<li>".jd_draw_template($details,$template)."</li>";
+				$holidays = my_calendar_grab_events( $from, $to, get_option('mc_skip_holidays_category'),'','', 'upcoming', $author );
+				$holiday_array = mc_set_date_array( $holidays );
+			}
+			// get events into an easily parseable set, keyed by date.
+			if ( is_array( $events ) && !empty($events) ) {
+				$no_events = false;
+				$event_array = mc_set_date_array( $events );
+				if ( is_array( $holidays ) && count($holidays) > 0 ) {
+					$event_array = mc_holiday_limit( $event_array, $holiday_array ); // if there are holidays, rejigger.
+				}			
+			}			
+			if (count($event_array) != 0) {
+				foreach( $event_array as $key=>$value) {
+					if ( is_array($value) ) {
+						foreach ( $value as $k => $v ) {
+							$event = event_as_array( $v );
+							$temp_array[] = $event;
 						}
 					}
+				}
+			}
+			$i = 0;
+			foreach ( reverse_array($temp_array, true, $order) as $details ) {
+				if ( $i < $skip && $skip != 0 ) {
+					$i++;
 				} else {
 					$output .= "<li>".jd_draw_template($details,$template)."</li>";		  
 				}
-			}
-		}
+			}		
 	} else {
 		$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
 		if ( $caching ) { 

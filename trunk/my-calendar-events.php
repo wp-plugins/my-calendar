@@ -52,7 +52,7 @@ function mc_get_rss_events( $cat_id=false) { // JCD TODO: figure out how to outp
 	global $wpdb;
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
-	if ( $cat_id ) { $cat = "WHERE event_category = $cat_id"; } else { $cat = ''; }
+	if ( $cat_id ) { $cat = "WHERE event_category = $cat_id AND event_approved = 1"; } else { $cat = 'WHERE event_approved = 1'; }
 	$events = $mcdb->get_results("SELECT * FROM " .  MY_CALENDAR_EVENTS_TABLE . " JOIN " . MY_CALENDAR_TABLE . " ON (event_id=occur_event_id) JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $cat ORDER BY event_added DESC LIMIT 0,30" );
 	foreach ( array_keys($events) as $key ) {
 		$event =& $events[$key];	
@@ -120,7 +120,7 @@ function my_calendar_grab_events($from, $to,$category=null,$ltype='',$lvalue='',
 	// if caching, then need all categories/locations in cache. UNLESS this is an upcoming events list
 
     $arr_events = array();
-	$limit_string = "event_flagged <> 1";
+	$limit_string = "event_flagged <> 1 AND event_approved = 1";
 
 	$event_query = "SELECT * 
 					FROM " . MY_CALENDAR_EVENTS_TABLE . " 
