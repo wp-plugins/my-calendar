@@ -89,6 +89,16 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.0.11 =
+
+* Fixed Broken custom stylesheets editing/selection.
+* Added Custom links for widget title links
+* Fixed issue with event links expiring immediately
+* Fixed issue with holiday collisions restricted in Upcoming Events/events only when holiday category is displayed.
+* Added full year output option for iCal downloads.
+* Added setting for calendar heading month formatting.
+* Updated language files: Japanese, Italian, German, Turkish
+
 = 2.0.10 =
 
 * Updated Japanese, Turkish, and Italian translations

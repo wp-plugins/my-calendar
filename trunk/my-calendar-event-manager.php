@@ -622,11 +622,11 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 			?>
 			<p>
 			<label for="event_begin" id="eblabel"><?php _e('Start Date (YYYY-MM-DD)','my-calendar'); ?> <span><?php _e('(required)','my-calendar'); ?></span></label> <input type="text" id="event_begin" name="event_begin[]" class="event_begin calendar_input" size="11" value="<?php echo $event_begin; ?>" /> <label for="event_time"><?php _e('Time (hh:mm am/pm)','my-calendar'); ?></label> <input type="text" id="event_time" name="event_time[]" class="input" size="10"	value="<?php 
-					$offset = (60*60*get_option('gmt_offset'));
+					$offset = (60*60*get_option('gmt_offset')); // need this for below
 					if ( !empty($data) ) {
 						echo ($data->event_time == "00:00:00" && $data->event_endtime == "00:00:00")?'':date("h:i a",strtotime($data->event_time));
 					} else {
-						echo date_i18n("h:i a",time()+$offset);
+						echo date_i18n("h:i a",current_time('timestamp') );
 					}?>" /> <input type="checkbox" value="1" id="event_allday" name="event_allday"<?php if ( !empty($data) && ( $data->event_time == '00:00:00' && $data->event_endtime == '00:00:00' ) ) { echo " checked=\"checked\""; } ?> /> <label for="event_allday"><?php _e('All day event','my-calendar'); ?></label>
 			</p>
 			<p>

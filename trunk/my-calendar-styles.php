@@ -2,10 +2,11 @@
 // Display the style configuration page
 
 function mc_get_style_path($filename,$type='path') {
-global $wp_plugin_url,$wp_plugin_dir;
+$wp_plugin_url = plugin_dir_url( __FILE__ );
+$wp_plugin_dir = plugin_dir_path( __FILE__ );
 		if ( strpos( $filename,'mc_custom_' ) === 0 ) {
 			$filename = str_replace('mc_custom_','',$filename);
-			$stylefile = ($type=='path')?str_replace('my-calendar','',$wp_plugin_url).'/my-calendar-custom/styles/'.$filename:str_replace('my-calendar','',$wp_plugin_url).'/my-calendar-custom/styles/'.$filename;
+			$stylefile = ($type=='path')?str_replace('/my-calendar/','',$wp_plugin_dir).'/my-calendar-custom/styles/'.$filename:str_replace('/my-calendar/','',$wp_plugin_url).'/my-calendar-custom/styles/'.$filename;
 		} else {
 			$stylefile = ($type=='path')?dirname(__FILE__).'/styles/' . $filename:plugins_url('styles',__FILE__).'/'.$filename;
 		}
@@ -60,7 +61,8 @@ function mc_write_styles($stylefile, $my_calendar_style) {
 
 function edit_my_calendar_styles() {
 	$message = '';
-	global $wpdb,$wp_plugin_dir;
+	global $wpdb;
+	$wp_plugin_dir = plugin_dir_path( __FILE__ );
 	$mcdb = $wpdb;
 	// We can't use this page unless My Calendar is installed/upgraded
 	check_my_calendar();
@@ -71,7 +73,7 @@ function edit_my_calendar_styles() {
 		$mc_show_css = stripcslashes( $_POST['mc_show_css'] );
 		$mc_css_file = stripcslashes( $_POST['mc_css_file'] );
 		
-		$stylefile = mc_get_style_path($mc_css_file);	
+		$stylefile = mc_get_style_path($mc_css_file);
 		$wrote_styles = ( $my_calendar_style !== false )?mc_write_styles($stylefile, $my_calendar_style):'disabled';
 		if ($wrote_styles == true) {
 			delete_option('mc_file_permissions');
@@ -113,7 +115,6 @@ function edit_my_calendar_styles() {
 	$mc_show_css = get_option('mc_show_css');
 	$mc_css_file = get_option('mc_css_file');
 	$stylefile = mc_get_style_path($mc_css_file);
-		
 	if ( $stylefile ) {
 		$f = "";
 		$f = fopen($stylefile, 'r');
@@ -147,7 +148,7 @@ my_calendar_check_db();
 	<label for="mc_css_file"><?php _e('Select My Calendar Theme','my-calendar'); ?></label>
 	<select name="mc_css_file" id="mc_css_file">
 <?php
-	$custom_directory = $wp_plugin_dir . '/my-calendar-custom/styles/';
+	$custom_directory = str_replace('/my-calendar/','',$wp_plugin_dir) . '/my-calendar-custom/styles/';
 	$directory = dirname(__FILE__).'/styles/';
 	
 	$files = @my_csslist($custom_directory);
@@ -209,18 +210,20 @@ my_calendar_check_db();
 	<?php
 	$left_string  = normalize_whitespace($my_calendar_style);
 	$right_string = normalize_whitespace($mc_current_style);
-	if ( isset( $_GET['diff'] ) ) {
-		echo '<div class="wrap jd-my-calendar" id="diff">';
-		echo wp_text_diff( $left_string,$right_string, array( 'title' => __('Comparing Your Style with latest installed version of My Calendar','my-calendar'), 'title_right' => __('Latest (from plugin)','my-calendar'), 'title_left' => __('Current (in use)','my-calendar') ) );
-		echo '</div>';
-	} else if ( trim($left_string)!=trim($right_string) ) {
-		echo '<div class="wrap jd-my-calendar">';
-		echo '<div class="updated"><p>'.__('There have been updates to the stylesheet.','my-calendar').' <a href="'.admin_url("admin.php?page=my-calendar-styles&amp;diff#diff").'">'.__('Compare Your Stylesheet with latest installed version of My Calendar.','my-calendar').'</a></p></div>';
-		echo '</div>';
-	} else {
-		echo '<div class="wrap jd-my-calendar">';
-		echo '<p>'.__('Your stylesheet matches that included with My Calendar.','my-calendar').'</p>';
-		echo '</div>';
+	if ( $right_string ) { // if right string is blank, there is no default
+		if ( isset( $_GET['diff'] ) ) {
+			echo '<div class="wrap jd-my-calendar" id="diff">';
+			echo wp_text_diff( $left_string,$right_string, array( 'title' => __('Comparing Your Style with latest installed version of My Calendar','my-calendar'), 'title_right' => __('Latest (from plugin)','my-calendar'), 'title_left' => __('Current (in use)','my-calendar') ) );
+			echo '</div>';
+		} else if ( trim($left_string)!=trim($right_string) ) {
+			echo '<div class="wrap jd-my-calendar">';
+			echo '<div class="updated"><p>'.__('There have been updates to the stylesheet.','my-calendar').' <a href="'.admin_url("admin.php?page=my-calendar-styles&amp;diff#diff").'">'.__('Compare Your Stylesheet with latest installed version of My Calendar.','my-calendar').'</a></p></div>';
+			echo '</div>';
+		} else {
+			echo '<div class="wrap jd-my-calendar">';
+			echo '<p>'.__('Your stylesheet matches that included with My Calendar.','my-calendar').'</p>';
+			echo '</div>';
+		}
 	}
 
 	?>  

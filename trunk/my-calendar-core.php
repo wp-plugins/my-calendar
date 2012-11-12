@@ -944,8 +944,7 @@ global $wp_query;
 }
 
 function mc_month_comparison($month) {
-	$offset = (60*60*get_option('gmt_offset'));
-	$current_month = date("n", time()+($offset));
+	$current_month = date("n", current_time('timestamp'));
 	if (isset($_GET['yr']) && isset($_GET['month'])) {
 		if ($month == $_GET['month']) {
 			return ' selected="selected"';
@@ -956,8 +955,7 @@ function mc_month_comparison($month) {
 }
 
 function mc_year_comparison($year) {
-	$offset = (60*60*get_option('gmt_offset'));
-		$current_year = date("Y", time()+($offset));
+		$current_year = date("Y", current_time('timestamp'));
 		if (isset($_GET['yr']) && isset($_GET['month'])) {
 			if ($year == $_GET['yr']) {
 				return ' selected="selected"';
@@ -1146,7 +1144,15 @@ function mc_akismet( $event_url='', $description='' ) {
 		return 0;
 }
 
+// duplicate of mc_is_url, which really should have been in this file. Bugger.
+function _mc_is_url($url) {
+	return preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $url);
+}
+
+
 function mc_external_link( $link, $type='event' ) {
+	if ( !_mc_is_url($link) ) return "class='error-link'";
+
 	$url = parse_url($link);
 	$host = $url['host'];
 	$site = parse_url( get_option( 'siteurl' ) );

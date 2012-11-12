@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the My Calendar package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2012-10-29 16:22:42+0000\n"
+"PO-Revision-Date: 2012-11-12 18:18:01+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -153,7 +153,7 @@ msgstr ""
 
 #: my-calendar-help.php:49
 msgid "Predictably enough, this shortcode displays the output of the Today's Events widget, with four configurable attributes: category, author, template and fallback text."
-msgstr ""
+msgstr "Come prevedibile, questa abbreviazione mostra ciò che è prodotto dal widget Eventi di oggi, con quattro attributi configurabili: categoria, autore, modello e testo alternativo."
 
 #: my-calendar-help.php:56
 msgid "Displays a single event and/or all dates for that event. If template is set to a blank value, will only display the list of occurrences. If the list attribute is set blank, will only show the event template"
@@ -173,7 +173,7 @@ msgstr "Restituisce il numero di telefono memorizzato per la località."
 
 #: my-calendar-settings.php:171
 msgid "Visit your <a href=\"%s\">permalinks settings</a> and re-save them."
-msgstr ""
+msgstr "Visita le tue <a href=\"%s\">opzioni permalink</a> e risalvale."
 
 #: my-calendar-settings.php:317
 msgid "You will need to allow remote connections from this site to the site hosting your My Calendar events. Replace the above placeholders with the host-site information. The two sites must have the same WP table prefix. While this option is enabled, you may not enter or edit events through this installation."
@@ -522,7 +522,7 @@ msgstr "Modificare gli script jQuery per My Calendar AJAX navigation"
 
 #: my-calendar-behaviors.php:197
 msgid "There have been updates to the AJAX scripts."
-msgstr ""
+msgstr "Ci sono stati aggiornamenti negli script AJAX."
 
 #: my-calendar-behaviors.php:217
 msgid "Resetting JavaScript will set that script to the version currently distributed with the plug-in."
@@ -1328,7 +1328,7 @@ msgstr ""
 
 #: my-calendar-group-manager.php:220
 msgid "<strong>NOTE:</strong> The group editable fields for the events in this group do not match"
-msgstr ""
+msgstr "<strong>NOTA:</strong> I campi modificabili di gruppo per gli eventi di questo gruppo non corrispondono"
 
 #: my-calendar-group-manager.php:220
 msgid "The group editable fields for the events in this group match."
@@ -1428,7 +1428,7 @@ msgstr ""
 
 #: my-calendar-help.php:34
 msgid "Set to \"week\" to show a one week view or to \"day\" to show a single day view. Any other value will show a month view. (Day view shows as a list regardless of format setting.)"
-msgstr ""
+msgstr "Scegli \"settimana\" se vuoi la vista settimanale o \"giorno\" per la vista a giornata singola. Ogni altro valore mostrerà la vista per mese. (La vista a giornata singola sarà un elenco, indipendentemente dalle opzioni.)"
 
 #: my-calendar-help.php:35
 msgid "The type of location data to restrict by."
@@ -1524,7 +1524,7 @@ msgstr "Esempio:"
 
 #: my-calendar-help.php:124 my-calendar.php:191
 msgid "Event Template Tags"
-msgstr ""
+msgstr "Tag dei modelli evento"
 
 #: my-calendar-help.php:127
 msgid "Displays the title of the event."
@@ -1560,7 +1560,7 @@ msgstr "Visualizza l'ora in cui l'evento finisce."
 
 #: my-calendar-help.php:151
 msgid "Displays the beginning date to the end date for events. Does not show end date if same as start date."
-msgstr ""
+msgstr "Mostra la data di inizio fino alla data finale per gli eventi. Non mostra la data finale se è la stessa di quella iniziale."
 
 #: my-calendar-help.php:157
 msgid "Timestamp for beginning of event."
@@ -1584,7 +1584,7 @@ msgstr "Visualizza il nome della persona assegnata all'evento."
 
 #: my-calendar-help.php:172
 msgid "Displays the email address of the person assigned as host for the event."
-msgstr ""
+msgstr "Mostra l'indirizzo mail della persona individuata come ospite per l'evento."
 
 #: my-calendar-help.php:175
 msgid "Displays the short version of the event description."
@@ -1742,7 +1742,7 @@ msgstr "Le richieste di assistenza a My Calendar possono essere inviate solo da 
 
 #: my-calendar-help.php:304
 msgid "Helpful Information"
-msgstr ""
+msgstr "Informazioni utili"
 
 #: my-calendar-help.php:307
 msgid "<strong>Uninstalling the plugin</strong>: Although the WordPress standard and expectation is for plug-ins to delete any custom database tables when they're uninstalled, My Calendar <em>does not do this</em>. This was a conscious decision on my part -- the data stored in your My Calendar tables is yours; with the sole exception of the \"General\" category, you added every piece of it yourself. As such, I feel it would be a major disservice to you to delete this information if you uninstall the plug-in. As a result, if you wish to get rid of the plug-in completely, you'll need to remove those tables yourself. All your My Calendar settings will be deleted, however."
@@ -1866,7 +1866,7 @@ msgstr ""
 
 #: my-calendar-output.php:318
 msgid "Edit This Date"
-msgstr ""
+msgstr "Modifica questa data"
 
 #: my-calendar-output.php:319
 msgid "Edit All"
@@ -2158,7 +2158,7 @@ msgstr "Multi-sito"
 
 #: my-calendar-settings.php:292
 msgid "Permissions"
-msgstr ""
+msgstr "Permessi"
 
 #: my-calendar-settings.php:293
 msgid "Email Notifications"
@@ -2266,7 +2266,7 @@ msgstr "Prossimi Eventi"
 
 #: my-calendar-settings.php:382
 msgid "If events are open"
-msgstr ""
+msgstr "Se gli eventi sono aperti"
 
 #: my-calendar-settings.php:382
 msgid "Registration is open"
@@ -2575,7 +2575,7 @@ msgstr "Opzioni per le configurazioni WP MultiSito"
 
 #: my-calendar-settings.php:645
 msgid "The central calendar is the calendar associated with the primary site in your WordPress Multisite network."
-msgstr ""
+msgstr "Il calendario centrale è quello associato con il sito primario nel tuo multisito WordPress."
 
 #: my-calendar-settings.php:647
 msgid "Site owners may only post to their local calendar"
@@ -2595,7 +2595,7 @@ msgstr ""
 
 #: my-calendar-settings.php:653
 msgid "Sub-site calendars show events from their local calendar."
-msgstr ""
+msgstr "I calendari del sott-sito mostrano gli eventi dai loro calendari locali."
 
 #: my-calendar-settings.php:654
 msgid "Sub-site calendars show events from the central calendar."
@@ -3016,7 +3016,7 @@ msgstr "Date (ad esempio, 4 giorni passati, 5 in avanti)"
 
 #: my-calendar-widgets.php:161
 msgid "Skip the first <em>n</em> events"
-msgstr ""
+msgstr "Salta i primi <em>n</em> eventi"
 
 #: my-calendar-widgets.php:164
 msgid "Events sort order:"
@@ -3068,7 +3068,7 @@ msgstr ""
 
 #: my-calendar.php:146
 msgid "Buy the My Calendar User's Guide"
-msgstr ""
+msgstr "Compra la guida utente di My Calendar"
 
 #: my-calendar.php:147
 msgid "<strong>Or make a donation today!</strong> Every donation counts - donate $2, $10, or $100 and help me keep this plug-in running!"
@@ -3180,11 +3180,11 @@ msgstr ""
 
 #: my-calendar.php:261
 msgid "Second line of the site address."
-msgstr ""
+msgstr "Seconda linea dell'indirizzo del sito."
 
 #: my-calendar.php:264
 msgid "City."
-msgstr ""
+msgstr "Città."
 
 #: my-calendar.php:267
 msgid "State."
