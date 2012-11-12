@@ -141,6 +141,9 @@ global $wp_plugin_dir;
 		<dt><code>{date}</code></dt>
 		<dd><?php _e('Displays the date on which the event begins.','my-calendar'); ?></dd>
 
+		<dt><code>{began}</code></dt>
+		<dd><?php _e('Displays the date on which the series of events began (for recurring events).','my-calendar'); ?></dd>
+
 		<dt><code>{enddate}</code></dt>
 		<dd><?php _e('Displays the date on which the event ends.','my-calendar'); ?></dd>
 

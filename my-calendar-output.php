@@ -271,8 +271,7 @@ jQuery(document).ready(function($) {
 		if ( $event->event_link_expires == 0 ) {
 			$event_link = esc_url($event->event_link);
 		} else {
-			$offset = (60*60*get_option('gmt_offset'));	
-			if ( my_calendar_date_comp( $event->event_end,date_i18n('Y-m-d',time()+$offset ) ) ) {
+			if ( my_calendar_date_xcomp( $event->occur_end,date_i18n('Y-m-d',current_time('timestamp') ) ) ) {
 				$event_link = '';
 			} else {
 				$event_link = esc_url($event->event_link);
@@ -789,10 +788,10 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 			// if showing multiple months, figure out how far we're going.
 			$num_months = ($time == 'week')?1:get_option('mc_show_months');
 			$through_date = mktime(0,0,0,$c_month+($num_months-1),$c_day,$c_year);
-
-			$current_date_header = date_i18n('F Y',$current_date);
+			$month_format = ( get_option( 'mc_month_format' ) == '' ) ? 'F Y' : get_option( 'mc_month_format' );
+			$current_date_header = date_i18n( $month_format,$current_date);
 			$current_month_header = ( date('Y',$current_date) == date('Y',$through_date) )?date_i18n('F',$current_date):date_i18n('F Y',$current_date);
-			$through_month_header = date_i18n('F Y', $through_date);
+			$through_month_header = date_i18n( $month_format, $through_date);
 		
 			// Adjust the days of the week if week start is not Monday
  				$and = __("and",'my-calendar');

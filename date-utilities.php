@@ -185,10 +185,9 @@ function mc_checkdate($date) {
 }
 
 function first_day_of_week() {
-	$offset = (60*60*get_option('gmt_offset'));
 	$start_of_week = (get_option('start_of_week')==1||get_option('start_of_week')==0)?get_option('start_of_week'):0;
-	$today = date('w',time()+$offset);
-	$now = date('Y-m-d',time()+$offset);
+	$today = date('w',current_time('timestamp'));
+	$now = date('Y-m-d',current_time('timestamp'));
 	$month = 0; // don't change month
 	switch ($today) {
 		case 1:	$sub = ($start_of_week == 1)?0:1;break; // mon

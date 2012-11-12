@@ -34,7 +34,6 @@ function my_calendar_import() {
 
 		foreach ( $event_ids as $value ) { // propagate event instances.
 				$sql = "SELECT event_begin, event_time, event_end, event_endtime FROM ".my_calendar_table()." WHERE event_id = $value";
-				echo "$sql<br />";
 				$event = $wpdb->get_results($sql);
 				$dates = array( 'event_begin'=>$event->event_begin,'event_end'=>$event->event_end,'event_time'=>$event->event_time,'event_endtime'=>$event->event_endtime );
 				$event = mc_increment_event( $value, $dates );				
@@ -168,6 +167,7 @@ function edit_my_calendar_config() {
 		update_option('mc_date_format',stripslashes($_POST['mc_date_format']));
 		update_option('mc_week_format',stripslashes($_POST['my_calendar_week_format']));
 		update_option('mc_time_format',stripslashes($_POST['mc_time_format']));
+		update_option('mc_month_format',stripslashes($_POST['mc_month_format']));
 		update_option('mc_show_map',( !empty($_POST['mc_show_map']) && $_POST['mc_show_map']=='on')?'true':'false');
 		update_option('mc_show_address',( !empty($_POST['mc_show_address']) && $_POST['mc_show_address']=='on')?'true':'false'); 
 		update_option('mc_hide_icons',( !empty($_POST['mc_hide_icons']) && $_POST['mc_hide_icons']=='on')?'false':'true');
@@ -494,6 +494,8 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	</select>
 	<small><?php _e('Replaces pop-up in mini calendar','my-calendar'); ?></small>
 	</li>
+	<li class='mc-month-format'>
+	<label for='mc_month_format'><?php _e('Month format (calendar headings)','my-calendar'); ?></label><br /><input type="text" id="mc_month_format" name="mc_month_format" value="<?php if ( get_option('mc_month_format')  == "") { echo ''; } else { echo esc_attr( get_option( 'mc_month_format') ); } ?>" /> <code><?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_month_format') == '') { echo date_i18n( 'F Y' ); } else { echo date_i18n( get_option('mc_month_format') ); } ?></code>
 	<li class='mc-time-format'>
 	<label for="mc_time_format"><?php _e('Time format','my-calendar'); ?></label><br /><input type="text" id="mc_time_format" name="mc_time_format" value="<?php if ( get_option('mc_time_format')  == "") { echo ''; } else { echo esc_attr( get_option( 'mc_time_format') ); } ?>" /> <code><?php _e('Current:','my-calendar'); ?> <?php if ( get_option('mc_time_format') == '') { echo date_i18n( get_option('time_format') ); } else { echo date_i18n( get_option('mc_time_format') ); } ?></code>
 	</li>	
