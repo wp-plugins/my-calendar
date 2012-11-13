@@ -7,7 +7,8 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 	$select_category = ( $category!='default' )?mc_select_category($category):'';
 	$limit_string = mc_limit_string();
 	$select_author = ( $author != 'default' )?mc_select_author($author):'';
-	$date = date('Y', current_time('datestamp')).'-'.date('m', current_time('datestamp')).'-'.date('d', current_time('datestamp'));
+	$date = date('Y', current_time('timestamp')).'-'.date('m', current_time('timestamp')).'-'.date('d', current_time('timestamp'));
+	echo $date;
 	// if a value is non-zero, I'll grab a handful of extra events so I can throw out holidays and others like that.
 	if ( $before > 0 ) {
 		$before = $before + 5;
@@ -53,7 +54,7 @@ function mc_get_all_holidays( $before, $after ) {
 	$mcdb = $wpdb;
 if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$holiday = get_option('mc_skip_holidays_category');
-	$date = date('Y', current_time('datestamp') ).'-'.date('m', current_time('datestamp') ).'-'.date('d', current_time('datestamp') );
+	$date = date('Y', current_time('timestamp') ).'-'.date('m', current_time('timestamp') ).'-'.date('d', current_time('timestamp') );
 	// if a value is non-zero, I'll grab a handful of extra events so I can throw out holidays and others like that.
 	if ( $before > 0 ) {
 		$before = $before + 5;

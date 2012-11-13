@@ -345,65 +345,72 @@ $group_id = (int) $group_id;
 	return array( $begin, $end );
 }
 // make this function time-sensitive, not date-sensitive.
-function mc_produce_upcoming_events($e,$template,$type='list',$order='asc',$skip=0,$before, $after, $hash=false) {
-	// $e has +5 before and +5 after if those values are non-zero.
-	// $e equals array of events based on before/after queries. Nothing has been skipped, order is not set, holidays are not dealt with.
+function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',$skip=0,$before, $after, $hash=false) {
+	// $events has +5 before and +5 after if those values are non-zero.
+	// $events equals array of events based on before/after queries. Nothing has been skipped, order is not set, holidays are removed.
 		$output = '';$near_events = $temp_array = array();$past = $future = 1;
 		$offset = (60*60*get_option('gmt_offset'));
 		$today = date('Y',time()+($offset)).'-'.date('m',time()+($offset)).'-'.date('d',time()+($offset));		
          @usort( $e, "my_calendar_timediff_cmp" );// sort all events by proximity to current date
-	     $count = count($e);
+	     $count = count($events);
 		 $skip = false;
 		 $group = array();
 		 $spans = array();
-			for ( $i=0;$i<$count;$i++ ) {
-				if ( is_object( $e[$i] ) ) {
-				if ( $e[$i]->category_private == 1 && !is_user_logged_in() ) {
-				} else {
-				// if the beginning of an event is after the current time, it is in the future
-					$beginning = $e[$i]->occur_begin;
-					$date = date('Y-m-d', strtotime($beginning));
-				// if the end of an event is before the current time, it is in the past.
-				if ( date('H:i:s',strtotime($e[$i]->occur_end) ) == '00:00:00' ) { $endtime = date('H:i:s',strtotime($e[$i]->occur_begin) ); } else { $endtime = date('H:i:s',strtotime($e[$i]->occur_end) ); }
-					$end = $e[$i]->occur_end;
-					// store span time in an array to avoid repeating database query
-					if ( $e[$i]->event_span == 1 && ( !isset($spans[ $e[$i]->occur_group_id ]) ) ) {
-						// this is a multi-day event: treat each event as if it spanned the entire range of the group.
-						$span_time = mc_span_time($e[$i]->occur_group_id);
-						$beginning = $span_time[0];
-						$end = $span_time[1];
-						$spans[ $e[$i]->occur_group_id ] = $span_time;
-					} else if  ( $e[$i]->event_span == 1 && ( isset($spans[ $e[$i]->occur_group_id ]) ) ) {
-						$span_time = $spans[ $e[$i]->occur_group_id ];
-						$beginning = $span_time[0];
-						$end = $span_time[1];
+			$i = 0; 
+			foreach ( $events as $k=>$event )
+				if ( $i < $count ) {
+					if ( is_array( $event ) ) {
+						foreach ( $event as $e ) {
+							if ( $e->category_private == 1 && !is_user_logged_in() ) {
+							} else {
+							// if the beginning of an event is after the current time, it is in the future
+								$beginning = $e->occur_begin;
+								$date = date('Y-m-d', strtotime($beginning));
+							// if the end of an event is before the current time, it is in the past.
+							if ( date('H:i:s',strtotime($e->occur_end) ) == '00:00:00' ) { $endtime = date('H:i:s',strtotime($e->occur_begin) ); } else { $endtime = date('H:i:s',strtotime($e->occur_end) ); }
+								$end = $e->occur_end;
+								// store span time in an array to avoid repeating database query
+								if ( $e->event_span == 1 && ( !isset($spans[ $e->occur_group_id ]) ) ) {
+									// this is a multi-day event: treat each event as if it spanned the entire range of the group.
+									$span_time = mc_span_time($e->occur_group_id);
+									$beginning = $span_time[0];
+									$end = $span_time[1];
+									$spans[ $e->occur_group_id ] = $span_time;
+								} else if  ( $e->event_span == 1 && ( isset($spans[ $e->occur_group_id ]) ) ) {
+									$span_time = $spans[ $e->occur_group_id ];
+									$beginning = $span_time[0];
+									$end = $span_time[1];
+								}
+								$current = date('Y-m-d H:i',time()+$offset);
+								if ( $e ) { 
+									if ( $e->occur_group_id != 0 && $e->event_span == 1 && in_array( $e->occur_group_id, $group ) ) { 
+										$skip = true; 
+									} else { 
+										$group[] = $e->occur_group_id; $skip=false; 
+									}
+									if ( !$skip ) {
+										if ( ( $past<=$before && $future<=$after ) ) {
+											$near_events[] = $e; // if neither limit is reached, split off freely
+											$i++;
+										} else if ( $past <= $before && ( my_calendar_date_comp( $beginning,$current ) ) ) {
+											$near_events[] = $e; // split off another past event
+											$i++;
+										} else if ( $future <= $after && ( !my_calendar_date_comp( $end,$current ) ) ) {
+											$near_events[] = $e; // split off another future event
+											$i++;
+										} 
+										if ( my_calendar_date_comp( $beginning,$current ) ) { 			$past++;
+										} else if ( my_calendar_date_equal( $beginning,$current ) ) {  $present = 1;
+										} else { $future++; }
+									}
+									if ($past > $before && $future > $after) {
+										break;
+									}
+								}
+							}
+						}
 					}
-					$current = date('Y-m-d H:i',time()+$offset);
-					if ($e[$i]) { 
-						if ( $e[$i]->occur_group_id != 0 && $e[$i]->event_span == 1 && in_array( $e[$i]->occur_group_id, $group ) ) { 
-							$skip = true; 
-						} else { 
-							$group[] = $e[$i]->occur_group_id; $skip=false; 
-						}
-						if ( !$skip ) {
-							if ( ( $past<=$before && $future<=$after ) ) {
-								$near_events[] = $e[$i]; // if neither limit is reached, split off freely
-							} else if ( $past <= $before && ( my_calendar_date_comp( $beginning,$current ) ) ) {
-								$near_events[] = $e[$i]; // split off another past event
-							} else if ( $future <= $after && ( !my_calendar_date_comp( $end,$current ) ) ) {
-								$near_events[] = $e[$i]; // split off another future event
-							} 
-							if ( my_calendar_date_comp( $beginning,$current ) ) { 			$past++;
-							} else if ( my_calendar_date_equal( $beginning,$current ) ) {  $present = 1;
-							} else { $future++; }
-						}
-						if ($past > $before && $future > $after) {
-							break;
-						}
-					}
-				}
-				}
-			}
+			} 
 			$e = false;
 		  $events = $near_events;
 		  @usort( $events, "my_calendar_datetime_cmp" ); // sort split events by date
