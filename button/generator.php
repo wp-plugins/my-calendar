@@ -6,6 +6,7 @@
 	$wp_path = (isset($wp_path[0]) && $wp_path[0] != "") ? $wp_path[0] : $_SERVER["DOCUMENT_ROOT"];
 require_once($wp_path . $slash . 'wp-load.php');
 require_once($wp_path . $slash . 'wp-admin' . $slash . 'admin.php'); 
+wp_mail('joe@joedolson.com','Test Path',$wp_path.$slash.'wp-load.php');
 
 // check for rights
 if ( !is_user_logged_in() || !current_user_can('edit_posts') ) 

@@ -8,7 +8,6 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 	$limit_string = mc_limit_string();
 	$select_author = ( $author != 'default' )?mc_select_author($author):'';
 	$date = date('Y', current_time('timestamp')).'-'.date('m', current_time('timestamp')).'-'.date('d', current_time('timestamp'));
-	echo $date;
 	// if a value is non-zero, I'll grab a handful of extra events so I can throw out holidays and others like that.
 	if ( $before > 0 ) {
 		$before = $before + 5;
@@ -48,8 +47,8 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 	return $arr_events;
 }
 
-function mc_get_all_holidays( $before, $after ) {
-	if ( get_option('mc_skip_holidays') != 'true' ) { return array(); }
+function mc_get_all_holidays( $before, $after, $today ) {
+	if ( !get_option('mc_skip_holidays_category') ) { return array(); }
 	global $wpdb;
 	$mcdb = $wpdb;
 if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }

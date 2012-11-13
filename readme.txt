@@ -89,6 +89,10 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.0.12 =
+
+* I horribly screwed up the Upcoming Events widget in 2.0.11. Please accept my apologies.
+
 = 2.0.11 =
 
 * Fixed Broken custom stylesheets editing/selection.
