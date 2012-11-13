@@ -311,7 +311,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 		if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
 			$holidays = array();
 		} else {
-			$holidays = mc_get_all_holidays( $before, $after );
+			$holidays = mc_get_all_holidays( $before, $after, $show_today );
 			$holiday_array = mc_set_date_array( $holidays );
 		}
 			if ( is_array( $events ) && !empty($events) ) {
