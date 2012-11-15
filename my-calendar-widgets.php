@@ -357,7 +357,9 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 		 $group = array();
 		 $spans = array();
 			$i = 0; 
-			foreach ( $events as $k=>$event )
+			// create near_events array
+			if ( is_array( $events ) ) {
+			foreach ( $events as $k=>$event ) {
 				if ( $i < $count ) {
 					if ( is_array( $event ) ) {
 						foreach ( $event as $e ) {
@@ -410,18 +412,20 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 							}
 						}
 					}
-			} 
-			$e = false;
-		  $events = $near_events;
-		  @usort( $events, "my_calendar_datetime_cmp" ); // sort split events by date
-		  // If more items in the list than there should be (possible, due to handling of current-day's events), pop off.
-		  $intended = $before + $after;
-		  $actual = count($events);
-		  if ( $actual > $intended ) {
-				for ( $i=0;$i<($actual-$intended);$i++ ) {
-					array_pop($events);
 				}
-		  }
+			}
+			$e = false;
+			}
+		$events = $near_events;
+		@usort( $events, "my_calendar_datetime_cmp" ); // sort split events by date
+		// If more items in the list than there should be (possible, due to handling of current-day's events), pop off.
+		$intended = $before + $after;
+		$actual = count($events);
+		if ( $actual > $intended ) {
+			for ( $i=0;$i<($actual-$intended);$i++ ) {
+				array_pop($events);
+			}
+		}
 		if ( is_array( $events ) ) {
 			foreach( array_keys($events) as $key ) {
 				$event =& $events[$key];
