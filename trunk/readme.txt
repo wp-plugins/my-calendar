@@ -89,6 +89,18 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.1.0 =
+
+* Miscellaneous filepath fixes for custom icons
+* Fixed filepath issue for custom content directory in loading calendar generator
+* Added templating options to RSS feed event format
+* Added two new template tags: description_stripped and shortdesc_stripped; returns the description fields with HTML removed.
+* Re-organized settings to provide better grouping.
+* Removed jumpbox default setting; jumpbox now only configurable via shortcode.
+* Bug fix: titles missing in list view when open to details link enabled.
+* Bug fix: Multi-day events listed only once in upcoming events lists.
+* Minor stylesheet tweaks.
+
 = 2.0.12 =
 
 * I horribly screwed up the Upcoming Events widget in 2.0.11. Please accept my apologies.

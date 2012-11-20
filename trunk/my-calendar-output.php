@@ -54,36 +54,6 @@ function my_calendar_draw_events($events, $type, $process_date, $time, $template
 		$event =& $events[$key];
 		$output_array[] = my_calendar_draw_event($event, $type, $process_date,$time,$template);
 	}
-	//} else {
-		/* foreach(array_keys($events) as $key ) {
-			$event =& $events[$key];
-			$output_array[] = my_calendar_draw_event($event, $type, $process_date,$time,$template);
-		}		
-		/*foreach(array_keys($temp_array) as $key) {
-			$event =& $temp_array[$key];
-			// if any event this date is in the holiday category, we are skipping
-			if ( $event->event_category == get_option('mc_skip_holidays_category') ) {
-				$skipping = true;
-				break;
-			}
-		}
-		// check each event, if we're skipping, only include the holiday events.
-		$sum = 0;
-		foreach(array_keys($temp_array) as $key) {
-			$event =& $temp_array[$key];	
-			if ($skipping == true) {
-				if ($event->event_category == get_option('mc_skip_holidays_category') ) {
-					$output_array[] = my_calendar_draw_event($event, $type, $process_date,$time,$template);
-				} else {
-					if ( $event->event_holiday == '0' ) { // '1' means "is canceled"
-						$output_array[] = my_calendar_draw_event($event, $type, $process_date,$time,$template);
-					}
-				}
-			} else {
-				$output_array[] = my_calendar_draw_event($event, $type, $process_date,$time,$template);
-			}
-		}*/
-	//}
 	if ( is_array($output_array) ) {
 		foreach (array_keys($output_array) as $key) {
 			$value =& $output_array[$key];	
@@ -200,7 +170,7 @@ jQuery(document).ready(function($) {
 	$current_date = date_i18n($date_format,strtotime($process_date));
 	$event_date = ($type == 'single')?$current_date.', ':'';
 	if ( $event->event_span == 1 ) { $group_class = ' multidate group'.$event->event_group_id; } else { $group_class = ''; }
-	$header_details .= ($type != 'list' && $type != 'single')?"<h3 class='event-title summary$group_class'>$wrap$image".$mytitle."$balance</h3>\n":'';
+	$header_details .= ( $type != 'single' && $type != 'list' )?"<h3 class='event-title summary$group_class'>$wrap$image".$mytitle."$balance</h3>\n":'';
 	$title = apply_filters( 'mc_before_event_title','',$event );
 	$title .= ($type == 'single' )?"<h2 class='event-title summary'>$image $mytitle</h2>\n":'';
 	$title .= apply_filters( 'mc_after_event_title','',$event );
@@ -324,7 +294,7 @@ jQuery(document).ready(function($) {
 		// if we're opening in a new page, there's no reason to display any of that. Later, re-write this section to make this easier to skip.
 		if ( $type == 'calendar' && get_option('mc_open_uri') == 'true' && $time != 'day' ) $body_details = $description = $short = $status = '';
 
-		$subdetails = ( get_option('mc_open_uri') =='true')?"":"<div class='sub-details'>$subdetails</div>";
+		$subdetails = ( get_option('mc_open_uri') == 'true' && $type == 'grid' || $type == 'mini' )?"":"<div class='sub-details'>$subdetails</div>";
 		$body_details .= $subdetails;
 		if ( $event_link != '' && get_option( 'mc_event_link' ) != 'false' ) {
 			$is_external = mc_external_link( $event_link );	
@@ -1185,12 +1155,12 @@ $home = '';
 			$home = get_bloginfo('url') . '/'; 		
 		} else if ( is_home() ) {
 			$page = get_option('page_for_posts');
-			$home = get_permalink($page); 	
+			$home = get_permalink( $page ); 	
 		} else if ( is_archive() ) {
 			$home = ''; // an empty string seems to work best; leaving it open.
 		} else {
-			$home = get_permalink(); 	// so, if the calendar is in a custom post type which is inserted in a page, this gets the post type's link. 
-										// I think that's actually what it should do, and am not inclined to fix it...have to think.
+			wp_reset_query(); // break out of any alternate loop that's been set up.
+			$home = get_permalink();
 		}
 	}
 	$variables = $_GET;
