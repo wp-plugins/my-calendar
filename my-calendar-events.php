@@ -1,12 +1,14 @@
 <?php
 // used to generate upcoming events lists
-function mc_get_all_events( $category, $before, $after, $today, $author ) {
+function mc_get_all_events( $category, $before, $after, $today, $author, $host ) {
 global $wpdb;
 	$mcdb = $wpdb;
 if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$select_category = ( $category!='default' )?mc_select_category($category):'';
 	$limit_string = mc_limit_string();
 	$select_author = ( $author != 'default' )?mc_select_author($author):'';
+	$select_host = ( $host != 'default' )?mc_select_host($host):'';
+	
 	$date = date('Y', current_time('timestamp')).'-'.date('m', current_time('timestamp')).'-'.date('d', current_time('timestamp'));
 	// if a value is non-zero, I'll grab a handful of extra events so I can throw out holidays and others like that.
 	if ( $before > 0 ) {
@@ -16,7 +18,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 		JOIN " . MY_CALENDAR_TABLE . " 
 		ON (event_id=occur_event_id) 
 		JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
-		ON (event_category=category_id) WHERE $select_category $select_author $limit_string event_approved = 1 AND event_flagged <> 1 
+		ON (event_category=category_id) WHERE $select_category $select_author $select_host $limit_string event_approved = 1 AND event_flagged <> 1 
 		AND DATE(occur_begin) < '$date' ORDER BY occur_begin DESC LIMIT 0,$before");
 	} else { $events1 = array(); }
 	if ( $today == 'yes' ) {
@@ -25,7 +27,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 		JOIN " . MY_CALENDAR_TABLE . " 
 		ON (event_id=occur_event_id) 
 		JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
-		ON (event_category=category_id) WHERE $select_category $select_author $limit_string event_approved = 1 AND event_flagged <> 1 
+		ON (event_category=category_id) WHERE $select_category $select_author $select_host $limit_string event_approved = 1 AND event_flagged <> 1 
 		AND DATE(occur_begin) = '$date'");	
 	} else {
 		$events3 = array();
@@ -37,7 +39,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 		JOIN " . MY_CALENDAR_TABLE . " 
 		ON (event_id=occur_event_id) 
 		JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
-		ON (event_category=category_id) WHERE $select_category $select_author $limit_string event_approved = 1 AND event_flagged <> 1 
+		ON (event_category=category_id) WHERE $select_category $select_author $select_host $limit_string event_approved = 1 AND event_flagged <> 1 
 		AND DATE(occur_begin) > '$date' ORDER BY occur_begin ASC LIMIT 0,$after");
 	} else { $events2 = array(); }
 	$arr_events = array();
@@ -132,24 +134,26 @@ function mc_get_event( $id,$type='object' ) {
 }
 
 // Grab all events for the requested date from calendar
-function my_calendar_grab_events($from, $to,$category=null,$ltype='',$lvalue='',$source='calendar',$author=null) {
+function my_calendar_grab_events($from, $to,$category=null,$ltype='',$lvalue='',$source='calendar',$author=null, $host=null) {
 	if ( isset($_GET['mcat']) ) { $ccategory = $_GET['mcat']; } else { $ccategory = $category; }
 	if ( isset($_GET['ltype']) ) { $cltype = $_GET['ltype']; } else { $cltype = $ltype; }
 	if ( isset($_GET['loc']) ) { $clvalue = $_GET['loc']; } else { $clvalue = $lvalue; }
 	if ( isset($_GET['mc_auth']) ) { $clauth = $_GET['mc_auth']; } else { $clauth = $author; }
+	if ( isset($_GET['mc_host']) ) { $clhost = $_GET['mc_host']; } else { $clhost = $host; }
 	
 	if ( $ccategory == '' ) { $ccategory = 'all'; }
 	if ( $clvalue == '' ) { $clvalue = 'all';  }			
 	if ( $cltype == '' ) { $cltype = 'all'; }
 	if ( $clvalue == 'all' ) { $cltype = 'all'; }
 	if ( $clauth == '' ) { $clauth = 'all'; }
+	if ( $clhost == '' ) { $clhost = 'all'; }
 
 	if ( !mc_checkdate($from) || !mc_checkdate($to) ) { return; } // not valid dates
 	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
-	$hash = md5($from.$to.$ccategory.$cltype.$clvalue.$clauth);
+	$hash = md5($from.$to.$ccategory.$cltype.$clvalue.$clauth.$clhost);
 	if ( $source != 'upcoming' ) { // no caching on upcoming events by days widgets or lists
 		if ( $caching ) {
-			$output = mc_check_cache( $ccategory, $cltype, $clvalue, $clauth, $hash );
+			$output = mc_check_cache( $ccategory, $cltype, $clvalue, $clauth, $clhost, $hash );
 			if ( $output && $output != 'empty' ) { return $output; }
 			if ( $output == 'empty' ) { return; }
 		}
@@ -159,9 +163,10 @@ function my_calendar_grab_events($from, $to,$category=null,$ltype='',$lvalue='',
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$select_category = ( $category != null )?mc_select_category($category):'';
 	$select_author = ( $author != null )?mc_select_author($author):'';	
+	$select_host = ( $author != null )?mc_select_host($host):'';		
 	$select_location = mc_limit_string( 'grab', $ltype, $lvalue );
 
-	if ( $caching && $source != 'upcoming' ) { $select_category = ''; $select_location = ''; $select_author = ''; } 
+	if ( $caching && $source != 'upcoming' ) { $select_category = ''; $select_location = ''; $select_author = ''; $select_host = ''; } 
 	// if caching, then need all categories/locations in cache. UNLESS this is an upcoming events list
 
     $arr_events = array();
@@ -173,7 +178,7 @@ function my_calendar_grab_events($from, $to,$category=null,$ltype='',$lvalue='',
 					ON (event_id=occur_event_id) 					
 					JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
 					ON (event_category=category_id) 
-					WHERE $select_category $select_location $select_author $limit_string 
+					WHERE $select_category $select_location $select_author $select_host $limit_string 
 					AND ( DATE(occur_begin) BETWEEN '$from 00:00:00' AND '$to 23:59:59' 
 						OR DATE(occur_end) BETWEEN '$from 00:00:00' and '$to 23:59:59' 
 						OR ( DATE('$from') BETWEEN DATE(occur_begin) AND DATE(occur_end) ) 
@@ -189,18 +194,18 @@ function my_calendar_grab_events($from, $to,$category=null,$ltype='',$lvalue='',
 	if ( $source != 'upcoming' && $caching ) { 
 		$new_cache = mc_create_cache( $arr_events, $hash );
 		if ( $new_cache ) {
-			$output = mc_check_cache( $ccategory, $cltype, $clvalue, $clauth, $hash );
+			$output = mc_check_cache( $ccategory, $cltype, $clvalue, $clauth, $clhost, $hash );
 			return $output; 
 		} else { 
 			// need to clean cache if the cache is maxed.
-			return mc_clean_cache( $arr_events, $ccategory, $cltype, $clvalue, $clauth ); 
+			return mc_clean_cache( $arr_events, $ccategory, $cltype, $clvalue, $clauth, $clhost ); 
 		}		
 	} else {
 		return $arr_events;
 	}
 }
 
-function mc_check_cache( $category, $ltype, $lvalue, $auth, $hash) {
+function mc_check_cache( $category, $ltype, $lvalue, $auth, $host, $hash) {
 	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
 	if ( $caching == true ) {
 		$cache = get_transient("mc_cache");
@@ -209,13 +214,13 @@ function mc_check_cache( $category, $ltype, $lvalue, $auth, $hash) {
 		} else {
 			return false;
 		}
-		if ( $value ) { return mc_clean_cache($value, $category,$ltype,$lvalue,$auth); } else { return false; }
+		if ( $value ) { return mc_clean_cache($value, $category,$ltype,$lvalue,$auth,$host); } else { return false; }
 	} else {
 		return false;
 	}
 }
 
-function mc_clean_cache( $cache, $category, $ltype, $lvalue, $auth ) {
+function mc_clean_cache( $cache, $category, $ltype, $lvalue, $auth, $host ) {
 global $wpdb;
 	$mcdb = $wpdb;
 	// process cache to strip events which do not meet current restrictions
@@ -237,6 +242,13 @@ global $wpdb;
 			} else {
 				$authors = array($auth);
 			}
+			if ( strpos( $host, ',' ) !== false ) {
+				$authors = explode(',',$host);
+			} else if ( strpos( $host, '|' ) !== false ) {
+				$authors = explode('|',$host);
+			} else {
+				$hosts = array($host);
+			}			
 			foreach ( $authors as $k=>$v ) {
 				if ( !is_numeric($v) && $v != 'all' ) { 
 					$u = get_user_by('login',$v);
@@ -244,11 +256,19 @@ global $wpdb;
 					$authors[$k]= $id;
 				}
 			}
+			foreach ( $hosts as $k=>$v ) {
+				if ( !is_numeric($v) && $v != 'all' ) { 
+					$u = get_user_by('login',$v);
+					$id = $u->ID;
+					$hosts[$k]= $id;
+				}
+			}			
 		foreach ( $cache as $key=>$value ) {
 			foreach ( $cats as $cat ) {
 				if ( is_numeric($cat) ) { $cat = (int) $cat; }
 				if ( ( $value->event_category == $cat || $category == 'all' || $value->category_name == $cat ) 
 						&& ( $value->event_author == $auth || $auth == 'all' || in_array( $value->event_author,$authors ) )
+						&& ( $value->event_host == $host || $host == 'all' || in_array( $value->event_host,$hosts ) )
 						&& ( $value->$type == $lvalue || ( $ltype == 'all' && $lvalue == 'all' ) ) ) {				
 					$return[$key]=$value;
 				} 

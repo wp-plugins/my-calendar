@@ -187,7 +187,9 @@ function event_as_array($event,$type='html') {
 	$details['ical_end'] = $dtend;
 		$ical_link = mc_build_url( array('vcal'=>$dateid), array('month','dy','yr','ltype','loc','mcat','format'), get_option( 'mc_uri' ) );
 	$details['ical'] = $ical_link;
-	$dates = mc_event_date_span( $event->event_group_id, $event->event_span, $date );
+		$date_arr = array('occur_begin'=>$event->occur_begin,'occur_end'=>$event->occur_end );
+		$date_obj = (object) $date_arr;
+	$dates = mc_event_date_span( $event->event_group_id, $event->event_span, array( 0=>$date_obj ) );
 	$details['ical_html'] = "<a class='ical' rel='nofollow' href='$ical_link'>".__('iCal','my-calendar')."</a>";
 	$details['dtstart'] = date( 'Y-m-d\TH:i:s', strtotime( $event->occur_begin ) );// hcal formatted
 	$details['dtend'] = date( 'Y-m-d\TH:i:s', strtotime($real_end_date.' '.$endtime) );	//hcal formatted end
@@ -220,6 +222,7 @@ function event_as_array($event,$type='html') {
 	
 	$details['description'] = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',$event->event_desc):wpautop(stripslashes($event->event_desc));
 	$details['description_raw'] = stripslashes($event->event_desc);
+	$details['description_stripped'] = strip_tags(stripslashes($event->event_desc));
 	$details['link_title'] = ($details['link'] != '')?"<a href='".$event->event_link."'>".stripslashes($event->event_title)."</a>":stripslashes($event->event_title);
 	$details['location'] = stripslashes($event->event_label);
 	$details['street'] = stripslashes($event->event_street);
@@ -233,6 +236,7 @@ function event_as_array($event,$type='html') {
 	$details['link_map'] = $map;
 	$details['shortdesc'] = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',$event->event_short):wpautop(stripslashes($event->event_short));
 	$details['shortdesc_raw'] = stripslashes($event->event_short);
+	$details['shortdesc_stripped'] = strip_tags(stripslashes($event->event_short));
 	$details['event_open'] = $event_open;
 	$details['icon'] = $category_icon;
 	$details['icon_html'] = "<img src='$category_icon' class='mc-category-icon' alt='".__('Category','my-calendar').": ".esc_attr($event->category_name)."' />";
@@ -254,7 +258,7 @@ function event_as_array($event,$type='html') {
 	$details['id'] = $id;
 	$details['group'] = $event->event_group_id;
 	$details['event_span'] = $event->event_span;
-	$details['datespan'] = ($event->event_span != 1)?$date:mc_format_date_span( $dates );
+	$details['datespan'] = ($event->event_span == 1 || ($details['date'] != $details['enddate']) )?mc_format_date_span( $dates ):$date;
 	$details['multidate'] = mc_format_date_span( $dates, 'complex', "<span class='fallback-date'>$date</span><span class='separator'>,</span> <span class='fallback-time'>$details[time]</span>&ndash;<span class='fallback-endtime'>$details[endtime]</span>" );
 	// RSS guid
 	$details['region'] = $event->event_region;
@@ -268,15 +272,18 @@ function event_as_array($event,$type='html') {
 	return $details;
 }
 
-function mc_event_date_span( $group_id, $event_span ) {
+function mc_event_date_span( $group_id, $event_span, $dates=array() ) {
 global $wpdb;
 	$mcdb = $wpdb;
   if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
-$group_id = (int) $group_id;
-if ( $group_id == 0 || $event_span != 1 ) return false;
-	$sql = "SELECT occur_begin, occur_end FROM ".my_calendar_event_table()." WHERE occur_group_id = $group_id ORDER BY occur_begin ASC";
-	$dates = $mcdb->get_results( $sql );
-	return $dates; 
+	$group_id = (int) $group_id;
+	if ( $group_id == 0 && $event_span != 1 ) {
+		return $dates;
+	} else {
+		$sql = "SELECT occur_begin, occur_end FROM ".my_calendar_event_table()." WHERE occur_group_id = $group_id ORDER BY occur_begin ASC";
+		$dates = $mcdb->get_results( $sql );
+		return $dates; 
+	}
 }
 function mc_format_date_span( $dates, $display='simple',$default='' ) {
 	if ( !$dates ) return $default;

@@ -64,6 +64,7 @@ function edit_my_calendar_styles() {
 	global $wpdb;
 	$wp_plugin_dir = plugin_dir_path( __FILE__ );
 	$mcdb = $wpdb;
+	$wrote_styles = '';
 	// We can't use this page unless My Calendar is installed/upgraded
 	check_my_calendar();
 	if ( isset( $_POST['mc_edit_style'] ) ) {
@@ -79,10 +80,10 @@ function edit_my_calendar_styles() {
 			delete_option('mc_file_permissions');
 			delete_option('mc_style');
 		}
-		if ( $wrote_styles == 'disabled' ) {
-			$message .= "<p>".__('Styles are disabled, and were not edited.','my-calendar')."</p>";
+		if ( $wrote_styles === 'disabled' ) {
+			$message = "<p>".__( "Styles are disabled, and were not edited.",'my-calendar')."</p>";
 		} else {
-			$message .= ( $wrote_styles == true)?'<p>'. __('The stylesheet has been updated.', 'my-calendar') .'</p>':'<p><strong>'. __('Write Error! Please verify write permissions on the style file.', 'my-calendar') .'</strong></p>';
+			$message = ( $wrote_styles == true)?'<p>'. __('The stylesheet has been updated.', 'my-calendar') .'</p>':'<p><strong>'. __('Write Error! Please verify write permissions on the style file.', 'my-calendar') .'</strong></p>';
 		}
 	
 		$mc_show_css = ( empty($_POST['mc_show_css']))?'':$_POST['mc_show_css'];
