@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager, event calendar
 Requires at least: 3.0.6
-Tested up to: 3.4.2
+Tested up to: 3.5.0
 License: GPLv2 or later
 Stable tag: trunk
 
@@ -88,6 +88,10 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.1.1 =
+
+* Bug fix: users without 'Approve Event' ability submitted unapproved events even when event approval was disabled.
 
 = 2.1.0 =
 

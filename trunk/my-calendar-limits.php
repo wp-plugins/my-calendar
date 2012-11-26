@@ -32,15 +32,19 @@ global $wpdb;
 			} else {
 				$key = esc_sql(trim($key));
 				$cat = $mcdb->get_row("SELECT category_id FROM " . my_calendar_categories_table() . " WHERE category_name = '$key'");
-				$category_id = $cat->category_id;
-				if ($i == 1) {	$select_category .= ($type=='all')?" WHERE (":' (';	}
-				$select_category .= " $data = $category_id";
-				if ($i < $numcat) {
-					$select_category .= " OR ";
-				} else if ($i == $numcat) {
-					$select_category .= ($type=='all')?") ":' ) AND';
+				if ( $cat ) {
+					$category_id = $cat->category_id;
+					if ($i == 1) {	$select_category .= ($type=='all')?" WHERE (":' (';	}
+					$select_category .= " $data = $category_id";
+					if ($i < $numcat) {
+						$select_category .= " OR ";
+					} else if ($i == $numcat) {
+						$select_category .= ($type=='all')?") ":' ) AND';
+					}
+					$i++;	
+				} else {
+					return;
 				}
-				$i++;						
 			}
 		}
 	} else {
