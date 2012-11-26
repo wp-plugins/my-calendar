@@ -495,7 +495,9 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 				<input type="hidden" value="1" name="event_approved" />
 	<?php } ?>
 <?php } else { // case: adding new event (if use can, then 1, else 0) ?>
-<?php if ( current_user_can( 'mc_approve_events' ) ) { $dvalue = 1; } else { $dvalue = 0; } ?>
+<?php 	if ( get_option( 'mc_event_approve') != 'true' ) {
+			$dvalue = 1;
+		} else if ( current_user_can( 'mc_approve_events' ) ) { $dvalue = 1; } else { $dvalue = 0; } ?>
 			<input type="hidden" value="<?php echo $dvalue; ?>" name="event_approved" />
 <?php } ?>
 		</p>
