@@ -225,6 +225,7 @@ function edit_my_calendar_config() {
 		$mc_title_template = $_POST['mc_title_template'];
 		$mc_details_label = $_POST['mc_details_label'];
 		$mc_link_label = $_POST['mc_link_label'];
+		$mc_event_title_template = $_POST['mc_event_title_template'];
 		$mc_notime_text = $_POST['mc_notime_text'];
 		$mc_previous_events = $_POST['mc_previous_events'];
 		$mc_next_events = $_POST['mc_next_events'];
@@ -237,7 +238,7 @@ function edit_my_calendar_config() {
 		$templates['label'] = $mc_details_label;
 		$templates['link'] = $mc_link_label;	
 		update_option('mc_templates',$templates);
-
+		update_option( 'mc_event_title_template', $mc_event_title_template );
 		update_option('mc_notime_text',$mc_notime_text);
 		update_option('mc_week_caption',$mc_week_caption);
 		update_option('mc_next_events',$mc_next_events);
@@ -295,6 +296,7 @@ function edit_my_calendar_config() {
 	$mc_title_template = $templates['title'];
 	$mc_details_label = $templates['label'];
 	$mc_link_label = $templates['link'];
+	$mc_event_title_template = get_option('mc_event_title_template');
 	$mc_uri = get_option('mc_uri');
 	$mc_day_uri = get_option('mc_day_uri');
 	$mc_mini_uri = get_option('mc_mini_uri');
@@ -455,7 +457,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	</li>
 	<li>
 	<label for="mc_title_template"><?php _e('Event title template','my-calendar'); ?></label> 
-	<input type="text" name="mc_title_template" id="mc_title_template" size="30" value="<?php echo stripslashes(esc_attr($mc_title_template)); ?>" /> <small><a href="<?php echo admin_url("admin.php?page=my-calendar-help#templates"); ?>"><?php _e("Templating Help",'my-calendar'); ?></a> <?php _e('All template tags are available.','my-calendar'); ?></small>
+	<input type="text" name="mc_title_template" id="mc_title_template" size="30" value="<?php echo stripslashes(esc_attr($mc_title_template)); ?>" />></a> <?php _e('All template tags are available.','my-calendar'); ?></small>
 	</li>
 	<li>
 	<label for="mc_details_label"><?php _e('Event details link text','my-calendar'); ?></label>
@@ -466,7 +468,13 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<label for="mc_link_label"><?php _e('Event URL link text','my-calendar'); ?></label>
 	<input type="text" name="mc_link_label" id="mc_link_label" size="30" value="<?php echo stripslashes(esc_attr($mc_link_label)); ?>" />
 	<small><a href="<?php echo admin_url("admin.php?page=my-calendar-help#templates"); ?>"><?php _e("Templating Help",'my-calendar'); ?></a> <?php _e('All template tags are available.','my-calendar'); ?></small>
-	</li>	</ul>
+	</li>
+	<li>
+	<label for="mc_event_title_template"><?php _e('Title tag template (event details pages)','my-calendar'); ?></label>
+	<input type="text" name="mc_event_title_template" id="mc_event_title_template" size="30" value="<?php echo stripslashes(esc_attr($mc_event_title_template)); ?>" />
+	<small><a href="<?php echo admin_url("admin.php?page=my-calendar-help#templates"); ?>"><?php _e("Templating Help",'my-calendar'); ?></a> <?php _e('All template tags are available.','my-calendar'); ?></small>
+	</li>		
+	</ul>
 	</fieldset>	
 		<p>
 		<input type="submit" name="save" class="button-primary" value="<?php _e('Save Custom Text Settings','my-calendar'); ?>" />

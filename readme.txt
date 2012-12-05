@@ -16,7 +16,7 @@ My Calendar provides event management and numerous methods to display your event
 * 	[User's Guide available for purchase](http://www.joedolson.com/articles/my-calendar/users-guide/) with extensive assistance in set up and use.
 *   [Paid plug-in to add front-end event contributions](https://www.joedolson.com/articles/my-calendar/submissions/)
 
-Basic Features:
+=Basic Features:=
 
 *	Standard calendar grid or list views of events
 * 	Show events in monthly, weekly, or daily view.
@@ -48,24 +48,20 @@ Basic Features:
 *   Import from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/)
 * 	Integrated Help page to guide in use of shortcodes and template tags
 
-Languages available: [visit the My Calendar translations page to see how complete these are](http://translate.joedolson.com/projects/my-calendar).
+=Translations=
 
-* American English (Default)
-* Spanish ([Ale Gonzalez](http://60rpm.tv/i))
-* Hindi ([Outshine Solutions](http://outshinesolutions.com))
-* Danish ([Jakob Smith](http://www.omkalfatring.dk/))
-* Czech ([globus2008](http://wordpress.org/support/profile/globus2008))
-* French (Frederic Escallier)
-* Dutch (Luud Heck, Wim Strijbos)
-* Japanese ([Daisuke Abe](http://www.alter-ego.jp/))
-* Russian ([Alex](http://blog.sotvoril.ru/)
-* Turkish (Mehmet Ko&ccedil;ali)
-* German (Uwe Jonas, Florian Edelmann)
-* Swedish (Efva Nyberg)
-* Italian ([Sabir Musta](http://mustaphasabir.altervista.org), Massimo Sgobino)
-* Brazilian Portuguese (Leonardo Kfoury, Alexandre Carvalho)
+Available languages (in order of completeness):
+Japanese, Spanish, Danish, Czech, Hindi, Turkish, Dutch, French, Italian, German, Portuguese, Russian, Swedish, Finnish, Basque, Persian
+
+Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check how complete a translation is.
 
 Translating my plug-ins is always appreciated. Visit <a href="http://translate.joedolson.com">my translations site</a> to start getting your language into shape!
+
+Translator Credits (in no particular order)*:
+
+[Ale Gonzalez](http://60rpm.tv/i), [Outshine Solutions](http://outshinesolutions.com), [Jakob Smith](http://www.omkalfatring.dk/),, [globus2008](http://wordpress.org/support/profile/globus2008), Frederic Escallier, Luud Heck, Wim Strijbos, [Daisuke Abe](http://www.alter-ego.jp/), [Alex](http://blog.sotvoril.ru/), Mehmet Ko&ccedil;ali, Uwe Jonas, Florian Edelmann, Efva Nyberg, [Sabir Musta](http://mustaphasabir.altervista.org), Massimo Sgobino, Leonardo Kfoury, Alexandre Carvalho, Amir Khalilnejad, [Aurelio De Rosa](http://www.audero.it/), Bayram Dede, Dani Locasati, Dario Nunez, Dirk Ginader, Evren Erten, Fl&aacute;vio Pereira, Francois-Xavier Benard, [Gianni Diurno](http://www.gidibao.net), Giksi, Heinz Ochsner,  Kazuyuki Kumai, Liam Boogar, Maks, Mano, Massimo Sgobino, Mohsen Aghaei, Oscar, [Rashid Niamat](http://niamatmediagroup.nl/), Stefan Wikstrom, Thomas Meyer, Vedar Ozdemir, [Vikas Arora](http://www.wiznicworld.com), [Miriam de Paula](http://wpmidia.com.br), [Miriam de Paula](http://wpmidia.com.br), [HostUCan](http://www.hostucan.com), [Alex Alexandrov](http://www.webhostingrating.com), [Alyona Lompar](http://www.webhostinggeeks.com), [David Gil P&eacute;rez](http://www.sohelet.com), [Burkov Boris](http://chernobog.ru), [Raivo Ratsep](http://raivoratsep.com), [Jibo](http://jibo.ro), [Rasmus Himmelstrup](http://seoanalyst.dk), [kndb](http://blog.layer8.sh/)
+
+* Translators may not have contributed to this plug-in; but have contributed to my [translation repository](http://translate.joedolson.com).
 
 == Installation ==
 
@@ -88,6 +84,15 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.1.2 =
+
+* Bug fix: Miscounted number of events in upcoming events view when events were multiple days.
+* Bug fix: My Calendar URL guessing now only selects from published Pages/posts
+* Tweak: Minor change to HTML output in print view
+* Added: Option to display current month or current year using Upcoming Events widget.
+* Added: Filter to display a custom <title> on single event details pages with settings field to configure that title. (Improves SEO)
+* Language updates: Italian, Russian, Basque
 
 = 2.1.1 =
 

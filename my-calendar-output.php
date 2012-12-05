@@ -448,14 +448,14 @@ echo '<!DOCTYPE html>
 if ( file_exists( get_stylesheet_directory() . '/mc-print.css' ) ) {
 	$stylesheet = get_stylesheet_directory_uri() . '/mc-print.css';
 } else {
-	$stylesheet = $wp_plugin_url."mc-print.css";
+	$stylesheet = $wp_plugin_url."/my-calendar/mc-print.css";
 }
 echo "
 <!-- Copy mc-print.css to your theme directory if you wish to replace the default print styles -->
 <link rel='stylesheet' href='$stylesheet' type='text/css' media='screen,print' />
 </head>
 <body>\n";
-echo my_calendar('print','calendar',$category,'no','no','no','no',$time,$ltype,$lvalue,$id,$template,$content,$author);
+echo my_calendar('print','calendar',$category,'no','no','no','no',$time,$ltype,$lvalue);
 $return_url = ( get_option('mc_uri') != '' )?get_option('mc_uri'):home_url();
 echo "<p class='return'><a href='$return_url'>".__('Return to site','my-calendar')."</a></p>";
 echo '
