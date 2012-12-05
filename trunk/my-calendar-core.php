@@ -1294,7 +1294,7 @@ function mc_guess_calendar() {
 	/* If you're looking at this, and have suggestions for other slugs I could be looking at, feel free to let me know. I didn't feel a need to be overly thorough. */
 	$my_guesses = array( 'calendar','events','activities','classes','courses','rehearsals','schedule','calendario','actividades','eventos','kalender','veranstaltungen','unterrichten','eventi','classi' );
 	foreach( $my_guesses as $guess ) {
-		$value = $mcdb->get_var("SELECT id FROM $mcdb->posts WHERE post_name LIKE '%$guess%'" );
+		$value = $mcdb->get_var("SELECT id FROM $mcdb->posts WHERE post_name LIKE '%$guess%' AND post_status = 'publish'" );
 		if ( $value ) {
 			_e('Is this your calendar page?','my-calendar'); echo ' <code>'.get_permalink( $value ).'</code>';
 			return;
@@ -1313,6 +1313,10 @@ get_currentuserinfo();
 	$mc_db_version = get_option('mc_db_version');
 	$mc_uri = get_option('mc_uri');
 	$mc_css = get_option('mc_css_file');
+	
+	$license = ( get_option('mcs_license_key') != '' )?get_option('mcs_license_key'):'none'; 
+	$license = "License Key: ".$license; 	
+	
 	// send fields for all plugins
 	$wp_version = get_bloginfo('version');
 	$home_url = home_url();
@@ -1358,6 +1362,7 @@ Version: $version
 DB Version: $mc_db_version
 URI: $mc_uri
 CSS: $mc_css
+License: $license 
 
 ==WordPress:==
 Version: $wp_version

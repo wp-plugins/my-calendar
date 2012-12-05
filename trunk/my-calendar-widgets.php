@@ -178,6 +178,8 @@ function form($instance) {
 	<label for="<?php echo $this->get_field_id('my_calendar_upcoming_type'); ?>"><?php _e('Display upcoming events by:','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_upcoming_type'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_type'); ?>">
 	<option value="events" <?php echo ($widget_type == 'events')?'selected="selected"':''; ?>><?php _e('Events (e.g. 2 past, 3 future)','my-calendar') ?></option>
 	<option value="days" <?php echo ($widget_type == 'days')?'selected="selected"':''; ?>><?php _e('Dates (e.g. 4 days past, 5 forward)','my-calendar') ?></option>
+	<option value="month" <?php echo ($widget_type == 'month')?'selected="selected"':''; ?>><?php _e('Show current month','my-calendar') ?></option>
+	<option value="year" <?php echo ($widget_type == 'year')?'selected="selected"':''; ?>><?php _e('Show current year','my-calendar') ?></option>
 	</select>
 	</p>
 	<p>
@@ -188,11 +190,13 @@ function form($instance) {
 	<option value="asc" <?php echo ($widget_order == 'asc')?'selected="selected"':''; ?>><?php _e('Ascending (near to far)','my-calendar') ?></option>
 	<option value="desc" <?php echo ($widget_order == 'desc')?'selected="selected"':''; ?>><?php _e('Descending (far to near)','my-calendar') ?></option>
 	</select>
-	</p>	
+	</p>
+	<?php if ( !( $widget_type == 'month' || $widget_type == 'year' ) ) { ?>
 	<p>
 	<input type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_after'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_after'); ?>" value="<?php echo $widget_after; ?>" size="1" maxlength="3" /> <label for="<?php echo $this->get_field_id('my_calendar_upcoming_after'); ?>"><?php _e("$widget_type into the future;",'my-calendar'); ?></label><br />
 	<input type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_before'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_before'); ?>" value="<?php echo $widget_before; ?>" size="1" maxlength="3" /> <label for="<?php echo $this->get_field_id('my_calendar_upcoming_after'); ?>"><?php _e("$widget_type from the past",'my-calendar'); ?></label>
 	</p>
+	<?php } ?>
 	<p>
 	<input type="checkbox" id="<?php echo $this->get_field_id('my_calendar_upcoming_show_today'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_show_today'); ?>" value="yes"<?php echo ($widget_show_today =='yes' || $widget_show_today == '' )?' checked="checked"':''; ?> /> <label for="<?php echo $this->get_field_id('my_calendar_upcoming_show_today'); ?>"><?php _e("Include today's events",'my-calendar'); ?></label>
 	</p>
@@ -263,11 +267,21 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 	$header = "<ul id='upcoming-events'>";
 	$footer = "</ul>";
 	$output ='';
-	if ($display_upcoming_type == "days") {
+	if ( $display_upcoming_type == "days" || $display_upcoming_type == "month" || $display_upcoming_type == "year" ) {
 		$temp_array = array();
 		$event_array = array();
-			$from = date('Y-m-d',strtotime("-$before days") );
-			$to = date('Y-m-d',strtotime("+$after days") );
+			if ( $display_upcoming_type == "days" ) {
+				$from = date('Y-m-d',strtotime("-$before days") );
+				$to = date('Y-m-d',strtotime("+$after days") );
+			}
+			if ( $display_upcoming_type == "month" ) {
+				$from = date('Y-m-1' );
+				$to = date('Y-m-t' );
+			}
+			if ( $display_upcoming_type == "year" ) {
+				$from = date('Y-1-1' );
+				$to = date('Y-12-31' );
+			}
 			$events = my_calendar_grab_events( $from, $to, $category,'','','upcoming',$author, $host );			
 			if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
 				$holidays = array();
@@ -300,7 +314,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 				} else {
 					$output .= "<li>".jd_draw_template($details,$template)."</li>";		  
 				}
-			}		
+			}
 	} else {
 		$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
 		if ( $caching ) { 
@@ -371,8 +385,10 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 		 $skip = false;
 		 $group = array();
 		 $spans = array();
+		 $extra = 0;
 			$i = 0; 
 			// create near_events array
+			$last_event = 0;
 			if ( is_array( $events ) ) {
 			foreach ( $events as $k=>$event ) {
 				if ( $i < $count ) {
@@ -400,25 +416,31 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 								}
 								$current = date('Y-m-d H:i',time()+$offset);
 								if ( $e ) { 
+									// if a multi-day event, show only once.
 									if ( $e->occur_group_id != 0 && $e->event_span == 1 && in_array( $e->occur_group_id, $group ) ) { 
 										$skip = true; 
 									} else { 
 										$group[] = $e->occur_group_id; $skip=false; 
 									}
+									// end multi-day reduction
 									if ( !$skip ) {
+										// with this code, I *expected* weekly recurring event with no intervening events to not display correctly...but it does. Not sure why.
+										$same_event = ( $e->event_id == $last_event )?true:false;
 										if ( ( $past<=$before && $future<=$after ) ) {
 											$near_events[] = $e; // if neither limit is reached, split off freely
-											$i++;
 										} else if ( $past <= $before && ( my_calendar_date_comp( $beginning,$current ) ) ) {
 											$near_events[] = $e; // split off another past event
-											$i++;
 										} else if ( $future <= $after && ( !my_calendar_date_comp( $end,$current ) ) ) {
 											$near_events[] = $e; // split off another future event
-											$i++;
 										} 
-										if ( my_calendar_date_comp( $beginning,$current ) ) { 			$past++;
-										} else if ( my_calendar_date_equal( $beginning,$current ) ) {  $present = 1;
-										} else { $future++; }
+										if ( my_calendar_date_comp( $beginning,$current ) ) { 	
+											if ( !$same_event ) { $past++; } else { $past; $extra++; }
+										} else if ( my_calendar_date_equal( $beginning,$current ) ) {  
+											$present = 1;
+										} else { 
+											if ( !$same_event ) { $future++;  } else { $future; $extra++; }
+										}
+										$last_event = $e->event_id;
 									}
 									if ($past > $before && $future > $after) {
 										break;
@@ -434,7 +456,7 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 		$events = $near_events;
 		@usort( $events, "my_calendar_datetime_cmp" ); // sort split events by date
 		// If more items in the list than there should be (possible, due to handling of current-day's events), pop off.
-		$intended = $before + $after;
+		$intended = $before + $after + $extra;
 		$actual = count($events);
 		if ( $actual > $intended ) {
 			for ( $i=0;$i<($actual-$intended);$i++ ) {

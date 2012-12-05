@@ -94,14 +94,16 @@ function mc_hcard( $event, $address='true', $map='true', $source='event' ) {
 	$hcard = "<div class=\"address vcard\">";
 	if ( $address == 'true' ) {
 		$hcard .= "<div class=\"adr\">";
-		if ($event_label != "") {$hcard .= "<strong class=\"org\">".$event_label."</strong><br />";	}					
+		if ($event_label != "") {$hcard .= "<strong class=\"org\">".$event_label."</strong><br />";	}
+		$hcard .= ( $event_street.$event_street2.$event_city.$event_state.$event_postcode.$event_country.$event_phone == '' )?'':"<div class='sub-address'>";
 		if ($event_street != "") {$hcard .= "<div class=\"street-address\">".$event_street."</div>";}
 		if ($event_street2 != "") {	$hcard .= "<div class=\"street-address\">".$event_street2."</div>";	}
-		if ($event_city != "") {$hcard .= "<span class=\"locality\">".$event_city."</span>, ";}						
+		if ($event_city != "") {$hcard .= "<span class=\"locality\">".$event_city."</span><span class='sep'>, </span>";}						
 		if ($event_state != "") {$hcard .= "<span class=\"region\">".$event_state."</span> ";}
 		if ($event_postcode != "") {$hcard .= " <span class=\"postal-code\">".$event_postcode."</span>";}	
 		if ($event_country != "") {	$hcard .= "<div class=\"country-name\">".$event_country."</div>";}
 		if ($event_phone != "") { $hcard .= "<div class=\"tel\">".$event_phone."</div>";}
+		$hcard .= ( $event_street.$event_street2.$event_city.$event_state.$event_postcode.$event_country.$event_phone == '' )?'':"</div>";
 		$hcard .= "</div>";
 	}
 	if ( $map == 'true' ) {
