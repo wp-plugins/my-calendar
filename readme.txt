@@ -85,6 +85,10 @@ Translator Credits (in no particular order)*:
 
 == Changelog ==
 
+= 2.1.3 =
+
+* Bug fix: My Calendar stripped title elements from singular posts unless an SEO plug-in was installed. 
+
 = 2.1.2 =
 
 * Bug fix: Miscounted number of events in upcoming events view when events were multiple days.
@@ -975,11 +979,5 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 == Upgrade Notice ==
 
-= 2.0.6 =
-Thanks for your patience! With this major rewrite, I've wanted to clear out new bugs as fast as possible. 
-
 = 2.0.0 =
 Major database redesign. Some new features, including single event view and pagination in events lists. Database update is non-destructive; no data will be deleted.
-
-= 1.10.6 = 
-Fixes major XSS security flaw.
