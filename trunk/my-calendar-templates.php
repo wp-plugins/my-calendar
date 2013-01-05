@@ -10,7 +10,7 @@ function jd_draw_template($array,$template,$type='list') {
 		} else {
 			if ( strpos( $template, "{".$key ) !== false ) {
 				if ($type != 'list') {
-					if ( $key == 'link' && $value == '') { $value = ( get_option('mc_uri') != '' )?get_option('mc_uri'):get_bloginfo('url'); }
+					if ( $key == 'link' && $value == '') { $value = ( get_option('mc_uri') != '' )?get_option('mc_uri'):home_url(); }
 					if ( $key != 'guid') { $value = htmlentities($value); }
 				}
 				if ( strpos( $template, "{".$key." " ) !== false ) { // only do preg_match if appropriate
@@ -123,8 +123,8 @@ function event_as_array($event,$type='html') {
 	$details = array();
 	$date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');	
 	$dateid = $event->occur_id;
-	$month_date = date('dS',strtotime( $event->occur_begin ) );
-	$day_name = date_i18n('l',strtotime($event->occur_begin));
+	$month_date = date( 'dS',strtotime( $event->occur_begin ) );
+	$day_name = date_i18n( 'l',strtotime( $event->occur_begin ) );
 	$week_number = mc_ordinal( week_of_month( date('j',strtotime($event->occur_begin) ) ) +1 );
 	$id = $event->event_id;
 	$offset = (60*60*get_option('gmt_offset'));  
@@ -163,10 +163,12 @@ function event_as_array($event,$type='html') {
 	$details['recurs'] = $event_recur;
 	$details['repeats'] = $event->event_repeats;
 	$real_end_date = $event->occur_end;
-	$date = date_i18n( $date_format,strtotime( $event->occur_begin ) );
+	//$date = date_i18n( $date_format,strtotime( $event->occur_begin ) );
+	$date = date_i18n( $date_format, $event->ts_occur_begin );
 	$date_end = date_i18n( $date_format,strtotime($real_end_date) );
 	$details['image'] = ( $event->event_image != '' )?"<img src='$event->event_image' alt='' class='mc-image' />":'';
-	$details['time'] = ( date( 'H:i:s', strtotime($event->occur_begin) ) == '00:00:00' )?get_option( 'mc_notime_text' ):date(get_option('mc_time_format'),strtotime($event->occur_begin));
+	//$details['time'] = ( date( 'H:i:s', strtotime($event->occur_begin) ) == '00:00:00' )?get_option( 'mc_notime_text' ):date(get_option('mc_time_format'),strtotime($event->occur_begin));
+	$details['time'] = ( date( 'H:i:s', $event->ts_occur_begin ) == '00:00:00' )?get_option( 'mc_notime_text' ):date(get_option('mc_time_format'), $event->ts_occur_begin );
 	$endtime = ( date( 'H:i:s', strtotime($event->occur_end) ) == '00:00:00')?'23:59:00':date( 'H:i:s',strtotime($event->occur_end) );	
 	$details['endtime'] = ( $event->occur_end == $event->occur_begin || $event->event_hide_end == 1 )?'':date_i18n( get_option('mc_time_format'),strtotime( $endtime ));
 	$tz = mc_user_timezone();
@@ -177,9 +179,8 @@ function event_as_array($event,$type='html') {
 		$details['endusertime'] = ( $local_begin == $local_end )?'':"$local_end";
 	} else {
 		$details['usertime'] = $details['time'];
-		$details['endusertime'] = ( $details['time'] == $details['endtime'] )?'':$details['endtime'];		
+		$details['endusertime'] = ( $details['time'] == $details['endtime'] )?'':$details['endtime'];
 	}
-
 	$offset = get_option('gmt_offset'); // reset offset in hours
 	$os = strtotime($event->occur_begin);
 	$oe = strtotime($event->occur_end);

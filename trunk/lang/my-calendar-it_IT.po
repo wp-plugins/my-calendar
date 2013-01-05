@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the My Calendar package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2012-12-04 20:59:20+0000\n"
+"PO-Revision-Date: 2012-12-10 18:27:50+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,27 +12,27 @@ msgstr ""
 
 #: my-calendar-event-manager.php:467
 msgid "Edit events"
-msgstr ""
+msgstr "Modifica gli eventi"
 
 #: my-calendar-event-manager.php:1270
 msgid "The time field must either be blank or be entered in the format hh:mm am/pm"
-msgstr ""
+msgstr "Il campo \"ora\" può essere lasciato vuoto o utilizzato nel formato hh:mm am/pm"
 
 #: my-calendar-event-manager.php:1277
 msgid "The end time field must either be blank or be entered in the format hh:mm am/pm"
-msgstr ""
+msgstr "Il campo \"orario finale\" può essere lasciato vuoto o utilizzato nel formato hh:mm am/pm"
 
 #: my-calendar-help.php:13
 msgid "Shortcodes"
-msgstr ""
+msgstr "Shortcode"
 
 #: my-calendar-help.php:14
 msgid "Icons"
-msgstr ""
+msgstr "Icone"
 
 #: my-calendar-help.php:15
 msgid "Styles"
-msgstr ""
+msgstr "Stili"
 
 #: my-calendar-help.php:16
 msgid "Templating"
@@ -40,19 +40,19 @@ msgstr ""
 
 #: my-calendar-help.php:17
 msgid "Support Form"
-msgstr ""
+msgstr "Modulo per il supporto"
 
 #: my-calendar-help.php:26 my-calendar.php:153
 msgid "Getting Started"
-msgstr ""
+msgstr "Introduzione"
 
 #: my-calendar-help.php:29
 msgid "Although the My Calendar plug-in is very complicated in terms of what can be customized, the basic usage is quite simple."
-msgstr ""
+msgstr "Anche se il plug-in My Calendar plug-in è molto complesso nella sua completa personalizzazione, l'uso di base è molto semplice."
 
 #: my-calendar-help.php:32
 msgid "Add the My Calendar shortcode (<code>[my_calendar]</code>) to a page."
-msgstr ""
+msgstr "Aggiungi il shortcode My Calendar (<code>[my_calendar]</code>) ad una pagina."
 
 #: my-calendar-help.php:33
 msgid "Add events by clicking on the Add/Edit Events link in the admin sidebar or on \"Add Events\" in the admin toolbar."

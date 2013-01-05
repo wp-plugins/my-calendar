@@ -13,7 +13,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 	// if a value is non-zero, I'll grab a handful of extra events so I can throw out holidays and others like that.
 	if ( $before > 0 ) {
 		$before = $before + 5;
-		$events1 = $mcdb->get_results("SELECT * 
+		$events1 = $mcdb->get_results("SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
 		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 		JOIN " . MY_CALENDAR_TABLE . " 
 		ON (event_id=occur_event_id) 
@@ -22,7 +22,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 		AND DATE(occur_begin) < '$date' ORDER BY occur_begin DESC LIMIT 0,$before");
 	} else { $events1 = array(); }
 	if ( $today == 'yes' ) {
-		$events3 = $mcdb->get_results("SELECT * 
+		$events3 = $mcdb->get_results("SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
 		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 		JOIN " . MY_CALENDAR_TABLE . " 
 		ON (event_id=occur_event_id) 
@@ -34,7 +34,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 	}
 	if ( $after > 0 ) {
 		$after = $after + 5;
-		$events2 = $mcdb->get_results("SELECT * 
+		$events2 = $mcdb->get_results("SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
 		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 		JOIN " . MY_CALENDAR_TABLE . " 
 		ON (event_id=occur_event_id) 
@@ -59,7 +59,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 	// if a value is non-zero, I'll grab a handful of extra events so I can throw out holidays and others like that.
 	if ( $before > 0 ) {
 		$before = $before + 5;
-		$events1 = $mcdb->get_results("SELECT * 
+		$events1 = $mcdb->get_results("SELECT *
 		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 		JOIN " . MY_CALENDAR_TABLE . " 
 		ON (event_id=occur_event_id) 
@@ -100,7 +100,7 @@ function mc_get_rss_events( $cat_id=false) { // JCD TODO: figure out how to outp
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	if ( $cat_id ) { $cat = "WHERE event_category = $cat_id AND event_approved = 1"; } else { $cat = 'WHERE event_approved = 1'; }
-	$events = $mcdb->get_results("SELECT * FROM " .  MY_CALENDAR_EVENTS_TABLE . " JOIN " . MY_CALENDAR_TABLE . " ON (event_id=occur_event_id) JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $cat ORDER BY event_added DESC LIMIT 0,30" );
+	$events = $mcdb->get_results("SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end FROM " .  MY_CALENDAR_EVENTS_TABLE . " JOIN " . MY_CALENDAR_TABLE . " ON (event_id=occur_event_id) JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $cat ORDER BY event_added DESC LIMIT 0,30" );
 	foreach ( array_keys($events) as $key ) {
 		$event =& $events[$key];	
 		$output[] = $event;
@@ -123,7 +123,7 @@ function mc_get_event( $id,$type='object' ) {
 	global $wpdb;
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
-    $event = $mcdb->get_row("SELECT * FROM " .  MY_CALENDAR_EVENTS_TABLE . " JOIN " . MY_CALENDAR_TABLE . " ON (event_id=occur_event_id) JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE occur_id=$id");
+    $event = $mcdb->get_row("SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end FROM " .  MY_CALENDAR_EVENTS_TABLE . " JOIN " . MY_CALENDAR_TABLE . " ON (event_id=occur_event_id) JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE occur_id=$id");
 	$date = date('Y-m-d',strtotime($event->occur_begin) );
 	if ( $type == 'object' ) {
 	return $event;
@@ -172,7 +172,7 @@ function my_calendar_grab_events($from, $to,$category=null,$ltype='',$lvalue='',
     $arr_events = array();
 	$limit_string = "event_flagged <> 1 AND event_approved = 1";
 
-	$event_query = "SELECT * 
+	$event_query = "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
 					FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 					JOIN " . MY_CALENDAR_TABLE . "
 					ON (event_id=occur_event_id) 					

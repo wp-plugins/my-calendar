@@ -420,7 +420,7 @@ $current_url = mc_get_current_url();
 }
 
 function my_calendar_print() {
-global $wp_plugin_url;
+$wp_plugin_url = plugin_dir_url( __FILE__ );
 $category=(isset($_GET['mcat']))?$_GET['mcat']:''; // these are all sanitized elsewhere
 $time=(isset($_GET['time']))?$_GET['time']:'month';
 $ltype=(isset($_GET['ltype']))?$_GET['ltype']:'';
@@ -448,7 +448,7 @@ echo '<!DOCTYPE html>
 if ( file_exists( get_stylesheet_directory() . '/mc-print.css' ) ) {
 	$stylesheet = get_stylesheet_directory_uri() . '/mc-print.css';
 } else {
-	$stylesheet = $wp_plugin_url."/my-calendar/mc-print.css";
+	$stylesheet = $wp_plugin_url."mc-print.css";
 }
 echo "
 <!-- Copy mc-print.css to your theme directory if you wish to replace the default print styles -->
@@ -634,7 +634,11 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 		if ( isset($_GET['yr']) && $main_class == $cid ) {
 			$c_year = (int) $_GET['yr'];
 		} else {
-			$c_year = date("Y",time()+($offset));			
+			if ( $time == 'week' && date('j', current_time( 'timestamp' ) ) <= 6 && date('n', current_time( 'timestamp' ) ) == 1 ) {
+				$c_year = ( date("Y",current_time( 'timestamp' ) ) )-1;
+			} else {
+				$c_year = date("Y",current_time( 'timestamp' ) );
+			}			
 		}
 		// Years get funny if we exceed 3000, so we use this check
 		if ( !($c_year <= 3000 && $c_year >= 0)) {
@@ -1354,7 +1358,7 @@ global $user_ID;
 		if ( is_user_logged_in() ) {
 			get_currentuserinfo();
 			$current_settings = get_user_meta( $user_ID, 'my_calendar_user_settings', true );
-			$tz = $current_settings['my_calendar_tz_default'];
+			$tz = ( isset($current_settings['my_calendar_tz_default'] ) )?$current_settings['my_calendar_tz_default']:'';
 		} else {
 			$tz = '';
 		}

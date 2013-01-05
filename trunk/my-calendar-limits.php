@@ -198,7 +198,7 @@ function mc_limit_string($type='',$ltype='',$lvalue='') {
 global $user_ID;
 	 $user_settings = get_option('mc_user_settings');
 	 $limit_string = "";
-	 if ( get_option('mc_user_settings_enabled') == 'true' && $user_settings['my_calendar_location_default']['enabled'] == 'on' || isset($_GET['loc']) && isset($_GET['ltype']) || ( $ltype !='' && $lvalue != '' )  ) {
+	 if ( ( get_option('mc_user_settings_enabled') == 'true' && isset( $user_settings['my_calendar_location_default']['enabled'] ) && $user_settings['my_calendar_location_default']['enabled'] == 'on' ) || isset($_GET['loc']) && isset($_GET['ltype']) || ( $ltype !='' && $lvalue != '' )  ) {
 		if ( !isset($_GET['loc']) && !isset($_GET['ltype']) ) {
 			if (  $ltype == '' && $lvalue == '' ) {
 				if ( is_user_logged_in() ) {
