@@ -59,7 +59,7 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 Translator Credits (in no particular order)*:
 
-[Ale Gonzalez](http://60rpm.tv/i), [Outshine Solutions](http://outshinesolutions.com), [Jakob Smith](http://www.omkalfatring.dk/),, [globus2008](http://wordpress.org/support/profile/globus2008), Frederic Escallier, Luud Heck, Wim Strijbos, [Daisuke Abe](http://www.alter-ego.jp/), [Alex](http://blog.sotvoril.ru/), Mehmet Ko&ccedil;ali, Uwe Jonas, Florian Edelmann, Efva Nyberg, [Sabir Musta](http://mustaphasabir.altervista.org), Massimo Sgobino, Leonardo Kfoury, Alexandre Carvalho, Amir Khalilnejad, [Aurelio De Rosa](http://www.audero.it/), Bayram Dede, Dani Locasati, Dario Nunez, Dirk Ginader, Evren Erten, Fl&aacute;vio Pereira, Francois-Xavier Benard, [Gianni Diurno](http://www.gidibao.net), Giksi, Heinz Ochsner,  Kazuyuki Kumai, Liam Boogar, Maks, Mano, Massimo Sgobino, Mohsen Aghaei, Oscar, [Rashid Niamat](http://niamatmediagroup.nl/), Stefan Wikstrom, Thomas Meyer, Vedar Ozdemir, [Vikas Arora](http://www.wiznicworld.com), [Miriam de Paula](http://wpmidia.com.br), [Miriam de Paula](http://wpmidia.com.br), [HostUCan](http://www.hostucan.com), [Alex Alexandrov](http://www.webhostingrating.com), [Alyona Lompar](http://www.webhostinggeeks.com), [David Gil P&eacute;rez](http://www.sohelet.com), [Burkov Boris](http://chernobog.ru), [Raivo Ratsep](http://raivoratsep.com), [Jibo](http://jibo.ro), [Rasmus Himmelstrup](http://seoanalyst.dk), [kndb](http://blog.layer8.sh/)
+[Ale Gonzalez](http://60rpm.tv/i), [Outshine Solutions](http://outshinesolutions.com), [Jakob Smith](http://www.omkalfatring.dk/),, [globus2008](http://wordpress.org/support/profile/globus2008), Frederic Escallier, Luud Heck, Wim Strijbos, [Daisuke Abe](http://www.alter-ego.jp/), [Alex](http://blog.sotvoril.ru/), Mehmet Ko&ccedil;ali, Uwe Jonas, Florian Edelmann, Efva Nyberg, [Sabir Musta](http://mustaphasabir.altervista.org), Massimo Sgobino, Leonardo Kfoury, Alexandre Carvalho, Amir Khalilnejad, [Aurelio De Rosa](http://www.audero.it/), Bayram Dede, Dani Locasati, Dario Nunez, Dirk Ginader, Evren Erten, Fl&aacute;vio Pereira, Francois-Xavier Benard, [Gianni Diurno](http://www.gidibao.net), Giksi, Heinz Ochsner,  Kazuyuki Kumai, Liam Boogar, Maks, Mano, Massimo Sgobino, Mohsen Aghaei, Oscar, [Rashid Niamat](http://niamatmediagroup.nl/), Stefan Wikstrom, Thomas Meyer, Vedar Ozdemir, [Vikas Arora](http://www.wiznicworld.com), [Miriam de Paula](http://wpmidia.com.br), [HostUCan](http://www.hostucan.com), [Alex Alexandrov](http://www.webhostingrating.com), [Alyona Lompar](http://www.webhostinggeeks.com), [David Gil P&eacute;rez](http://www.sohelet.com), [Burkov Boris](http://chernobog.ru), [Raivo Ratsep](http://raivoratsep.com), [Jibo](http://jibo.ro), [Rasmus Himmelstrup](http://seoanalyst.dk), [kndb](http://blog.layer8.sh/)
 
 * Translators may not have contributed to this plug-in; but have contributed to my [translation repository](http://translate.joedolson.com).
 
@@ -84,6 +84,13 @@ Translator Credits (in no particular order)*:
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.1.4 =
+
+* Bug fix: weekly view when crossing years jumped to next year
+* Bug fix: Upcoming events sorting fix
+* Bug fix: Upcoming events count fix
+* Bug fix: print stylesheet directory fix.
 
 = 2.1.3 =
 

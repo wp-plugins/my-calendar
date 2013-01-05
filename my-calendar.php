@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 2.1.3
+Version: 2.1.4
 */
 /*  Copyright 2009-2012  Joe Dolson (email : joe@joedolson.com)
 
@@ -24,7 +24,7 @@ Version: 2.1.3
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 global $mc_version, $wpdb;
-$mc_version = '2.1.3';
+$mc_version = '2.1.4';
 
 // Define the tables used in My Calendar
 if ( function_exists('is_multisite') && is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
@@ -145,6 +145,10 @@ if ( current_user_can('mc_view_help') ) {
 			<div class="postbox support">
 			<h3><strong><?php _e('Support This Plug-in','my-calendar'); ?></strong></h3>
 			<div class="inside resources">
+				<p>
+				<a href="https://twitter.com/intent/tweet?screen_name=joedolson&text=My%20Calendar%20is%20great%20-%20Thanks!" class="twitter-mention-button" data-size="large" data-related="joedolson">Tweet to @joedolson</a>
+				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+				</p>
 				<p class="mcbuy"><img src="<?php echo plugins_url('my-calendar/images/guide.png'); ?>" alt="My Calendar User's Guide" class="alignleft" /><?php _e('Help me help you:','my-calendar'); ?> <a href="http://www.joedolson.com/articles/my-calendar/users-guide/" rel="external"><?php _e("Buy the My Calendar User's Guide",'my-calendar'); ?></a></p>
 				<p><?php _e('<strong>Or make a donation today!</strong> Every donation counts - donate $2, $10, or $100 and help me keep this plug-in running!','my-calendar'); ?></p>
 				<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -360,7 +364,7 @@ function my_calendar_menu() {
 // return a result for admin_url in 2.9.2
 if ( !function_exists( 'admin_url' ) ) {
 	function admin_url() {
-		return get_bloginfo('wpurl').'/wp-admin/';
+		return site_url().'/wp-admin/';
 	}
 }
 if ( !function_exists( 'home_url' ) ) {
