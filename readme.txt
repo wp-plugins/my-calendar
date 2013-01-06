@@ -85,6 +85,10 @@ Translator Credits (in no particular order)*:
 
 == Changelog ==
 
+= 2.1.5 =
+
+* Bug fix: upcoming events timestamps were converted to UTC.
+
 = 2.1.4 =
 
 * Bug fix: weekly view when crossing years jumped to next year

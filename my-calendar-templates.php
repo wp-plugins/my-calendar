@@ -163,12 +163,15 @@ function event_as_array($event,$type='html') {
 	$details['recurs'] = $event_recur;
 	$details['repeats'] = $event->event_repeats;
 	$real_end_date = $event->occur_end;
-	//$date = date_i18n( $date_format,strtotime( $event->occur_begin ) );
-	$date = date_i18n( $date_format, $event->ts_occur_begin );
+	$date = date_i18n( $date_format,strtotime( $event->occur_begin ) );
+	$date_utc = date_i18n( $date_format, $event->ts_occur_begin );
 	$date_end = date_i18n( $date_format,strtotime($real_end_date) );
+	$date_end_utc = date_i18n( $date_format, $event->ts_occur_end );
+	$details['date_utc'] = $date_utc;
+	$details['date_end_utc'] = $date_end_utc;
 	$details['image'] = ( $event->event_image != '' )?"<img src='$event->event_image' alt='' class='mc-image' />":'';
 	//$details['time'] = ( date( 'H:i:s', strtotime($event->occur_begin) ) == '00:00:00' )?get_option( 'mc_notime_text' ):date(get_option('mc_time_format'),strtotime($event->occur_begin));
-	$details['time'] = ( date( 'H:i:s', $event->ts_occur_begin ) == '00:00:00' )?get_option( 'mc_notime_text' ):date(get_option('mc_time_format'), $event->ts_occur_begin );
+	$details['time'] = ( date( 'H:i:s', strtotime( $event->occur_begin ) ) == '00:00:00' )?get_option( 'mc_notime_text' ):date(get_option('mc_time_format'), strtotime( $event->occur_begin ) );
 	$endtime = ( date( 'H:i:s', strtotime($event->occur_end) ) == '00:00:00')?'23:59:00':date( 'H:i:s',strtotime($event->occur_end) );	
 	$details['endtime'] = ( $event->occur_end == $event->occur_begin || $event->event_hide_end == 1 )?'':date_i18n( get_option('mc_time_format'),strtotime( $endtime ));
 	$tz = mc_user_timezone();
