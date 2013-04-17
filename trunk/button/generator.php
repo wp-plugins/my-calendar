@@ -42,6 +42,9 @@ do_action('admin_head');
 <body class="<?php echo apply_filters( 'admin_body_class', '' ); ?>">
 	<div class="wrap">
 		<h2><?php _e("My Calendar Shortcode Generator",'my-calendar'); ?></h2> 
+		<p>
+			<?php _e("Navigational fields above and below the calendar: Feed links and print view will only display if they are enabled on your settings page. All other fields will appear if specified; the defaults specified in your settings will be used if the attribute is left blank. Use <code>none</code> to hide all navigation elements.",'my-calendar'); ?>
+		</p>
 		<form action="#" mode="POST">
 		<fieldset> 
 			<legend><?php _e('Shortcode Attributes', 'my-calendar'); ?></legend>
@@ -72,32 +75,12 @@ do_action('admin_head');
                     </select>
 					</p>
 					<p>
-					<label for="showkey"><?php _e('Show Category Key', 'my-calendar'); ?></label> 
-	                    <select name="showkey" id="showkey">
-                        <option value="yes"><?php _e('Yes','my-calendar'); ?></option>
-                        <option value="no" selected="selected"><?php _e('No','my-calendar'); ?></option> 
-                    </select> 
+					<label for="above"><?php _e('Navigation above calendar','my-calendar'); ?></label>
+					<input type="text" name="above" id="above" value="nav,toggle,jump,print,timeframe" />
 					</p>
 					<p>
-					<label for="shownav"><?php _e('Show Previous/Next Links', 'my-calendar'); ?></label>
-                    <select name="shownav" id="shownav">
-                        <option value="yes"><?php _e('Yes','my-calendar'); ?></option>
-                        <option value="no" selected="selected"><?php _e('No','my-calendar'); ?></option> 
-                    </select> 
-					</p>
-					<p>
-					<label for="showjump"><?php _e('Show Jumpbox', 'my-calendar'); ?></label>
-                    <select name="showjump" id="showjump">
-                        <option value="yes"><?php _e('Yes','my-calendar'); ?></option>
-                        <option value="no" selected="selected"><?php _e('No','my-calendar'); ?></option> 
-                    </select> 
-					</p>					
-					<p>
-					<label for="toggle"><?php _e('Show Format Toggle', 'my-calendar'); ?></label>
-                    <select name="toggle" id="toggle">
-                        <option value="yes"><?php _e('Yes','my-calendar'); ?></option>
-                        <option value="no" selected="selected"><?php _e('No','my-calendar'); ?></option> 
-                    </select> 
+					<label for="below"><?php _e('Navigation below calendar','my-calendar'); ?></label>
+					<input type="text" name="below" id="below" value="key,feeds" />
 					</p>					
 					<p>
 					<label for="time"><?php _e('Time Segment', 'my-calendar'); ?></label>
@@ -106,6 +89,27 @@ do_action('admin_head');
                         <option value="week"><?php _e('Week', 'my-calendar'); ?></option> 
 						<option value="day"><?php _e('Day', 'my-calendar'); ?></option>
                     </select>
+					</p>
+		<?php 
+			 // Grab all the categories and list them
+			$users = my_calendar_getUsers();
+			$options = '';
+			foreach($users as $u) {
+				$options = '<option value="'.$u->ID.'">'.$u->display_name."</option>\n";
+			}
+		?>			<p>
+					<label for="author"><?php _e('Limit by Author','my-calendar'); ?></label>
+					<select name="author" id="author" multiple="multiple">
+						<option value="all"><?php _e('All authors','my-calendar'); ?></option>
+						<?php echo $options; ?>
+					</select>
+					</p>
+					<p>
+					<label for="host"><?php _e('Limit by Host','my-calendar'); ?></label>
+					<select name="host" id="host" multiple="multiple">
+						<option value="all"><?php _e('All hosts','my-calendar'); ?></option>
+						<?php echo $options; ?>
+					</select>
 					</p>
 		</fieldset>
 		<p>

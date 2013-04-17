@@ -5,9 +5,9 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 2.1.5
+Version: 2.2.0
 */
-/*  Copyright 2009-2012  Joe Dolson (email : joe@joedolson.com)
+/*  Copyright 2009-2013  Joe Dolson (email : joe@joedolson.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ Version: 2.1.5
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 global $mc_version, $wpdb;
-$mc_version = '2.1.5';
+$mc_version = '2.2.0';
 
 // Define the tables used in My Calendar
 if ( function_exists('is_multisite') && is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
@@ -94,6 +94,7 @@ add_action( 'delete_user', 'mc_deal_with_deleted_user' );
 add_action( 'widgets_init', create_function('', 'return register_widget("my_calendar_today_widget");') );
 add_action( 'widgets_init', create_function('', 'return register_widget("my_calendar_upcoming_widget");') );
 add_action( 'widgets_init', create_function('', 'return register_widget("my_calendar_mini_widget");') );
+add_action( 'widgets_init', create_function('', 'return register_widget("my_calendar_simple_search");') );
 add_action( 'show_user_profile', 'mc_user_profile' );
 add_action( 'edit_user_profile', 'mc_user_profile' );
 add_action( 'profile_update', 'mc_user_save_profile');
@@ -116,7 +117,7 @@ function mc_event_filter( $title, $sep, $seplocation ) {
 		$left_sep = ( $seplocation != 'right' ? ' ' . $sep . ' ' : '' );
 		$right_sep = ( $seplocation != 'right' ? '' : ' ' . $sep . ' ' );		
 		$template = ( get_option( 'mc_event_title_template' ) != '' )? stripslashes( get_option( 'mc_event_title_template' ) ):"$left_sep {title} $sep {date} $right_sep ";
-		return jd_draw_template( $array, $template );
+		return strip_tags(jd_draw_template( $array, $template ) );
 	} else {
 		return $title;
 	}
@@ -124,7 +125,6 @@ function mc_event_filter( $title, $sep, $seplocation ) {
 
 // produce admin support box
 function jd_show_support_box( $show='', $add=false, $remove=false ) {
-
 if ( current_user_can('mc_view_help') ) {
 ?>
 	<div class="postbox-container" style="width:20%">
@@ -147,7 +147,7 @@ if ( current_user_can('mc_view_help') ) {
 			<div class="inside resources">
 				<p>
 				<a href="https://twitter.com/intent/tweet?screen_name=joedolson&text=My%20Calendar%20is%20great%20-%20Thanks!" class="twitter-mention-button" data-size="large" data-related="joedolson">Tweet to @joedolson</a>
-				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 				</p>
 				<p class="mcbuy"><img src="<?php echo plugins_url('my-calendar/images/guide.png'); ?>" alt="My Calendar User's Guide" class="alignleft" /><?php _e('Help me help you:','my-calendar'); ?> <a href="http://www.joedolson.com/articles/my-calendar/users-guide/" rel="external"><?php _e("Buy the My Calendar User's Guide",'my-calendar'); ?></a></p>
 				<p><?php _e('<strong>Or make a donation today!</strong> Every donation counts - donate $2, $10, or $100 and help me keep this plug-in running!','my-calendar'); ?></p>
@@ -342,15 +342,18 @@ function my_calendar_menu() {
 		add_action( "admin_head", 'my_calendar_add_styles' );
 		if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) {
 		} else { // if we're accessing a remote page, remove these pages.
-			add_submenu_page('my-calendar', __('Add/Edit Events','my-calendar'), __('Add/Edit Events','my-calendar'), 'mc_add_events', 'my-calendar', 'edit_my_calendar');
+			$edit = add_submenu_page('my-calendar', __('Add New Event','my-calendar'), __('Add New Event','my-calendar'), 'mc_add_events', 'my-calendar', 'edit_my_calendar');
+				add_action( "load-$edit", 'mc_event_editing' );	
+			$manage = add_submenu_page('my-calendar', __('Manage Events','my-calendar'), __('Manage Events','my-calendar'), 'mc_manage_events', 'my-calendar-manage', 'manage_my_calendar');		
+				add_action( "load-$manage", 'mc_add_screen_option' );
 			add_submenu_page('my-calendar', __('Manage Categories','my-calendar'), __('Manage Categories','my-calendar'), 'mc_edit_cats', 'my-calendar-categories', 'my_calendar_manage_categories');
-			add_submenu_page('my-calendar', __('Manage Event Groups','my-calendar'), __('Manage Event Groups','my-calendar'), 'mc_manage_events', 'my-calendar-groups', 'edit_my_calendar_groups');		
 			add_submenu_page('my-calendar', __('Manage Locations','my-calendar'), __('Manage Locations','my-calendar'), 'mc_edit_locations', 'my-calendar-locations', 'my_calendar_manage_locations');		
+			add_submenu_page('my-calendar', __('Manage Event Groups','my-calendar'), __('Manage Event Groups','my-calendar'), 'mc_manage_events', 'my-calendar-groups', 'edit_my_calendar_groups');		
 		}
-		add_submenu_page('my-calendar', __('Settings','my-calendar'), __('Settings','my-calendar'), 'mc_edit_settings', 'my-calendar-config', 'edit_my_calendar_config');
 		add_submenu_page('my-calendar', __('Style Editor','my-calendar'), __('Style Editor','my-calendar'), 'mc_edit_styles', 'my-calendar-styles', 'edit_my_calendar_styles');
-		add_submenu_page('my-calendar', __('Behavior Editor','my-calendar'), __('Behavior Editor','my-calendar'), 'mc_edit_behaviors', 'my-calendar-behaviors', 'edit_my_calendar_behaviors');	
+		add_submenu_page('my-calendar', __('Script Editor','my-calendar'), __('Script Editor','my-calendar'), 'mc_edit_behaviors', 'my-calendar-behaviors', 'edit_my_calendar_behaviors');	
 		add_submenu_page('my-calendar', __('Template Editor','my-calendar'), __('Template Editor','my-calendar'), 'mc_edit_templates', 'my-calendar-templates', 'edit_mc_templates');
+		add_submenu_page('my-calendar', __('Settings','my-calendar'), __('Settings','my-calendar'), 'mc_edit_settings', 'my-calendar-config', 'edit_my_calendar_config');
 		add_submenu_page('my-calendar', __('My Calendar Help','my-calendar'), __('Help','my-calendar'), 'mc_view_help', 'my-calendar-help', 'my_calendar_help');		
 	}
 	if ( function_exists( 'mcs_submissions' ) ) {
@@ -359,6 +362,91 @@ function my_calendar_menu() {
 		add_submenu_page('my-calendar', __('Event Submissions','my-calendar'), __('Event Submissions','my-calendar'), 'manage_options', 'my-calendar-submissions', 'mcs_settings');
 		add_submenu_page('my-calendar', __('Payments','my-calendar'), __('Payments','my-calendar'), 'manage_options', 'my-calendar-payments', 'mcs_sales_page');
 	}
+}
+
+/* TESTING SECTION JCD */
+
+function mc_event_editing() {
+	$option = 'mc_show_on_page';
+	 
+	$args = array(
+	'label' => 'Show these fields',
+	'default' => get_option('mc_input_options'),
+	'option' => 'mc_show_on_page'
+);
+ 
+add_screen_option( $option, $args );
+ 
+}
+add_filter('screen_settings', 'mc_show_event_editing', 10, 2 );
+function mc_show_event_editing( $status, $args ) {
+	$return = '';
+	if ( $args->base == 'toplevel_page_my-calendar' ) {
+		$input_options = get_user_meta( get_current_user_id(), 'mc_show_on_page', true );
+		//$data =  "<pre>".print_r( $args, 1 )."THESE:<br />".print_r($input_options, 1 )."</pre>";
+		$settings_options = get_option('mc_input_options');
+		if ( !is_array( $input_options ) ) { $input_options = $settings_options; }
+		$input_labels = array('event_location_dropdown'=>__('Event Location Dropdown Menu','my-calendar'),'event_short'=>__('Event Short Description field','my-calendar'),'event_desc'=>__('Event Description Field','my-calendar'),'event_category'=>__('Event Category field','my-calendar'),'event_image'=>__('Event Image field','my-calendar'),'event_link'=>__('Event Link field','my-calendar'),'event_recurs'=>__('Event Recurrence Options','my-calendar'),'event_open'=>__('Event Registration options','my-calendar'),'event_location'=>__('Event Location fields','my-calendar'),'event_use_editor'=>__('Use HTML Editor in Event Description Field','my-calendar'),'event_specials'=>__('Set Special Scheduling options','my-calendar') );
+		$output = '';
+		foreach ($input_options as $key=>$value) {
+			$checked = ($value == 'on')?"checked='checked'":'';
+			$allowed = ( $settings_options[$key] == 'on' )?true:false;
+			if ( !current_user_can('manage_options') && !$allowed ) {
+				// don't display options if this user can't use them.
+				$output .= "<input type='hidden' name='mc_show_on_page[$key]' value='off' />";
+			} else {
+				$output .= "<label for=\"mci_$key\"><input type=\"checkbox\" id=\"mci_$key\" name=\"mc_show_on_page[$key]\" value='on' $checked /> $input_labels[$key]</label>";
+			}
+		}
+		$button = get_submit_button( __( 'Apply' ), 'button', 'screen-options-apply', false );
+	$return = "
+	<fieldset>
+	<legend>". __('Event editing fields to show','my-calendar') ."</legend>
+	<div class='metabox-prefs'>
+		<div><input type='hidden' name='wp_screen_options[option]' value='mc_show_on_page' /></div>
+		<div><input type='hidden' name='wp_screen_options[value]' value='yes' /></div>
+		$output
+	</div>
+	</fieldset>
+	<br class='clear'>
+	$button";
+	}
+	return $return;
+}
+
+add_filter('set-screen-option', 'mc_set_event_editing', 11, 3);
+function mc_set_event_editing($status, $option, $value) {
+	if ( 'mc_show_on_page' == $option ) { 
+		$orig = get_option('mc_input_options');
+		$value = array();
+		foreach ( $orig as $k=>$v ) {
+			if ( isset( $_POST['mc_show_on_page'][$k] ) ) {
+				$value[$k] = 'on';
+			} else {
+				$value[$k] = 'off';
+			}
+		}
+	}
+	return $value;
+}
+/* END TESTING SECTION */
+
+function mc_add_screen_option() {
+	$items_per_page = ( get_option('mc_num_per_page') )? get_option('mc_num_per_page') : 50;
+	$option = 'per_page'; 
+	$args = array(
+		'label' => 'Events',
+		'default' => $items_per_page,
+		'option' => 'mc_num_per_page'
+	);
+	add_screen_option( $option, $args );
+}
+
+add_filter('set-screen-option', 'mc_set_screen_option', 10, 3);
+ 
+function mc_set_screen_option($status, $option, $value) {
+	//if ( 'mc_num_per_page' == $option ) return $value;
+	return $value;
 }
 
 // return a result for admin_url in 2.9.2
@@ -381,3 +469,4 @@ add_shortcode('my_calendar_locations','my_calendar_locations');
 add_shortcode('my_calendar_categories','my_calendar_categories');
 add_shortcode('my_calendar_show_locations','my_calendar_show_locations_list');
 add_shortcode('my_calendar_event','my_calendar_show_event');
+add_shortcode('my_calendar_search','my_calendar_search');

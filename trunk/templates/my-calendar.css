@@ -1,4 +1,4 @@
-.mc-main,.mc-list  {background: #fff; padding: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;color:#333;}
+.mc-main,.mc-list  {background: #fff; padding: 5px; border-radius: 5px;color:#333;}
 .mc-main caption, .mc-main .my-calendar-date-switcher, 
 .mc-main .category-key, .mc-main .calendar-event .details, 
 .mc-main .calendar-events {
@@ -20,6 +20,9 @@ border: 1px solid #a9e3ff;
 .mc-main .list-event .details, .mc-main td {border:1px solid #eee; }
 .mc-main .calendar-event .details, .mc-main .calendar-events {color:#000;}
 .mc-main .my-calendar-nav li a, .mc-main .calendar-event .details, .mc-main .calendar-events  {border:1px solid #9b5;}
+.my-calendar-nav { text-align: center;}
+.my-calendar-nav ul { display: inline-block;}
+.my-calendar-nav li a { min-width: 8em; }
 .mc-main .list-event .details {background:#fafafa;}
 .mc-main .nextmonth, .mc-main .nextmonth .weekend {color: #777;}
 .mc-main .mc-list .odd {background:#d3e3e3;}
@@ -73,14 +76,14 @@ letter-spacing: 1px;
 }
 .mc-main th abbr {border-bottom: none;}
 .mc-main h3, .mc-main h3 a {
+display: block;
+border-radius: 2px;
 font-size:10px!important;
 font-family: Arial, Verdana, sans-serif;
 font-weight:700;
 margin:3px 0;
 padding:0;
 width: 100%;
--moz-border-radius: 3px;
--webkit-border-radius: 3px;
 border-radius: 3px;
 clear: none;
 line-height: 1;
@@ -100,8 +103,6 @@ margin:0;
 position:absolute;
 left: 15%;
 width:70%;
--moz-border-radius:10px;
--webkit-border-radius: 10px;
 border-radius: 10px;
 -moz-box-shadow:3px 3px 6px #777;
 -webkit-box-shadow:3px 3px 6px #777;
@@ -124,8 +125,6 @@ width: 200px!important;
 left: 0px;
 }
 .mc-main .list-event .details {
--moz-border-radius:5px;
--webkit-border-radius:5px;
 border-radius:5px;
 margin:5px 0;
 padding:5px 5px 0;
@@ -137,6 +136,7 @@ padding: 0;
 .mc-main .mc-list li {
 padding:5px;
 list-style-type: none;
+list-style-image: none;
 margin: 0;
 }
 .mc-main .mc-date {
@@ -155,6 +155,7 @@ margin: 5px 0;
 }
 .mc-main .category-key ul {
 list-style-type: none;
+list-style-image: none;
 margin: 0;
 padding: 0;
 }
@@ -169,8 +170,6 @@ vertical-align:middle;
 width: 10px;
 height: 10px;
 display: inline-block;
--moz-border-radius: 2px;
--webkit-border-radius: 2px;
 border-radius: 2px;
 }
 
@@ -207,7 +206,7 @@ margin:0;
 padding:0;
 }
 .mini .my-calendar-nav ul {height: 2em!important;}
-.mc-main .my-calendar-nav li {float:left;list-style-type: none!important; /* It really is pretty important. */;}
+.mc-main .my-calendar-nav li {float:left;list-style-type: none!important;list-style-image: none; /* It really is pretty important. */}
 .mc-main .my-calendar-nav li:before {content:'';}
 .mc-main .my-calendar-nav li a {
 display:block;
@@ -223,18 +222,10 @@ margin-left: 4px;
 text-align:right;
 }
 .mc-main .my-calendar-next a {
--webkit-border-top-right-radius: 8px;
--webkit-border-bottom-right-radius: 8px;
--moz-border-radius-topright: 8px;
--moz-border-radius-bottomright: 8px;
 border-top-right-radius: 8px;
 border-bottom-right-radius: 8px;
 }
 .mc-main .my-calendar-prev a {
--webkit-border-top-left-radius: 8px;
--webkit-border-bottom-left-radius: 8px;
--moz-border-radius-topleft: 8px;
--moz-border-radius-bottomleft: 8px;
 border-top-left-radius: 8px;
 border-bottom-left-radius: 8px;
 }

@@ -113,6 +113,20 @@ if ( isset( $_POST['event_action'] ) ) {
 		<h2><?php _e('Manage Event Groups','my-calendar'); ?></h2>
 		<p><?php _e('Grouped events can be edited simultaneously. When you choose a group of events to edit, the form will be pre-filled with the content applicable to the member of the event group you started from. (e.g., if you click on the "Edit Group" link for the 3rd of a set of events, the boxes will use the content applicable to that event.). You will also receive a set of checkboxes which will indicate which events in the group should have these changes applied. (All grouped events can also be edited individually.)','my-calendar'); ?></p>
 		<p><?php _e('The following fields will never be changed when editing groups: registration availability, event publication status, spam flagging, event recurrence, event repetitions, and the start and end dates and times for that event.','my-calendar'); ?></p>
+
+<div class="postbox-container" style="width: 70%">
+<div class="metabox-holder">
+	<div class="ui-sortable meta-box-sortables">
+		<div class="postbox">	
+			<h3><?php _e('Manage Event Groups','my-calendar'); ?></h3>
+			<div class="inside">
+				<p><?php _e('Select an event group to edit.','my-calendar'); ?></p>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+		
 	<?php } ?>
 	
 	<?php jd_show_support_box(); ?>
@@ -411,7 +425,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 <div class="ui-sortable meta-box-sortables">
 <div class="postbox">
 <h3><?php _e('Event Location','my-calendar'); ?></h3>
-<div class="inside">
+<div class="inside location_form">
 			<fieldset>
 			<legend><?php _e('Event Location','my-calendar'); ?></legend>
 			<?php } ?>
@@ -445,7 +459,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			<?php _e('All location fields are optional: <em>insufficient information may result in an inaccurate map</em>.','my-calendar'); ?>
 			</p>
 			<p>
-			<label for="event_label"><?php _e('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_label' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_label" name="event_label" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_label)); ?>" />
+			<label for="event_label"><?php _e('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_label' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label><br /><input type="text" id="event_label" name="event_label" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_label)); ?>" />
 			</p>
 			<p>
 			<label for="event_street"><?php _e('Street Address','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_street' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_street" name="event_street" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_street)); ?>" />
@@ -725,19 +739,17 @@ function jd_groups_display_list() {
 		<p style="position:relative;">
 		<input type="submit" class="button-primary group" value="<?php _e('Group checked events for mass editing','my-calendar'); ?>" />
 		</p>		
-<table class="widefat page fixed" id="my-calendar-admin-table">
+<table class="widefat wp-list-table" id="my-calendar-admin-table">
 	<thead>
 	<tr>
-		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=1$sorting"); ?>"><?php _e('ID','my-calendar') ?></a></th>
+		<th class="manage-column" scope="col" style="width: 50px;"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=1$sorting"); ?>"><?php _e('ID','my-calendar') ?></a></th>
 		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=8$sorting"); ?>"><?php _e('Group','my-calendar') ?></a></th>
 		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=2$sorting"); ?>"><?php _e('Title','my-calendar') ?></a></th>
 		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=7$sorting"); ?>"><?php _e('Where','my-calendar') ?></a></th>
-		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=3$sorting"); ?>"><?php _e('Description','my-calendar') ?></a></th>
 		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=4$sorting"); ?>"><?php _e('Starts','my-calendar') ?></a></th>
 		<th class="manage-column" scope="col"><?php _e('Recurs','my-calendar') ?></th>
 		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=5$sorting"); ?>"><?php _e('Author','my-calendar') ?></a></th>
 		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=6$sorting"); ?>"><?php _e('Category','my-calendar') ?></a></th>
-		<th class="manage-column" scope="col"><?php _e('Edit','my-calendar') ?></th>
 	</tr>
 	</thead>
 		<?php
@@ -759,26 +771,44 @@ function jd_groups_display_list() {
 			<tr class="<?php echo $class; echo $spam; ?>" id="event<?php echo $event->event_id; ?>">
 				<th scope="row"><input type="checkbox" value="<?php echo $event->event_id; ?>" name="group[]" id="mc<?php echo $event->event_id; ?>" <?php echo (mc_event_is_grouped( $event->event_group_id ))?' disabled="disabled"':''; ?> /> <label for="mc<?php echo $event->event_id; ?>"><?php echo $event->event_id; ?></label></th>
 				<th scope="row"><?php echo ($event->event_group_id == 0)?'-':$event->event_group_id; ?></th>
-				<td><?php echo $spam_label; echo stripslashes($title); ?></td>
+	<td title="<?php echo esc_attr(substr(strip_tags(stripslashes($event->event_desc)),0,240)); ?>">
+					<strong><?php if ( mc_can_edit_event( $event->event_author ) ) { ?>
+						<a href="<?php echo admin_url("admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id"); ?>" class='edit'>
+					<?php } ?>
+					<?php echo $spam_label; echo stripslashes($title); ?>
+					<?php if (  mc_can_edit_event( $event->event_author ) ) { echo "</a>"; } ?></strong>
+				<div class='row-actions' style="visibility:visible;">
+				<?php if ( mc_can_edit_event( $event->event_author ) ) { ?>
+				<a href="<?php echo admin_url("admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id"); ?>" class='edit'><?php _e('Edit Event','my-calendar'); ?></a> | 
+					<?php if ( mc_event_is_grouped( $event->event_group_id ) ) { ?>
+					<a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;mode=edit&amp;event_id=$event->event_id&amp;group_id=$event->event_group_id"); ?>" class='edit group'><?php _e('Edit Group','my-calendar'); ?></a>
+					<?php } else { ?>
+					<em><?php _e('Ungrouped','my-calendar'); ?></em>
+					<?php } ?>
+				<?php } else { _e("Not editable.",'my-calendar'); } ?>		
+				</div>
+				</td>
 				<td><?php echo stripslashes($event->event_label); ?></td>
-				<td><?php echo substr(strip_tags(stripslashes($event->event_desc)),0,60); ?>&hellip;</td>
 				<?php if ($event->event_time != "00:00:00") { $eventTime = date_i18n(get_option('mc_time_format'), strtotime($event->event_time)); } else { $eventTime = get_option('mc_notime_text'); } ?>
 				<td><?php echo "$event->event_begin, $eventTime"; ?></td>
 				<?php /* <td><?php echo $event->event_end; ?></td> */ ?>
 				<td>
 				<?php 
+					$recurs = str_split( $event->event_recur, 1 );
+					$recur = $recurs[0];
+					$every = ( isset($recurs[1]) )?$recurs[1]:1;
 					// Interpret the DB values into something human readable
-					if ($event->event_recur == 'S') { _e('Never','my-calendar'); } 
-					else if ($event->event_recur == 'D') { _e('Daily','my-calendar'); }
-					else if ($event->event_recur == 'E') { _e('Weekdays','my-calendar'); }
-					else if ($event->event_recur == 'W') { _e('Weekly','my-calendar'); }
-					else if ($event->event_recur == 'B') { _e('Bi-Weekly','my-calendar'); }
-					else if ($event->event_recur == 'M') { _e('Monthly (by date)','my-calendar'); }
-					else if ($event->event_recur == 'U') { _e('Monthly (by day)','my-calendar'); }
-					else if ($event->event_recur == 'Y') { _e('Yearly','my-calendar'); }
+					if ($recur == 'S') { _e('Never','my-calendar'); } 
+					else if ($recur == 'D') { _e('Daily','my-calendar'); }
+					else if ($recur == 'E') { _e('Weekdays','my-calendar'); }
+					else if ($recur == 'W') { _e('Weekly','my-calendar'); }
+					else if ($recur == 'B') { _e('Bi-Weekly','my-calendar'); }
+					else if ($recur == 'M') { _e('Monthly (by date)','my-calendar'); }
+					else if ($recur == 'U') { _e('Monthly (by day)','my-calendar'); }
+					else if ($recur == 'Y') { _e('Yearly','my-calendar'); }
 				?>&ndash;<?php
-					if ($event->event_recur == 'S') { _e('N/A','my-calendar'); }
-					else if ( mc_event_repeats_forever( $event->event_recur, $event->event_repeats ) ) { _e('Forever','my-calendar'); }
+					if ($recur == 'S') { _e('N/A','my-calendar'); }
+					else if ( mc_event_repeats_forever( $recur, $event->event_repeats ) ) { _e('Forever','my-calendar'); }
 					else if ( $event->event_repeats > 0 ) { printf(__('%d Times','my-calendar'),$event->event_repeats ); }					
 				?>				
 				</td>
@@ -793,16 +823,6 @@ function jd_groups_display_list() {
                                 ?>
 				<td><div class="category-color" style="background-color:<?php echo (strpos($this_cat->category_color,'#') !== 0)?'#':''; echo $this_cat->category_color;?>;"> </div> <?php echo stripslashes($this_cat->category_name); ?></td>
 				<?php unset($this_cat); ?>
-				<td>
-				<?php if ( mc_can_edit_event( $event->event_author ) ) { ?>
-				<a href="<?php echo admin_url("admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id"); ?>" class='edit'><?php _e('Edit Event','my-calendar'); ?></a> &middot; 
-					<?php if ( mc_event_is_grouped( $event->event_group_id ) ) { ?>
-					<a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;mode=edit&amp;event_id=$event->event_id&amp;group_id=$event->event_group_id"); ?>" class='edit group'><?php _e('Edit Group','my-calendar'); ?></a>
-					<?php } else { ?>
-					<em><?php _e('Ungrouped','my-calendar'); ?></em>
-					<?php } ?>
-				<?php } else { _e("Not editable.",'my-calendar'); } ?>				
-				</td>	
 			</tr>
 <?php
 		}

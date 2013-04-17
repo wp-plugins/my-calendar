@@ -213,7 +213,7 @@ global $user_ID;
 			}
 		} else {
 			$current_location = urldecode($_GET['loc']);
-			$location = urldecode($_GET['ltype']);	
+			$location = urldecode($_GET['ltype']);
 		}
 				switch ($location) {
 					case "name":$location_type = "event_label";

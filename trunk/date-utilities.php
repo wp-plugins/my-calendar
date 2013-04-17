@@ -190,10 +190,15 @@ function mc_checkdate($date) {
 	return checkdate($m,$d,$y);
 }
 
-function first_day_of_week() {
+function first_day_of_week( $date=false ) {
 	$start_of_week = (get_option('start_of_week')==1||get_option('start_of_week')==0)?get_option('start_of_week'):0;
-	$today = date('w',current_time('timestamp'));
-	$now = date('Y-m-d',current_time('timestamp'));
+	if ( $date ) {
+		$today = date( 'w',$date );
+		$now = date( 'Y-m-d',$date );	
+	} else {
+		$today = date('w',current_time('timestamp'));
+		$now = date('Y-m-d',current_time('timestamp'));
+	}
 	$month = 0; // don't change month
 	switch ($today) {
 		case 1:	$sub = ($start_of_week == 1)?0:1;break; // mon

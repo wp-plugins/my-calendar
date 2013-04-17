@@ -53,12 +53,63 @@ function my_calendar_getUsers() {
 	return $users->get_results();
 }
 
+function mc_selected_users( $selected ) {
+	$selected = explode(',',$selected );
+	$users = my_calendar_getUsers();
+	$options = '';
+	foreach($users as $u) {
+		if ( in_array( $u->ID, $selected ) ) { $checked = ' checked="checked"'; } else { $checked = ''; }
+		$options = '<option value="'.$u->ID.'"'.$checked.'>'.$u->display_name."</option>\n";
+	}
+	return $options;
+} 
+
 function jd_calendar_plugin_action($links, $file) {
 	if ($file == plugin_basename(dirname(__FILE__).'/my-calendar.php')) {
 		$links[] = "<a href='admin.php?page=my-calendar-config'>" . __('Settings', 'my-calendar') . "</a>";
 		$links[] = "<a href='admin.php?page=my-calendar-help'>" . __('Help', 'my-calendar') . "</a>";
 	}
 	return $links;
+}
+
+function mc_inverse_color($color){
+    $color = str_replace('#', '', $color);
+    if (strlen($color) != 6){ return '#000000'; }
+    $rgb = '';
+	$total = 0; 
+	$red = 0.299 * ( 255 - hexdec(substr($color,0,2)) );
+	$green = 0.587 * ( 255 - hexdec(substr($color,2,2)) );
+	$blue = 0.114 * ( 255 - hexdec(substr($color,4,2)) );
+	$luminance = 1 - ( ( $red + $green + $blue )/255 );
+	if ( $luminance < 0.5 ) {
+		return '#ffffff';
+	} else {
+		return '#000000';
+	}
+}
+
+function mc_shift_color( $color ) {
+	$color = str_replace('#','',$color);
+	$rgb = ''; // Empty variable
+	$percent = ( mc_inverse_color($color) == '#ffffff' )?-20:20;
+    $per = $percent/100*255; // Creates a percentage to work with. Change the middle figure to control colour temperature
+    if  ($per < 0 ) {
+        // DARKER
+        $per =  abs($per); // Turns Neg Number to Pos Number
+        for ($x=0;$x<3;$x++) {
+            $c = hexdec(substr($color,(2*$x),2)) - $per;
+            $c = ($c < 0) ? 0 : dechex($c);
+            $rgb .= (strlen($c) < 2) ? '0'.$c : $c;
+        }
+    } else {
+        // LIGHTER        
+        for ($x=0;$x<3;$x++) {         
+            $c = hexdec(substr($color,(2*$x),2)) + $per;
+            $c = ($c > 255) ? 'ff' : dechex($c);
+            $rgb .= (strlen($c) < 2) ? '0'.$c : $c;
+        }   
+    }
+    return '#'.$rgb; 	
 }
 
 // Function to add the calendar style into the header
@@ -71,7 +122,11 @@ function my_calendar_wp_head() {
 	if ( get_option('mc_use_styles') != 'true' ) {
 		$this_post = $wp_query->get_queried_object();
 		if (is_object($this_post)) {
-			$id = $this_post->ID;
+			if ( isset( $this_post->ID ) ) {
+				$id = $this_post->ID;
+			} else {
+				$id = false;
+			}
 		} 
 		if ( get_option( 'mc_show_css' ) != '' ) {
 		$array = explode( ",",get_option( 'mc_show_css' ) );
@@ -87,14 +142,25 @@ function my_calendar_wp_head() {
 			$class = "mc_".sanitize_title($category->category_name);
 			$hex = (strpos($category->category_color,'#') !== 0)?'#':'';
 			$color = $hex.$category->category_color;
+			$hcolor = mc_shift_color($category->category_color);
+			$inv = '';
 		if ( get_option( 'mc_apply_color' ) == 'font' ) {
 			$type = 'color';
+			$alt = 'background';
 		} else if ( get_option( 'mc_apply_color' ) == 'background' ) {
 			$type = 'background';
+			$alt = 'color';
+		} else {
+			$type = $alt = '';
+		}
+		if ( get_option( 'mc_inverse_color' ) == 'true' ) {
+			$inverse = mc_inverse_color( $color );
+			$inv =  "$alt: $inverse;";
 		}
 		if ( get_option( 'mc_apply_color' )  == 'font' || get_option( 'mc_apply_color' ) == 'background' ) {
-		// always an anchor as of 1.11.0
-		$category_styles .= "\n.mc-main .$class .event-title a { $type: $color; }";
+			// always an anchor as of 1.11.0
+			$category_styles .= "\n.mc-main .$class .event-title a { $type: $color; $inv }";
+			$category_styles .= "\n.mc-main .$class .event-title a:hover, .mc-main .$class .event-title a:focus { $type: $hcolor;}";		
 		}
 	}
 	$add = '';
@@ -159,7 +225,7 @@ function my_calendar_add_javascript() {
 			wp_enqueue_script('mc-upload');	
 		}
 	}
-	if ( isset($_GET['page']) && $_GET['page'] == 'my-calendar-groups' ) {
+	if ( isset($_GET['page']) && ( $_GET['page'] == 'my-calendar-groups' || $_GET['page'] == 'my-calendar-manage' ) ) {
 		wp_enqueue_script('jquery.checkall',plugins_url( 'js/jquery.checkall.js', __FILE__ ), array('jquery') );
 	}
 }
@@ -200,18 +266,19 @@ function mc_plugin_update_message() {
 	}
 }
 
-function mc_footer_js() { // need to enqueue these in shortcodes. May need to go to file editing?
+function mc_footer_js() {
 	if ( mc_is_mobile() && get_option('mc_convert') == 'true' ) {
 		return;
 	} else {
-		$scripting = '';
+		$scripting_top = $scripting_bottom = $inner_scripting = '';
 		global $wpdb, $wp_query;
 		$mcdb = $wpdb;
-		if ( get_option('mc_calendar_javascript') != 1 || get_option('mc_list_javascript') != 1 || get_option('mc_mini_javascript') != 1 || get_option('mc_ajax_javascript') != 1 ) {
-
 		$list_js = stripcslashes( get_option( 'mc_listjs' ) );
 		$cal_js = stripcslashes( get_option( 'mc_caljs' ) );
-		if ( get_option('mc_open_uri') == 'true') { $cal_js = str_replace('e.preventDefault();','',$cal_js); }
+		if ( get_option('mc_open_uri') == 'true') { // remove sections of javascript if necessary.
+			$replacements = array( '$(this).parent().children().not(".event-title").toggle();','e.preventDefault();' ); 
+			$cal_js = str_replace($replacements,'',$cal_js); 
+		}
 		$mini_js = stripcslashes( get_option( 'mc_minijs' ) );
 		if ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'listanchor'  || get_option('mc_open_day_uri') == 'calendaranchor') { $mini_js = str_replace('e.preventDefault();','',$mini_js); }
 		$ajax_js = stripcslashes( get_option( 'mc_ajaxjs' ) );
@@ -226,22 +293,25 @@ function mc_footer_js() { // need to enqueue these in shortcodes. May need to go
 				}
 			}
 			if ( @in_array( $id, $array ) || get_option( 'mc_show_js' ) == '' ) {
-				$scripting = "<script type='text/javascript'>\n";
-				if ( get_option('mc_calendar_javascript') != 1 ) {	$scripting .= "\n".$cal_js; }
-				if ( get_option('mc_list_javascript') != 1 ) {	$scripting .= "\n".$list_js; }
-				if ( get_option('mc_mini_javascript') != 1 ) {	$scripting .= "\n".$mini_js; }
-				if ( get_option('mc_ajax_javascript') != 1 ) { $scripting .= "\n".$ajax_js; }
-				$scripting .= "</script>";
+				$scripting_top = "
+<script type='text/javascript'>
+	(function( $ ) { 'use strict'; \n";
+				if ( get_option('mc_calendar_javascript') != 1 ) {	$inner_scripting .= "\n".$cal_js; }
+				if ( get_option('mc_list_javascript') != 1 ) {	$inner_scripting .= "\n".$list_js; }
+				if ( get_option('mc_mini_javascript') != 1 ) {	$inner_scripting .= "\n".$mini_js; }
+				if ( get_option('mc_ajax_javascript') != 1 ) { $inner_scripting .= "\n".$ajax_js; }
+				$scripting_bottom .= "
+	}(jQuery));
+</script>";
 			}
-		}
-		$scripting = apply_filters( 'mc_filter_javascript_footer',$scripting );
-		echo $scripting;
+		$inner_scripting = apply_filters( 'mc_filter_javascript_footer',$inner_scripting );
+		echo ( $inner_scripting != '' )?$scripting_top.$inner_scripting.$scripting_bottom:'';
 	}
 }
 
 function my_calendar_add_styles() {
 	if ( !empty($_GET['page']) ) {
-	if (  isset($_GET['page']) && ($_GET['page'] == 'my-calendar' || $_GET['page'] == 'my-calendar-groups' || $_GET['page'] == 'my-calendar-categories' || $_GET['page'] == 'my-calendar-locations' || $_GET['page'] == 'my-calendar-config' || $_GET['page'] == 'my-calendar-styles' || $_GET['page'] == 'my-calendar-help' || $_GET['page'] == 'my-calendar-behaviors' ) || $_GET['page'] == 'my-calendar-templates' ) {
+	if (  isset($_GET['page']) && ($_GET['page'] == 'my-calendar' || $_GET['page'] == 'my-calendar-manage' || $_GET['page'] == 'my-calendar-groups' || $_GET['page'] == 'my-calendar-categories' || $_GET['page'] == 'my-calendar-locations' || $_GET['page'] == 'my-calendar-config' || $_GET['page'] == 'my-calendar-styles' || $_GET['page'] == 'my-calendar-help' || $_GET['page'] == 'my-calendar-behaviors' ) || $_GET['page'] == 'my-calendar-templates' ) {
 		echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'mc-styles.css', __FILE__ ).'" />';
 	}
 	if ( isset($_GET['page']) && $_GET['page'] == 'my-calendar') {
@@ -259,24 +329,9 @@ function my_calendar_add_styles() {
 }
 
 function mc_get_current_url() {
-global $wp; 
-$current_url = add_query_arg( $wp->query_string, '', home_url( $wp->request ) );
-return $current_url; 
-/* deprecated 10/15/2012. Hope this works as reliably as it seems.
-	$url = 'http';
-	if ( !empty($_SERVER['HTTPS']) && $_SERVER["HTTPS"] == "on") {$url .= "s";}
-		$url .= "://";
-		if ( !empty( $_SERVER['SERVER_PORT']) && $_SERVER["SERVER_PORT"] != "80") {
-			if ( strpos( $_SERVER["HTTP_HOST"], $_SERVER["SERVER_PORT"] ) === FALSE ) { 
-				$url .= $_SERVER["HTTP_HOST"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-			} else { 
-				$url .= $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]; 
-			}	
-		} else {
-			$url .= $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
-		}
-	return esc_url($url);
-	*/
+	global $wp; 
+	$current_url = add_query_arg( $wp->query_string, '', home_url( $wp->request ) );
+	return $current_url; 
 }
 
 function csv_to_array($csv, $delimiter = ',', $enclosure = '"', $escape = '\\', $terminator = "\n") {
@@ -462,6 +517,7 @@ function check_my_calendar() {
 		if ( version_compare( $current_version, "2.0.0", "<" ) ) { $upgrade_path[] = "2.0.0"; }	
 		if ( version_compare( $current_version, "2.0.4", "<" ) ) { $upgrade_path[] = "2.0.4"; }	
 		if ( version_compare( $current_version, "2.1.0", "<" ) ) { $upgrade_path[] = "2.1.0"; }	
+		if ( version_compare( $current_version, "2.2.0", "<" ) ) { $upgrade_path[] = "2.2.0"; }	
 	}
 	// having determined upgrade path, assign new version number
 	update_option( 'mc_version' , $mc_version );
@@ -479,6 +535,10 @@ function check_my_calendar() {
 	foreach ($upgrade_path as $upgrade) {
 		switch ($upgrade) {
 		// only upgrade db on most recent version
+			case '2.2.0':
+				add_option('mc_inverse_color','true');
+				mc_upgrade_db();
+				break;
 			case '2.1.0':
 				$templates = get_option( 'mc_templates' );
 				global $rss_template;
@@ -489,7 +549,6 @@ function check_my_calendar() {
 				update_option('mc_ical_utc','true');
 				break;
 			case '2.0.0':
-				mc_upgrade_db();
 				mc_migrate_db();			
 				update_option( 'mc_db_version','2.0.0' );
 				$mc_input = get_option( 'mc_input_options' );
@@ -521,7 +580,7 @@ function check_my_calendar() {
 				update_option( 'mc_show_print','false' );
 				break;
 			case '1.9.3':
-				update_option( 'mc_draggable', 1 );
+				update_option( 'mc_draggable', 0 );
 				break;
 			case '1.9.1':
 				update_option( 'mc_widget_defaults', $defaults);
@@ -824,7 +883,7 @@ function check_my_calendar() {
 			case '1.4.0':
 			// change tables					
 				add_option( 'mc_event_link_expires','false' );
-				add_option( 'mc_apply_color','default' );
+				add_option( 'mc_apply_color','background' );
 				add_option( 'mc_minijs', $initial_minijs);
 				add_option( 'mc_mini_javascript', 0);
 			break;
@@ -922,7 +981,6 @@ global $wp_query;
 		$scripting = "\n<script type='text/javascript'>\n";
 		$scripting .= "jQuery('html').addClass('mcjs');\n";
 		$scripting .= "jQuery(document).ready(function($) { \$('html').removeClass('mcjs') });\n";
-		$scripting .= "jQuery.noConflict();\n";
 		$scripting .= "</script>\n";
 		if ( !is_404() ) {
 			if ( is_object($wp_query) && isset($wp_query->post) ) {
@@ -1005,6 +1063,7 @@ function my_calendar_is_odd( $int ) {
 }
 
 function mc_can_edit_event($author_id) {
+	if ( !is_user_logged_in() ) { return false; }
 	global $user_ID;
 	get_currentuserinfo();
 	$user = get_userdata($user_ID);	
@@ -1098,17 +1157,27 @@ function my_calendar_locations_table() {
 	}
 }
 
-// Mail functions by Roland
+// Mail functions (originally by Roland)
 function my_calendar_send_email( $details ) {
 $event = event_as_array($details);
-
+	if ( get_option( 'mc_html_email' ) == 'true' ) {
+		add_filter('wp_mail_content_type',create_function('', 'return "text/html";'));
+	}
 	if ( get_option('mc_event_mail') == 'true' ) {	
-		$to = get_option('mc_event_mail_to');
-		$subject = get_option('mc_event_mail_subject');
+		$to = apply_filters( 'mc_event_mail_to', get_option('mc_event_mail_to'), $event );
+		$from = ( get_option('mc_event_mail_from') == '' )?get_bloginfo('admin_email'):get_option('mc_event_mail_from');
+		$from = "From: ".__('Event Notifications','my-calendar')." <$from>";
+		$subject = jd_draw_template( $event, get_option('mc_event_mail_subject') );
 		$message = jd_draw_template( $event, get_option('mc_event_mail_message') );
-		$mail = wp_mail($to, $subject, $message);
+		$mail = wp_mail($to, $subject, $message, $from);
+	}
+	if ( get_option( 'mc_html_email' ) == 'true' ) {
+		remove_filter('wp_mail_content_type',create_function('', 'return "text/html";'));
 	}
 }
+
+
+
 // checks submitted events against akismet, if available, otherwise just returns false 
 function mc_akismet( $event_url='', $description='' ) {
 	global $akismet_api_host, $akismet_api_port, $user;
@@ -1217,13 +1286,20 @@ function mc_button( $buttons ) {
 }
 
 
-add_action('admin_print_scripts', 'mc_quicktags');
-function mc_quicktags() {
-	wp_enqueue_script(
-		'mc_quicktags',
-		plugin_dir_url(__FILE__) . 'js/mc-quicktags.js',
-		array('quicktags')
-	);
+add_action('admin_enqueue_scripts', 'mc_scripts');
+function mc_scripts( $hook ) {
+	if ( $hook == 'edit.php' || $hook == 'post.php' ) {
+		wp_enqueue_script(
+			'mc_quicktags',
+			plugin_dir_url(__FILE__) . 'js/mc-quicktags.js',
+			array('quicktags')
+		);
+	}
+	global $current_screen;
+	if ( $current_screen->id == 'toplevel_page_my-calendar' ) {
+		// later.
+		//wp_enqueue_script(  'charCount', plugins_url( 'wp-to-twitter/js/jquery.charcount.js'), array('jquery') );
+	}
 }
 
 // Add a button to the quicktag view (HTML Mode) >>>
@@ -1451,21 +1527,19 @@ function mc_recur_options( $value ) {
 	$s = ( $value == 'S' )?" selected='selected'":'';
 	$d = ( $value == 'D' )?" selected='selected'":'';
 	$e = ( $value == 'E' )?" selected='selected'":'';
-	$w = ( $value == 'W' )?" selected='selected'":'';
-	$b = ( $value == 'B' )?" selected='selected'":'';
+	$w = ( $value == 'W' || $value == 'B' )?" selected='selected'":'';
 	$m = ( $value == 'M' )?" selected='selected'":'';
 	$u = ( $value == 'U' )?" selected='selected'":'';
 	$y = ( $value == 'Y' )?" selected='selected'":'';
 	
 	$return = "
 				<option class='input' value='S'$s>".__('Does not recur','my-calendar')."</option>
-				<option class='input' value='D'$d>".__('Daily','my-calendar')."</option>
-				<option class='input' value='E'$e>".__('Daily, weekdays only','my-calendar')."</option>
-				<option class='input' value='W'$w>".__('Weekly','my-calendar')."</option>
-				<option class='input' value='B'$b>".__('Bi-weekly','my-calendar')."</option>
-				<option class='input' value='M'$m>".__('Date of Month (e.g., the 24th of each month)','my-calendar')."</option>
-				<option class='input' value='U'$u>".__('Day of Month (e.g., the 3rd Monday of each month)','my-calendar')."</option>
-				<option class='input' value='Y'$y>".__('Annually','my-calendar')."</option>
+				<option class='input' value='D'$d>".__('Days','my-calendar')."</option>
+				<option class='input' value='E'$e>".__('Days, weekdays only','my-calendar')."</option>
+				<option class='input' value='W'$w>".__('Weeks','my-calendar')."</option>
+				<option class='input' value='M'$m>".__('Months by date (e.g., the 24th of each month)','my-calendar')."</option>
+				<option class='input' value='U'$u>".__('Month by day (e.g., the 3rd Monday of each month)','my-calendar')."</option>
+				<option class='input' value='Y'$y>".__('Year','my-calendar')."</option>
 	";
 	return $return;
 }
@@ -1563,19 +1637,21 @@ function mc_increment_event( $id, $post=array() ) {
 	}
 	$group_id = $event->event_group_id;
 	$format = array( '%d','%s','%s','%d' );
-	if ($event->event_recur != "S") {
-		$numback = 0;
+	$recurs = str_split( $event->event_recur, 1 );
+	$recur = $recurs[0];
+	$every = ( isset($recurs[1]) )?$recurs[1]:1;
+	if ($recur != "S") {
 		// if this event had a rep of 0, translate that.
-		$event_repetition = ( $event->event_repeats != 0)?$event->event_repeats:_mc_increment_values( $event->event_recur );
+		$event_repetition = ( $event->event_repeats != 0)?$event->event_repeats:_mc_increment_values( $recur );
 		$numforward = (int) $event_repetition;
-		if ( $event->event_recur != 'S' ) {
-			switch ($event->event_recur) {
+		if ( $recur != 'S' ) {
+			switch ($recur) {
 				case "D":
 				case "E":
-					for ($i=$numback;$i<=$numforward;$i++) {
-						$begin = my_calendar_add_date($orig_begin,$i,0,0);
-						$end = my_calendar_add_date($orig_end,$i,0,0);		
-						if ( ( $event->event_recur == 'E' && ( date('w',$begin ) != 0 && date('w',$begin ) != 6 ) ) || $event->event_recur == 'D' ) {
+					for ($i=0;$i<=$numforward;$i++) {
+						$begin = my_calendar_add_date($orig_begin,$i*$every,0,0);
+						$end = my_calendar_add_date($orig_end,$i*$every,0,0);		
+						if ( ( $recur == 'E' && ( date('w',$begin ) != 0 && date('w',$begin ) != 6 ) ) || $recur == 'D' ) {
 							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
 							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
 						} else {
@@ -1584,30 +1660,29 @@ function mc_increment_event( $id, $post=array() ) {
 					}
 					break;
 				case "W":
-					for ($i=$numback;$i<=$numforward;$i++) {
-						$begin = my_calendar_add_date($orig_begin,($i*7),0,0);
-						$end = my_calendar_add_date($orig_end,($i*7),0,0);
+					for ($i=0;$i<=$numforward;$i++) {
+						$begin = my_calendar_add_date($orig_begin,($i*7)*$every,0,0);
+						$end = my_calendar_add_date($orig_end,($i*7)*$every,0,0);
 						$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
 						$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
 					}
 					break;
 				case "B":
-					for ($i=$numback;$i<=$numforward;$i++) {
+					for ($i=0;$i<=$numforward;$i++) {
 						$begin = my_calendar_add_date($orig_begin,($i*14),0,0);
 						$end = my_calendar_add_date($orig_end,($i*14),0,0);							
 							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
 							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
 					}
-					
-					break;							
+					break;						
 				case "M":
-					for ($i=$numback;$i<=$numforward;$i++) {
-						$begin = my_calendar_add_date($orig_begin,0,$i,0);
-						$end = my_calendar_add_date($orig_end,0,$i,0);
+					for ($i=0;$i<=$numforward;$i++) {
+						$begin = my_calendar_add_date($orig_begin,0,$i*$every,0);
+						$end = my_calendar_add_date($orig_end,0,$i*$every,0);
 							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
 							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
 					}
-					break;
+					break;				
 				case "U": //important to keep track of which date variables are strings and which are timestamps
 					$week_of_event = week_of_month( date('d',strtotime($event->event_begin) ) );
 					$newbegin = my_calendar_add_date($orig_begin,28,0,0);
@@ -1616,7 +1691,7 @@ function mc_increment_event( $id, $post=array() ) {
 					$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',strtotime($orig_begin)), 'occur_end'=>date('Y-m-d  H:i:s',strtotime($orig_end)), 'occur_group_id'=>$group_id );
 					$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
 					$numforward = $numforward - 1;
-					for ($i=$numback;$i<=$numforward;$i++) {
+					for ($i=0;$i<=$numforward;$i++) {
 						$next_week_diff = ( date('m',$newbegin) == date('m',my_calendar_add_date( date('Y-m-d',$newbegin),7,0,0) ) )?false:true;
 						$move_event = ( ( $fifth_week == 1) && ( $week_of_event == ( week_of_month( date('d',$newbegin ) )+1 ) ) && $next_week_diff == true )?true:false;
 						if ( $week_of_event == week_of_month( date('d',$newbegin) ) || $move_event == true ) {
@@ -1639,9 +1714,9 @@ function mc_increment_event( $id, $post=array() ) {
 					}
 				break;
 				case "Y":
-					for ($i=$numback;$i<=$numforward;$i++) {
-						$begin = my_calendar_add_date($orig_begin,0,0,$i);
-						$end = my_calendar_add_date($orig_end,0,0,$i);						
+					for ($i=0;$i<=$numforward;$i++) {
+						$begin = my_calendar_add_date($orig_begin,0,0,$i*$every);
+						$end = my_calendar_add_date($orig_end,0,0,$i*$every);						
 							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
 							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
 					}
@@ -1798,4 +1873,12 @@ mc_filter_javascript_footer
 mc_filter_shortcodes
 	- base value: array of shortcodes and values
 	- received arguments: event object
+	
+mc_search_template
+	- base value: default search template (<strong>{date}</strong> {title} {details})
+	- no arguments
+	
+mc_event_mail_to
+	- base value: stored "to" email address from options
+	- arguments: event template tag array
 */

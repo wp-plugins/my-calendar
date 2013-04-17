@@ -94,6 +94,11 @@ delete_option( 'mc_open_uri' );
 delete_option( 'mc_show_list_info' );
 delete_option( 'mc_event_link' );
 delete_option( 'mc_default_category' );
+delete_option( 'mc_inverse_color' );
+delete_option( 'mc_bottomnav' );
+delete_option( 'mc_topnav' );
+delete_option( 'mc_ical_utc' );
+delete_option( 'mc_event_title_template' );
 add_option( 'mc_uninstalled','true' );
 }
 ?>

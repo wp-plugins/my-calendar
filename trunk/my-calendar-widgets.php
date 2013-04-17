@@ -1,4 +1,17 @@
 <?php
+class my_calendar_simple_search extends WP_Widget {
+	function my_calendar_simple_search() {
+		parent::WP_Widget( false, $name=__('My Calendar: Simple Event Search','my-calendar') );
+	}
+	function widget($args,$instance) {
+		echo my_calendar_searchform('simple');
+	}
+	function form() {
+	}
+	function update() {
+	}
+}
+
 class my_calendar_today_widget extends WP_Widget {
 
 function my_calendar_today_widget() {
@@ -250,37 +263,36 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 	check_my_calendar();
 	$offset = (60*60*get_option('gmt_offset'));	
     $widget_defaults = get_option('mc_widget_defaults');
-	if ( !is_array($widget_defaults) ) { $widget_defaults = array(); } // get globals; check on mc_widget_des
+	$widget_defaults = ( !is_array($widget_defaults) )?array():$widget_defaults; // get globals; check on mc_widget_des 
 	$display_upcoming_type = ($type == 'default')?$widget_defaults['upcoming']['type']:$type;
-	if ($display_upcoming_type == '') { $display_upcoming_type = 'event'; }
+	$display_upcoming_type = ($display_upcoming_type == '')?'event':$display_upcoming_type;
     // Get number of units we should go into the future
 	$after = ($after == 'default')?$widget_defaults['upcoming']['after']:$after;
-	if ($after == '') { $after = 10; }
+	$after = ($after == '')?10:$after;
 	// Get number of units we should go into the past
 	$before = ($before == 'default')?$widget_defaults['upcoming']['before']:$before;
-	if ($before == '') { $before = 0; }
+	$before = ($before == '')?0:$before;
 	$category = ($category == 'default')?'':$category;
 	$template = ($template == 'default')?$widget_defaults['upcoming']['template']:$template;
-	if ($template == '' ) { $template = "$default_template"; };
+	$template = ($template == '' )?$default_template:$template;
 	$no_event_text = ($substitute == '')?$widget_defaults['upcoming']['text']:$substitute;
     $day_count = -($before);
 	$header = "<ul id='upcoming-events'>";
 	$footer = "</ul>";
-	$output ='';
 	if ( $display_upcoming_type == "days" || $display_upcoming_type == "month" || $display_upcoming_type == "year" ) {
 		$temp_array = array();
 		$event_array = array();
 			if ( $display_upcoming_type == "days" ) {
-				$from = date('Y-m-d',strtotime("-$before days") );
-				$to = date('Y-m-d',strtotime("+$after days") );
+				$from = date( 'Y-m-d',strtotime("-$before days") );
+				$to = date( 'Y-m-d',strtotime("+$after days") );
 			}
 			if ( $display_upcoming_type == "month" ) {
-				$from = date('Y-m-1' );
-				$to = date('Y-m-t' );
+				$from = date( 'Y-m-1' );
+				$to = date( 'Y-m-t' );
 			}
 			if ( $display_upcoming_type == "year" ) {
-				$from = date('Y-1-1' );
-				$to = date('Y-12-31' );
+				$from = date( 'Y-1-1' );
+				$to = date( 'Y-12-31' );
 			}
 			$events = my_calendar_grab_events( $from, $to, $category,'','','upcoming',$author, $host );			
 			if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
@@ -309,13 +321,17 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 			}
 			$i = 0;
 			$last_item = '';
+			$last_id = '';
 			foreach ( reverse_array($temp_array, true, $order) as $details ) {
 				$item = jd_draw_template($details,$template);
 				if ( $i < $skip && $skip != 0 ) {
 					$i++;
 				} else {
-					$output .= ( $item == $last_item )?'':"<li>$item</li>";		  
+					if ( $details['group'] !== $last_id || $details['group'] == '0' ) {
+						$output .= ( $item == $last_item )?'':"<li>$item</li>";	
+					}				
 				}
+				$last_id = $details['group']; // prevents grouped items from displaying in a row. Does not prevent if there are other intervening events.
 				$last_item = $item;
 			}
 	} else {
@@ -376,7 +392,7 @@ global $wpdb;
 	return array( $begin, $end );
 }
 // function generates the list of upcoming events by event
-function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',$skip=0,$before, $after, $hash=false, $show_today='yes') {
+function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',$skip=0,$before, $after, $show_today='yes') {
 	// $events has +5 before and +5 after if those values are non-zero.
 	// $events equals array of events based on before/after queries. Nothing has been skipped, order is not set, holidays are removed.
 	$output = '';$near_events = $temp_array = array();$past = $future = 1;
@@ -384,14 +400,14 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 	$today = date('Y',$now).'-'.date('m',$now).'-'.date('d',$now);		
 	@uksort( $events, "my_calendar_timediff_cmp" );// sort all events by proximity to current date
 	$count = count($events);
-	$skip = false;
+	$md = false;
 	$group = array();
 	$spans = array();
 	$last_date = $today;
 	$extra = 0;
 	$i = 0; 
 	// create near_events array
-	$last_event = 0;
+	$last_events = array();
 	if ( is_array( $events ) ) {
 		foreach ( $events as $k=>$event ) {
 			if ( $i < $count ) {
@@ -417,16 +433,22 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 							if ( $e ) { 
 								// if a multi-day event, show only once.
 								if ( $e->occur_group_id != 0 && $e->event_span == 1 && in_array( $e->occur_group_id, $group ) ) { 
-									$skip = true; 
+									$md = true; 
 								} else { 
-									$group[] = $e->occur_group_id; $skip=false; 
+									$group[] = $e->occur_group_id; $md=false; 
 								}
 								// end multi-day reduction
-								if ( !$skip ) {
-									// with this code, I *expected* weekly recurring event with no intervening events to not display correctly...but it does. Not sure why.
-									$same_event = ( $e->occur_id == $last_event )?true:false;
+								if ( !$md ) {
+									// check if this event instance has already been displayed
+									$same_event = ( in_array($e->occur_id ,$last_events ) )?true:false;
 									if ( $show_today == 'yes' && my_calendar_date_equal( $beginning, $current ) ) {
-										$near_events[] = $e;
+										$in_total = 'yes'; // count todays events in total
+										if ( $in_total != 'no' ) {
+											$near_events[] = $e;
+											$future++;											
+										} else {
+											$near_events[] = $e;
+										}
 									} else if ( ( $past<=$before && $future<=$after ) ) {
 										$near_events[] = $e; // if neither limit is reached, split off freely
 									} else if ( $past <= $before && ( my_calendar_date_comp( $beginning,$current ) ) ) {
@@ -440,9 +462,9 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 										$present = 1;
 										if ( $show_today == 'yes' ) { $extra++; }
 									} else {
-										if ( !$same_event ) { $future++;  } else { $extra++; }
+										if ( !$same_event ) { $future++;  } else { $extra++;}
 									}
-									$last_event = $e->occur_id;
+									$last_events[] = $e->occur_id;
 									$last_date = $beginning;
 								}
 								if ( $past > $before && $future > $after && $show_today != 'yes' ) {
@@ -456,7 +478,7 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 		}
 		$e = false;
 	}
-	$events = $near_events;		
+	$events = $near_events;	
 	@usort( $events, "my_calendar_datetime_cmp" ); // sort split events by date
 	// If more items in the list than there should be (possible, due to handling of current-day's events), pop off.
 	$intended = $before + $after + $extra;
@@ -466,6 +488,7 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 			array_pop($events);
 		}
 	}
+
 	if ( is_array( $events ) ) {
 		foreach( array_keys($events) as $key ) {
 			$event =& $events[$key];
@@ -480,7 +503,7 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 		$i = 0;
 		$groups = array();
 		$skips = array();
-		
+
 		foreach( reverse_array($temp_array, true, $order) as $details ) {
 			if ( !in_array( $details['group'], $groups ) ) {
 				$date = date('Y-m-d',strtotime($details['dtstart']));
@@ -610,6 +633,10 @@ function widget($args, $instance) {
 		$shownav = ($instance['my_calendar_mini_shownav']=='')?'no':esc_attr($instance['my_calendar_mini_shownav']);
 		$time = ($instance['my_calendar_mini_time']=='')?'month':esc_attr($instance['my_calendar_mini_time']);
 		$widget_link = ( !isset($instance['mc_link']) || $instance['mc_link']=='')?'':esc_url($instance['mc_link']);
+		$above = (empty($instance['above']))?'none':esc_attr($instance['above']);
+		$below = (empty($instance['below']))?'none':esc_attr($instance['below']);
+		$author = ($instance['author']=='')?null:esc_attr($instance['author']);
+		$host = ($instance['host']=='')?null:esc_attr($instance['host']);
 	} else {
 		$the_title = '';
 		$name = 'mini';
@@ -618,12 +645,13 @@ function widget($args, $instance) {
 		$shownav = '';
 		$time = '';
 		$widget_link = '';
+		$above = '';
+		$below = '';
 	}
-
 	$widget_title = empty($the_title) ? __('Calendar','my-calendar') : $the_title;
 	$widget_title = ($widget_link!='') ? "<a href='$widget_link'>$widget_title</a>" : $widget_title;
 	$widget_title = ($widget_title!='') ? $before_title . $widget_title . $after_title : '';
-	$the_events = my_calendar( $name,$format,$category,$showkey,$shownav,$showjump,'no',$time );
+	$the_events = my_calendar( $name,$format,$category,$showkey,$shownav,$showjump,'no',$time,'','','jd-calendar','','',$author, $host, $above, $below );
 		if ($the_events != '') {
 		  echo $before_widget;
 		  echo $widget_title;
@@ -634,12 +662,18 @@ function widget($args, $instance) {
 
 function form($instance) {
 	$widget_title = esc_attr($instance['my_calendar_mini_title']);
-	$widget_key = esc_attr($instance['my_calendar_mini_showkey']);
-	$widget_jump = esc_attr($instance['my_calendar_mini_showjump']);	
-	$widget_nav = esc_attr($instance['my_calendar_mini_shownav']);
+	if ( isset($instance['my_calendar_mini_showkey']) ) {
+		$widget_key = esc_attr($instance['my_calendar_mini_showkey']); // deprecated
+		$widget_jump = esc_attr($instance['my_calendar_mini_showjump']); // deprecated
+		$widget_nav = esc_attr($instance['my_calendar_mini_shownav']); // deprecated
+	}
 	$widget_time = esc_attr($instance['my_calendar_mini_time']);
 	$widget_category = esc_attr($instance['my_calendar_mini_category']);
+	$above = ( isset($instance['above']) )?esc_attr($instance['above']):'';
+	$below = ( isset($instance['below']) )?esc_attr($instance['below']):'';
 	$widget_link = ( isset($instance['mc_link']) )?esc_url($instance['mc_link']):'';
+	$host = ( isset($instance['host']) )?$instance['host']:'';
+	$author = ( isset($instance['author']) )?$instance['author']:'';
 ?>
 	<p>
 	<label for="<?php echo $this->get_field_id('my_calendar_mini_title'); ?>"><?php _e('Title','my-calendar'); ?>:</label><br />
@@ -653,24 +687,37 @@ function form($instance) {
 	<label for="<?php echo $this->get_field_id('my_calendar_mini_category'); ?>"><?php _e('Category or categories to display:','my-calendar'); ?></label><br />
 	<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_mini_category'); ?>" name="<?php echo $this->get_field_name('my_calendar_mini_category'); ?>" value="<?php echo $widget_category; ?>" /></textarea>
 	</p>
+	<?php // NEW STUFF JCD ?>
+	<?php if ( $above == '' && $below == '' ) { ?>
+	<div>
+	<input type="hidden" name="<?php echo $this->get_field_name('my_calendar_mini_shownav'); ?>" value="<?php $widget_nav; ?>" />
+	<input type="hidden" name="<?php echo $this->get_field_name('my_calendar_mini_showjump'); ?>" value="<?php $widget_jump; ?>" />
+	<input type="hidden" name="<?php echo $this->get_field_name('my_calendar_mini_showkey'); ?>" value="<?php $widget_key; ?>" />
+	</div>
+	<?php } ?>
 	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_mini_shownav'); ?>"><?php _e('Show Next/Previous Navigation:','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_mini_shownav'); ?>" name="<?php echo $this->get_field_name('my_calendar_mini_shownav'); ?>">
-	<option value="yes" <?php echo ($widget_nav == 'yes')?'selected="selected"':''; ?>><?php _e('Yes','my-calendar') ?></option>
-	<option value="no" <?php echo ($widget_nav == 'no')?'selected="selected"':''; ?>><?php _e('No','my-calendar') ?></option>
+	<label for="<?php echo $this->get_field_name('above'); ?>"><?php _e('Navigation above calendar','my-calendar'); ?></label>
+	<input type="text" class="widefat" name="<?php echo $this->get_field_name('above'); ?>" id="<?php echo $this->get_field_name('above'); ?>" value="<?php echo ( $above == '' )?'nav,jump,print':$above; ?>" />
+	</p>
+	<p>
+	<label for="<?php echo $this->get_field_name('below'); ?>"><?php _e('Navigation below calendar','my-calendar'); ?></label>
+	<input type="text" class="widefat" name="<?php echo $this->get_field_name('below'); ?>" id="<?php echo $this->get_field_name('below'); ?>" value="<?php echo ( $below == '' )?'key':$below; ?>" />
+	</p>
+	<p>
+	<label for="<?php echo $this->get_field_name('author'); ?>"><?php _e('Limit by Author','my-calendar'); ?></label><br />
+	<select name="<?php echo $this->get_field_name('author'); ?>" id="<?php echo $this->get_field_name('author'); ?>" multiple="multiple" class="widefat">
+		<option value="all"><?php _e('All authors','my-calendar'); ?></option>
+		<?php echo mc_selected_users( $author ); ?>
 	</select>
 	</p>
 	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_mini_showjump'); ?>"><?php _e('Show Jumpbox','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_mini_showjump'); ?>" name="<?php echo $this->get_field_name('my_calendar_mini_showjump'); ?>">
-	<option value="yes" <?php echo ($widget_jump == 'yes')?'selected="selected"':''; ?>><?php _e('Yes','my-calendar') ?></option>
-	<option value="no" <?php echo ($widget_jump == 'no')?'selected="selected"':''; ?>><?php _e('No','my-calendar') ?></option>
+	<label for="<?php echo $this->get_field_name('host'); ?>"><?php _e('Limit by Host','my-calendar'); ?></label><br />
+	<select name="<?php echo $this->get_field_name('host'); ?>" id="<?php echo $this->get_field_name('host'); ?>" multiple="multiple" class="widefat">
+		<option value="all"><?php _e('All hosts','my-calendar'); ?></option>
+		<?php echo mc_selected_users( $host ); ?>
 	</select>
-	</p>	
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_mini_showkey'); ?>"><?php _e('Show Category Key:','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_mini_showkey'); ?>" name="<?php echo $this->get_field_name('my_calendar_mini_showkey'); ?>">
-	<option value="yes" <?php echo ($widget_key == 'yes')?'selected="selected"':''; ?>><?php _e('Yes','my-calendar') ?></option>
-	<option value="no" <?php echo ($widget_key == 'no')?'selected="selected"':''; ?>><?php _e('No','my-calendar') ?></option>
-	</select>
-	</p>	
+	</p>
+	<?php // END NEW STUFF JCD ?>
 	<p>
 	<label for="<?php echo $this->get_field_id('my_calendar_mini_time'); ?>"><?php _e('Mini-Calendar Timespan:','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_mini_time'); ?>" name="<?php echo $this->get_field_name('my_calendar_mini_time'); ?>">
 	<option value="month" <?php echo ($widget_time == 'month')?'selected="selected"':''; ?>><?php _e('Month','my-calendar') ?></option>
@@ -683,14 +730,18 @@ function form($instance) {
 	function update($new_instance,$old_instance) {
 		$instance = $old_instance;
 		$instance['my_calendar_mini_title'] = strip_tags($new_instance['my_calendar_mini_title']);
-		$instance['my_calendar_mini_showkey'] = $new_instance['my_calendar_mini_showkey'];
-		$instance['my_calendar_mini_shownav'] = strip_tags($new_instance['my_calendar_mini_shownav']);
-		$instance['my_calendar_mini_showjump'] = strip_tags($new_instance['my_calendar_mini_showjump']);		
-		$instance['my_calendar_mini_time'] = strip_tags($new_instance['my_calendar_mini_time']);		
-		$instance['my_calendar_mini_category'] = strip_tags($new_instance['my_calendar_mini_category']);		
+		if ( isset($new_instance['my_calendar_mini_shownav']) ) {
+			$instance['my_calendar_mini_showkey'] = $new_instance['my_calendar_mini_showkey'];
+			$instance['my_calendar_mini_shownav'] = strip_tags($new_instance['my_calendar_mini_shownav']);
+			$instance['my_calendar_mini_showjump'] = strip_tags($new_instance['my_calendar_mini_showjump']);
+		}
+		$instance['my_calendar_mini_time'] = strip_tags($new_instance['my_calendar_mini_time']);	
+		$instance['my_calendar_mini_category'] = strip_tags($new_instance['my_calendar_mini_category']);
+		$instance['above'] = $new_instance['above'];
+		$instance['below'] = $new_instance['below'];
+		$instance['author'] = implode( ',', $new_instance['author'] );
+		$instance['host'] = implode( ',', $new_instance['host'] );
 		return $instance;		
 	}
 
 }
-
-?>
