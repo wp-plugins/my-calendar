@@ -214,7 +214,7 @@ function mc_check_cache( $category, $ltype, $lvalue, $auth, $host, $hash) {
 		} else {
 			return false;
 		}
-		if ( $value ) { return mc_clean_cache($value, $category,$ltype,$lvalue,$auth,$host); } else { return false; }
+		if ( $value ) { return mc_clean_cache($value,$category,$ltype,$lvalue,$auth,$host); } else { return false; }
 	} else {
 		return false;
 	}
@@ -262,16 +262,16 @@ global $wpdb;
 					$id = $u->ID;
 					$hosts[$k]= $id;
 				}
-			}			
+			}
 		foreach ( $cache as $key=>$value ) {
 			foreach ( $cats as $cat ) {
 				if ( is_numeric($cat) ) { $cat = (int) $cat; }
 				if ( ( $value->event_category == $cat || $category == 'all' || $value->category_name == $cat ) 
 						&& ( $value->event_author == $auth || $auth == 'all' || in_array( $value->event_author,$authors ) )
 						&& ( $value->event_host == $host || $host == 'all' || in_array( $value->event_host,$hosts ) )
-						&& ( $value->$type == $lvalue || ( $ltype == 'all' && $lvalue == 'all' ) ) ) {				
+						&& ( $value->{$type} == urldecode($lvalue) || ( $ltype == 'all' && $lvalue == 'all' ) ) ) {
 					$return[$key]=$value;
-				} 
+				}
 			}
 		}
 		return $return;

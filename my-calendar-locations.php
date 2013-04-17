@@ -111,7 +111,7 @@ global $wpdb;
 <div class="ui-sortable meta-box-sortables">   
 <div class="postbox">
 <h3><?php _e('Location Editor','my-calendar'); ?></h3>
-	<div class="inside">	   
+	<div class="inside location_form">	   
     <form id="my-calendar" method="post" action="<?php echo admin_url("admin.php?page=my-calendar-locations"); ?>">
 	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>	
 		<?php if ( $view == 'add' ) { ?>
@@ -131,7 +131,7 @@ global $wpdb;
 			<?php _e('All location fields are optional: <em>insufficient information may result in an inaccurate map</em>.','my-calendar'); ?>
 			</p>
 			<p>
-			<label for="location_label"><?php _e('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar'); ?></label> 
+			<label for="location_label"><?php _e('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar'); ?></label><br />
 			<?php if ( mc_controlled_field( 'label' ) ) {
 				if ( !empty( $cur_loc ) ) $cur_label = (stripslashes($cur_loc->location_label));			
 				echo mc_location_controller( 'label', $cur_label );

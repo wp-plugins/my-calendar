@@ -80,66 +80,69 @@ $rss_template = addslashes("\n<item>
 	{guid}
   </item>\n");
 
-$initial_ajaxjs = "jQuery(document).ready(function($){
-	$('.calendar .my-calendar-nav a').live('click', function(e){
-		e.preventDefault();
+$initial_ajaxjs = "$(function(){
+	$('.calendar .my-calendar-nav a').on('click', function(e){
+		e.preventDefault();	
 		var link = $(this).attr('href');
+        var ref = $(this).attr('rel');	
 		$('.calendar').html('Loading...');
-		$('.calendar').load(link+' .mc-main.calendar > *', function() {
+		$('.calendar').load(link+' #'+ref+' > *', function() {
 			$('.calendar-event').children().not('h3').hide();
 		});
 	});	
-	$('.mini .my-calendar-nav a').live('click', function(e){
+	$('.mini .my-calendar-nav a').on('click', function(e){
 		e.preventDefault();
 		var link = $(this).attr('href');
+        var ref = $(this).attr('rel');	
 		$('.mini').html('Loading...');
-		$('.mini').load(link+' .mini > *', function() {
+		$('.mini').load(link+' #'+ref+' > *', function() {
 			$('.mini .has-events').children().not('.trigger').hide();
 		});
 	});	
-	$('.list .my-calendar-nav a').live('click', function(e){
+	$('.list .my-calendar-nav a').on('click', function(e){
 		e.preventDefault();
 		var link = $(this).attr('href');
+        var ref = $(this).attr('rel');	
 		$('.list').html('Loading...');
-		$('.list').load(link+' .list > *', function() {
+		$('.list').load(link+' #'+ref+' > *', function() {
 			$('li.mc-events').children().not('.event-date').hide();
 			$('li.current-day').children().show();
 		});
 	});	
 });";
 // defaults will go into the options table on a new install
-$initial_caljs = 'jQuery(document).ready(function($) {
+$initial_caljs = '$(function() {
   $(".calendar-event").children().not(".event-title").hide();
-  $(".calendar-event .event-title").live("click",
+  $(".calendar-event .event-title").on("click",
      function(e) {
          e.preventDefault(); // remove line if you are using a link in the event title
 	 $(this).parent().children().not(".event-title").toggle();
 	 });
-  $(".calendar-event .close").live("click",
+  $(".calendar-event .close").on("click",
      function(e) {
          e.preventDefault();
 	 $(this).parent().toggle();
 	 });
-});';  
+	});';  
 
-$initial_listjs = 'jQuery(document).ready(function($) {
+$initial_listjs = '$(function() {
   $("li.mc-events").children().not(".event-date").hide();
   $("li.current-day").children().show();
-  $(".event-date").live("click",
+  $(".event-date").on("click",
      function(e) {
 	 e.preventDefault();
 	 $(this).parent().children().not(".event-date").toggle();
      });
 });';  
 
-$initial_minijs = 'jQuery(document).ready(function($) {
+$initial_minijs = '$(function() {
   $(".mini .has-events").children().not(".trigger").hide();
-  $(".mini .has-events .trigger").live("click",
+  $(".mini .has-events .trigger").on("click",
      function(e) {
 	 e.preventDefault();	 
 	 $(this).parent().children().not(".trigger").toggle(); 
 	 });
-  $(".mini-event .close").live("click",
+  $(".mini-event .close").on("click",
      function(e) {
          e.preventDefault();
 	 $(this).parent().parent().parent().toggle();
@@ -168,7 +171,7 @@ $initial_db = "CREATE TABLE " . my_calendar_table() . " (
  event_open INT(3) DEFAULT '2',
  event_time TIME,
  event_endtime TIME,
- event_recur CHAR(1),
+ event_recur CHAR(2),
  event_repeats INT(3),
  event_status INT(1) NOT NULL DEFAULT '1',  
  event_author BIGINT(20) UNSIGNED,
@@ -365,8 +368,9 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option('mc_notime_text','N/A');
 	add_option('mc_hide_icons','false');
 	add_option('mc_event_link_expires','no');
-	add_option('mc_apply_color','default');
-	add_option('mc_input_options',array('event_short'=>'on','event_desc'=>'on','event_category'=>'on','event_image'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'on','event_location'=>'on','event_location_dropdown'=>'on','event_use_editor'=>'off','event_specials'=>'on') );
+	add_option('mc_apply_color','background');
+	add_option('mc_inverse_color','true');
+	add_option('mc_input_options',array('event_short'=>'off','event_desc'=>'on','event_category'=>'on','event_image'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'off','event_location'=>'on','event_location_dropdown'=>'on','event_use_editor'=>'off','event_specials'=>'on') );
 	add_option('mc_input_options_administrators','false');
 	add_site_option('mc_multisite', '0' );
 	add_option('mc_event_mail','false');

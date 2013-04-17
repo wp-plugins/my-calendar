@@ -9,7 +9,7 @@ function mc_user_profile() {
 			$options = get_option('mc_user_settings');
 			if ( is_array( $options ) ) {
 				foreach ($options as $key=>$value) {
-					if ($value['enabled'] == 'on') {
+					if ( isset($value['enabled']) && $value['enabled'] == 'on') {
 						$name = $key;
 						$label = $value['label'];
 						$values = $value['values'];
@@ -20,8 +20,13 @@ function mc_user_profile() {
 						<td><select name='my_calendar_user_settings[$name]' id='my_calendar_user_settings'>
 						<option value='none'>No preference</option>\n";		
 						foreach ($values as $optkey=>$optvalue) {
-							$selected = ($mc_us[$name]==$optkey)?" selected='selected'":'';
-							$form .= "<option value='$optkey'$selected>$optvalue</option>\n";
+							if ( isset($mc_use[$name]) ) {
+								$selected = ($mc_us[$name]==$optkey)?" selected='selected'":'';
+							} else {
+								$selected = '';
+							}
+								$form .= "<option value='$optkey'$selected>$optvalue</option>\n";
+
 						}
 						
 						$form .= "</select></td>

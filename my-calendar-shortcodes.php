@@ -4,17 +4,19 @@ function my_calendar_insert($atts,$content=null) {
 				'name' => 'all',
 				'format' => 'calendar',
 				'category' => 'all',
-				'showkey' => 'yes',
-				'shownav' => 'yes',
-				'showjump'=> '',
-				'toggle' => 'no',
+				'showkey' => '',//deprecated
+				'shownav' => '',//deprecated
+				'showjump'=> '',//deprecated
+				'toggle' => '',//deprecated
 				'time' => 'month',
 				'ltype' => '',
 				'lvalue' => '',
 				'author' => 'all',
 				'host' => 'all',
 				'id' => 'jd-calendar',
-				'template' => ''
+				'template' => '',
+				'above' => '',
+				'below' => ''
 			), $atts));
 	if ( $format != 'mini' ) {
 		if ( isset($_GET['format']) ) {
@@ -22,7 +24,7 @@ function my_calendar_insert($atts,$content=null) {
 		}
 	}
 	//apply_filters( 'mc_filter_calendar_name',$all_styles,$styles );
-	return my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle,$time, $ltype, $lvalue, $id, $template,$content,$author,$host );
+	return my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle,$time, $ltype, $lvalue, $id, $template,$content,$author,$host,$above,$below );
 }
 
 function my_calendar_insert_upcoming($atts) {
@@ -87,4 +89,11 @@ function my_calendar_show_event($atts) {
 				'after' => '</ul>'
 			), $atts));
 	return mc_instance_list( $event, false, $template, $list, $before, $after );
+}
+
+function my_calendar_search($atts) {
+	extract(shortcode_atts(array(
+			'type' => 'simple'
+		), $atts));
+	return mc_calendar_search_form($type);
 }

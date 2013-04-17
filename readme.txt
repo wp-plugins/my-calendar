@@ -2,8 +2,8 @@
 Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager, event calendar
-Requires at least: 3.0.6
-Tested up to: 3.5.0
+Requires at least: 3.3.0
+Tested up to: 3.6 beta
 License: GPLv2 or later
 Stable tag: trunk
 
@@ -11,18 +11,21 @@ Accessible WordPress event calendar plugin. Show events from multiple calendars 
 
 == Description ==
 
-My Calendar provides event management and numerous methods to display your events. The plug-in can support individual site calendars within WordPress Multi-User, or multiple calendars displayed by categories of or locations for events. 
+My Calendar provides event management with richly customizable ways to display events. The plug-in can support individual site calendars within WordPress Multisite, multiple calendars displayed by categories, locations or author, or simple lists of upcoming events. 
 
-* 	[User's Guide available for purchase](http://www.joedolson.com/articles/my-calendar/users-guide/) with extensive assistance in set up and use.
-*   [Paid plug-in to add front-end event contributions](https://www.joedolson.com/articles/my-calendar/submissions/)
+Easy to use for anybody, My Calendar provides enormous potential for developers needing a custom calendar interface.
 
-=Basic Features:=
+* 	[Buy the User's Guide](http://www.joedolson.com/articles/my-calendar/users-guide/) for extensive help with set up and use.
+*   [Buy My Calendar: Submissions](https://www.joedolson.com/articles/my-calendar/submissions/), the PRO extension for front-end event submissions
+
+= Basic Features: =
 
 *	Standard calendar grid or list views of events
 * 	Show events in monthly, weekly, or daily view.
 * 	Mini-calendar view for compact displays (as widget or as shortcode)
 *	Widget to show today's events
 *	Widget to show upcoming or past events 
+* 	Widget to search events
 *	Custom templates for event output
 *	Limit by category/categories
 * 	Limit by location
@@ -43,25 +46,22 @@ My Calendar provides event management and numerous methods to display your event
 	* registration status (open, closed or irrelevant), 
 	* event location
 * 	Email notification to administrator when events are scheduled or reserved
+* 	Post to Twitter when new events are created. (with [WP to Twitter](http://wordpress.org/extend/plugins/wp-to-twitter/))
 *	Location Manager for storing frequently used venues
 *   Fetch events from a remote MySQL database. (Sharing events in a network of sites.)
 *   Import from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/)
 * 	Integrated Help page to guide in use of shortcodes and template tags
 
-=Translations=
+= Translations =
 
 Available languages (in order of completeness):
-Japanese, Spanish, Danish, Czech, Hindi, Turkish, Dutch, French, Italian, German, Portuguese, Russian, Swedish, Finnish, Basque, Persian
+Japanese, Spanish, Danish, Czech, Hindi, Turkish, Italian, French, Dutch, Polish, German, Portuguese, Russian, Swedish, Finnish, Slovenian, Basque, Persian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check how complete a translation is.
 
 Translating my plug-ins is always appreciated. Visit <a href="http://translate.joedolson.com">my translations site</a> to start getting your language into shape!
 
-Translator Credits (in no particular order)*:
-
-[Ale Gonzalez](http://60rpm.tv/i), [Outshine Solutions](http://outshinesolutions.com), [Jakob Smith](http://www.omkalfatring.dk/),, [globus2008](http://wordpress.org/support/profile/globus2008), Frederic Escallier, Luud Heck, Wim Strijbos, [Daisuke Abe](http://www.alter-ego.jp/), [Alex](http://blog.sotvoril.ru/), Mehmet Ko&ccedil;ali, Uwe Jonas, Florian Edelmann, Efva Nyberg, [Sabir Musta](http://mustaphasabir.altervista.org), Massimo Sgobino, Leonardo Kfoury, Alexandre Carvalho, Amir Khalilnejad, [Aurelio De Rosa](http://www.audero.it/), Bayram Dede, Dani Locasati, Dario Nunez, Dirk Ginader, Evren Erten, Fl&aacute;vio Pereira, Francois-Xavier Benard, [Gianni Diurno](http://www.gidibao.net), Giksi, Heinz Ochsner,  Kazuyuki Kumai, Liam Boogar, Maks, Mano, Massimo Sgobino, Mohsen Aghaei, Oscar, [Rashid Niamat](http://niamatmediagroup.nl/), Stefan Wikstrom, Thomas Meyer, Vedar Ozdemir, [Vikas Arora](http://www.wiznicworld.com), [Miriam de Paula](http://wpmidia.com.br), [HostUCan](http://www.hostucan.com), [Alex Alexandrov](http://www.webhostingrating.com), [Alyona Lompar](http://www.webhostinggeeks.com), [David Gil P&eacute;rez](http://www.sohelet.com), [Burkov Boris](http://chernobog.ru), [Raivo Ratsep](http://raivoratsep.com), [Jibo](http://jibo.ro), [Rasmus Himmelstrup](http://seoanalyst.dk), [kndb](http://blog.layer8.sh/)
-
-* Translators may not have contributed to this plug-in; but have contributed to my [translation repository](http://translate.joedolson.com).
+<a href="http://www.joedolson.com/articles/translator-credits/">Translator Credits</a>
 
 == Installation ==
 
@@ -84,6 +84,47 @@ Translator Credits (in no particular order)*:
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.2.0 =
+
+* New feature: event search (widget).
+* New feature: with <a href="http://wordpress.org/extend/plugins/wp-to-twitter">WP to Twitter</a> installed, auto post events to Twitter when published or approved.
+* New feature: toggle timeframe between month/week/day view
+* New setting: ensure best possible color contrast between background color and title link.
+* Split manage events page and add event page into two separate interfaces. 
+* Removed non-sortable fields from display for manage events interface. 
+* Moved setting for number of events on manage events page to screen options.
+* New screen option: on event manager screen, users can turn off areas of the event manager they don't use.
+* New template tag: {image_url}, to pull an event's associated image without HTML
+* New template tag: {linking}, event URL with fallback to details link
+* New template tags: {gravatar} and {host_gravatar} to show author/host gravatar images.
+* New filter: mc_event_mail_to.
+* New filter: mc_past_search_results.
+* New filter: mc_future_search_results.
+* New filter: mc_search_template
+* Added support for variable increments (e.g., every 3 weeks, every 4 months, etc.)
+* Added template tag support to notification email subject line
+* Added option to send HTML notification emails
+* Added option to set sending address for notification emails
+* Added template tag to add event to Google Calendar
+* Added 'check all' option to event manager.
+* Accessibility Improvement: added aria-live attributes.
+* New shortcode attributes: 'above' and 'below'. (Control order and display of elements above/below calendar.)
+* Deprecated shortcode attributes: showkey, shownav, toggle, showjump. Will be removed in My Calendar 2.3.0.
+* Updated shortcode generator to use new attributes. Also added support for author and host attributes.
+* Miscellaneous tweaks to all My Calendar themes.
+* jQuery improvements. (jQuery version 1.7 minimum requirement.)
+* Bug fix: multi-day events incorrectly displayed in Upcoming Events by dates view
+* Bug fix: Open events to details page briefly rendered empty details pop-up (requires script update)
+* Bug fix: <title> element filter didn't strip all HTML tags. 
+* Bug fix: hcal end time
+* Bug fix: upcoming events miscounted number of events with overlapping multiday single events.
+* Bug fix: today's events are now counted towards total events in upcoming events list
+* Bug fix: retention of location data when location fields disabled in manager
+* Bug fix: documentation correction for remote DB
+* Bug fix: caching issue when filtering by location
+* Language updates: German, Spanish, French, Japanese, Dutch, Polish, Italian, Slovenian
+* Deprecated support for WordPress versions up to 3.3.0 due to jQuery version change.
 
 = 2.1.5 =
 
@@ -971,7 +1012,7 @@ Because the majority of users end up on my web site asking for help anyway -- an
 
 I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/articles/my-calendar/users-guide/) for $23. ($19 if you're not interested in getting updates.) This helps defray the thousand plus hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
 
-= How can visitors to my site submit events? =
+= How can my site visitors or members submit events? =
 
 I've written a paid plug-in that adds this feature to My Calendar, called My Calendar: Submissions. You can [buy it at my web site](https://www.joedolson.com/articles/my-calendar/submissions/)!
 
@@ -990,5 +1031,5 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 == Upgrade Notice ==
 
-= 2.0.0 =
-Major database redesign. Some new features, including single event view and pagination in events lists. Database update is non-destructive; no data will be deleted.
+= 2.2.0 =
+Lots of new features and bug fixes; check out the changelog!

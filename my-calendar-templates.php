@@ -19,7 +19,7 @@ function jd_draw_template($array,$template,$type='list') {
 						$before = @$matches[1][0];
 						$after = @$matches[2][0];
 						$format = @$matches[3][0];
-						if ( $format != '' ) { $value = date( stripslashes($format),strtotime(stripslashes($value)) ); }
+						if ( $format != '' ) { $value = date_i18n( stripslashes($format),strtotime(stripslashes($value)) ); }
 						$value = ( $value == '' )?'':$before.$value.$after;
 						$search = @$matches[0][0];
 						$template = str_replace( $search, $value, $template );
@@ -32,6 +32,7 @@ function jd_draw_template($array,$template,$type='list') {
 			$rss_search = "{rss_$key}";
 			if ( strpos( $template, $rss_search ) !== false ) {
 				$charset = get_option('blog_charset');
+				if ( $charset == '' ) { $charset = 'UTF-8'; }
 				//$value = htmlspecialchars( $value, ENT_QUOTES, $charset );
 				//$value = htmlentities( $value, ENT_XML1, $charset );
 				//	if ( $key == 'description' ) { echo $value; }
@@ -50,6 +51,7 @@ function jd_draw_template($array,$template,$type='list') {
 function mc_maplink( $event, $request='map', $source='event' ) {
 	if ( $source == 'event' ) {
 		$map_string = $event->event_street.' '.$event->event_street2.' '.$event->event_city.' '.$event->event_state.' '.$event->event_postcode.' '.$event->event_country;	
+		if ( $request = 'gcal' ) { return $map_string; }
 		$zoom = ( $event->event_zoom != 0 )?$event->event_zoom:'15';	
 		$map_string = str_replace(" ","+",$map_string);
 		if ( $event->event_longitude != '0.000000' && $event->event_latitude != '0.000000' ) {
@@ -74,6 +76,18 @@ function mc_maplink( $event, $request='map', $source='event' ) {
 		$map = "";
 	}
 	return $map;
+}
+
+function mc_google_cal( $dtstart, $dtend, $url, $title, $location, $description ) {
+	$source = "https://www.google.com/calendar/render?action=TEMPLATE";
+	$base = "&dates=$dtstart/$dtend";
+	$base .= "&sprop=website:".$url;
+	$base .= "&text=".urlencode($title);
+	$base .= "&location=".urlencode($location);
+	$base .= "&sprop=name:".urlencode(get_bloginfo('name'));
+	$base .= "&details=".urlencode(stripcslashes($description));
+    $base .= "&sf=true&output=xml";
+	return $source . $base;
 }
 
 function mc_hcard( $event, $address='true', $map='true', $source='event' ) {
@@ -107,7 +121,7 @@ function mc_hcard( $event, $address='true', $map='true', $source='event' ) {
 		$hcard .= "</div>";
 	}
 	if ( $map == 'true' ) {
-		$the_map = ($source == 'location' )?"<a href='$the_map'>$event_label</a>":$the_map;
+		$the_map = "<a href='$the_map'>$event_label</a>";
 		$hcard .= ($the_map!='')?"<div class='url map'>$the_map</div>":'';
 	}
 	$hcard .= ($event_url!='')?$sitelink_html:'';
@@ -135,12 +149,15 @@ function event_as_array($event,$type='html') {
 			$e = get_userdata($event->event_author);
 			$host = get_userdata($event->event_host);
 			$details['author'] = $e->display_name;
+			$details['gravatar'] = get_avatar( $e->user_email );
 			$details['host'] = (!$host || $host->display_name == '')?$e->display_name:$host->display_name; 
 			$details['host_email'] = (!$host || $host->user_email == '')?$e->user_email:$host->user_email;
+			$details['host_gravatar'] = ( !$host || $host->user_email == '' )?$details['gravatar']:get_avatar( $host->user_email );
 		} else {
 			$details['author'] = 'Public Submitter';
 			$details['host'] = 'Public Submitter';
 			$details['host_email'] = '';
+			$details['gravatar'] = '';
 		}
 		
 	$map = mc_maplink( $event );
@@ -149,7 +166,10 @@ function event_as_array($event,$type='html') {
 	$sitelink_html = "<div class='url link'><a href='$event->event_url' class='location-link external'>".sprintf(__('Visit web site<span>: %s</span>','my-calendar'),$event->event_label)."</a></div>";
 	$details['sitelink_html'] = $sitelink_html;
 	$details['sitelink'] = $event->event_url;
-	switch ( $event->event_recur ) {
+	$recurs = str_split( $event->event_recur, 1 );
+	$recur = $recurs[0];
+	$every = ( isset($recurs[1]) )?$recurs[1]:1;	
+	switch ( $recur ) {
 		case 'S':$event_recur=__('Does not recur','my-calendar');break;
 		case 'D':$event_recur=__('Daily','my-calendar');break;
 		case 'E':$event_recur=__('Daily, weekdays only','my-calendar');break;
@@ -169,6 +189,7 @@ function event_as_array($event,$type='html') {
 	$date_end_utc = date_i18n( $date_format, $event->ts_occur_end );
 	$details['date_utc'] = $date_utc;
 	$details['date_end_utc'] = $date_end_utc;
+	$details['image_url'] = ( $event->event_image != '' )?$event->event_image:'';
 	$details['image'] = ( $event->event_image != '' )?"<img src='$event->event_image' alt='' class='mc-image' />":'';
 	//$details['time'] = ( date( 'H:i:s', strtotime($event->occur_begin) ) == '00:00:00' )?get_option( 'mc_notime_text' ):date(get_option('mc_time_format'),strtotime($event->occur_begin));
 	$details['time'] = ( date( 'H:i:s', strtotime( $event->occur_begin ) ) == '00:00:00' )?get_option( 'mc_notime_text' ):date(get_option('mc_time_format'), strtotime( $event->occur_begin ) );
@@ -198,7 +219,7 @@ function event_as_array($event,$type='html') {
 	$dates = mc_event_date_span( $event->event_group_id, $event->event_span, array( 0=>$date_obj ) );
 	$details['ical_html'] = "<a class='ical' rel='nofollow' href='$ical_link'>".__('iCal','my-calendar')."</a>";
 	$details['dtstart'] = date( 'Y-m-d\TH:i:s', strtotime( $event->occur_begin ) );// hcal formatted
-	$details['dtend'] = date( 'Y-m-d\TH:i:s', strtotime($real_end_date.' '.$endtime) );	//hcal formatted end
+	$details['dtend'] = date( 'Y-m-d\TH:i:s', strtotime($event->occur_end ) );	//hcal formatted end
 	$details['rssdate'] = date( 'D, d M Y H:i:s +0000', strtotime( $event->event_added ) );	
 	$details['date'] = ($event->event_span != 1)?$date:mc_format_date_span( $dates, 'simple', $date );
 	$details['enddate'] = $date_end;
@@ -254,12 +275,13 @@ function event_as_array($event,$type='html') {
 		$replacements = array( stripslashes($event->event_title), stripslashes($event->event_label), $event->category_color, $event->category_icon, $details['date'], $details['time'] );
 		$details_label = str_replace($tags,$replacements,$details_template );
 		if ( $type == 'html' ) {
-			$details_link = mc_build_url( array('mc_id'=>$event->occur_id), array('month','dy','yr','ltype','loc','mcat','format','feed','page_id','p'), get_option( 'mc_uri' ) );
+			$details_link = mc_build_url( array('mc_id'=>$event->occur_id), array('month','dy','yr','ltype','loc','mcat','format','feed','page_id','p','mcs'), get_option( 'mc_uri' ) );
 		} else {
 			$details_link = '';
 		}
 	$details['details_link'] = ( get_option( 'mc_uri' ) != '' )?$details_link:'';
 	$details['details'] = ( get_option( 'mc_uri' ) != '' )?"<a href='$details_link' class='mc-details'>$details_label</a>":'';
+	$details['linking'] = ( $event->event_url != '' )?$event->event_url:$details_link;
 	$details['dateid'] = $dateid; // unique ID for this date of this event
 	$details['id'] = $id;
 	$details['group'] = $event->event_group_id;
@@ -274,6 +296,14 @@ function event_as_array($event,$type='html') {
 	$ical_description = mc_newline_replace(strip_tags($event->event_desc));
 	$details['ical_description'] = str_replace( "\r", "=0D=0A=", $event->event_desc );	
 	$details['ical_desc'] = $ical_description;
+	// get URL, TITLE, LOCATION, DESCRIPTION strings
+		$url = ( get_option( 'mc_uri' ) != '' )?$details_link:$event->event_url;
+		$title = stripcslashes($event->event_title);
+		$location = mc_maplink( $event, 'gcal' );
+		$description = $ical_description;
+	$details['gcal'] = mc_google_cal( $dtstart, $dtend, $url, $title, $location, $description );
+	$details['gcal_link'] = "<a href='".mc_google_cal( $dtstart, $dtend, $url, $title, $location, $description )."'>".sprintf( __('<span class="screenreader">Send %1$s to </span>Google Calendar','my-calendar'), $title )."</a>";
+	
 	$details = apply_filters( 'mc_filter_shortcodes',$details,$event );
 	return $details;
 }

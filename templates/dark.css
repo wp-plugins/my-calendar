@@ -8,7 +8,7 @@
 .mc-main .calendar-events {background: #222;color: #fff;}
 .mc-main .category-key .no-icon {border: 1px solid #bbb;}
 
-.mc-main,.mc-list  {background: #333; padding: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;color:#fff;}
+.mc-main,.mc-list  {background: #333; padding: 5px; border-radius: 5px;color:#fff;}
 .mc-main caption, .mc-main .my-calendar-date-switcher, .mc-main .my-calendar-nav li a:hover, .mc-main .category-key {
 border: 1px solid #222;
 }
@@ -45,6 +45,7 @@ padding:2px!important;
 .mc-main th {text-align: center;padding: 5px 0!important;letter-spacing: 1px;}
 .mc-main th abbr {border-bottom: none;}
 .mc-main h3, .mc-main h3 a {
+display: block;
 font: 700 10px Arial, Verdana, sans-serif;
 margin:3px 0;
 padding:0;
@@ -55,6 +56,8 @@ line-height: 1;
 text-transform: none;
 letter-spacing: 100%;
 }
+.mc-main h3 a { text-decoration: none; }
+.mc-main h3 a:hover, .mc-main h3 a:focus { text-decoration: underline; }
 .mc-main h2 {color: #fff;}
 .mc-main h3 img {vertical-align: middle;margin: 0 3px 0 0!important;}
 .mc-main .mc-list h3 img {vertical-align: middle;}
@@ -75,8 +78,6 @@ float: right;
 background: #aaa;
 text-align: center;
 padding: 2px;
--moz-border-radius: 3px;
--webkit-border-radius: 3px;
 border-radius: 3px;
 }
 .mc-main.mini .details .close {
@@ -87,12 +88,13 @@ right: 8px;
 .mc-main .calendar-events {width: 200px!important;left: 0px;}
 .mc-main .list-event .details {margin:5px 0;padding:5px 5px 0;}
 .mc-main .mc-list {margin: 0;padding: 0;}
-.mc-main .mc-list li {padding:5px;list-style-type: none;margin: 0;}
+.mc-main .mc-list li {padding:5px;list-style-type: none;margin: 0;list-style-image: none;}
 .mc-main .mc-date {display:block;margin:-2px -2px 2px;padding:2px 4px;}
 .mc-main th {font-size:.8em;text-transform:uppercase;padding:2px 4px 2px 0;}
 .mc-main .category-key {padding: 5px;margin: 5px 0;}
 .mc-main .category-key ul {
 list-style-type: none;
+list-style-image: none;
 margin: 0;
 padding: 0;
 }
@@ -124,7 +126,7 @@ margin:0 5px;
 padding:0;
 }
 .mini .my-calendar-nav ul {height: 2em!important;}
-.mc-main .my-calendar-nav li {float:left;list-style-type: none!important; /* It really is pretty important. */;}
+.mc-main .my-calendar-nav li {float:left;margin: 0 1px; padding: 0;list-style-type: none!important;list-style-image: none; /* It really is pretty important. */}
 .mc-main .my-calendar-nav li:before {content:'';}
 .mc-main .my-calendar-nav li a {display:block;text-align:center;padding:1px 20px;}
 .mini .my-calendar-nav li a {padding: 1px 3px!important;font-size: .7em;}

@@ -19,7 +19,7 @@ var myCalQT = window.myCalQT || {};
 /*  Generator specific script */
 (myCalQT.Tag.Generator = function(){
 	// tags to find
-	var tags = 'category,ltype,lvalue,format,showkey,shownav,showjump,toggle,time'.split(',');
+	var tags = 'category,ltype,lvalue,format,above,below,author,host,time'.split(',');
 	// to validate and generate the tag
 	var vt = function(id){
 		var form = jQuery('#'+id).val();
