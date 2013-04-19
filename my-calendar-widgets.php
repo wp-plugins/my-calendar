@@ -433,7 +433,7 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 							if ( $e ) { 
 								// if a multi-day event, show only once.
 								if ( $e->occur_group_id != 0 && $e->event_span == 1 && in_array( $e->occur_group_id, $group ) ) { 
-									$md = true; 
+									$md = true;
 								} else { 
 									$group[] = $e->occur_group_id; $md=false; 
 								}

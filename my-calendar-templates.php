@@ -50,8 +50,8 @@ function jd_draw_template($array,$template,$type='list') {
 
 function mc_maplink( $event, $request='map', $source='event' ) {
 	if ( $source == 'event' ) {
-		$map_string = $event->event_street.' '.$event->event_street2.' '.$event->event_city.' '.$event->event_state.' '.$event->event_postcode.' '.$event->event_country;	
-		if ( $request = 'gcal' ) { return $map_string; }
+		$map_string = $event->event_street.' '.$event->event_street2.' '.$event->event_city.' '.$event->event_state.' '.$event->event_region.' '.$event->event_postcode.' '.$event->event_country;	
+		if ( $request == 'gcal' ) { return $map_string; }
 		$zoom = ( $event->event_zoom != 0 )?$event->event_zoom:'15';	
 		$map_string = str_replace(" ","+",$map_string);
 		if ( $event->event_longitude != '0.000000' && $event->event_latitude != '0.000000' ) {
@@ -59,7 +59,7 @@ function mc_maplink( $event, $request='map', $source='event' ) {
 			$connector = '';			
 		}
 	} else {
-		$map_string = $event->location_street.' '.$event->location_street2.' '.$event->location_city.' '.$event->location_state.' '.$event->location_postcode.' '.$event->location_country;	
+		$map_string = $event->location_street.' '.$event->location_street2.' '.$event->location_city.' '.$event->location_state.' '.$event->location_region.' '.$event->location_postcode.' '.$event->location_country;	
 		$zoom = ( $event->location_zoom != 0 )?$event->location_zoom:'15';	
 		$map_string = str_replace( " ","+",$map_string );
 		if ( $event->location_longitude != '0.000000' && $event->location_latitude != '0.000000' ) {
