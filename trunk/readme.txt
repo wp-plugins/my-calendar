@@ -55,7 +55,7 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 = Translations =
 
 Available languages (in order of completeness):
-Japanese, Spanish, Danish, Czech, Hindi, Turkish, Italian, French, Dutch, Polish, German, Portuguese, Russian, Swedish, Finnish, Slovenian, Basque, Persian
+Japanese, Spanish, Danish, Czech, Hindi, Italian, Turkish, French, Dutch, Polish, German, Portuguese, Russian, Swedish, Finnish, Slovenian, Basque, Persian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check how complete a translation is.
 
@@ -84,6 +84,12 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.2.1 =
+
+* Bug fix: Pull multi-day events in upcoming events list that happen today, but started on a previous day when past events set to 0.
+* Bug fix: broken {link_map} template tag.
+* Update to Italian translation.
 
 = 2.2.0 =
 

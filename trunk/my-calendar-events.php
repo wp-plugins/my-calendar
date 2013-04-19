@@ -28,7 +28,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 		ON (event_id=occur_event_id) 
 		JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
 		ON (event_category=category_id) WHERE $select_category $select_author $select_host $limit_string event_approved = 1 AND event_flagged <> 1 
-		AND DATE(occur_begin) = '$date'");	
+		AND ( ( DATE(occur_begin) < '$date' AND DATE(occur_end) > '$date' ) OR DATE(occur_begin) = '$date' )");	// event crosses or equals
 	} else {
 		$events3 = array();
 	}
