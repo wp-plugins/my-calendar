@@ -1422,7 +1422,7 @@ function my_calendar_show_locations($show='list',$datatype='name',$template='') 
 				$label = stripslashes($value->{$data});
 				$url = mc_maplink( $value, 'url', $source='location' );
 				if ( $url ) {
-					$output .= "<li><a href='$url'>$label</a></li>";
+					$output .= "<li>$url</li>";
 				} else {
 					$output .= "<li>$label</li>";
 				}
