@@ -91,7 +91,7 @@ function mc_google_cal( $dtstart, $dtend, $url, $title, $location, $description 
 }
 
 function mc_hcard( $event, $address='true', $map='true', $source='event' ) {
-	$the_map = mc_maplink( $event, 'map', $source );
+	$the_map = mc_maplink( $event, 'url', $source );
 	$event_url = ($source=='event')?$event->event_url:$event->location_url;
 	$event_label = stripslashes( ($source=='event')?$event->event_label:$event->location_label );
 	$event_street = stripslashes( ($source=='event')?$event->event_street:$event->location_street );

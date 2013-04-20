@@ -831,8 +831,8 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 			<label for="location_preset"><?php _e('Choose a preset location:','my-calendar'); ?></label> <select name="location_preset" id="location_preset">
 				<option value="none"> -- </option>
 				<?php foreach ( $locations as $location ) {
-					if ( !empty($data) && $data->event_label == $location->location_label ) { $checked = ' selected="selected"'; } else { $checked = ''; }
-					echo "<option value=\"".$location->location_id."\"$checked>".stripslashes($location->location_label)."</option>";
+					//if ( !empty($data) && $data->event_label == $location->location_label ) { $checked = ' selected="selected"'; } else { $checked = ''; }
+					echo "<option value=\"".$location->location_id."\">".stripslashes($location->location_label)."</option>";
 				} ?>
 			</select>
 			</p>
@@ -1297,7 +1297,7 @@ function mc_check_data($action,$post, $i) {
 		$event_hide_end	= (!empty($post['event_hide_end']) ) ? 1 : 0;
 		$event_hide_end = ( $time == '' || $time == '00:00:00' )?1:$event_hide_end; // hide end time automatically on all day events
 		// set location
-			if ($location_preset != 'none') {
+			if ( $location_preset != 'none' ) {
 				$sql = "SELECT * FROM " . my_calendar_locations_table() . " WHERE location_id = $location_preset";
 				$location = $mcdb->get_row($sql);
 				$event_label = $location->location_label;

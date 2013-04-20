@@ -29,12 +29,14 @@ function my_calendar_import() {
 				'event_link'=>( isset($key['event_link']) )?$key['event_link']:'' );
 			$format = array( '%s','%s','%s','%s','%s','%s','%s','%d','%d','%d','%d','%s' );
 			$update = $mcdb->insert( my_calendar_table(), $data, $format );
+			$events_results = ( $update ) ? true : false; 
 			$event_ids[] = $mcdb->insert_id;
 		}
 
 		foreach ( $event_ids as $value ) { // propagate event instances.
-				$sql = "SELECT event_begin, event_time, event_end, event_endtime FROM ".my_calendar_table()." WHERE event_id = $value";
+				$sql = "SELECT event_begin, event_time, event_end, event_endtime FROM ".my_calendar_table()." WHERE event_id = $value";				
 				$event = $wpdb->get_results($sql);
+				$event = $event[0];
 				$dates = array( 'event_begin'=>$event->event_begin,'event_end'=>$event->event_end,'event_time'=>$event->event_time,'event_endtime'=>$event->event_endtime );
 				$event = mc_increment_event( $value, $dates );				
 		}
@@ -319,7 +321,7 @@ function edit_my_calendar_config() {
 <div class="postbox-container" style="width: 70%">
 <div class="metabox-holder">
   <?php
-update_option( 'ko_calendar_imported','false' );
+//update_option( 'ko_calendar_imported','false' ); // for testing importing.
 if (isset($_POST['import']) && $_POST['import'] == 'true') {
 	$nonce=$_REQUEST['_wpnonce'];
     if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");

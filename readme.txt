@@ -85,6 +85,12 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.2.2 =
+
+* Bug fix to importer from Calendar
+* Another fix to link_map (this time, in the standard calendar view.)
+* Bug fix: location preset being assigned didn't allow changes to location details when editing events.
+
 = 2.2.1 =
 
 * Bug fix: Pull multi-day events in upcoming events list that happen today, but started on a previous day when past events set to 0.
