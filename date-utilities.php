@@ -1,4 +1,5 @@
 <?php 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function mc_dateclass( $now, $current ) {
 	if ( date("Ymd",$now) == date("Ymd", $current ) ) {

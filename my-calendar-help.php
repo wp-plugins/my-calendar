@@ -1,4 +1,7 @@
-<?php function my_calendar_help() { ?>
+<?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+function my_calendar_help() { ?>
 
 <div class="wrap jd-my-calendar">
 <h2><?php _e('How to use My Calendar','my-calendar'); ?></h2>
@@ -307,6 +310,9 @@
 
 		<dt><code>{link_map}</code></dt>
 		<dd><?php _e('Displays a link to a Google Map of the event, if sufficient address information is available. If not, will be empty.','my-calendar'); ?></dd>
+
+		<dt><code>{map_url}</code></dt>
+		<dd><?php _e('Produces the URL for the Google Map for the event location if sufficient address information is available. If not, will be empty.','my-calendar'); ?></dd>
 		</dl>
 		<h4><?php _e('Category Template Tags','my-calendar'); ?></h4>
 

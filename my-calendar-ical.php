@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 function my_calendar_ical() {
 
 $p = ( isset($_GET['span']) )?'year':false;

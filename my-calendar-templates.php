@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 function jd_draw_template($array,$template,$type='list') {
 	//$mtime = microtime( true); // DEBUG PERFORMANCE
 	//1st argument: array of details
@@ -261,6 +263,7 @@ function event_as_array($event,$type='html') {
 	$details['country'] = stripslashes($event->event_country);
 	$details['hcard'] = stripslashes($hcard);
 	$details['link_map'] = $map;
+	$details['map_url'] = $map_url;
 	$details['shortdesc'] = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',$event->event_short):wpautop(stripslashes($event->event_short));
 	$details['shortdesc_raw'] = stripslashes($event->event_short);
 	$details['shortdesc_stripped'] = strip_tags(stripslashes($event->event_short));

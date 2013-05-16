@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 // Display the admin configuration page
 function my_calendar_import() {
 	if ( get_option('ko_calendar_imported') != 'true' ) {

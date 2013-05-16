@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 if (!empty($_SERVER['SCRIPT_FILENAME']) && 'my-calendar-locations.php' == basename($_SERVER['SCRIPT_FILENAME'])) {
 	die ('Please do not load this page directly. Thanks!');
 }

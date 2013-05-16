@@ -1,7 +1,5 @@
 <?php
-if (!empty($_SERVER['SCRIPT_FILENAME']) && 'my-calendar-group-manager.php' == basename($_SERVER['SCRIPT_FILENAME'])) {
-	die ('Please do not load this page directly. Thanks!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function edit_my_calendar_groups() {
     global $current_user, $wpdb, $users_entries;
@@ -317,10 +315,12 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			$apply = mc_group_form( $group_id, 'apply' ); 
 			echo $apply; 
 			?>		
-		<?php if ( $data->event_repeats == 0 && $data->event_recur == 'S' ) { ?>
+		<?php if ( $data->event_repeats == 0 && ( $data->event_recur == 'S1' || $data->event_recur == 'S' ) ) { ?>
 		<p>
 		<input type="checkbox" value="1" id="event_span" name="event_span"<?php if ( !empty($data) && $data->event_span == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_span == '0' ) { echo ""; } else if ( get_option( 'mc_event_span' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_span"><?php _e('Selected dates are a single multi-day event.','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_span' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label>
 		</p>
+		<?php } else { ?>
+			<div><input type='hidden' name='event_span' value='<?php echo $data->event_span; ?>' /></div>
 		<?php } ?>
 		<?php if ($mc_input['event_desc'] == 'on' || $mc_input_administrator ) { ?>
 		<div id="group_description">

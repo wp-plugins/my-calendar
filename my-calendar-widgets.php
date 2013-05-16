@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 class my_calendar_simple_search extends WP_Widget {
 	function my_calendar_simple_search() {
 		parent::WP_Widget( false, $name=__('My Calendar: Simple Event Search','my-calendar') );

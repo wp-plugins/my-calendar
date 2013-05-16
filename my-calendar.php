@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 2.2.2
+Version: 2.2.3
 */
 /*  Copyright 2009-2013  Joe Dolson (email : joe@joedolson.com)
 
@@ -23,8 +23,10 @@ Version: 2.2.2
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 global $mc_version, $wpdb;
-$mc_version = '2.2.2';
+$mc_version = '2.2.3';
 
 // Define the tables used in My Calendar
 if ( function_exists('is_multisite') && is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
@@ -108,6 +110,22 @@ add_action( 'init', 'my_calendar_export_vcal', 200 );
 add_filter( 'widget_text', 'do_shortcode', 9 );
 add_filter('plugin_action_links', 'jd_calendar_plugin_action', -10, 2);
 add_filter( 'wp_title','mc_event_filter',10,3 );
+/* needs work 
+add_filter( 'the_title', 'mc_title_filter', 10 );
+
+function mc_title_filter( $title, $id ) {
+	global $post; // causes problems with other filtering.
+	if ( isset($_GET['mc_id']) && $title == $post->post_title ) {
+		$id = (int) $_GET['mc_id'];
+		$event = mc_get_event( $id );
+		$array = event_as_array( $event );
+		$template = ( get_option( 'mc_detail_title_template' ) != '' )? stripslashes( get_option( 'mc_detail_title_template' ) ):"Details for &ldquo;{title}&rdquo;";
+		return jd_draw_template( $array, $template );
+	} else {
+		return $title;
+	}
+}
+*/
 
 function mc_event_filter( $title, $sep, $seplocation ) {
 	if ( isset($_GET['mc_id']) ) {

@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 // Display the admin configuration page
 function edit_my_calendar_behaviors() {
   global $wpdb, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs;
