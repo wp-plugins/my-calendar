@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 function my_calendar_rss() {
 $offset = (60*60*get_option('gmt_offset'));
 // establish template

@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 function mc_select_category($category, $type='event', $group='events' ) {
 $category = urldecode($category);
 global $wpdb;

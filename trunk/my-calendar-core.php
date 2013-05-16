@@ -1,13 +1,6 @@
 <?php
-/*
-Note:
-            $qst = get_permalink($post->ID);
-            $qst = parse_url($qst);
-            if ($qst['query'])
-                $qst = '&format=pdf';
-            else
-                $qst = '?format=pdf';
-*/
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 function my_calendar_add_feed() {
 	global $wp_rewrite, $wpdb;
 	$mcdb = $wpdb;
@@ -142,25 +135,27 @@ function my_calendar_wp_head() {
 			$class = "mc_".sanitize_title($category->category_name);
 			$hex = (strpos($category->category_color,'#') !== 0)?'#':'';
 			$color = $hex.$category->category_color;
-			$hcolor = mc_shift_color($category->category_color);
-			$inv = '';
-		if ( get_option( 'mc_apply_color' ) == 'font' ) {
-			$type = 'color';
-			$alt = 'background';
-		} else if ( get_option( 'mc_apply_color' ) == 'background' ) {
-			$type = 'background';
-			$alt = 'color';
-		} else {
-			$type = $alt = '';
-		}
-		if ( get_option( 'mc_inverse_color' ) == 'true' ) {
-			$inverse = mc_inverse_color( $color );
-			$inv =  "$alt: $inverse;";
-		}
-		if ( get_option( 'mc_apply_color' )  == 'font' || get_option( 'mc_apply_color' ) == 'background' ) {
-			// always an anchor as of 1.11.0
-			$category_styles .= "\n.mc-main .$class .event-title a { $type: $color; $inv }";
-			$category_styles .= "\n.mc-main .$class .event-title a:hover, .mc-main .$class .event-title a:focus { $type: $hcolor;}";		
+			if ( $color != '#' ) {
+				$hcolor = mc_shift_color($category->category_color);
+				$inv = '';
+			if ( get_option( 'mc_apply_color' ) == 'font' ) {
+				$type = 'color';
+				$alt = 'background';
+			} else if ( get_option( 'mc_apply_color' ) == 'background' ) {
+				$type = 'background';
+				$alt = 'color';
+			} else {
+				$type = $alt = '';
+			}
+			if ( get_option( 'mc_inverse_color' ) == 'true' ) {
+				$inverse = mc_inverse_color( $color );
+				$inv =  "$alt: $inverse;";
+			}
+			if ( get_option( 'mc_apply_color' )  == 'font' || get_option( 'mc_apply_color' ) == 'background' ) {
+				// always an anchor as of 1.11.0
+				$category_styles .= "\n.mc-main .$class .event-title a { $type: $color; $inv }";
+				$category_styles .= "\n.mc-main .$class .event-title a:hover, .mc-main .$class .event-title a:focus { $type: $hcolor;}";		
+			}
 		}
 	}
 	$add = '';
@@ -1390,9 +1385,7 @@ get_currentuserinfo();
 	$mc_uri = get_option('mc_uri');
 	$mc_css = get_option('mc_css_file');
 	
-	$license = ( get_option('mcs_license_key') != '' )?get_option('mcs_license_key'):'none'; 
-	$license = "License Key: ".$license; 	
-	
+	$license = ( get_option('mcs_license_key') != '' )?get_option('mcs_license_key'):'none'; 	
 	// send fields for all plugins
 	$wp_version = get_bloginfo('version');
 	$home_url = home_url();
@@ -1439,6 +1432,7 @@ DB Version: $mc_db_version
 URI: $mc_uri
 CSS: $mc_css
 License: $license 
+Admin Email: $current_user->user_email
 
 ==WordPress:==
 Version: $wp_version
@@ -1622,9 +1616,9 @@ function mc_delete_instances( $id ) {
 
 /* 
 @param: an array of POST data (or array containing dates); an event ID;
-@return: undetermined
+@return: nothing, unless testing.
 */
-function mc_increment_event( $id, $post=array() ) {
+function mc_increment_event( $id, $post=array(), $test='' ) {
 	global $wpdb;
 	$event = mc_get_event_core( $id );
 	$data = array();
@@ -1653,6 +1647,7 @@ function mc_increment_event( $id, $post=array() ) {
 						$end = my_calendar_add_date($orig_end,$i*$every,0,0);		
 						if ( ( $recur == 'E' && ( date('w',$begin ) != 0 && date('w',$begin ) != 6 ) ) || $recur == 'D' ) {
 							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
+							if ( $test == 'test' && $i > 0 ) return $data;
 							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
 						} else {
 							$numforward++;
@@ -1664,6 +1659,7 @@ function mc_increment_event( $id, $post=array() ) {
 						$begin = my_calendar_add_date($orig_begin,($i*7)*$every,0,0);
 						$end = my_calendar_add_date($orig_end,($i*7)*$every,0,0);
 						$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
+						if ( $test == 'test' && $i > 0 ) return $data;						
 						$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
 					}
 					break;
@@ -1672,6 +1668,7 @@ function mc_increment_event( $id, $post=array() ) {
 						$begin = my_calendar_add_date($orig_begin,($i*14),0,0);
 						$end = my_calendar_add_date($orig_end,($i*14),0,0);							
 							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
+							if ( $test == 'test' && $i > 0 ) return $data;							
 							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
 					}
 					break;						
@@ -1680,6 +1677,7 @@ function mc_increment_event( $id, $post=array() ) {
 						$begin = my_calendar_add_date($orig_begin,0,$i*$every,0);
 						$end = my_calendar_add_date($orig_end,0,$i*$every,0);
 							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
+							if ( $test == 'test' && $i > 0 ) return $data;							
 							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
 					}
 					break;				
@@ -1708,6 +1706,7 @@ function mc_increment_event( $id, $post=array() ) {
 							}
 						}
 						$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$newbegin), 'occur_end'=>date('Y-m-d  H:i:s',$newend), 'occur_group_id'=>$group_id );
+						if ( $test == 'test' && $i > 0 ) return $data;						
 						$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
 						$newbegin = my_calendar_add_date(date('Y-m-d  H:i:s',$newbegin),28,0,0);
 						$newend = my_calendar_add_date(date('Y-m-d  H:i:s',$newend),28,0,0);
@@ -1718,6 +1717,7 @@ function mc_increment_event( $id, $post=array() ) {
 						$begin = my_calendar_add_date($orig_begin,0,0,$i*$every);
 						$end = my_calendar_add_date($orig_end,0,0,$i*$every);						
 							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
+							if ( $test == 'test' && $i > 0 ) return $data;							
 							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
 					}
 				break;

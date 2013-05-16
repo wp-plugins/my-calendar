@@ -1,7 +1,6 @@
 <?php
-if (!empty($_SERVER['SCRIPT_FILENAME']) && 'my-calendar-categories.php' == basename($_SERVER['SCRIPT_FILENAME'])) {
-	die ('Please do not load this page directly. Thanks!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 // Function to handle the management of categories
 
 // This is a hack for people who don't have PHP installed with exif_imagetype

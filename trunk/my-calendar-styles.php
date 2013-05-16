@@ -1,5 +1,6 @@
 <?php
 // Display the style configuration page
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function mc_get_style_path($filename,$type='path') {
 $wp_plugin_url = plugin_dir_url( __FILE__ );

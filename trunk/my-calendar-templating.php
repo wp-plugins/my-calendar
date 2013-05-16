@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 // Display the admin configuration page
 function edit_mc_templates() {
 	global $wpdb;

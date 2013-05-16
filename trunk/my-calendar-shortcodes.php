@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 function my_calendar_insert($atts,$content=null) {
 	extract(shortcode_atts(array(
 				'name' => 'all',

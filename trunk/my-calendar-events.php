@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 // used to generate upcoming events lists
 function mc_get_all_events( $category, $before, $after, $today, $author, $host ) {
 global $wpdb;

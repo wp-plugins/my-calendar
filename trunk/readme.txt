@@ -11,7 +11,7 @@ Accessible WordPress event calendar plugin. Show events from multiple calendars 
 
 == Description ==
 
-My Calendar provides event management with richly customizable ways to display events. The plug-in can support individual site calendars within WordPress Multisite, multiple calendars displayed by categories, locations or author, or simple lists of upcoming events. 
+My Calendar provides event management with richly customizable ways to display events. The plug-in can support individual event calendars within WordPress Multisite, multiple calendars displayed by categories, locations or author, or simple lists of upcoming events. 
 
 Easy to use for anybody, My Calendar provides enormous potential for developers needing a custom calendar interface.
 
@@ -55,7 +55,7 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 = Translations =
 
 Available languages (in order of completeness):
-Japanese, Spanish, Danish, Czech, Hindi, Italian, Turkish, French, Dutch, Polish, German, Portuguese, Russian, Swedish, Finnish, Slovenian, Basque, Persian
+Japanese, Dutch, Spanish, Danish, Italian, Czech, Hindi, Turkish, French, Polish, German, Portuguese, Russian, Swedish, Romanian, Finnish, Slovenian, Basque, Persian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check how complete a translation is.
 
@@ -84,6 +84,17 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.2.3 =
+
+* Bug fix: duplicate attribute 'rel' in prev/next nav.
+* Bug fix: category color associations on event titles when no color assigned. 
+* Bug fix: print view would not always display all categories if no limits set. 
+* Bug fix: Group editor lost multi-day settings.
+* Improvement: throw a warning on events set up with problem settings, e.g. recurring events where the next occurrence begins before the current event has ended.
+* Added template tag: {map_url} for Google Map URL. 
+* New filters: filters for calendar year/month/day (to change the default start date for the calendar.)
+* Language updates: Japanese, Italian, Dutch, Romanian, and Slovenian 
 
 = 2.2.2 =
 

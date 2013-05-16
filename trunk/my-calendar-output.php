@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 function mc_holiday_limit( $events, $holidays ) {
 	foreach ( array_keys($events) as $key ) {
 		if ( !empty($holidays[$key]) ) {
@@ -189,7 +191,7 @@ jQuery(document).ready(function($) {
 		$cur_date = ( $type == 'list' )?'':"<span class='mc-event-date'>$current_date</span>";
 		$body_details .= "<p>$cur_date";
 			if ( $event->event_time != "00:00:00" && $event->event_time != '' ) {
-				$body_details .= "\n<span class='event-time dtstart' title='".$id_start.'T'.$event->event_time."'>".date_i18n(get_option('mc_time_format'), strtotime($event->event_time));
+				$body_details .= "\n<span class='event-time dtstart'><time datetime='".$id_start.'T'.$event->event_time."'>".date_i18n(get_option('mc_time_format'), strtotime($event->event_time)).'</time>';
 				if ( $event->event_hide_end == 0 ) {
 					if ($event->event_endtime != '' && $event->event_endtime != $event->event_time ) {
 						$body_details .= "<span class='time-separator'> &ndash; </span><span class='end-time dtend' title='".$id_end.'T'.$event->event_endtime."'>".date_i18n(get_option('mc_time_format'), strtotime($event->event_endtime))."</span>";
@@ -462,7 +464,7 @@ echo "
 <link rel='stylesheet' href='$stylesheet' type='text/css' media='screen,print' />
 </head>
 <body>\n";
-echo my_calendar('print','calendar',$category,'no','no','no','no',$time,$ltype,$lvalue);
+echo my_calendar('print','calendar',$category,'','','','',$time,$ltype,$lvalue,'mc-print-view','','',null,null,'','');
 $return_url = ( get_option('mc_uri') != '' )?get_option('mc_uri'):home_url();
 echo "<p class='return'><a href='$return_url'>".__('Return to site','my-calendar')."</a></p>";
 echo '
@@ -804,6 +806,11 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 			$c_month = date("m",time()+($offset));
 			$c_day = date("d",time()+($offset));
 		}
+		if ( !( isset($_GET['yr']) || isset($_GET['month']) || isset($_GET['dy']) ) ) {
+			$c_year = apply_filters( 'mc_filter_year', $c_year, $args );
+			$c_month = apply_filters( 'mc_filter_month', $c_month, $args );
+			$c_day = apply_filters( 'mc_filter_day', $c_day, $args );
+		}
 		$c_day = ( $c_day == 0 )?1:$c_day; // c_day can't equal 0.
 		// if today is June 15th, get current month = June. Get day of first of month = FRI. Based on start of week, get date of beginning of that week.  = FROM
 		// get last day of month = Sat. based on start of week, get date of END of that week. = TO
@@ -857,7 +864,12 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 
 		// setup print link
 		if ( get_option( 'mc_show_print' ) == 'true' ) {
-			$mc_print_url = mc_build_url( array( 'time'=>$time,'ltype'=>$ltype,'lvalue'=>$lvalue,'mcat'=>$category,'yr'=>$c_year,'month'=>$c_month,'dy'=>$c_day, 'cid'=>'print' ), array(), mc_feed_base() . 'my-calendar-print' );
+			$add = array( 'time'=>$time,'ltype'=>$ltype,'lvalue'=>$lvalue,'mcat'=>$category,'yr'=>$c_year,'month'=>$c_month,'dy'=>$c_day, 'cid'=>'print' );
+			$subtract = array(); 
+			if ( $ltype == '' ) { $subtract[] = 'ltype'; unset( $add['ltype'] ); }
+			if ( $lvalue == '' ) { $subtract[] = 'lvalue'; unset( $add['lvalue'] );  }
+			if ( $category == 'all' ) { $subtract[] = 'mcat'; unset( $add['mcat'] );  }
+			$mc_print_url = mc_build_url( $add, $subtract, mc_feed_base() . 'my-calendar-print' );
 			$print = "<p class='mc-print'><a href='$mc_print_url'>".__('Print View','my-calendar')."</a></p>";
 		} else {
 			$print = '';
@@ -898,8 +910,8 @@ function my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle
 			$nLink = my_calendar_next_link($c_year,$c_month,$c_day,$format,$time);	
 			$prevLink = mc_build_url( array( 'yr'=>$pLink['yr'],'month'=>$pLink['month'],'dy'=>$pLink['day'],'cid'=>$main_class ),array() );
 			$nextLink = mc_build_url( array( 'yr'=>$nLink['yr'],'month'=>$nLink['month'],'dy'=>$nLink['day'],'cid'=>$main_class ),array() );
-			$previous_link = apply_filters('mc_previous_link','		<li class="my-calendar-prev"><a class="prevMonth" rel="'.$id.'" href="' . $prevLink . $anchor .'" rel="nofollow">'.$pLink['label'].'</a></li>',$pLink);
-			$next_link = apply_filters('mc_next_link','		<li class="my-calendar-next"><a class="nextMonth" rel="'.$id.'" href="' . $nextLink . $anchor .'" rel="nofollow">'.$nLink['label'].'</a></li>',$nLink);
+			$previous_link = apply_filters('mc_previous_link','		<li class="my-calendar-prev"><a class="prevMonth" href="' . $prevLink . $anchor .'" rel="nofollow '.$id.'">'.$pLink['label'].'</a></li>',$pLink);
+			$next_link = apply_filters('mc_next_link','		<li class="my-calendar-next"><a class="nextMonth" href="' . $nextLink . $anchor .'" rel="nofollow'. $id.'">'.$nLink['label'].'</a></li>',$nLink);
 			$nav = '
 				<div class="my-calendar-nav">
 					<ul>

@@ -1,7 +1,6 @@
 <?php
-if (!empty($_SERVER['SCRIPT_FILENAME']) && 'my-calendar-event-manager.php' == basename($_SERVER['SCRIPT_FILENAME'])) {
-	die ('Please do not load this page directly. Thanks!');
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 
 function manage_my_calendar() {
 check_my_calendar();
@@ -493,6 +492,14 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 	global $wpdb, $user_ID;
 	$mcdb = $wpdb;
 	$has_data = ( empty($data) ) ? false : true;
+	$warning = '';
+	if ( $data ) {
+		$check = mc_increment_event( $data->event_id, array(), 'test' );
+		if ( my_calendar_date_xcomp( $check['occur_begin'] , $data->event_end .' '.$data->event_endtime ) ) {
+			$warning = "<div class='updated'><p>".__('This event ends after the next occurrence begins. Events must end <strong>before</strong> the next occurrence begins.','my-calendar')."</p><p>".sprintf( __('Event end date: <strong>%s %s</strong>. Next occurrence starts: <strong>%s</strong>','my-calendar'), $data->event_end, $data->event_endtime, $check['occur_begin'] )."</p></div>";
+			echo $warning;
+		}		
+	}
 	$instance = ( isset($_GET['date'] ) )?(int) $_GET['date']:false;
 	if ( $instance ) { $ins = mc_get_instance_data( $instance ); $event_id = $ins->occur_event_id; $data = mc_get_event_core( $event_id );}
 	?>
@@ -542,7 +549,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
         <fieldset>
 		<legend><?php _e('Enter your Event Information','my-calendar'); ?></legend>
 		<p>
-		<label for="event_title"><?php _e('Event Title','my-calendar'); ?> <span><?php _e('(required)','my-calendar'); ?></span></label><br /><input type="text" id="event_title" name="event_title" class="input" size="60" value="<?php if ( $has_data ) echo stripslashes(esc_attr($data->event_title)); ?>" />
+		<label for="event_title"><?php _e('Event Title','my-calendar'); ?> <span><?php _e('(required)','my-calendar'); ?></span></label><br /><input type="text" id="event_title" name="event_title" class="input" size="60" value="<?php if ( $has_data ) echo apply_filters( 'mc_manage_event_title',stripslashes(esc_attr($data->event_title)), $data ); ?>" />
 <?php if ( $mode == 'edit' ) { ?>
 			<input type='hidden' name='prev_event_status' value='<?php echo $data->event_approved; ?>' />
 	<?php if ( get_option( 'mc_event_approve' ) == 'true' ) { ?>
@@ -1219,13 +1226,7 @@ function jd_events_display_list( $type='normal' ) {
 function mc_check_data($action,$post, $i) {
 	global $wpdb, $current_user, $users_entries;
 	$mcdb = $wpdb;
-	$start_date_ok = 0;
-	$end_date_ok = 0;
-	$time_ok = 0;
-	$endtime_ok = 0;
-	$url_ok = 0;
-	$title_ok = 0;
-	$recurring_ok = 0;
+	$start_date_ok = $end_date_ok = $time_ok = $endtime_ok = $url_ok = $title_ok = $recurring_ok = 0;
 	$proceed = true;
 	$submit=array();
 
@@ -1384,7 +1385,7 @@ function mc_check_data($action,$post, $i) {
 				$endtime_ok = 1;
 			} else {
 				$errors .= "<div class='error'><p><strong>".__('Error','my-calendar').":</strong> ".__('The end time field must either be blank or be entered in the format hh:mm am/pm','my-calendar')."</p></div>";
-			}		
+			}	
 			// We check to make sure the URL is acceptable (blank or starting with http://)                                                        
 			if ($linky == '') {
 				$url_ok = 1;

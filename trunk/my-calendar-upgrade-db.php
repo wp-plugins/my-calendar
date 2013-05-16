@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 function my_calendar_check_db() {
 if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { return; }
 	global $wpdb;
