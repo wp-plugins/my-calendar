@@ -1725,13 +1725,17 @@ function mc_increment_event( $id, $post=array(), $test='' ) {
 		}
 	} else {
 		$begin = strtotime($orig_begin);
-		$end = strtotime($orig_end);
+		$end = strtotime($orig_end);	
 		$data = array( 
 			'occur_event_id'=>$id,
 			'occur_begin'=>date('Y-m-d H:i:s',$begin), 
 			'occur_end'=>date('Y-m-d H:i:s',$end), 
-			'occur_group_id'=>$group_id );
-		$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+			'occur_group_id'=>$group_id );	
+			
+		$occurs = $wpdb->get_results("SELECT * FROM ".my_calendar_event_table()." WHERE occur_event_id = $id ORDER BY occur_begin DESC");
+        if ( count($occurs) == 0 ) {
+			$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+		}
 	}
 	return $data;
 }

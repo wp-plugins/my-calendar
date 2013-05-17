@@ -85,6 +85,10 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.2.4 =
+
+* Bug fix: event duplication bug in 2.2.3
+
 = 2.2.3 =
 
 * Bug fix: duplicate attribute 'rel' in prev/next nav.
