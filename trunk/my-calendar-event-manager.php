@@ -494,11 +494,13 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 	$has_data = ( empty($data) ) ? false : true;
 	$warning = '';
 	if ( $data ) {
-		$check = mc_increment_event( $data->event_id, array(), 'test' );
-		if ( my_calendar_date_xcomp( $check['occur_begin'] , $data->event_end .' '.$data->event_endtime ) ) {
-			$warning = "<div class='updated'><p>".__('This event ends after the next occurrence begins. Events must end <strong>before</strong> the next occurrence begins.','my-calendar')."</p><p>".sprintf( __('Event end date: <strong>%s %s</strong>. Next occurrence starts: <strong>%s</strong>','my-calendar'), $data->event_end, $data->event_endtime, $check['occur_begin'] )."</p></div>";
-			echo $warning;
-		}		
+		if ( !( $data->event_recur == 'S' || $data->event_recur == 'S1' ) ) {
+			$check = mc_increment_event( $data->event_id, array(), 'test' );
+			if ( my_calendar_date_xcomp( $check['occur_begin'] , $data->event_end .' '.$data->event_endtime ) ) {
+				$warning = "<div class='updated'><p>".__('This event ends after the next occurrence begins. Events must end <strong>before</strong> the next occurrence begins.','my-calendar')."</p><p>".sprintf( __('Event end date: <strong>%s %s</strong>. Next occurrence starts: <strong>%s</strong>','my-calendar'), $data->event_end, $data->event_endtime, $check['occur_begin'] )."</p></div>";
+				echo $warning;
+			}
+		}
 	}
 	$instance = ( isset($_GET['date'] ) )?(int) $_GET['date']:false;
 	if ( $instance ) { $ins = mc_get_instance_data( $instance ); $event_id = $ins->occur_event_id; $data = mc_get_event_core( $event_id );}
@@ -1398,7 +1400,7 @@ function mc_check_data($action,$post, $i) {
 		// The title must be at least one character in length and no more than 255 - only basic punctuation is allowed
 		$title_length = strlen($title);
 		if ( $title_length > 1 && $title_length <= 255 ) {
-			$title_ok =1;
+			$title_ok = 1;
 		} else {
 			$errors .= "<div class='error'><p><strong>".__('Error','my-calendar').":</strong> ".__('The event title must be between 1 and 255 characters in length.','my-calendar')."</p></div>";
 		}
