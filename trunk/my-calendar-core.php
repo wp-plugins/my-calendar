@@ -1618,7 +1618,7 @@ function mc_delete_instances( $id ) {
 @param: an array of POST data (or array containing dates); an event ID;
 @return: nothing, unless testing.
 */
-function mc_increment_event( $id, $post=array(), $test='' ) {
+function mc_increment_event( $id, $post=array(), $test=false ) {
 	global $wpdb;
 	$event = mc_get_event_core( $id );
 	$data = array();
@@ -1648,7 +1648,7 @@ function mc_increment_event( $id, $post=array(), $test='' ) {
 						if ( ( $recur == 'E' && ( date('w',$begin ) != 0 && date('w',$begin ) != 6 ) ) || $recur == 'D' ) {
 							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
 							if ( $test == 'test' && $i > 0 ) return $data;
-							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+							if ( !$test ) {	$sql = $wpdb->insert( my_calendar_event_table(), $data, $format ); }
 						} else {
 							$numforward++;
 						}
@@ -1660,7 +1660,7 @@ function mc_increment_event( $id, $post=array(), $test='' ) {
 						$end = my_calendar_add_date($orig_end,($i*7)*$every,0,0);
 						$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
 						if ( $test == 'test' && $i > 0 ) return $data;						
-						$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+						if ( !$test ) {	$sql = $wpdb->insert( my_calendar_event_table(), $data, $format ); }
 					}
 					break;
 				case "B":
@@ -1669,7 +1669,7 @@ function mc_increment_event( $id, $post=array(), $test='' ) {
 						$end = my_calendar_add_date($orig_end,($i*14),0,0);							
 							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
 							if ( $test == 'test' && $i > 0 ) return $data;							
-							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+							if ( !$test ) {	$sql = $wpdb->insert( my_calendar_event_table(), $data, $format ); }
 					}
 					break;						
 				case "M":
@@ -1678,7 +1678,7 @@ function mc_increment_event( $id, $post=array(), $test='' ) {
 						$end = my_calendar_add_date($orig_end,0,$i*$every,0);
 							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
 							if ( $test == 'test' && $i > 0 ) return $data;							
-							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+							if ( !$test ) {	$sql = $wpdb->insert( my_calendar_event_table(), $data, $format ); }
 					}
 					break;				
 				case "U": //important to keep track of which date variables are strings and which are timestamps
@@ -1687,7 +1687,8 @@ function mc_increment_event( $id, $post=array(), $test='' ) {
 					$newend = my_calendar_add_date($orig_end,28,0,0);
 					$fifth_week = $event->event_fifth_week;
 					$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',strtotime($orig_begin)), 'occur_end'=>date('Y-m-d  H:i:s',strtotime($orig_end)), 'occur_group_id'=>$group_id );
-					$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+					if ( $test == 'test' ) return $data;							
+					if ( !$test ) {	$sql = $wpdb->insert( my_calendar_event_table(), $data, $format ); }
 					$numforward = $numforward - 1;
 					for ($i=0;$i<=$numforward;$i++) {
 						$next_week_diff = ( date('m',$newbegin) == date('m',my_calendar_add_date( date('Y-m-d',$newbegin),7,0,0) ) )?false:true;
@@ -1706,8 +1707,8 @@ function mc_increment_event( $id, $post=array(), $test='' ) {
 							}
 						}
 						$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$newbegin), 'occur_end'=>date('Y-m-d  H:i:s',$newend), 'occur_group_id'=>$group_id );
-						if ( $test == 'test' && $i > 0 ) return $data;						
-						$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+						if ( $test == 'test' && $i > 0 ) return $data;	
+						if ( !$test ) {	$sql = $wpdb->insert( my_calendar_event_table(), $data, $format ); }
 						$newbegin = my_calendar_add_date(date('Y-m-d  H:i:s',$newbegin),28,0,0);
 						$newend = my_calendar_add_date(date('Y-m-d  H:i:s',$newend),28,0,0);
 					}
@@ -1717,8 +1718,8 @@ function mc_increment_event( $id, $post=array(), $test='' ) {
 						$begin = my_calendar_add_date($orig_begin,0,0,$i*$every);
 						$end = my_calendar_add_date($orig_end,0,0,$i*$every);						
 							$data = array( 'occur_event_id'=>$id, 'occur_begin'=>date('Y-m-d  H:i:s',$begin), 'occur_end'=>date('Y-m-d  H:i:s',$end), 'occur_group_id'=>$group_id );
-							if ( $test == 'test' && $i > 0 ) return $data;							
-							$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
+							if ( $test == 'test' && $i > 0 ) return $data;
+							if ( !$test ) {	$sql = $wpdb->insert( my_calendar_event_table(), $data, $format ); }
 					}
 				break;
 			}

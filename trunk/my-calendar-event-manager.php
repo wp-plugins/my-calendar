@@ -1399,7 +1399,7 @@ function mc_check_data($action,$post, $i) {
 		}
 		// The title must be at least one character in length and no more than 255 - only basic punctuation is allowed
 		$title_length = strlen($title);
-		if ( $title_length > 1 && $title_length <= 255 ) {
+		if ( $title_length >= 1 && $title_length <= 255 ) {
 			$title_ok = 1;
 		} else {
 			$errors .= "<div class='error'><p><strong>".__('Error','my-calendar').":</strong> ".__('The event title must be between 1 and 255 characters in length.','my-calendar')."</p></div>";
