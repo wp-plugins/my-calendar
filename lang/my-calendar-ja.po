@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the My Calendar package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2013-05-16 17:51:40+0000\n"
+"PO-Revision-Date: 2013-05-25 22:13:17+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -266,7 +266,7 @@ msgstr "Googleカレンダーに書き込むリンクを表示"
 
 #: my-calendar-settings.php:603
 msgid "Process WordPress shortcodes in descriptions"
-msgstr "イベントの説明の中の WordPress ショートコードを有効にします。"
+msgstr "説明内でWordPressショートコードを有効にする"
 
 #: my-calendar-settings.php:620
 msgid "Event Display Options"
@@ -523,11 +523,11 @@ msgstr "RSSテンプレートを保存"
 
 #: my-calendar-widgets.php:75 my-calendar-widgets.php:187
 msgid "Widget title links to:"
-msgstr ""
+msgstr "ウィジェットタイトルのリンク先:"
 
 #: my-calendar-widgets.php:91 my-calendar-widgets.php:229
 msgid "Host or hosts to show:"
-msgstr ""
+msgstr "主催者名:"
 
 #: my-calendar-widgets.php:683
 msgid "Widget Title Link"
@@ -736,7 +736,7 @@ msgstr "イベントの詳細を表示する"
 
 #: my-calendar-settings.php:606
 msgid "Show link to single-event details (requires <a href='#mc_uri'>URL</a>)"
-msgstr "イベント詳細へのリンクを表示 (<a href='#mc_uri'>URL</a>が必要です)"
+msgstr "イベント詳細へのリンクを表示 (<a href='#mc_uri'>URL</a>)"
 
 #: my-calendar-settings.php:609
 msgid "Show external link"
@@ -2115,7 +2115,7 @@ msgstr "場所リンクの URL を出力"
 
 #: my-calendar-help.php:303
 msgid "Output a hyperlink to the location's listed link with default link text."
-msgstr ""
+msgstr "入力されている場所のURLへのハイパーリンクを出力します"
 
 #: my-calendar-help.php:306
 msgid "Displays the event address in <a href=\"http://microformats.org/wiki/hcard\">hcard</a> format."
@@ -2189,7 +2189,7 @@ msgstr "My Calendar のデフォルトタイムゾーン"
 
 #: my-calendar-install.php:294
 msgid "My Calendar Default Location"
-msgstr "My Calendar に登録されたデフォルトの場所"
+msgstr "My Calendar の既定の場所"
 
 #: my-calendar-locations.php:43
 msgid "Location added successfully"
@@ -2293,7 +2293,7 @@ msgstr "このイベントはシリーズの一つです。このイベントに
 
 #: my-calendar-output.php:296
 msgid "View full calendar"
-msgstr ""
+msgstr "カレンダーを表示"
 
 #: my-calendar-output.php:333
 msgid "Edit This Date"
@@ -2741,7 +2741,7 @@ msgstr "<code>[my_calendar]</code> ショートコードを含む投稿または
 
 #: my-calendar-settings.php:496
 msgid "Target <abbr title=\"Uniform resource locator\">URL</abbr> for single day's timeline links."
-msgstr ""
+msgstr "日単位タイムラインのリンク先<abbr title=\"Uniform resource locator\">URL</abbr>:"
 
 #: my-calendar-settings.php:497
 msgid "Can be any Page or Post with the <code>[my_calendar time=\"day\"]</code> shortcode."
@@ -2749,7 +2749,7 @@ msgstr "<code>[my_calendar time=\"day\"]</code> ショートコードを含む�
 
 #: my-calendar-settings.php:500
 msgid "Target <abbr title=\"Uniform resource locator\">URL</abbr> for mini calendar in-page anchors:"
-msgstr ""
+msgstr "ミニカレンダーのリンク先<abbr title=\"Uniform resource locator\">URL</abbr>:"
 
 #: my-calendar-settings.php:501
 msgid "Can be any Page or Post with the <code>[my_calendar]</code> shortcode using format selected below"
@@ -3082,7 +3082,7 @@ msgstr "場所の設定"
 
 #: my-calendar-settings.php:916
 msgid "These settings provide registered users with the ability to select a location in their user profile. When they view your calendar, their initial view will be limited to locations which include that location parameter. These values can also be used to generate custom location filtering options using the <code>my_calendar_locations</code> shortcode. It is not necessary to enable these settings for users to use the custom filtering options."
-msgstr ""
+msgstr "下記のオプションにより、登録ユーザーのプロフィール画面での場所の設定が可能になります。カレンダーを表示したときの初期状態では、プロフィール画面で設定した場所を含むイベントだけを表示するようになります。また、<code>my_calendar_locations</code>ショートコードで使用するカスタムフィルターオプションを生成します。ただし、カスタムフィルターオプションを使うために、これらの設定を有効にすることが必須というわけではありません。"
 
 #: my-calendar-settings.php:918
 msgid "Enable Location"
@@ -3359,7 +3359,7 @@ msgstr "表示するカテゴリー(複数選択可):"
 
 #: my-calendar-widgets.php:115
 msgid "My Calendar: Upcoming Events"
-msgstr "My Calendar: 登録済みのイベント"
+msgstr "My Calendar: 登録済のイベント"
 
 #: my-calendar-widgets.php:177
 msgid "Widget Options"

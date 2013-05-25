@@ -85,6 +85,11 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.2.5 =
+
+* Bug fix: better bug fix in 2.2.3 event duplication bug. 
+* Updated: Japanese translation.
+
 = 2.2.4 =
 
 * Bug fix: event duplication bug in 2.2.3
