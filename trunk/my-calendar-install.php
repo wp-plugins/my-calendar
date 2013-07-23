@@ -83,44 +83,44 @@ $rss_template = addslashes("\n<item>
   </item>\n");
 
 $initial_ajaxjs = "$(function(){
-	$('.calendar .my-calendar-nav a').on('click', function(e){
-		e.preventDefault();	
+	$(document).on('click', '.calendar .my-calendar-nav a', function(e){
+		e.preventDefault();
 		var link = $(this).attr('href');
-        var ref = $(this).attr('rel');	
-		$('.calendar').html('Loading...');
-		$('.calendar').load(link+' #'+ref+' > *', function() {
+		var ref = $(this).attr('rel');
+		$('#'+ref).html('<div class=\"loading\"><span>Loading...</span></div>');
+		$('#'+ref).load(link+' #'+ref+' > *', function() {
 			$('.calendar-event').children().not('h3').hide();
 		});
 	});	
-	$('.mini .my-calendar-nav a').on('click', function(e){
+	$(document).on('click', '.list .my-calendar-nav a', function(e){
 		e.preventDefault();
 		var link = $(this).attr('href');
-        var ref = $(this).attr('rel');	
-		$('.mini').html('Loading...');
-		$('.mini').load(link+' #'+ref+' > *', function() {
-			$('.mini .has-events').children().not('.trigger').hide();
-		});
-	});	
-	$('.list .my-calendar-nav a').on('click', function(e){
-		e.preventDefault();
-		var link = $(this).attr('href');
-        var ref = $(this).attr('rel');	
-		$('.list').html('Loading...');
-		$('.list').load(link+' #'+ref+' > *', function() {
+        var ref = $(this).attr('rel');
+		$('#'+ref).html('<div class=\"loading\"><span>Loading...</span></div>');
+		$('#'+ref).load(link+' #'+ref+' > *', function() {
 			$('li.mc-events').children().not('.event-date').hide();
 			$('li.current-day').children().show();
+		});
+	});
+	$(document).on('click', '.mini .my-calendar-nav a', function(e){
+		e.preventDefault();
+		var link = $(this).attr('href');
+        var ref = $(this).attr('rel');
+		$('#'+ref).html('<div class=\"loading\"><span>Loading...</span></div>');
+		$('#'+ref).load(link+' #'+ref+' > *', function() {
+			$('.mini .has-events').children().not('.trigger').hide();
 		});
 	});	
 });";
 // defaults will go into the options table on a new install
 $initial_caljs = '$(function() {
   $(".calendar-event").children().not(".event-title").hide();
-  $(".calendar-event .event-title").on("click",
+  $(document).on("click", ".calendar-event .event-title",
      function(e) {
          e.preventDefault(); // remove line if you are using a link in the event title
 	 $(this).parent().children().not(".event-title").toggle();
 	 });
-  $(".calendar-event .close").on("click",
+  $(document).on("click", ".calendar-event .close",
      function(e) {
          e.preventDefault();
 	 $(this).parent().toggle();
@@ -130,7 +130,7 @@ $initial_caljs = '$(function() {
 $initial_listjs = '$(function() {
   $("li.mc-events").children().not(".event-date").hide();
   $("li.current-day").children().show();
-  $(".event-date").on("click",
+  $(document).on("click", ".event-date",
      function(e) {
 	 e.preventDefault();
 	 $(this).parent().children().not(".event-date").toggle();
@@ -139,7 +139,7 @@ $initial_listjs = '$(function() {
 
 $initial_minijs = '$(function() {
   $(".mini .has-events").children().not(".trigger").hide();
-  $(".mini .has-events .trigger").on("click",
+  $(document).on("click", ".mini .has-events .trigger",
      function(e) {
 	 e.preventDefault();	 
 	 $(this).parent().children().not(".trigger").toggle(); 
@@ -417,7 +417,6 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option( 'mc_uri','' );	
 	add_option( 'mc_show_event_vcal','false' );
 	add_option( 'mc_draggable',0 );
-	add_option( 'mc_caching_enabled','false' );
 	add_option( 'mc_week_caption',"The week's events" );
 	add_option( 'mc_multisite_show', 0 );
 	add_option( 'mc_event_link', 'true' );

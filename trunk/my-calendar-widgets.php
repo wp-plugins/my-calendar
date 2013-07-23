@@ -296,7 +296,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 				$from = date( 'Y-1-1' );
 				$to = date( 'Y-12-31' );
 			}
-			$events = my_calendar_grab_events( $from, $to, $category,'','','upcoming',$author, $host );			
+			$events = my_calendar_grab_events( $from, $to, $category,'','','upcoming',$author, $host );
 			if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
 				$holidays = array();
 			} else {
@@ -356,7 +356,7 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 				set_transient( 'mc_cache_upcoming', $cache, 60*30 );			
 			}
 		} else {
-			$events = mc_get_all_events($category, $before, $after, $show_today, $author, $host);	 // grab all events within reasonable proximity
+			$events = mc_get_all_events($category, $before, $after, $show_today, $author, $host);	 // grab all events within reasonable proximity		
 		}
 		if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
 			$holidays = array();
@@ -740,6 +740,7 @@ function form($instance) {
 		$instance['my_calendar_mini_time'] = strip_tags($new_instance['my_calendar_mini_time']);	
 		$instance['my_calendar_mini_category'] = strip_tags($new_instance['my_calendar_mini_category']);
 		$instance['above'] = $new_instance['above'];
+		$instance['mc_link'] = $new_instance['mc_link'];
 		$instance['below'] = $new_instance['below'];
 		$instance['author'] = implode( ',', $new_instance['author'] );
 		$instance['host'] = implode( ',', $new_instance['host'] );

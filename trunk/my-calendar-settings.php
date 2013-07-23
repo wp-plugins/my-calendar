@@ -102,12 +102,9 @@ function edit_my_calendar_config() {
 		$clear = '';
 		$mc_event_approve = ( !empty($_POST['mc_event_approve']) && $_POST['mc_event_approve']=='on')?'true':'false';
 		$mc_remote = ( !empty($_POST['mc_remote']) && $_POST['mc_remote']=='on')?'true':'false';
-		$mc_caching_enabled = ( !empty($_POST['mc_caching_enabled']) && $_POST['mc_caching_enabled']=='on')?'true':'false';
-		if ( $mc_remote == 'true' ) { $mc_caching_enabled = 'false'; }
 		if ( isset($_POST['mc_clear_cache']) && $_POST['mc_clear_cache'] == 'clear' ) { mc_delete_cache(); $clear = __('My Calendar Cache cleared','my-calendar'); }
 		update_option('mc_event_approve',$mc_event_approve);
 		update_option('mc_remote',$mc_remote);
-		update_option('mc_caching_enabled',$mc_caching_enabled);
 		update_option('mc_default_sort',$_POST['mc_default_sort']);
 		
 		if ( get_site_option('mc_multisite') == 2 ) {
@@ -150,7 +147,6 @@ function edit_my_calendar_config() {
 		$mc_open_day_uri = ( !empty($_POST['mc_open_day_uri']) )?$_POST['mc_open_day_uri']:'';
 		update_option('mc_uri',$_POST['mc_uri'] );
 		update_option('mc_open_uri',( !empty($_POST['mc_open_uri']) && $_POST['mc_open_uri']=='on' && get_option('mc_uri') != '')?'true':'false');
-		update_option('mc_day_uri',$_POST['mc_day_uri'] );
 		update_option('mc_mini_uri',$_POST['mc_mini_uri'] );
 		update_option('mc_open_day_uri', $mc_open_day_uri );
 		update_option('mc_skip_holidays_category',(int) $_POST['mc_skip_holidays_category']);
@@ -212,7 +208,8 @@ function edit_my_calendar_config() {
 			'event_open'=>( !empty($_POST['mci_event_open']) && $_POST['mci_event_open'])?'on':'',
 			'event_location'=>( !empty($_POST['mci_event_location']) && $_POST['mci_event_location'])?'on':'',
 			'event_location_dropdown'=>( !empty($_POST['mci_event_location_dropdown']) && $_POST['mci_event_location_dropdown'])?'on':'',
-			'event_use_editor'=>( !empty($_POST['mci_event_use_editor']) && $_POST['mci_event_use_editor'])?'on':''
+			'event_use_editor'=>( !empty($_POST['mci_event_use_editor']) && $_POST['mci_event_use_editor'])?'on':'',
+			'event_specials'=>( !empty($_POST['mci_event_specials']) && $_POST['mci_event_specials'])?'on':''
 			);
 		update_option('mc_input_options',$mc_input_options);
 		update_option('mc_input_options_administrators',$mc_input_options_administrators);	
@@ -312,7 +309,6 @@ function edit_my_calendar_config() {
 	$mc_link_label = $templates['link'];
 	$mc_event_title_template = get_option('mc_event_title_template');
 	$mc_uri = get_option('mc_uri');
-	$mc_day_uri = get_option('mc_day_uri');
 	$mc_mini_uri = get_option('mc_mini_uri');
 ?> 
 
@@ -391,8 +387,9 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	</li>	
 	<?php } ?>
 	<li><input type="checkbox" id="mc_event_approve" name="mc_event_approve" <?php mc_is_checked('mc_event_approve','true'); ?> /> <label for="mc_event_approve"><?php _e('Enable approval options.','my-calendar'); ?></label>	</li>
-	<li><input type="checkbox" id="mc_caching_enabled" name="mc_caching_enabled"<?php echo ( get_option('mc_remote') == 'true' )?" disabled='disabled'":''; ?> <?php mc_is_checked('mc_caching_enabled','true'); ?> /> <label for="mc_caching_enabled"><?php _e('Enable caching.','my-calendar'); ?></label><?php echo ( get_option('mc_remote') == 'true' )?__('<em>Cannot use caching while accessing a remote database.</em>','my-calendar'):''; ?>	</li>
-	<?php if ( get_option('mc_caching_enabled') == 'true' ) { ?>
+	<?php
+	$caching = apply_filters( 'mc_caching_enabled', false, $category, $ltype, $lvalue, $author, $host ); 
+	if ( $caching ) { ?>
 	<li><input type="checkbox" id="mc_clear_cache" name="mc_clear_cache" value="clear" /> <label for="mc_clear_cache"><?php _e('Clear current cache. (Necessary if you edit shortcodes to change displayed categories, for example.)','my-calendar'); ?></label>
 	</li>	
 	<?php } ?>
@@ -497,10 +494,6 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<input type="text" name="mc_uri" id="mc_uri" size="60" value="<?php echo esc_url($mc_uri); ?>" /><br /><small><?php _e('Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar'); ?> <?php mc_guess_calendar(); ?></small>
 	</li>
 	<li>
-	<label for="mc_day_uri"><?php _e('Target <abbr title="Uniform resource locator">URL</abbr> for single day\'s timeline links.','my-calendar'); ?></label> 
-	<input type="text" name="mc_day_uri" id="mc_day_uri" size="60" value="<?php echo esc_url($mc_day_uri); ?>" /><br /><small><?php _e('Can be any Page or Post with the <code>[my_calendar time="day"]</code> shortcode.','my-calendar'); ?></small>
-	</li>
-		<li>
 	<label for="mc_mini_uri"><?php _e('Target <abbr title="Uniform resource locator">URL</abbr> for mini calendar in-page anchors:','my-calendar'); ?></label> 
 	<input type="text" name="mc_mini_uri" id="mc_mini_uri" size="60" value="<?php echo esc_url($mc_mini_uri); ?>" /><br /><small><?php _e('Can be any Page or Post with the <code>[my_calendar]</code> shortcode using format selected below','my-calendar'); ?></small>
 	</li>
@@ -509,7 +502,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<input type="checkbox" id="mc_open_uri" name="mc_open_uri"<?php if ( $mc_uri == '' ) { echo ' disabled="disabled"'; } ?> <?php mc_is_checked('mc_open_uri','true'); ?> /> <label for="mc_open_uri"><?php _e('Open calendar links to event details URL','my-calendar'); ?></label> <small><?php _e('Replaces pop-up in grid view.','my-calendar'); ?></small>
 	</li>
 	<li>
-	<label for="mc_open_day_uri"><?php _e('Mini calendar widget date links to:','my-calendar'); ?></label> <select id="mc_open_day_uri" name="mc_open_day_uri"<?php if ( !$mc_day_uri && !$mc_mini_uri ) { echo ' disabled="disabled"'; } ?>>
+	<label for="mc_open_day_uri"><?php _e('Mini calendar widget date links to:','my-calendar'); ?></label> <select id="mc_open_day_uri" name="mc_open_day_uri"<?php if ( !$mc_uri && !$mc_mini_uri ) { echo ' disabled="disabled"'; } ?>>
 	<option value='false'<?php echo jd_option_selected(get_option('mc_open_day_uri'),'false','option'); ?>><?php _e('jQuery pop-up view','my-calendar'); ?></option>	
 	<option value='true'<?php echo jd_option_selected(get_option('mc_open_day_uri'),'true','option'); ?>><?php _e('daily view page (above)','my-calendar'); ?></option>
 	<option value='listanchor'<?php echo jd_option_selected(get_option('mc_open_day_uri'),'listanchor','option'); ?>><?php _e('in-page anchor on main calendar page (list)','my-calendar'); ?></option>

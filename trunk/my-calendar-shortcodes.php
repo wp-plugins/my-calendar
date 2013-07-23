@@ -2,6 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function my_calendar_insert($atts,$content=null) {
+	$atts = apply_filters( 'mc_filter_calendar',$atts, $content );
 	extract(shortcode_atts(array(
 				'name' => 'all',
 				'format' => 'calendar',
@@ -25,8 +26,7 @@ function my_calendar_insert($atts,$content=null) {
 			$format = mysql_real_escape_string($_GET['format']);
 		}
 	}
-	//apply_filters( 'mc_filter_calendar_name',$all_styles,$styles );
-	return my_calendar($name,$format,$category,$showkey,$shownav,$showjump,$toggle,$time, $ltype, $lvalue, $id, $template,$content,$author,$host,$above,$below );
+	return my_calendar($name, $format, $category, $showkey, $shownav, $showjump, $toggle, $time, $ltype, $lvalue, $id, $template, $content, $author, $host, $above, $below );
 }
 
 function my_calendar_insert_upcoming($atts) {
@@ -97,5 +97,5 @@ function my_calendar_search($atts) {
 	extract(shortcode_atts(array(
 			'type' => 'simple'
 		), $atts));
-	return mc_calendar_search_form($type);
+	return my_calendar_searchform($type);
 }

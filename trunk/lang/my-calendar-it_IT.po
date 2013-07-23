@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the My Calendar package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2013-05-16 17:52:29+0000\n"
+"PO-Revision-Date: 2013-07-22 21:08:00+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -48,7 +48,7 @@ msgstr ""
 
 #: my-calendar-core.php:1169
 msgid "Event Notifications"
-msgstr ""
+msgstr "Notifiche Eventi"
 
 #: my-calendar-core.php:1537
 msgid "Days"
@@ -141,7 +141,7 @@ msgstr "Ogni %d anni"
 
 #: my-calendar-event-manager.php:1177 my-calendar-event-manager.php:1178
 msgid "&ndash; %d Times"
-msgstr ""
+msgstr "&ndash; %d volte"
 
 #: my-calendar-event-manager.php:1213
 msgid "There are no events in the database meeting your current criteria."
@@ -190,11 +190,11 @@ msgstr ""
 
 #: my-calendar-help.php:237
 msgid "Image associated with the event. (HTMl)"
-msgstr ""
+msgstr "Immagine associata all'evento. (HTML)"
 
 #: my-calendar-help.php:240
 msgid "Image associated with the event. (image URL only)"
-msgstr ""
+msgstr "Immagine associata all'evento. (solo URL dell'immagine)"
 
 #: my-calendar-help.php:261
 msgid "Provides a link to the defined event URL when present, otherwise the {details} link."
