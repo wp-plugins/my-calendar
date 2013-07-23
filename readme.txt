@@ -55,7 +55,7 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 = Translations =
 
 Available languages (in order of completeness):
-Japanese, Dutch, Spanish, Danish, Italian, Czech, Hindi, Turkish, French, Polish, German, Portuguese, Russian, Swedish, Romanian, Finnish, Slovenian, Basque, Persian
+French, Japanese, Dutch, Galician, Spanish, Italian, Danish, Czech, Hindi, Turkish, Finnish, Polish, German, Portuguese, Russian, Swedish, Romanian, Slovenian, Basque, Persian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check how complete a translation is.
 
@@ -84,6 +84,24 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.2.6 =
+
+* Bug fix: Link to single day events from mini calendar broken.
+* Bug fix: Return to calendar link from print view
+* Bug fix: some map links missing 'external' class.
+* Updated: couple missing i18n strings
+* Bug fix: widget title link could not be saved.
+* Bug fix: Changing the event time on individual occurrences of a recurring event showed wrong time in upcoming events list.
+* Bug fix: rewrite of AJAX scripting to clear bugs.
+* Bug fix: Event authors with "add" capability could not edit their own events or copy events from the admin.
+* Bug fix: Time frame toggles triggered beginning of month instead of current week/day if no params set.
+* Deprecated upgrade paths from versions prior to 1.5.0.
+* Eliminated single-day timeline URL settings field (no longer required.)
+* Added filter mc_modify_day_uri to allow above target URL to be customized.
+* Removed caching option; caching accessible only via filtering.
+* Updated: French, Italian, French, Slovenian
+* Added: Galician
 
 = 2.2.5 =
 

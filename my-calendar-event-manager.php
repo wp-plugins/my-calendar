@@ -1,142 +1,140 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-
 function manage_my_calendar() {
 check_my_calendar();
 	global $wpdb,$event_author;
 	$mcdb = $wpdb;
 
-if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'delete' ) {
-	    $sql = "SELECT event_title, event_author FROM " . my_calendar_table() . " WHERE event_id=" . (int) $_GET['event_id'];
-	   $result = $mcdb->get_results( $sql, ARRAY_A );
-	if ( mc_can_edit_event( $result[0]['event_author'] ) ) {
-		if ( isset( $_GET['date'] ) ) {
-			$event_instance = (int) $_GET['date'];
-			$sql = "SELECT occur_begin FROM " . my_calendar_event_table() . " WHERE occur_id=" . $event_instance;
-			$inst = $mcdb->get_var( $sql );
-			$instance_date = ' ('.date('Y-m-d',strtotime($inst) ).')';
-		} else {
-			$instance_date = '';
-		}
-	?>
-		<div class="error">
-		<form action="<?php echo admin_url('admin.php?page=my-calendar'); ?>" method="post">
-		<p><strong><?php _e('Delete Event','my-calendar'); ?>:</strong> <?php _e('Are you sure you want to delete this event?','my-calendar'); ?>		
-		<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />		
-		<input type="hidden" value="delete" name="event_action" />
-		<?php if ( !empty( $_GET['date'] ) ) { ?> 
-			<input type="hidden" name="event_instance" value="<?php echo (int) $_GET['date']; ?>" />
-		<?php } ?>
-		<?php if ( isset( $_GET['ref'] ) ) { ?>
-			<input type="hidden" name="ref" value="<?php echo esc_url($_GET['ref']); ?>" />		
-		<?php } ?>		
-		
-		<input type="hidden" value="<?php echo (int) $_GET['event_id']; ?>" name="event_id" />
-		<input type="submit" name="submit" class="button-secondary delete" value="<?php _e('Delete','my-calendar'); echo " &quot;".stripslashes( $result[0]['event_title'] )."&quot;$instance_date"; ?>" />
-		</form></p>
-		</div>
-<?php } else { ?>
-		<div class="error">
-		<p><strong><?php _e( 'You do not have permission to delete that event.','my-calendar' ); ?></strong></p>
-		</div>
-<?php }
-}
-
-// Approve and show an Event ...originally by Roland
-if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'approve' ) {
-	if ( current_user_can( 'mc_approve_events' ) ) {
-	    $sql = "UPDATE " . my_calendar_table() . " SET event_approved = 1 WHERE event_id=" . (int) $_GET['event_id'];
-		$result = $mcdb->get_results( $sql, ARRAY_A );
-		mc_delete_cache();
-	} else {
-	?>
-		<div class="error">
-		<p><strong><?php _e('You do not have permission to approve that event.','my-calendar'); ?></strong></p>
-		</div>
-	<?php
-	}
-}
-
-// Reject and hide an Event ...by Roland
-if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'reject' ) {
-	if ( current_user_can( 'mc_approve_events' ) ) {
-	    $sql = "UPDATE " . my_calendar_table() . " SET event_approved = 2 WHERE event_id=" . (int) $_GET['event_id'];
-		$result = $mcdb->get_results( $sql, ARRAY_A );
-		mc_delete_cache();
-	} else {
-	?>
-		<div class="error">
-		<p><strong><?php _e('You do not have permission to reject that event.','my-calendar'); ?></strong></p>
-		</div>
-	<?php
-	}
-}
-
-
-if ( !empty($_POST['mass_edit']) && isset($_POST['mass_delete']) ) {
-	$nonce=$_REQUEST['_wpnonce'];
-    if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
-	$events = $_POST['mass_edit'];
-	$sql = 'DELETE FROM ' . my_calendar_table() . ' WHERE event_id IN (';	
-	$i=0;
-	$deleted = array();
-	foreach ($events as $value) {
-		$value = (int) $value;
-		$ea = "SELECT event_author FROM " . my_calendar_table() . " WHERE event_id = $value";
-		$result = $mcdb->get_results( $ea, ARRAY_A );
-		$total = count($events);	
+	if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'delete' ) {
+			$sql = "SELECT event_title, event_author FROM " . my_calendar_table() . " WHERE event_id=" . (int) $_GET['event_id'];
+		   $result = $mcdb->get_results( $sql, ARRAY_A );
 		if ( mc_can_edit_event( $result[0]['event_author'] ) ) {
-			$delete_occurrences = "DELETE FROM ".my_calendar_event_table()." WHERE occur_event_id = $value";
-			$delete = $mcdb->query($delete_occurrences);
-			$sql .= mysql_real_escape_string($value).',';
-			$deleted[] = $value;
-			$i++;
+			if ( isset( $_GET['date'] ) ) {
+				$event_instance = (int) $_GET['date'];
+				$sql = "SELECT occur_begin FROM " . my_calendar_event_table() . " WHERE occur_id=" . $event_instance;
+				$inst = $mcdb->get_var( $sql );
+				$instance_date = ' ('.date('Y-m-d',strtotime($inst) ).')';
+			} else {
+				$instance_date = '';
+			}
+		?>
+			<div class="error">
+			<form action="<?php echo admin_url('admin.php?page=my-calendar'); ?>" method="post">
+			<p><strong><?php _e('Delete Event','my-calendar'); ?>:</strong> <?php _e('Are you sure you want to delete this event?','my-calendar'); ?>		
+			<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />		
+			<input type="hidden" value="delete" name="event_action" />
+			<?php if ( !empty( $_GET['date'] ) ) { ?> 
+				<input type="hidden" name="event_instance" value="<?php echo (int) $_GET['date']; ?>" />
+			<?php } ?>
+			<?php if ( isset( $_GET['ref'] ) ) { ?>
+				<input type="hidden" name="ref" value="<?php echo esc_url($_GET['ref']); ?>" />		
+			<?php } ?>		
+			
+			<input type="hidden" value="<?php echo (int) $_GET['event_id']; ?>" name="event_id" />
+			<input type="submit" name="submit" class="button-secondary delete" value="<?php _e('Delete','my-calendar'); echo " &quot;".stripslashes( $result[0]['event_title'] )."&quot;$instance_date"; ?>" />
+			</form></p>
+			</div><?php
+		} else { ?>
+			<div class="error">
+			<p><strong><?php _e( 'You do not have permission to delete that event.','my-calendar' ); ?></strong></p>
+			</div><?php
 		}
 	}
-	$sql = substr( $sql, 0, -1 );
-	$sql .= ')';
-	$result = $mcdb->query($sql);
-	if ( $result !== 0 && $result !== false ) {
-		mc_delete_cache();
-		// argument: array of event IDs
-		do_action( 'mc_mass_delete_events', $deleted );		
-		$message = "<div class='updated'><p>".sprintf(__('%1$d events deleted successfully out of %2$d selected','my-calendar'), $i, $total )."</p></div>";
-	} else {
-		$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Your events have not been deleted. Please investigate.','my-calendar')."</p></div>";
-	}
-	echo $message;
-}
 
-if ( !empty($_POST['mass_edit']) && isset($_POST['mass_approve']) ) {
-	$nonce=$_REQUEST['_wpnonce'];
-    if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
-	$events = $_POST['mass_edit'];
-	$sql = 'UPDATE ' . my_calendar_table() . ' SET event_approved = 1 WHERE event_id IN (';	
-	$i=0;
-	$approved = array();
-	foreach ($events as $value) {
-		$value = (int) $value;
-		$total = count($events);	
-		if ( current_user_can('mc_approve_events') ) {
-			$sql .= mysql_real_escape_string($value).',';
-			$approved[] = $value;
-			$i++;
+	// Approve and show an Event ...originally by Roland
+	if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'approve' ) {
+		if ( current_user_can( 'mc_approve_events' ) ) {
+			$sql = "UPDATE " . my_calendar_table() . " SET event_approved = 1 WHERE event_id=" . (int) $_GET['event_id'];
+			$result = $mcdb->get_results( $sql, ARRAY_A );
+			mc_delete_cache();
+		} else {
+		?>
+			<div class="error">
+			<p><strong><?php _e('You do not have permission to approve that event.','my-calendar'); ?></strong></p>
+			</div>
+		<?php
 		}
 	}
-	$sql = substr( $sql, 0, -1 );
-	$sql .= ')';
-	$result = $mcdb->query($sql);
-	if ( $result !== 0 && $result !== false ) {
-		mc_delete_cache();
-		// argument: array of event IDs
-		do_action( 'mc_mass_approve_events', $approved );		
-		$message = "<div class='updated'><p>".sprintf(__('%1$d events approved successfully out of %2$d selected','my-calendar'), $i, $total )."</p></div>";
-	} else {
-		$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Your events have not been approved. Please investigate.','my-calendar')."</p></div>";
+
+	// Reject and hide an Event ...by Roland
+	if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'reject' ) {
+		if ( current_user_can( 'mc_approve_events' ) ) {
+			$sql = "UPDATE " . my_calendar_table() . " SET event_approved = 2 WHERE event_id=" . (int) $_GET['event_id'];
+			$result = $mcdb->get_results( $sql, ARRAY_A );
+			mc_delete_cache();
+		} else {
+		?>
+			<div class="error">
+			<p><strong><?php _e('You do not have permission to reject that event.','my-calendar'); ?></strong></p>
+			</div>
+		<?php
+		}
 	}
-	echo $message;
-}
+
+	if ( !empty($_POST['mass_edit']) && isset($_POST['mass_delete']) ) {
+		$nonce=$_REQUEST['_wpnonce'];
+		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
+		$events = $_POST['mass_edit'];
+		$sql = 'DELETE FROM ' . my_calendar_table() . ' WHERE event_id IN (';	
+		$i=0;
+		$deleted = array();
+		foreach ($events as $value) {
+			$value = (int) $value;
+			$ea = "SELECT event_author FROM " . my_calendar_table() . " WHERE event_id = $value";
+			$result = $mcdb->get_results( $ea, ARRAY_A );
+			$total = count($events);	
+			if ( mc_can_edit_event( $result[0]['event_author'] ) ) {
+				$delete_occurrences = "DELETE FROM ".my_calendar_event_table()." WHERE occur_event_id = $value";
+				$delete = $mcdb->query($delete_occurrences);
+				$sql .= mysql_real_escape_string($value).',';
+				$deleted[] = $value;
+				$i++;
+			}
+		}
+		$sql = substr( $sql, 0, -1 );
+		$sql .= ')';
+		$result = $mcdb->query($sql);
+		if ( $result !== 0 && $result !== false ) {
+			mc_delete_cache();
+			// argument: array of event IDs
+			do_action( 'mc_mass_delete_events', $deleted );		
+			$message = "<div class='updated'><p>".sprintf(__('%1$d events deleted successfully out of %2$d selected','my-calendar'), $i, $total )."</p></div>";
+		} else {
+			$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Your events have not been deleted. Please investigate.','my-calendar')."</p></div>";
+		}
+		echo $message;
+	}
+
+	if ( !empty($_POST['mass_edit']) && isset($_POST['mass_approve']) ) {
+		$nonce=$_REQUEST['_wpnonce'];
+		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
+		$events = $_POST['mass_edit'];
+		$sql = 'UPDATE ' . my_calendar_table() . ' SET event_approved = 1 WHERE event_id IN (';	
+		$i=0;
+		$approved = array();
+		foreach ($events as $value) {
+			$value = (int) $value;
+			$total = count($events);	
+			if ( current_user_can('mc_approve_events') ) {
+				$sql .= mysql_real_escape_string($value).',';
+				$approved[] = $value;
+				$i++;
+			}
+		}
+		$sql = substr( $sql, 0, -1 );
+		$sql .= ')';
+		$result = $mcdb->query($sql);
+		if ( $result !== 0 && $result !== false ) {
+			mc_delete_cache();
+			// argument: array of event IDs
+			do_action( 'mc_mass_approve_events', $approved );		
+			$message = "<div class='updated'><p>".sprintf(__('%1$d events approved successfully out of %2$d selected','my-calendar'), $i, $total )."</p></div>";
+		} else {
+			$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Your events have not been approved. Please investigate.','my-calendar')."</p></div>";
+		}
+		echo $message;
+	}
 ?>
 <div class='wrap jd-my-calendar'>
 <div id="icon-edit" class="icon32"></div>
@@ -240,9 +238,7 @@ if ( get_site_option('mc_multisite') == 2 ) {
 	}
 	echo "<div class='message updated'><p>$message</p></div>";
 } ?>
-	<?php
-	if ( $action == 'edit' || ($action == 'edit' && $error_with_saving == 1) ) {
-		?>
+	<?php if ( $action == 'edit' || ($action == 'edit' && $error_with_saving == 1) ) { ?>
 <div id="icon-edit" class="icon32"></div>		
 		<h2><?php _e('Edit Event','my-calendar'); ?></h2>
 		<?php
@@ -345,7 +341,7 @@ function my_calendar_save( $action,$output,$event_id=false ) {
 							$formats
 							);
 					$new_event = $mcdb->insert_id; // need to get this variable into URL for form submit
-					$result = mc_update_instance( $event_instance, $new_event );
+					$result = mc_update_instance( $event_instance, $new_event, $update );
 					mc_delete_cache();
 				} else {
 					if ( $update['event_begin'][0] == $_POST['prev_event_begin'] && $update['event_end'][0] == $_POST['prev_event_end'] ) {
@@ -1232,13 +1228,9 @@ function mc_check_data($action,$post, $i) {
 	$proceed = true;
 	$submit=array();
 
-	if ( get_magic_quotes_gpc() ) {
-		$post = array_map( 'stripslashes_deep', $post );
-	}
+	if ( get_magic_quotes_gpc() ) { $post = array_map( 'stripslashes_deep', $post ); }
 
-	if (!wp_verify_nonce($post['event_nonce_name'],'event_nonce')) {
-		return;
-	}
+	if (!wp_verify_nonce($post['event_nonce_name'],'event_nonce')) { return; }
 
 	$errors = "";
 	if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
@@ -1273,6 +1265,7 @@ function mc_check_data($action,$post, $i) {
 			$begin = !empty($post['event_begin'][$i]) ? trim($post['event_begin'][$i]) : '';
 			$end = !empty($post['event_end'][$i]) ? trim($post['event_end'][$i]) : $begin;
 		}
+		
 		$begin = date( 'Y-m-d',strtotime($begin) );// regardless of entry format, convert.
 		$end = date( 'Y-m-d',strtotime($end) );// regardless of entry format, convert.
 		$time = !empty($post['event_time'][$i]) ? trim($post['event_time'][$i]) : '';
@@ -1551,18 +1544,19 @@ function mc_compare( $update, $id ) {
 }
 // args: instance ID, event ID, array containing updated dates.
 function mc_update_instance( $event_instance, $event_id, $update=array() ) {
-global $wpdb;
-$mcdb = $wpdb;
-if ( !empty($update) ) {
-	$formats = array( '%d','%s','%s','%d' );
-	$begin = ( !empty($update) )?$update['event_begin'].' '.$update['event_time']:$event->occur_begin;
-	$end = ( !empty($update) )?$update['event_end'].' '.$update['event_endtime']:$event->occur_end;
-	$data = array( 'occur_event_id'=>$event_id, 'occur_begin'=>$begin,'occur_end'=>$end,'occur_group_id'=>$update['event_group_id'] );
-} else {
-	$formats = array( '%d','%d' );
-	$group_id = mc_get_data( 'event_group_id', $event_id );
-	$data = array( 'occur_event_id'=>$event_id,'occur_group_id'=>$group_id );
-}
+	global $wpdb;
+	$mcdb = $wpdb;
+	if ( !empty($update) ) {
+		$formats = array( '%d','%s','%s','%d' );
+		$begin = ( !empty($update) )?$update['event_begin'].' '.$update['event_time']:$event->occur_begin;
+		$end = ( !empty($update) )?$update['event_end'].' '.$update['event_endtime']:$event->occur_end;
+		$data = array( 'occur_event_id'=>$event_id, 'occur_begin'=>$begin,'occur_end'=>$end,'occur_group_id'=>$update['event_group_id'] );
+	} else {
+		$formats = array( '%d','%d' );
+		$group_id = mc_get_data( 'event_group_id', $event_id );
+		$data = array( 'occur_event_id'=>$event_id,'occur_group_id'=>$group_id );
+	}
+	
 	$result = $mcdb->update( 
 		my_calendar_event_table(),
 		$data,

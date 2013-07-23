@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the My Calendar package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2013-05-25 22:13:17+0000\n"
+"PO-Revision-Date: 2013-07-22 21:07:31+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -266,7 +266,7 @@ msgstr "Googleカレンダーに書き込むリンクを表示"
 
 #: my-calendar-settings.php:603
 msgid "Process WordPress shortcodes in descriptions"
-msgstr "説明内でWordPressショートコードを有効にする"
+msgstr "説明欄でショートコードを有効にする"
 
 #: my-calendar-settings.php:620
 msgid "Event Display Options"
@@ -466,11 +466,11 @@ msgstr "カレンダーのリンク先"
 
 #: my-calendar-settings.php:503
 msgid "Modify date and event link behaviors:"
-msgstr "日付・イベントのリンクをクリックしたときの動作の変更："
+msgstr "日付・イベントのリンクをクリックしたときの動作の変更:"
 
 #: my-calendar-settings.php:516
 msgid "Show links to alternate formats:"
-msgstr "他のフォーマットへのリンクを表示："
+msgstr "他のフォーマットへのリンクを表示:"
 
 #: my-calendar-settings.php:634
 msgid "Event Scheduling Defaults"
@@ -2181,7 +2181,7 @@ msgstr "<strong>プラグインのアンインストール</strong>： WordPress
 
 #: my-calendar-help.php:366
 msgid "<strong>Donations</strong>: I appreciate anything you can give. $2 may not seem like much, but it can really add up when thousands of people are using the software. Please note that I am not a non-profit organization, and your gifts are not tax deductible. Thank you!"
-msgstr "<strong>寄付</strong>: 少額でも結構です。$2 は少なく思えるかもしれませんが、たくさんの人たちがソフトウェアを利用してくれれば大きな額になります。ただし、私は非営利団体の所属ではありませんので、寄付しても節税対策にはなりません。"
+msgstr "<strong>寄付</strong>: 少額でも結構です。$2 は少なく思えるかもしれませんが、たくさんの人たちがソフトウェアを利用してくれれば意味があります。ただし、私は非営利団体ではありませんので、寄付しても節税にはなりません。"
 
 #: my-calendar-install.php:249
 msgid "My Calendar Default Timezone"

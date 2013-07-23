@@ -492,9 +492,6 @@ function check_my_calendar() {
 	} else {	
 		// for each release requiring an upgrade path, add a version compare. 
 		// Loop will run every relevant upgrade cycle.
-		if ( version_compare( $current_version, "1.4.0", "<" ) ) {	$upgrade_path[] = "1.4.0"; } 
-		if ( version_compare( $current_version, "1.4.7", "<" ) ) {	$upgrade_path[] = "1.4.7"; } 
-		if ( version_compare( $current_version, "1.4.8", "<" ) ) {	$upgrade_path[] = "1.4.8"; } 
 		if ( version_compare( $current_version, "1.5.0", "<" ) ) {	$upgrade_path[] = "1.5.0"; } 
 		if ( version_compare( $current_version, "1.6.0", "<" ) ) {	$upgrade_path[] = "1.6.0"; } 
 		if ( version_compare( $current_version, "1.6.2", "<" ) ) {	$upgrade_path[] = "1.6.2"; } 
@@ -513,6 +510,7 @@ function check_my_calendar() {
 		if ( version_compare( $current_version, "2.0.4", "<" ) ) { $upgrade_path[] = "2.0.4"; }	
 		if ( version_compare( $current_version, "2.1.0", "<" ) ) { $upgrade_path[] = "2.1.0"; }	
 		if ( version_compare( $current_version, "2.2.0", "<" ) ) { $upgrade_path[] = "2.2.0"; }	
+		if ( version_compare( $current_version, "2.2.6", "<" ) ) { $upgrade_path[] = "2.2.6"; }			
 	}
 	// having determined upgrade path, assign new version number
 	update_option( 'mc_version' , $mc_version );
@@ -530,6 +528,9 @@ function check_my_calendar() {
 	foreach ($upgrade_path as $upgrade) {
 		switch ($upgrade) {
 		// only upgrade db on most recent version
+			case '2.2.6':
+				delete_option( 'mc_caching_enabled' ); // remove caching support via options. Filter only.
+				break;
 			case '2.2.0':
 				add_option('mc_inverse_color','true');
 				mc_upgrade_db();
@@ -570,7 +571,6 @@ function check_my_calendar() {
 				update_option( 'mc_multisite_show', 0 );
 				break;
 			case '1.10.0':
-				update_option( 'mc_caching_enabled','true' );
 				update_option( 'mc_week_caption',"The week's events" );
 				update_option( 'mc_show_print','false' );
 				break;
@@ -863,24 +863,6 @@ function check_my_calendar() {
 				add_option('mc_event_approve','false');		
 				add_option('mc_event_approve_perms','manage_options');
 				add_option('mc_no_fifth_week','true');				
-			break;
-			case '1.4.8':
-				add_option('mc_input_options',array('event_short'=>'on','event_desc'=>'on','event_category'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'on','event_location'=>'on','event_location_dropdown'=>'on','event_use_editor'=>'off','event_specials'=>'on') );	
-				add_option('mc_input_options_administrators','false');
-			break;
-			case '1.4.7':
-				add_option( 'mc_event_open', 'Registration is open' );
-				add_option( 'mc_event_closed', 'Registration is closed' );
-				add_option( 'mc_event_registration', 'false' );
-				add_option( 'mc_short', 'false' );
-				add_option( 'mc_desc', 'true' );
-			break;
-			case '1.4.0':
-			// change tables					
-				add_option( 'mc_event_link_expires','false' );
-				add_option( 'mc_apply_color','background' );
-				add_option( 'mc_minijs', $initial_minijs);
-				add_option( 'mc_mini_javascript', 0);
 			break;
 			default:
 			break;
@@ -1568,8 +1550,8 @@ function _mc_increment_values( $recur ) {
 }
 
 /*
-@param event_id, number of repetitions
-@return true/false
+* @param event_id, number of repetitions
+* @return true/false
 */
 function mc_change_instances( $id, $repeats, $begin=false ) {
 	global $wpdb;
@@ -1732,9 +1714,9 @@ function mc_increment_event( $id, $post=array(), $test=false ) {
 			'occur_begin'=>date('Y-m-d H:i:s',$begin), 
 			'occur_end'=>date('Y-m-d H:i:s',$end), 
 			'occur_group_id'=>$group_id );	
-			
-		$occurs = $wpdb->get_results("SELECT * FROM ".my_calendar_event_table()." WHERE occur_event_id = $id ORDER BY occur_begin DESC");
-        if ( count($occurs) == 0 ) {
+		// Logic shift -- should not have any need to verify occurrences.
+		//$occurs = $wpdb->get_results("SELECT * FROM ".my_calendar_event_table()." WHERE occur_event_id = $id ORDER BY occur_begin DESC");
+        if ( !$test ) {
 			$sql = $wpdb->insert( my_calendar_event_table(), $data, $format );
 		}
 	}
@@ -1886,4 +1868,7 @@ mc_search_template
 mc_event_mail_to
 	- base value: stored "to" email address from options
 	- arguments: event template tag array
+	
+apply_filters( 'mc_display_format', $format, $args )
+
 */

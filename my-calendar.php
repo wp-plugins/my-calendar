@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 2.2.5
+Version: 2.2.6
 */
 /*  Copyright 2009-2013  Joe Dolson (email : joe@joedolson.com)
 
@@ -26,7 +26,7 @@ Version: 2.2.5
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 global $mc_version, $wpdb;
-$mc_version = '2.2.5';
+$mc_version = '2.2.6';
 
 // Define the tables used in My Calendar
 if ( function_exists('is_multisite') && is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
@@ -362,7 +362,7 @@ function my_calendar_menu() {
 		} else { // if we're accessing a remote page, remove these pages.
 			$edit = add_submenu_page('my-calendar', __('Add New Event','my-calendar'), __('Add New Event','my-calendar'), 'mc_add_events', 'my-calendar', 'edit_my_calendar');
 				add_action( "load-$edit", 'mc_event_editing' );	
-			$manage = add_submenu_page('my-calendar', __('Manage Events','my-calendar'), __('Manage Events','my-calendar'), 'mc_manage_events', 'my-calendar-manage', 'manage_my_calendar');		
+			$manage = add_submenu_page('my-calendar', __('Manage Events','my-calendar'), __('Manage Events','my-calendar'), 'mc_add_events', 'my-calendar-manage', 'manage_my_calendar');		
 				add_action( "load-$manage", 'mc_add_screen_option' );
 			add_submenu_page('my-calendar', __('Manage Categories','my-calendar'), __('Manage Categories','my-calendar'), 'mc_edit_cats', 'my-calendar-categories', 'my_calendar_manage_categories');
 			add_submenu_page('my-calendar', __('Manage Locations','my-calendar'), __('Manage Locations','my-calendar'), 'mc_edit_locations', 'my-calendar-locations', 'my_calendar_manage_locations');		

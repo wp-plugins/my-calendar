@@ -151,7 +151,7 @@ function my_calendar_grab_events($from, $to,$category=null,$ltype='',$lvalue='',
 	if ( $clhost == '' ) { $clhost = 'all'; }
 
 	if ( !mc_checkdate($from) || !mc_checkdate($to) ) { return; } // not valid dates
-	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
+	$caching = apply_filters( 'mc_caching_enabled', false, $category, $ltype, $lvalue, $author, $host ); 
 	$hash = md5($from.$to.$ccategory.$cltype.$clvalue.$clauth.$clhost);
 	if ( $source != 'upcoming' ) { // no caching on upcoming events by days widgets or lists
 		if ( $caching ) {
@@ -194,7 +194,7 @@ function my_calendar_grab_events($from, $to,$category=null,$ltype='',$lvalue='',
 			}
      	}
 	if ( $source != 'upcoming' && $caching ) { 
-		$new_cache = mc_create_cache( $arr_events, $hash );
+		$new_cache = mc_create_cache( $arr_events, $hash, $category, $ltype, $lvalue, $author, $host  );
 		if ( $new_cache ) {
 			$output = mc_check_cache( $ccategory, $cltype, $clvalue, $clauth, $clhost, $hash );
 			return $output; 
@@ -208,9 +208,9 @@ function my_calendar_grab_events($from, $to,$category=null,$ltype='',$lvalue='',
 }
 
 function mc_check_cache( $category, $ltype, $lvalue, $auth, $host, $hash) {
-	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
+	$caching = apply_filters( 'mc_caching_enabled', false, $category, $ltype, $lvalue, $author, $host ); 
 	if ( $caching == true ) {
-		$cache = get_transient("mc_cache");
+		$cache = mc_get_cache("mc_cache");
 		if ( isset( $cache[$hash] ) ) {
 			$value = $cache[$hash];
 		} else {
@@ -280,18 +280,18 @@ global $wpdb;
 	}
 }
 
-function mc_create_cache($arr_events, $hash ) {
-	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
+function mc_create_cache($arr_events, $hash, $category, $ltype, $lvalue, $author, $host  ) {
+	$caching = apply_filters( 'mc_caching_enabled', false, $category, $ltype, $lvalue, $author, $host ); 
 	if ( $arr_events == false ) { $arr_events = 'empty'; }
 	if ( $caching == true ) {
 		$before = memory_get_usage();
-		$ret = get_transient("mc_cache");
+		$ret = mc_get_cache("mc_cache");
 		$after = memory_get_usage();
 		$mem_limit = mc_allocated_memory( $before, $after );
 		if ( $mem_limit ) { return false; } // if cache is maxed, don't add additional references. Cache expires every two days.
-		$cache = get_transient("mc_cache");		
+		$cache = mc_get_cache("mc_cache");		
 		$cache[$hash] = $arr_events;
-		set_transient( "mc_cache",$cache, 60*60*48 );
+		mc_set_cache( "mc_cache",$cache, 60*60*48 );
 		return true;
 	}
 	return false;
@@ -306,7 +306,46 @@ function mc_allocated_memory($before, $after) {
 }
 
 function mc_delete_cache() {
-	delete_transient( 'mc_cache' );
+	mc_remove_cache( 'mc_cache' );
 	delete_transient( 'mc_todays_cache' );
 	delete_transient( 'mc_cache_upcoming' );
 }
+
+function mc_get_cache( $cache ) {
+	return get_transient( $cache );
+}
+function mc_set_cache( $cache, $time ) {
+	set_transient( 'mc_cache', $cache, $time );
+}
+function mc_remove_cache( $cache ) {
+	delete_transient( $cache );
+}
+
+/* Implement for 2.3.
+// Notes: switch to file-based caching. 
+// $cache will need to become the data array/object, not the cache name
+mc_get_cache( $cache ) {
+	$file = plugin_dir_path(__FILE__).'.mc_cache';
+    if (is_file($file)) {
+      $cache = file_get_contents($file);
+      $cache = maybe_unserialize($cache,true);
+      
+      if (!isset($cache)) {
+        unlink($file);
+        return false;
+      }
+	}
+}
+mc_set_cache( $cache ) {
+	$file = plugin_dir_path(__FILE__).'.mc_cache';
+	if (!isset($cache)) {
+		unset( $cache );
+		file_put_contents($file, serialize( $cache ) );
+		return false;
+	}
+}
+mc_remove_cache( $cache ) {
+	$file = plugin_dir_path(__FILE__).'.mc_cache';
+	unlink($file);
+}
+*/

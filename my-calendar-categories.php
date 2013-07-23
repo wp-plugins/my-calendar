@@ -298,7 +298,7 @@ function mc_manage_categories() {
 		<td><?php echo stripslashes( esc_attr( $category->category_name ) ); ?></td>
 		<td style="background-color:<?php echo (strpos($category->category_color,'#') !== 0)?'#':''; echo $category->category_color; ?>;">&nbsp;</td>
 	    <td style="background-color:<?php echo (strpos($category->category_color,'#') !== 0)?'#':''; echo $category->category_color; ?>;"><img src="<?php echo str_replace('my-calendar/','',$wp_plugin_url). $path; ?>/<?php echo stripslashes( esc_attr( $category->category_icon ) ); ?>" alt="" /></td>		 
-		<td><?php echo ( $category->category_private == 1 )?'Yes':'No'; ?></td>
+		<td><?php echo ( $category->category_private == 1 )?__('Yes','my-calendar'):__('No','my-calendar'); ?></td>
 		<td><a href="<?php echo admin_url("admin.php?page=my-calendar-categories&amp;mode=edit&amp;category_id=$category->category_id"); ?>" class='edit'><?php _e('Edit','my-calendar'); ?></a></td>
 	     <?php
 		       if ($category->category_id == 1) {

@@ -123,7 +123,7 @@ function mc_hcard( $event, $address='true', $map='true', $source='event' ) {
 		$hcard .= "</div>";
 	}
 	if ( $map == 'true' ) {
-		$the_map = "<a href='$the_map'>$event_label</a>";
+		$the_map = "<a href='$the_map' class='external'>$event_label</a>";
 		$hcard .= ($the_map!='')?"<div class='url map'>$the_map</div>":'';
 	}
 	$hcard .= ($event_url!='')?$sitelink_html:'';
@@ -218,7 +218,11 @@ function event_as_array($event,$type='html') {
 	$details['ical'] = $ical_link;
 		$date_arr = array('occur_begin'=>$event->occur_begin,'occur_end'=>$event->occur_end );
 		$date_obj = (object) $date_arr;
-	$dates = mc_event_date_span( $event->event_group_id, $event->event_span, array( 0=>$date_obj ) );
+	if ( $event->event_span == 1 ) {
+		$dates = mc_event_date_span( $event->event_group_id, $event->event_span, array( 0=>$date_obj ) );
+	} else {
+		$dates = array();
+	}
 	$details['ical_html'] = "<a class='ical' rel='nofollow' href='$ical_link'>".__('iCal','my-calendar')."</a>";
 	$details['dtstart'] = date( 'Y-m-d\TH:i:s', strtotime( $event->occur_begin ) );// hcal formatted
 	$details['dtend'] = date( 'Y-m-d\TH:i:s', strtotime($event->occur_end ) );	//hcal formatted end
@@ -306,15 +310,14 @@ function event_as_array($event,$type='html') {
 		$description = $ical_description;
 	$details['gcal'] = mc_google_cal( $dtstart, $dtend, $url, $title, $location, $description );
 	$details['gcal_link'] = "<a href='".mc_google_cal( $dtstart, $dtend, $url, $title, $location, $description )."'>".sprintf( __('<span class="screenreader">Send %1$s to </span>Google Calendar','my-calendar'), $title )."</a>";
-	
 	$details = apply_filters( 'mc_filter_shortcodes',$details,$event );
 	return $details;
 }
 
 function mc_event_date_span( $group_id, $event_span, $dates=array() ) {
-global $wpdb;
+	global $wpdb;
 	$mcdb = $wpdb;
-  if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$group_id = (int) $group_id;
 	if ( $group_id == 0 && $event_span != 1 ) {
 		return $dates;
