@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 2.2.6
+Version: 2.2.7
 */
 /*  Copyright 2009-2013  Joe Dolson (email : joe@joedolson.com)
 
@@ -26,7 +26,7 @@ Version: 2.2.6
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 global $mc_version, $wpdb;
-$mc_version = '2.2.6';
+$mc_version = '2.2.7';
 
 // Define the tables used in My Calendar
 if ( function_exists('is_multisite') && is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
