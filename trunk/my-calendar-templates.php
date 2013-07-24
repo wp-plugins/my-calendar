@@ -69,7 +69,7 @@ function mc_maplink( $event, $request='map', $source='event' ) {
 			$connector = '';
 		}	
 	}
-	if ( strlen( trim( $map_string ) ) > 5 ) {
+	if ( strlen( trim( $map_string ) ) > 6 ) {
 		$map_url = "http://maps.google.com/maps?z=$zoom&amp;daddr=$map_string";
 		if ( $request == 'url' || $source == 'location' ) { return $map_url; }
 		$map_label = stripslashes( ( $event->event_label != "" )?$event->event_label:$event->event_title );

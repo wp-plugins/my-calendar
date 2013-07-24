@@ -85,6 +85,10 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.2.7 =
+
+* Bug fix: map links could render links with no data. 
+
 = 2.2.6 =
 
 * Bug fix: Link to single day events from mini calendar broken.
