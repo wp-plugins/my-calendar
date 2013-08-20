@@ -16,6 +16,12 @@ if ( $p ) {
 	$to = "$y-$m-$d";
 }
 
+$from = apply_filters( 'mc_ical_download_from', $from, $p );
+$to = apply_filters( 'mc_ical_download_to', $to, $p );
+$atts = array( 'category'=>null, 'ltype'=>'', 'lvalue'=>'', 'source'=>'calendar', 'author'=>null, 'host'=> null );
+$atts = apply_filters( 'mc_ical_attributes', $atts );
+extract( $atts );
+
 global $mc_version;
 // establish template
 	$template = "BEGIN:VEVENT
@@ -36,7 +42,7 @@ VERSION:2.0
 METHOD:PUBLISH
 PRODID:-//Accessible Web Design//My Calendar//http://www.mywpcal.com//v'.$mc_version.'//EN';
 
-	$events = my_calendar_grab_events( $from, $to );
+	$events = my_calendar_grab_events( $from, $to, $category, $ltype, $lvalue, $source, $author, $host );
 	if ( is_array($events) && !empty($events) ) {
 		foreach ( array_keys($events) as $key) {
 			$event =& $events[$key];

@@ -21,7 +21,6 @@ function edit_my_calendar_behaviors() {
 	  update_option('mc_list_javascript', ( empty($_POST['list_javascript']) )?0:1 );
 	  update_option('mc_mini_javascript', ( empty($_POST['mini_javascript']) )?0:1 );
 	  update_option('mc_ajax_javascript', ( empty($_POST['ajax_javascript']) )?0:1 );
-	  update_option('mc_draggable', ( empty($_POST['mc_draggable']) )?0:1 );
 	  // set js
 	  update_option('mc_listjs',$mc_listjs);
 	  update_option('mc_minijs',$mc_minijs);
@@ -59,7 +58,6 @@ function edit_my_calendar_behaviors() {
 	$ajax_javascript = get_option('mc_ajax_javascript'); 
 	
 	$mc_show_js = stripcslashes(get_option('mc_show_js'));
-	$mc_draggable = get_option('mc_draggable');
 
   // Now we render the form
   ?>
@@ -81,9 +79,6 @@ my_calendar_check_db();
 	<p>
 	<label for="mc_show_js"><?php _e('Insert scripts on these pages (comma separated post IDs)','my-calendar'); ?></label> <input type="text" id="mc_show_js" name="mc_show_js" value="<?php echo $mc_show_js; ?>" />
 	</p>  
-	<p>
-	<input type="checkbox" id="mc_draggable" name="mc_draggable" value="1" <?php mc_is_checked('mc_draggable',1); ?> /> <label for="mc_draggable"><?php _e('Details boxes are draggable','my-calendar'); ?></label>
-	</p>
 	<fieldset>
 	<legend><?php _e('Calendar Behaviors: Calendar View','my-calendar'); ?></legend>
 	<p>

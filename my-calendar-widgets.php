@@ -8,93 +8,87 @@ class my_calendar_simple_search extends WP_Widget {
 	function widget($args,$instance) {
 		echo my_calendar_searchform('simple');
 	}
-	function form() {
+	function form( $instance ) {
 	}
-	function update() {
+	function update( $new_instance, $old_instance ) {
 	}
 }
 
 class my_calendar_today_widget extends WP_Widget {
 
-function my_calendar_today_widget() {
-	parent::WP_Widget( false,$name=__('My Calendar: Today\'s Events','my-calendar') );
-}
+	function my_calendar_today_widget() {
+		parent::WP_Widget( false,$name=__('My Calendar: Today\'s Events','my-calendar') );
+	}
 
-function widget($args, $instance) {
-	extract($args);
-	$the_title = apply_filters('widget_title',$instance['my_calendar_today_title']);
-	$the_template = $instance['my_calendar_today_template'];
-	$the_substitute = $instance['my_calendar_no_events_text'];
-	$the_category = ($instance['my_calendar_today_category']=='')?'default':esc_attr($instance['my_calendar_today_category']);
-	$author = ( !isset($instance['my_calendar_today_author']) || $instance['my_calendar_today_author']=='')?'all':esc_attr($instance['my_calendar_today_author']);
-	$host = ( !isset($instance['mc_host']) || $instance['mc_host']=='')?'all':esc_attr($instance['mc_host']);
-	$widget_link = (!empty($instance['my_calendar_today_linked']) && $instance['my_calendar_today_linked']=='yes')?get_option('mc_uri'):'';
-	$widget_link = ( !empty($instance['mc_link']) )?esc_url($instance['mc_link']):$widget_link;
-	$widget_title = empty($the_title) ? '' : $the_title;
-	$offset = (60*60*get_option('gmt_offset'));
-	if ( strpos($widget_title,'{date}') !== false ) { $widget_title = str_replace( '{date}',date_i18n(get_option('mc_date_format'),time()+$offset),$widget_title ); }	
-	$widget_title = ($widget_link=='') ? $widget_title : "<a href='$widget_link'>$widget_title</a>";	
-	$widget_title = ($widget_title!='') ? $before_title . $widget_title . $after_title : '';
-	$the_events = my_calendar_todays_events($the_category,$the_template,$the_substitute,$author, $host);
-		if ($the_events != '') {
-		  echo $before_widget;
-		  echo $widget_title;
-		  echo $the_events;
-		  echo $after_widget;
-		}
-}
+	function widget( $args, $instance ) {
+		extract($args);
+		$the_title = apply_filters('widget_title',$instance['my_calendar_today_title']);
+		$the_template = $instance['my_calendar_today_template'];
+		$the_substitute = $instance['my_calendar_no_events_text'];
+		$the_category = ($instance['my_calendar_today_category']=='')?'default':esc_attr($instance['my_calendar_today_category']);
+		$author = ( !isset($instance['my_calendar_today_author']) || $instance['my_calendar_today_author']=='')?'all':esc_attr($instance['my_calendar_today_author']);
+		$host = ( !isset($instance['mc_host']) || $instance['mc_host']=='')?'all':esc_attr($instance['mc_host']);
+		$widget_link = (!empty($instance['my_calendar_today_linked']) && $instance['my_calendar_today_linked']=='yes')?get_option('mc_uri'):'';
+		$widget_link = ( !empty($instance['mc_link']) )?esc_url($instance['mc_link']):$widget_link;
+		$widget_title = empty($the_title) ? '' : $the_title;
+		$offset = (60*60*get_option('gmt_offset'));
+		if ( strpos($widget_title,'{date}') !== false ) { $widget_title = str_replace( '{date}',date_i18n(get_option('mc_date_format'),time()+$offset),$widget_title ); }	
+		$widget_title = ($widget_link=='') ? $widget_title : "<a href='$widget_link'>$widget_title</a>";	
+		$widget_title = ($widget_title!='') ? $before_title . $widget_title . $after_title : '';
+		$the_events = my_calendar_todays_events($the_category,$the_template,$the_substitute,$author, $host);
+			if ($the_events != '') {
+			  echo $before_widget;
+			  echo $widget_title;
+			  echo $the_events;
+			  echo $after_widget;
+			}
+	}
 
-function form($instance) {
-	global $default_template;
-	$widget_title = (isset($instance['my_calendar_today_title']))?esc_attr($instance['my_calendar_today_title']):'';
-	$widget_template = (isset($instance['my_calendar_today_template']))?esc_attr($instance['my_calendar_today_template']):'';
-	if (!$widget_template) { $widget_template = $default_template; }
-	$widget_text = (isset($instance['my_calendar_no_events_text']))?esc_attr($instance['my_calendar_no_events_text']):'';
-	$widget_category = (isset($instance['my_calendar_today_category']))?esc_attr($instance['my_calendar_today_category']):'';
-	$widget_linked = (isset($instance['my_calendar_today_linked']))?esc_attr($instance['my_calendar_today_linked']):'';
-	if ( $widget_linked == 'yes' ) { $default_link = get_option('mc_uri'); } else { $default_link = ''; }
-	$widget_link = (!empty($instance['mc_link']))?esc_url($instance['mc_link']):$default_link;
-	$widget_author = (isset($instance['my_calendar_today_author']))?esc_attr($instance['my_calendar_today_author']):'';
-	$widget_host = (isset($instance['mc_host']))?esc_attr($instance['mc_host']):'';
-	
-?>
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_today_title'); ?>"><?php _e('Title','my-calendar'); ?>:</label><br />
-	<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_today_title'); ?>" name="<?php echo $this->get_field_name('my_calendar_today_title'); ?>" value="<?php echo $widget_title; ?>"/>
-	</p>
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_today_template'); ?>"><?php _e('Template','my-calendar'); ?></label><br />
-	<textarea class="widefat" rows="8" cols="20" id="<?php echo $this->get_field_id('my_calendar_today_template'); ?>" name="<?php echo $this->get_field_name('my_calendar_today_template'); ?>"><?php echo $widget_template; ?></textarea>
-	</p>
-	<?php if ( get_option('mc_uri') == '' ) { $disabled = " disabled='disabled'"; $warning = _e('Add calendar URL to use this option.','my-calendar');  } else { $disabled = $warning = ""; } ?>
-	<?php /* <p>
-	<label for="<?php echo $this->get_field_id('my_calendar_today_linked'); ?>"><?php _e('Link widget title to calendar:','my-calendar'); ?></label> <select<?php echo $disabled; ?> id="<?php echo $this->get_field_id('my_calendar_today_linked'); ?>" name="<?php echo $this->get_field_name('my_calendar_today_linked'); ?>">
-	<option value="no" <?php echo ($widget_linked == 'no')?'selected="selected"':''; ?>><?php _e('Not Linked','my-calendar') ?></option>
-	<option value="yes" <?php echo ($widget_linked == 'yes')?'selected="selected"':''; ?>><?php _e('Linked','my-calendar') ?></option>
-	</select>
-	</p> */ ?>
-	<p>
-	<label for="<?php echo $this->get_field_id('mc_link'); ?>"><?php _e('Widget title links to:','my-calendar'); ?></label><br />
-	<input class="widefat" type="text" id="<?php echo $this->get_field_id('mc_link'); ?>" name="<?php echo $this->get_field_name('mc_link'); ?>" value="<?php echo $widget_link; ?>" /></textarea>
-	</p>	
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_no_events_text'); ?>"><?php _e('Show this text if there are no events today:','my-calendar'); ?></label><br />
-	<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_no_events_text'); ?>" name="<?php echo $this->get_field_name('my_calendar_no_events_text'); ?>" value="<?php echo $widget_text; ?>" /></textarea>
-	</p>
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_today_category'); ?>"><?php _e('Category or categories to display:','my-calendar'); ?></label><br />
-	<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_today_category'); ?>" name="<?php echo $this->get_field_name('my_calendar_today_category'); ?>" value="<?php echo $widget_category; ?>" /></textarea>
-	</p>
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_today_author'); ?>"><?php _e('Author or authors to show:','my-calendar'); ?></label><br />
-	<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_today_author'); ?>" name="<?php echo $this->get_field_name('my_calendar_today_author'); ?>" value="<?php echo $widget_author; ?>" /></textarea>
-	</p>
-	<p>
-	<label for="<?php echo $this->get_field_id('mc_host'); ?>"><?php _e('Host or hosts to show:','my-calendar'); ?></label><br />
-	<input class="widefat" type="text" id="<?php echo $this->get_field_id('mc_host'); ?>" name="<?php echo $this->get_field_name('mc_host'); ?>" value="<?php echo $widget_host; ?>" /></textarea>
-	</p>	
-	<?php
-}  
+	function form($instance) {
+		global $default_template;
+		$widget_title = (isset($instance['my_calendar_today_title']))?esc_attr($instance['my_calendar_today_title']):'';
+		$widget_template = (isset($instance['my_calendar_today_template']))?esc_attr($instance['my_calendar_today_template']):'';
+		if (!$widget_template) { $widget_template = $default_template; }
+		$widget_text = (isset($instance['my_calendar_no_events_text']))?esc_attr($instance['my_calendar_no_events_text']):'';
+		$widget_category = (isset($instance['my_calendar_today_category']))?esc_attr($instance['my_calendar_today_category']):'';
+		$widget_linked = (isset($instance['my_calendar_today_linked']))?esc_attr($instance['my_calendar_today_linked']):'';
+		if ( $widget_linked == 'yes' ) { $default_link = get_option('mc_uri'); } else { $default_link = ''; }
+		$widget_link = (!empty($instance['mc_link']))?esc_url($instance['mc_link']):$default_link;
+		$widget_author = (isset($instance['my_calendar_today_author']))?esc_attr($instance['my_calendar_today_author']):'';
+		$widget_host = (isset($instance['mc_host']))?esc_attr($instance['mc_host']):'';
+		
+	?>
+		<p>
+		<label for="<?php echo $this->get_field_id('my_calendar_today_title'); ?>"><?php _e('Title','my-calendar'); ?>:</label><br />
+		<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_today_title'); ?>" name="<?php echo $this->get_field_name('my_calendar_today_title'); ?>" value="<?php echo $widget_title; ?>"/>
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id('my_calendar_today_template'); ?>"><?php _e('Template','my-calendar'); ?></label><br />
+		<textarea class="widefat" rows="8" cols="20" id="<?php echo $this->get_field_id('my_calendar_today_template'); ?>" name="<?php echo $this->get_field_name('my_calendar_today_template'); ?>"><?php echo $widget_template; ?></textarea>
+		</p>
+		<?php if ( get_option('mc_uri') == '' ) { $disabled = " disabled='disabled'"; $warning = _e('Add calendar URL to use this option.','my-calendar');  } else { $disabled = $warning = ""; } ?>
+		<p>
+		<label for="<?php echo $this->get_field_id('mc_link'); ?>"><?php _e('Widget title links to:','my-calendar'); ?></label><br />
+		<input class="widefat" type="text" id="<?php echo $this->get_field_id('mc_link'); ?>" name="<?php echo $this->get_field_name('mc_link'); ?>" value="<?php echo $widget_link; ?>" /></textarea>
+		</p>	
+		<p>
+		<label for="<?php echo $this->get_field_id('my_calendar_no_events_text'); ?>"><?php _e('Show this text if there are no events today:','my-calendar'); ?></label><br />
+		<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_no_events_text'); ?>" name="<?php echo $this->get_field_name('my_calendar_no_events_text'); ?>" value="<?php echo $widget_text; ?>" /></textarea>
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id('my_calendar_today_category'); ?>"><?php _e('Category or categories to display:','my-calendar'); ?></label><br />
+		<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_today_category'); ?>" name="<?php echo $this->get_field_name('my_calendar_today_category'); ?>" value="<?php echo $widget_category; ?>" /></textarea>
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id('my_calendar_today_author'); ?>"><?php _e('Author or authors to show:','my-calendar'); ?></label><br />
+		<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_today_author'); ?>" name="<?php echo $this->get_field_name('my_calendar_today_author'); ?>" value="<?php echo $widget_author; ?>" /></textarea>
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id('mc_host'); ?>"><?php _e('Host or hosts to show:','my-calendar'); ?></label><br />
+		<input class="widefat" type="text" id="<?php echo $this->get_field_id('mc_host'); ?>" name="<?php echo $this->get_field_name('mc_host'); ?>" value="<?php echo $widget_host; ?>" /></textarea>
+		</p>	
+		<?php
+	}  
 
 	function update($new_instance,$old_instance) {
 		$instance = $old_instance;
@@ -108,131 +102,121 @@ function form($instance) {
 		$instance['mc_host'] = strip_tags($new_instance['mc_host']);
 		return $instance;
 	}
-
 }
 
 class my_calendar_upcoming_widget extends WP_Widget {
 
-function my_calendar_upcoming_widget() {
-	parent::WP_Widget( false,$name=__('My Calendar: Upcoming Events','my-calendar') );
-}
+	function my_calendar_upcoming_widget() {
+		parent::WP_Widget( false,$name=__('My Calendar: Upcoming Events','my-calendar') );
+	}
 
-function widget($args, $instance) {
-	extract($args);
-	$the_title = apply_filters('widget_title',$instance['my_calendar_upcoming_title']);
-	$the_template = $instance['my_calendar_upcoming_template'];
-	$the_substitute = $instance['my_calendar_no_events_text'];
-	$before = ($instance['my_calendar_upcoming_before']!='')?esc_attr($instance['my_calendar_upcoming_before']):3;
-	$after = ($instance['my_calendar_upcoming_after']!='')?esc_attr($instance['my_calendar_upcoming_after']):3;
-	$skip = ($instance['my_calendar_upcoming_skip']!='')?esc_attr($instance['my_calendar_upcoming_skip']):0;
-	$show_today = ($instance['my_calendar_upcoming_show_today']=='no')?'no':'yes';
-	$type = esc_attr($instance['my_calendar_upcoming_type']);
-	$order = esc_attr($instance['my_calendar_upcoming_order']);
-	$the_category = ($instance['my_calendar_upcoming_category']=='')?'default':esc_attr($instance['my_calendar_upcoming_category']);
-	$author = ( !isset($instance['my_calendar_upcoming_author']) || $instance['my_calendar_upcoming_author']=='')?'default':esc_attr($instance['my_calendar_upcoming_author']);
-	$host = ( !isset($instance['mc_host']) || $instance['mc_host']=='')?'default':esc_attr($instance['mc_host']);
-	$widget_link = ($instance['my_calendar_upcoming_linked']=='yes')?get_option('mc_uri'):'';
-	$widget_link = ( !empty($instance['mc_link']) )?esc_url($instance['mc_link']):$widget_link;
-	$widget_title = empty($the_title) ? '' : $the_title;
-	$widget_title = ($widget_link=='') ? $widget_title : "<a href='$widget_link'>$widget_title</a>";
-	$widget_title = ($widget_title!='') ? $before_title . $widget_title . $after_title : '';
-	$the_events = my_calendar_upcoming_events($before,$after,$type,$the_category,$the_template,$the_substitute, $order,$skip, $show_today,$author, $host);
+	function widget($args, $instance) {
+		extract($args);
+		$the_title = apply_filters('widget_title',$instance['my_calendar_upcoming_title']);
+		$the_template = $instance['my_calendar_upcoming_template'];
+		$the_substitute = $instance['my_calendar_no_events_text'];
+		$before = ($instance['my_calendar_upcoming_before']!='')?esc_attr($instance['my_calendar_upcoming_before']):3;
+		$after = ($instance['my_calendar_upcoming_after']!='')?esc_attr($instance['my_calendar_upcoming_after']):3;
+		$skip = ($instance['my_calendar_upcoming_skip']!='')?esc_attr($instance['my_calendar_upcoming_skip']):0;
+		$show_today = ($instance['my_calendar_upcoming_show_today']=='no')?'no':'yes';
+		$type = esc_attr($instance['my_calendar_upcoming_type']);
+		$order = esc_attr($instance['my_calendar_upcoming_order']);
+		$the_category = ($instance['my_calendar_upcoming_category']=='')?'default':esc_attr($instance['my_calendar_upcoming_category']);
+		$author = ( !isset($instance['my_calendar_upcoming_author']) || $instance['my_calendar_upcoming_author']=='')?'default':esc_attr($instance['my_calendar_upcoming_author']);
+		$host = ( !isset($instance['mc_host']) || $instance['mc_host']=='')?'default':esc_attr($instance['mc_host']);
+		$widget_link = ($instance['my_calendar_upcoming_linked']=='yes')?get_option('mc_uri'):'';
+		$widget_link = ( !empty($instance['mc_link']) )?esc_url($instance['mc_link']):$widget_link;
+		$widget_title = empty($the_title) ? '' : $the_title;
+		$widget_title = ($widget_link=='') ? $widget_title : "<a href='$widget_link'>$widget_title</a>";
+		$widget_title = ($widget_title!='') ? $before_title . $widget_title . $after_title : '';
+		$the_events = my_calendar_upcoming_events($before,$after,$type,$the_category,$the_template,$the_substitute,$order,$skip, $show_today,$author,$host);
 		if ($the_events != '') {
 			echo $before_widget;
 			echo $widget_title;
 			echo $the_events;
 			echo $after_widget;
 		}
-}
+	}
 
-
-function form($instance) {
-	global $default_template;
-	
-	$widget_title = (isset($instance['my_calendar_upcoming_title']) )?esc_attr($instance['my_calendar_upcoming_title']):'';
-	$widget_template = (isset($instance['my_calendar_upcoming_template']) )?esc_attr($instance['my_calendar_upcoming_template']):'';
-	if (!$widget_template) { $widget_template = $default_template; }
-	$widget_text = (isset($instance['my_calendar_no_events_text']) )?esc_attr($instance['my_calendar_no_events_text']):'';
-	$widget_category = (isset($instance['my_calendar_upcoming_category']) )?esc_attr($instance['my_calendar_upcoming_category']):'';
-	$widget_author = (isset($instance['my_calendar_upcoming_author']) )?esc_attr($instance['my_calendar_upcoming_author']):'';
-	$widget_host = (isset($instance['mc_host']) )?esc_attr($instance['mc_host']):'';
-	$widget_before = (isset($instance['my_calendar_upcoming_before']) )?esc_attr($instance['my_calendar_upcoming_before']):'';
-	$widget_after = (isset($instance['my_calendar_upcoming_after']) )?esc_attr($instance['my_calendar_upcoming_after']):'';
-	$widget_show_today = (isset($instance['my_calendar_upcoming_show_today']) )?esc_attr($instance['my_calendar_upcoming_show_today']):'';
-	$widget_type = (isset($instance['my_calendar_upcoming_type']) )?esc_attr($instance['my_calendar_upcoming_type']):'';
-	$widget_order = (isset($instance['my_calendar_upcoming_order']) )?esc_attr($instance['my_calendar_upcoming_order']):'';
-	$widget_linked = (isset($instance['my_calendar_upcoming_linked']) )?esc_attr($instance['my_calendar_upcoming_linked']):'';
-	if ( $widget_linked == 'yes' ) { $default_link = get_option('mc_uri'); } else { $default_link = ''; }
-	$widget_link = (!empty($instance['mc_link']))?esc_url($instance['mc_link']):$default_link;
-	$widget_skip = (isset($instance['my_calendar_upcoming_skip']) )?esc_attr($instance['my_calendar_upcoming_skip']):'';
-	
-?>
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_upcoming_title'); ?>"><?php _e('Title','my-calendar'); ?>:</label><br />
-	<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_title'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_title'); ?>" value="<?php echo $widget_title; ?>"/>
-	</p>
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_upcoming_template'); ?>"><?php _e('Template','my-calendar'); ?></label><br />
-	<textarea class="widefat" rows="6" cols="20" id="<?php echo $this->get_field_id('my_calendar_upcoming_template'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_template'); ?>"><?php echo $widget_template; ?></textarea>
-	</p>
-	<fieldset>
-	<legend><?php _e('Widget Options','my-calendar'); ?></legend>
-	<?php $config_url = admin_url("admin.php?page=my-calendar-config"); ?>
-	<?php if ( get_option('mc_uri') == '' ) { $disabled = " disabled='disabled'";  _e('Add <a href="'.$config_url.'#mc_uri" target="_blank" title="Opens in new window">calendar URL in settings</a> to use this option.','my-calendar');  } else { $disabled=""; } ?>
-	<?php /* <p>
-	<label for="<?php echo $this->get_field_id('my_calendar_upcoming_linked'); ?>"><?php _e('Link widget title to calendar:','my-calendar'); ?></label> <select<?php echo $disabled; ?> id="<?php echo $this->get_field_id('my_calendar_upcoming_linked'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_linked'); ?>">
-	<option value="no" <?php echo ($widget_linked == 'no')?'selected="selected"':''; ?>><?php _e('Not Linked','my-calendar') ?></option>
-	<option value="yes" <?php echo ($widget_linked == 'yes')?'selected="selected"':''; ?>><?php _e('Linked','my-calendar') ?></option>
-	</select>
-	</p> */ ?>
-	<p>
-	<label for="<?php echo $this->get_field_id('mc_link'); ?>"><?php _e('Widget title links to:','my-calendar'); ?></label><br />
-	<input class="widefat" type="text" id="<?php echo $this->get_field_id('mc_link'); ?>" name="<?php echo $this->get_field_name('mc_link'); ?>" value="<?php echo $widget_link; ?>" /></textarea>
-	</p>		
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_upcoming_type'); ?>"><?php _e('Display upcoming events by:','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_upcoming_type'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_type'); ?>">
-	<option value="events" <?php echo ($widget_type == 'events')?'selected="selected"':''; ?>><?php _e('Events (e.g. 2 past, 3 future)','my-calendar') ?></option>
-	<option value="days" <?php echo ($widget_type == 'days')?'selected="selected"':''; ?>><?php _e('Dates (e.g. 4 days past, 5 forward)','my-calendar') ?></option>
-	<option value="month" <?php echo ($widget_type == 'month')?'selected="selected"':''; ?>><?php _e('Show current month','my-calendar') ?></option>
-	<option value="year" <?php echo ($widget_type == 'year')?'selected="selected"':''; ?>><?php _e('Show current year','my-calendar') ?></option>
-	</select>
-	</p>
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_upcoming_skip'); ?>"><?php _e('Skip the first <em>n</em> events','my-calendar'); ?></label> <input type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_skip'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_skip'); ?>" value="<?php echo $widget_skip; ?>" />
-	</p>
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_upcoming_order'); ?>"><?php _e('Events sort order:','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_upcoming_order'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_order'); ?>">
-	<option value="asc" <?php echo ($widget_order == 'asc')?'selected="selected"':''; ?>><?php _e('Ascending (near to far)','my-calendar') ?></option>
-	<option value="desc" <?php echo ($widget_order == 'desc')?'selected="selected"':''; ?>><?php _e('Descending (far to near)','my-calendar') ?></option>
-	</select>
-	</p>
-	<?php if ( !( $widget_type == 'month' || $widget_type == 'year' ) ) { ?>
-	<p>
-	<input type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_after'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_after'); ?>" value="<?php echo $widget_after; ?>" size="1" maxlength="3" /> <label for="<?php echo $this->get_field_id('my_calendar_upcoming_after'); ?>"><?php _e("$widget_type into the future;",'my-calendar'); ?></label><br />
-	<input type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_before'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_before'); ?>" value="<?php echo $widget_before; ?>" size="1" maxlength="3" /> <label for="<?php echo $this->get_field_id('my_calendar_upcoming_after'); ?>"><?php _e("$widget_type from the past",'my-calendar'); ?></label>
-	</p>
-	<?php } ?>
-	<p>
-	<input type="checkbox" id="<?php echo $this->get_field_id('my_calendar_upcoming_show_today'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_show_today'); ?>" value="yes"<?php echo ($widget_show_today =='yes' || $widget_show_today == '' )?' checked="checked"':''; ?> /> <label for="<?php echo $this->get_field_id('my_calendar_upcoming_show_today'); ?>"><?php _e("Include today's events",'my-calendar'); ?></label>
-	</p>
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_no_events_text'); ?>"><?php _e('Show this text if there are no events meeting your criteria:','my-calendar'); ?></label><br />
-	<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_no_events_text'); ?>" name="<?php echo $this->get_field_name('my_calendar_no_events_text'); ?>" value="<?php echo $widget_text; ?>" /></textarea>
-	</p>
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_upcoming_category'); ?>"><?php _e('Category or categories to display:','my-calendar'); ?></label><br />
-	<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_category'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_category'); ?>" value="<?php echo $widget_category; ?>" /></textarea>
-	</p>
-	<p>
-	<label for="<?php echo $this->get_field_id('my_calendar_upcoming_author'); ?>"><?php _e('Author or authors to show:','my-calendar'); ?></label><br />
-	<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_author'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_author'); ?>" value="<?php echo $widget_author; ?>" /></textarea>
-	</p>
-	<p>
-	<label for="<?php echo $this->get_field_id('mc_host'); ?>"><?php _e('Host or hosts to show:','my-calendar'); ?></label><br />
-	<input class="widefat" type="text" id="<?php echo $this->get_field_id('mc_host'); ?>" name="<?php echo $this->get_field_name('mc_host'); ?>" value="<?php echo $widget_host; ?>" /></textarea>
-	</p>	
-	<?php
-}  
+	function form($instance) {
+		global $default_template;
+		$widget_title = (isset($instance['my_calendar_upcoming_title']) )?esc_attr($instance['my_calendar_upcoming_title']):'';
+		$widget_template = (isset($instance['my_calendar_upcoming_template']) )?esc_attr($instance['my_calendar_upcoming_template']):'';
+		if (!$widget_template) { $widget_template = $default_template; }
+		$widget_text = (isset($instance['my_calendar_no_events_text']) )?esc_attr($instance['my_calendar_no_events_text']):'';
+		$widget_category = (isset($instance['my_calendar_upcoming_category']) )?esc_attr($instance['my_calendar_upcoming_category']):'';
+		$widget_author = (isset($instance['my_calendar_upcoming_author']) )?esc_attr($instance['my_calendar_upcoming_author']):'';
+		$widget_host = (isset($instance['mc_host']) )?esc_attr($instance['mc_host']):'';
+		$widget_before = (isset($instance['my_calendar_upcoming_before']) )?esc_attr($instance['my_calendar_upcoming_before']):'';
+		$widget_after = (isset($instance['my_calendar_upcoming_after']) )?esc_attr($instance['my_calendar_upcoming_after']):'';
+		$widget_show_today = (isset($instance['my_calendar_upcoming_show_today']) )?esc_attr($instance['my_calendar_upcoming_show_today']):'';
+		$widget_type = (isset($instance['my_calendar_upcoming_type']) )?esc_attr($instance['my_calendar_upcoming_type']):'';
+		$widget_order = (isset($instance['my_calendar_upcoming_order']) )?esc_attr($instance['my_calendar_upcoming_order']):'';
+		$widget_linked = (isset($instance['my_calendar_upcoming_linked']) )?esc_attr($instance['my_calendar_upcoming_linked']):'';
+		if ( $widget_linked == 'yes' ) { $default_link = get_option('mc_uri'); } else { $default_link = ''; }
+		$widget_link = (!empty($instance['mc_link']))?esc_url($instance['mc_link']):$default_link;
+		$widget_skip = (isset($instance['my_calendar_upcoming_skip']) )?esc_attr($instance['my_calendar_upcoming_skip']):'';	
+		?>
+		<p>
+		<label for="<?php echo $this->get_field_id('my_calendar_upcoming_title'); ?>"><?php _e('Title','my-calendar'); ?>:</label><br />
+		<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_title'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_title'); ?>" value="<?php echo $widget_title; ?>"/>
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id('my_calendar_upcoming_template'); ?>"><?php _e('Template','my-calendar'); ?></label><br />
+		<textarea class="widefat" rows="6" cols="20" id="<?php echo $this->get_field_id('my_calendar_upcoming_template'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_template'); ?>"><?php echo $widget_template; ?></textarea>
+		</p>
+		<fieldset>
+		<legend><?php _e('Widget Options','my-calendar'); ?></legend>
+		<?php $config_url = admin_url("admin.php?page=my-calendar-config"); ?>
+		<?php if ( get_option('mc_uri') == '' ) { $disabled = " disabled='disabled'";  _e('Add <a href="'.$config_url.'#mc_uri" target="_blank" title="Opens in new window">calendar URL in settings</a> to use this option.','my-calendar');  } else { $disabled=""; } ?>
+		<p>
+		<label for="<?php echo $this->get_field_id('mc_link'); ?>"><?php _e('Widget title links to:','my-calendar'); ?></label><br />
+		<input class="widefat" type="text" id="<?php echo $this->get_field_id('mc_link'); ?>" name="<?php echo $this->get_field_name('mc_link'); ?>" value="<?php echo $widget_link; ?>" /></textarea>
+		</p>		
+		<p>
+		<label for="<?php echo $this->get_field_id('my_calendar_upcoming_type'); ?>"><?php _e('Display upcoming events by:','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_upcoming_type'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_type'); ?>">
+		<option value="events" <?php echo ($widget_type == 'events')?'selected="selected"':''; ?>><?php _e('Events (e.g. 2 past, 3 future)','my-calendar') ?></option>
+		<option value="days" <?php echo ($widget_type == 'days')?'selected="selected"':''; ?>><?php _e('Dates (e.g. 4 days past, 5 forward)','my-calendar') ?></option>
+		<option value="month" <?php echo ($widget_type == 'month')?'selected="selected"':''; ?>><?php _e('Show current month','my-calendar') ?></option>
+		<option value="year" <?php echo ($widget_type == 'year')?'selected="selected"':''; ?>><?php _e('Show current year','my-calendar') ?></option>
+		</select>
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id('my_calendar_upcoming_skip'); ?>"><?php _e('Skip the first <em>n</em> events','my-calendar'); ?></label> <input type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_skip'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_skip'); ?>" value="<?php echo $widget_skip; ?>" />
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id('my_calendar_upcoming_order'); ?>"><?php _e('Events sort order:','my-calendar'); ?></label> <select id="<?php echo $this->get_field_id('my_calendar_upcoming_order'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_order'); ?>">
+		<option value="asc" <?php echo ($widget_order == 'asc')?'selected="selected"':''; ?>><?php _e('Ascending (near to far)','my-calendar') ?></option>
+		<option value="desc" <?php echo ($widget_order == 'desc')?'selected="selected"':''; ?>><?php _e('Descending (far to near)','my-calendar') ?></option>
+		</select>
+		</p>
+		<?php if ( !( $widget_type == 'month' || $widget_type == 'year' ) ) { ?>
+		<p>
+		<input type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_after'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_after'); ?>" value="<?php echo $widget_after; ?>" size="1" maxlength="3" /> <label for="<?php echo $this->get_field_id('my_calendar_upcoming_after'); ?>"><?php _e("$widget_type into the future;",'my-calendar'); ?></label><br />
+		<input type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_before'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_before'); ?>" value="<?php echo $widget_before; ?>" size="1" maxlength="3" /> <label for="<?php echo $this->get_field_id('my_calendar_upcoming_after'); ?>"><?php _e("$widget_type from the past",'my-calendar'); ?></label>
+		</p>
+		<?php } ?>
+		<p>
+		<input type="checkbox" id="<?php echo $this->get_field_id('my_calendar_upcoming_show_today'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_show_today'); ?>" value="yes"<?php echo ($widget_show_today =='yes' || $widget_show_today == '' )?' checked="checked"':''; ?> /> <label for="<?php echo $this->get_field_id('my_calendar_upcoming_show_today'); ?>"><?php _e("Include today's events",'my-calendar'); ?></label>
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id('my_calendar_no_events_text'); ?>"><?php _e('Show this text if there are no events meeting your criteria:','my-calendar'); ?></label><br />
+		<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_no_events_text'); ?>" name="<?php echo $this->get_field_name('my_calendar_no_events_text'); ?>" value="<?php echo $widget_text; ?>" /></textarea>
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id('my_calendar_upcoming_category'); ?>"><?php _e('Category or categories to display:','my-calendar'); ?></label><br />
+		<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_category'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_category'); ?>" value="<?php echo $widget_category; ?>" /></textarea>
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id('my_calendar_upcoming_author'); ?>"><?php _e('Author or authors to show:','my-calendar'); ?></label><br />
+		<input class="widefat" type="text" id="<?php echo $this->get_field_id('my_calendar_upcoming_author'); ?>" name="<?php echo $this->get_field_name('my_calendar_upcoming_author'); ?>" value="<?php echo $widget_author; ?>" /></textarea>
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id('mc_host'); ?>"><?php _e('Host or hosts to show:','my-calendar'); ?></label><br />
+		<input class="widefat" type="text" id="<?php echo $this->get_field_id('mc_host'); ?>" name="<?php echo $this->get_field_name('mc_host'); ?>" value="<?php echo $widget_host; ?>" /></textarea>
+		</p>	
+		<?php
+	}  
 
 	function update($new_instance,$old_instance) {
 		$instance = $old_instance;
@@ -244,7 +228,7 @@ function form($instance) {
 		$instance['mc_host'] = strip_tags($new_instance['mc_host']);		
 		$instance['my_calendar_upcoming_before'] = strip_tags($new_instance['my_calendar_upcoming_before']);
 		$instance['my_calendar_upcoming_after'] = strip_tags($new_instance['my_calendar_upcoming_after']);
-		$instance['my_calendar_upcoming_show_today'] = ($new_instance['my_calendar_upcoming_show_today']=='yes')?'yes':'no';		
+		$instance['my_calendar_upcoming_show_today'] = ($new_instance['my_calendar_upcoming_show_today']=='yes')?'yes':'no';
 		$instance['my_calendar_upcoming_type'] = strip_tags($new_instance['my_calendar_upcoming_type']);
 		$instance['my_calendar_upcoming_order'] = strip_tags($new_instance['my_calendar_upcoming_order']);
 		$instance['my_calendar_upcoming_linked'] = strip_tags($new_instance['my_calendar_upcoming_linked']);
@@ -256,12 +240,12 @@ function form($instance) {
 
 // Widget upcoming events
 function my_calendar_upcoming_events($before='default',$after='default',$type='default',$category='default',$template='default',$substitute='',$order='asc',$skip=0, $show_today='yes',$author='default',$host='default' ) {
-  global $wpdb,$default_template,$defaults;
-  $mcdb = $wpdb;
-  if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
-  $output = '';
-  $date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
-  // This function cannot be called unless calendar is up to date
+	global $wpdb,$default_template,$defaults;
+	$mcdb = $wpdb;
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+	$output = '';
+	$date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
+	// This function cannot be called unless calendar is up to date
 	check_my_calendar();
 	$offset = (60*60*get_option('gmt_offset'));	
     $widget_defaults = get_option('mc_widget_defaults');
@@ -284,60 +268,60 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 	if ( $display_upcoming_type == "days" || $display_upcoming_type == "month" || $display_upcoming_type == "year" ) {
 		$temp_array = array();
 		$event_array = array();
-			if ( $display_upcoming_type == "days" ) {
-				$from = date( 'Y-m-d',strtotime("-$before days") );
-				$to = date( 'Y-m-d',strtotime("+$after days") );
-			}
-			if ( $display_upcoming_type == "month" ) {
-				$from = date( 'Y-m-1' );
-				$to = date( 'Y-m-t' );
-			}
-			if ( $display_upcoming_type == "year" ) {
-				$from = date( 'Y-1-1' );
-				$to = date( 'Y-12-31' );
-			}
-			$events = my_calendar_grab_events( $from, $to, $category,'','','upcoming',$author, $host );
-			if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
-				$holidays = array();
-			} else {
-				$holidays = my_calendar_grab_events( $from, $to, get_option('mc_skip_holidays_category'),'','', 'upcoming', $author, $host );
-				$holiday_array = mc_set_date_array( $holidays );
-			}
-			// get events into an easily parseable set, keyed by date.
-			if ( is_array( $events ) && !empty($events) ) {
-				$no_events = false;
-				$event_array = mc_set_date_array( $events );
-				if ( is_array( $holidays ) && count($holidays) > 0 ) {
-					$event_array = mc_holiday_limit( $event_array, $holiday_array ); // if there are holidays, rejigger.
-				}			
+		if ( $display_upcoming_type == "days" ) {
+			$from = date( 'Y-m-d',strtotime("-$before days") );
+			$to = date( 'Y-m-d',strtotime("+$after days") );
+		}
+		if ( $display_upcoming_type == "month" ) {
+			$from = date( 'Y-m-1' );
+			$to = date( 'Y-m-t' );
+		}
+		if ( $display_upcoming_type == "year" ) {
+			$from = date( 'Y-1-1' );
+			$to = date( 'Y-12-31' );
+		}
+		$events = my_calendar_grab_events( $from, $to, $category,'','','upcoming',$author, $host );
+		if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
+			$holidays = array();
+		} else {
+			$holidays = my_calendar_grab_events( $from, $to, get_option('mc_skip_holidays_category'),'','', 'upcoming', $author, $host );
+			$holiday_array = mc_set_date_array( $holidays );
+		}
+		// get events into an easily parseable set, keyed by date.
+		if ( is_array( $events ) && !empty($events) ) {
+			$no_events = false;
+			$event_array = mc_set_date_array( $events );
+			if ( is_array( $holidays ) && count($holidays) > 0 ) {
+				$event_array = mc_holiday_limit( $event_array, $holiday_array ); // if there are holidays, rejigger.
 			}			
-			if (count($event_array) != 0) {
-				foreach( $event_array as $key=>$value) {
-					if ( is_array($value) ) {
-						foreach ( $value as $k => $v ) {
-							$event = event_as_array( $v );
-							$temp_array[] = $event;
-						}
+		}			
+		if (count($event_array) != 0) {
+			foreach( $event_array as $key=>$value) {
+				if ( is_array($value) ) {
+					foreach ( $value as $k => $v ) {
+						$event = event_as_array( $v );
+						$temp_array[] = $event;
 					}
 				}
 			}
-			$i = 0;
-			$last_item = '';
-			$last_id = '';
-			foreach ( reverse_array($temp_array, true, $order) as $details ) {
-				$item = jd_draw_template($details,$template);
-				if ( $i < $skip && $skip != 0 ) {
-					$i++;
-				} else {
-					if ( $details['group'] !== $last_id || $details['group'] == '0' ) {
-						$output .= ( $item == $last_item )?'':"<li>$item</li>";	
-					}				
-				}
-				$last_id = $details['group']; // prevents grouped items from displaying in a row. Does not prevent if there are other intervening events.
-				$last_item = $item;
+		}
+		$i = 0;
+		$last_item = '';
+		$last_id = '';
+		foreach ( reverse_array($temp_array, true, $order) as $details ) {
+			$item = jd_draw_template($details,$template);
+			if ( $i < $skip && $skip != 0 ) {
+				$i++;
+			} else {
+				if ( $details['group'] !== $last_id || $details['group'] == '0' ) {
+					$output .= ( $item == $last_item )?'':"<li>$item</li>";	
+				}				
 			}
+			$last_id = $details['group']; // prevent group events from displaying in a row. Not if there are intervening events.
+			$last_item = $item;
+		}
 	} else {
-		$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
+		$caching = apply_filters( 'mc_cache_enabled', false );
 		if ( $caching ) { 
 			$cache = get_transient( 'mc_cache_upcoming' ); 
 			$output .= "<!-- Cached -->";
@@ -543,10 +527,9 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 
 // Widget todays events
 function my_calendar_todays_events($category='default',$template='default',$substitute='',$author='all', $host='all') {
-	$caching = ( get_option('mc_caching_enabled') == 'true' )?true:false;
+	$caching = apply_filters( 'mc_cache_enabled', false );
 	$todays_cache = ($caching)? get_transient('mc_todays_cache') :'';
-
-if ( $caching && is_array($todays_cache) && @$todays_cache[$category] ) { return @$todays_cache[$category]; }
+	if ( $caching && is_array($todays_cache) && @$todays_cache[$category] ) { return @$todays_cache[$category]; }
 	global $wpdb, $default_template;
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }

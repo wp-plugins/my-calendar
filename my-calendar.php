@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 2.2.7
+Version: 2.2.8
 */
 /*  Copyright 2009-2013  Joe Dolson (email : joe@joedolson.com)
 
@@ -25,8 +25,10 @@ Version: 2.2.7
 */
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+apply_filters("debug", "MC Started");
+
 global $mc_version, $wpdb;
-$mc_version = '2.2.7';
+$mc_version = '2.2.8';
 
 // Define the tables used in My Calendar
 if ( function_exists('is_multisite') && is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
@@ -110,22 +112,6 @@ add_action( 'init', 'my_calendar_export_vcal', 200 );
 add_filter( 'widget_text', 'do_shortcode', 9 );
 add_filter('plugin_action_links', 'jd_calendar_plugin_action', -10, 2);
 add_filter( 'wp_title','mc_event_filter',10,3 );
-/* needs work 
-add_filter( 'the_title', 'mc_title_filter', 10 );
-
-function mc_title_filter( $title, $id ) {
-	global $post; // causes problems with other filtering.
-	if ( isset($_GET['mc_id']) && $title == $post->post_title ) {
-		$id = (int) $_GET['mc_id'];
-		$event = mc_get_event( $id );
-		$array = event_as_array( $event );
-		$template = ( get_option( 'mc_detail_title_template' ) != '' )? stripslashes( get_option( 'mc_detail_title_template' ) ):"Details for &ldquo;{title}&rdquo;";
-		return jd_draw_template( $array, $template );
-	} else {
-		return $title;
-	}
-}
-*/
 
 function mc_event_filter( $title, $sep, $seplocation ) {
 	if ( isset($_GET['mc_id']) ) {
@@ -143,8 +129,7 @@ function mc_event_filter( $title, $sep, $seplocation ) {
 
 // produce admin support box
 function jd_show_support_box( $show='', $add=false, $remove=false ) {
-if ( current_user_can('mc_view_help') ) {
-?>
+	if ( current_user_can('mc_view_help') ) { ?>
 	<div class="postbox-container" style="width:20%">
 	<div class="metabox-holder">
 		<?php if ( !$remove ) { ?>
@@ -321,7 +306,7 @@ if ( current_user_can('mc_view_help') ) {
 		<dt><code>{color}</code></dt>
 		<dd><?php _e('Hex code for the event\'s category color.','my-calendar'); ?></dd>
 
-		<dt><code>{category_id}</code></dt>
+		<dt><code>{cat_id}</code></dt>
 		<dd><?php _e('ID of the category of the event.','my-calendar'); ?></dd>
 		</dl>
 		</div>
@@ -336,10 +321,10 @@ if ( current_user_can('mc_view_help') ) {
 
 // Function to deal with adding the calendar menus
 function my_calendar_menu() {
-  global $wpdb;
+	global $wpdb;
 	$mcdb = $wpdb;  
-  check_my_calendar();
-  $icon_path = plugins_url('/my-calendar/images');
+	check_my_calendar();
+	$icon_path = plugins_url('/my-calendar/images');
 	if ( function_exists('add_object_page') ) {
 		if ( get_option( 'mc_remote' ) != 'true' ) {
 			add_object_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), 'mc_add_events', 'my-calendar', 'edit_my_calendar',$icon_path.'/icon.png' );
@@ -382,23 +367,19 @@ function my_calendar_menu() {
 	}
 }
 
-/* TESTING SECTION JCD */
-
 function mc_event_editing() {
 	$option = 'mc_show_on_page';
-	 
 	$args = array(
-	'label' => 'Show these fields',
-	'default' => get_option('mc_input_options'),
-	'option' => 'mc_show_on_page'
-);
- 
-add_screen_option( $option, $args );
- 
+		'label' => 'Show these fields',
+		'default' => get_option('mc_input_options'),
+		'option' => 'mc_show_on_page'
+	);
+	add_screen_option( $option, $args );
 }
+
 add_filter('screen_settings', 'mc_show_event_editing', 10, 2 );
 function mc_show_event_editing( $status, $args ) {
-	$return = '';
+	$return = $status;
 	if ( $args->base == 'toplevel_page_my-calendar' ) {
 		$input_options = get_user_meta( get_current_user_id(), 'mc_show_on_page', true );
 		//$data =  "<pre>".print_r( $args, 1 )."THESE:<br />".print_r($input_options, 1 )."</pre>";
@@ -417,7 +398,7 @@ function mc_show_event_editing( $status, $args ) {
 			}
 		}
 		$button = get_submit_button( __( 'Apply' ), 'button', 'screen-options-apply', false );
-	$return = "
+	$return .= "
 	<fieldset>
 	<legend>". __('Event editing fields to show','my-calendar') ."</legend>
 	<div class='metabox-prefs'>
@@ -447,7 +428,6 @@ function mc_set_event_editing($status, $option, $value) {
 	}
 	return $value;
 }
-/* END TESTING SECTION */
 
 function mc_add_screen_option() {
 	$items_per_page = ( get_option('mc_num_per_page') )? get_option('mc_num_per_page') : 50;
@@ -461,7 +441,6 @@ function mc_add_screen_option() {
 }
 
 add_filter('set-screen-option', 'mc_set_screen_option', 10, 3);
- 
 function mc_set_screen_option($status, $option, $value) {
 	//if ( 'mc_num_per_page' == $option ) return $value;
 	return $value;
@@ -488,3 +467,5 @@ add_shortcode('my_calendar_categories','my_calendar_categories');
 add_shortcode('my_calendar_show_locations','my_calendar_show_locations_list');
 add_shortcode('my_calendar_event','my_calendar_show_event');
 add_shortcode('my_calendar_search','my_calendar_search');
+
+apply_filters("debug", "MC Loaded");

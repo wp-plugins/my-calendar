@@ -2,33 +2,31 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function my_calendar_check_db() {
-if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { return; }
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { return; }
 	global $wpdb;
 	$mcdb = $wpdb;
-$row = $mcdb->get_row( 'SELECT * FROM '.my_calendar_table() );
+	$row = $mcdb->get_row( 'SELECT * FROM '.my_calendar_table() );
 	if ( isset( $_POST['upgrade'] ) && $_POST['upgrade'] == 'true' ) {
 		$upgraded = my_calendar_mc_upgrade_db();
 		?>
 			<div class='upgrade-db updated'>
-			<p>
-			<?php _e('My Calendar Database is updated.','my-calendar'); ?>
-			</p>
+				<p><?php _e('My Calendar Database is updated.','my-calendar'); ?></p>
 			</div>
-			<?php
+		<?php
 	} else if ( !isset( $row->event_hide_end ) && isset( $row->event_id ) ) {
 		if ( $_GET['page'] == 'my-calendar-config' ) { ?>
-	<div class='upgrade-db error'>
-		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-config"); ?>">
-		<div>
-		<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />
-		<input type="hidden" name="upgrade" value="true" />
+		<div class='upgrade-db error'>
+			<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-config"); ?>">
+				<div>
+				<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />
+				<input type="hidden" name="upgrade" value="true" />
+				</div>
+				<p>
+				<?php _e('The My Calendar database needs to be updated.','my-calendar'); ?>
+				<input type="submit" value="<?php _e('Update now','my-calendar'); ?>" name="update-calendar" class="button-primary" />
+				</p>
+			</form>
 		</div>
-		<p>
-		<?php _e('The My Calendar database needs to be updated.','my-calendar'); ?>
-		<input type="submit" value="<?php _e('Update now','my-calendar'); ?>" name="update-calendar" class="button-primary" />
-		</p>
-		</form>
-	</div>
 	<?php } else { ?>
 	<div class='upgrade-db error'>
 		<p>

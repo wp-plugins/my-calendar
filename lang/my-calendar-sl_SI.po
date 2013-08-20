@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the My Calendar package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2013-07-22 21:08:39+0000\n"
+"PO-Revision-Date: 2013-08-20 19:44:56+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -466,7 +466,7 @@ msgstr "Cilj povezav koledarja"
 
 #: my-calendar-settings.php:503
 msgid "Modify date and event link behaviors:"
-msgstr "Spremeni obnašanje povezav datuma in dogodka:"
+msgstr "Spremeni vedenje povezav datuma in dogodka:"
 
 #: my-calendar-settings.php:516
 msgid "Show links to alternate formats:"
@@ -880,7 +880,7 @@ msgstr "My Calendar: ta generator ne bo vstavil kratkih kod na vašo stran. "
 
 #: my-calendar-behaviors.php:44
 msgid "Behavior Settings saved"
-msgstr "Nastavitve obnašanja shranjene"
+msgstr "Vedenjske nastavitve shranjene"
 
 #: my-calendar-behaviors.php:68
 msgid "My Calendar Behaviors"
@@ -900,7 +900,7 @@ msgstr "Polje za podrobnosti lahko vlečemo"
 
 #: my-calendar-behaviors.php:86
 msgid "Calendar Behaviors: Calendar View"
-msgstr "Obnašanje koledarja: pogled koledarja"
+msgstr "Vedenje koledarja: pogled koledarja"
 
 #: my-calendar-behaviors.php:88
 msgid "Update/Reset the My Calendar Calendar Javascript"
@@ -953,7 +953,7 @@ msgstr "Shrani"
 
 #: my-calendar-behaviors.php:118
 msgid "Calendar Behaviors: List View"
-msgstr "Obnašanje koledarja: pregled seznama"
+msgstr "Vedenje koledarja: pregled seznama"
 
 #: my-calendar-behaviors.php:120
 msgid "Update/Reset the My Calendar List Javascript"
@@ -961,63 +961,63 @@ msgstr "Posodobi/ponastavi javascript seznama za My Calendar"
 
 #: my-calendar-behaviors.php:120
 msgid "Disable List Javascript Effects"
-msgstr ""
+msgstr "Onemogoči javascript efekte za sezname"
 
 #: my-calendar-behaviors.php:123
 msgid "Edit the jQuery scripts for My Calendar in List format"
-msgstr ""
+msgstr "Uredite jQuery skripte za format seznamov za My Calendar"
 
 #: my-calendar-behaviors.php:134
 msgid "There have been updates to the list view scripts."
-msgstr ""
+msgstr "Skripte za pregled seznamov so bile posodobljene."
 
 #: my-calendar-behaviors.php:149
 msgid "Calendar Behaviors: Mini Calendar View"
-msgstr ""
+msgstr "Vedenje koledarja: pogled majhnega koledarja"
 
 #: my-calendar-behaviors.php:151
 msgid "Update/Reset the My Calendar Mini Format Javascript"
-msgstr ""
+msgstr "Posodobite/resetirajte javascript formata majhnega koledarja"
 
 #: my-calendar-behaviors.php:151
 msgid "Disable Mini Javascript Effects"
-msgstr ""
+msgstr "Onemogoči javascript efekte majhnega koledarja"
 
 #: my-calendar-behaviors.php:154
 msgid "Edit the jQuery scripts for My Calendar in Mini Calendar format"
-msgstr ""
+msgstr "Uredi skripte jQuery za formate My Calendar in Mini Calendar"
 
 #: my-calendar-behaviors.php:165
 msgid "There have been updates to the mini view scripts."
-msgstr ""
+msgstr "Skripte za manjši pogled so bile posodobljene."
 
 #: my-calendar-behaviors.php:181
 msgid "Calendar Behaviors: AJAX Navigation"
-msgstr ""
+msgstr "Vedenje koledarja: AJAX navigacija"
 
 #: my-calendar-behaviors.php:183
 msgid "Update/Reset the My Calendar AJAX Javascript"
-msgstr ""
+msgstr "Posodobite/resetirajte javascript za My Calendar AJAX"
 
 #: my-calendar-behaviors.php:183
 msgid "Disable AJAX Effects"
-msgstr ""
+msgstr "Onemogočite AJAX efekte"
 
 #: my-calendar-behaviors.php:186
 msgid "Edit the jQuery scripts for My Calendar AJAX navigation"
-msgstr ""
+msgstr "Uredite JQuery skripte za My Calendar AJAX navigacijo"
 
 #: my-calendar-behaviors.php:197
 msgid "There have been updates to the AJAX scripts."
-msgstr ""
+msgstr "AJAX skripte so bile posodobljene."
 
 #: my-calendar-behaviors.php:217
 msgid "Resetting JavaScript will set that script to the version currently distributed with the plug-in."
-msgstr ""
+msgstr "Z ponastavljanjem javascript boste nastavili vse skripte na verzijo, ki je trenutno vključena v vtičnik."
 
 #: my-calendar-categories.php:109
 msgid "Category added successfully"
-msgstr ""
+msgstr "Kategorija uspešno dodana"
 
 #: my-calendar-categories.php:111
 msgid "Category addition failed."

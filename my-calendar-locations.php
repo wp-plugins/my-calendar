@@ -7,40 +7,37 @@ if (!empty($_SERVER['SCRIPT_FILENAME']) && 'my-calendar-locations.php' == basena
 // Function to handle the management of locations
 
 function my_calendar_manage_locations() {
-  global $wpdb;
+	global $wpdb;
 	$mcdb = $wpdb;
-  // My Calendar must be installed and upgraded before this will work
-  check_my_calendar();
+	// My Calendar must be installed and upgraded before this will work
+	check_my_calendar();
 	$formats = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%d', '%s' )
 ?>
 <div class="wrap jd-my-calendar">
-<?php 
-my_calendar_check_db();
-?>
-<?php
-  // We do some checking to see what we're doing
+<?php my_calendar_check_db(); 
+	// We do some checking to see what we're doing
 	if ( !empty($_POST) ) {
 		$nonce=$_REQUEST['_wpnonce'];
 		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
 	}
 	if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
 		$add = array(
-		'location_label'=>$_POST['location_label'],
-		'location_street'=>$_POST['location_street'],
-		'location_street2'=>$_POST['location_street2'],
-		'location_city'=>$_POST['location_city'],
-		'location_state'=>$_POST['location_state'],
-		'location_postcode'=>$_POST['location_postcode'],
-		'location_region'=>$_POST['location_region'],
-		'location_country'=>$_POST['location_country'],
-		'location_url'=>$_POST['location_url'],
-		'location_longitude'=>$_POST['location_longitude'],
-		'location_latitude'=>$_POST['location_latitude'],
-		'location_zoom'=>$_POST['location_zoom'],
-		'location_phone'=>$_POST['location_phone']
+			'location_label'=>$_POST['location_label'],
+			'location_street'=>$_POST['location_street'],
+			'location_street2'=>$_POST['location_street2'],
+			'location_city'=>$_POST['location_city'],
+			'location_state'=>$_POST['location_state'],
+			'location_postcode'=>$_POST['location_postcode'],
+			'location_region'=>$_POST['location_region'],
+			'location_country'=>$_POST['location_country'],
+			'location_url'=>$_POST['location_url'],
+			'location_longitude'=>$_POST['location_longitude'],
+			'location_latitude'=>$_POST['location_latitude'],
+			'location_zoom'=>$_POST['location_zoom'],
+			'location_phone'=>$_POST['location_phone']
 		);
 		$results = $mcdb->insert( my_calendar_locations_table(), $add, $formats );
-	  
+		do_action( 'mc_save_location', $results, $add );
 		if ($results) {
 			echo "<div class=\"updated\"><p><strong>".__('Location added successfully','my-calendar')."</strong></p></div>";
 		} else {
@@ -49,6 +46,7 @@ my_calendar_check_db();
     } else if ( isset($_GET['location_id']) && $_GET['mode'] == 'delete') {
 		$sql = "DELETE FROM " . my_calendar_locations_table() . " WHERE location_id=".(int)($_GET['location_id']);
 		$results = $mcdb->query($sql);
+		do_action( 'mc_delete_location', $results, (int) $_GET['location_id'] );		
 		if ($results) {
 			echo "<div class=\"updated\"><p><strong>".__('Location deleted successfully','my-calendar')."</strong></p></div>";
 		} else {
@@ -300,7 +298,7 @@ $mcdb = $wpdb;
            ?>
          <tr class="<?php echo $class; ?>">
 	     <th scope="row"><?php echo $location->location_id; ?></th>
-	     <td><?php echo stripslashes($location->location_label) . "<br />" . stripslashes($location->location_street) . "<br />" . stripslashes($location->location_street2) . "<br />" . stripslashes($location->location_city) . ", " . stripslashes($location->location_state) . " " . stripslashes($location->location_postcode); ?></td>
+	     <td><?php echo stripslashes($location->location_label) . "<br />" . stripslashes($location->location_street) . "<br />" . stripslashes($location->location_city) . ", " . stripslashes($location->location_state) . " " . stripslashes($location->location_postcode); ?></td>
 	     <td><a href="<?php echo admin_url("admin.php?page=my-calendar-locations&amp;mode=edit&amp;location_id=$location->location_id"); ?>" class='edit'><?php _e('Edit','my-calendar'); ?></a></td>
          <td><a href="<?php echo admin_url("admin.php?page=my-calendar-locations&amp;mode=delete&amp;location_id=$location->location_id"); ?>" class="delete" onclick="return confirm('<?php _e('Are you sure you want to delete this category?','my-calendar'); ?>')"><?php _e('Delete','my-calendar'); ?></a></td>
          </tr>

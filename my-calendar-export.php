@@ -44,6 +44,7 @@ URL;VALUE=URI:{link}
 DESCRIPTION;ENCODING=QUOTED-PRINTABLE:{ical_desc}
 END:VEVENT
 END:VCALENDAR";
+	$template = apply_filters( 'mc_single_ical_template', $template, $array );
 	$output = jd_draw_template($array, $template);
 	return $output;
 }
