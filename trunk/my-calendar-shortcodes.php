@@ -2,7 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function my_calendar_insert($atts,$content=null) {
-	$atts = apply_filters( 'mc_filter_calendar',$atts, $content );
 	extract(shortcode_atts(array(
 				'name' => 'all',
 				'format' => 'calendar',
@@ -20,7 +19,7 @@ function my_calendar_insert($atts,$content=null) {
 				'template' => '',
 				'above' => '',
 				'below' => ''
-			), $atts));
+			), $atts, 'my_calendar' ));
 	if ( $format != 'mini' ) {
 		if ( isset($_GET['format']) ) {
 			$format = mysql_real_escape_string($_GET['format']);
@@ -42,7 +41,7 @@ function my_calendar_insert_upcoming($atts) {
 				'show_today' => 'yes',
 				'author' => 'default',
 				'host' => 'default'
-			), $atts));
+			), $atts, 'my_calendar_upcoming' ) );
 	return my_calendar_upcoming_events($before, $after, $type, $category, $template, $fallback, $order, $skip, $show_today, $author );
 }
 
@@ -53,7 +52,7 @@ function my_calendar_insert_today($atts) {
 				'host' => 'default',
 				'template' => 'default',
 				'fallback' => ''
-			), $atts));
+			), $atts, 'my_calendar_today' ));
 	return my_calendar_todays_events($category, $template, $fallback, $author);
 }
 
@@ -62,7 +61,7 @@ function my_calendar_locations($atts) {
 				'show' => 'list',
 				'type' => 'saved',
 				'datatype' => 'name'
-			), $atts));
+			), $atts, 'my_calendar_locations' ) );
 	return my_calendar_locations_list($show,$type,$datatype);
 }
 
@@ -71,14 +70,14 @@ function my_calendar_show_locations_list($atts) {
 				'show' => 'list',
 				'datatype' => 'name',
 				'template' => ''
-			), $atts));
+			), $atts, 'my_calendar_locations_list' ) );
 	return my_calendar_show_locations($show,$datatype,$template);
 }
 
 function my_calendar_categories($atts) {
 	extract(shortcode_atts(array(
 				'show' => 'list'
-			), $atts));
+			), $atts, 'my_calendar_categories' ) );
 	return my_calendar_categories_list( $show );
 }
 
@@ -89,13 +88,13 @@ function my_calendar_show_event($atts) {
 				'list' => '<li>{date}, {time}</li>',
 				'before' => '<ul>',
 				'after' => '</ul>'
-			), $atts));
+			), $atts, 'my_calendar_event' ) );
 	return mc_instance_list( $event, false, $template, $list, $before, $after );
 }
 
 function my_calendar_search($atts) {
 	extract(shortcode_atts(array(
 			'type' => 'simple'
-		), $atts));
+		), $atts, 'my_calendar_search' ) );
 	return my_calendar_searchform($type);
 }

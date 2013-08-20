@@ -4,6 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 function my_calendar_add_feed() {
 	global $wp_rewrite, $wpdb;
 	$mcdb = $wpdb;
+	$changed = get_option( 'mc_modified_feeds' );
 	if ( get_option('mc_show_rss') == 'true' ) {
 		add_feed( 'my-calendar-rss', 'my_calendar_rss' );
 	}
@@ -12,7 +13,8 @@ function my_calendar_add_feed() {
 	}
 	if ( get_option('mc_show_print') == 'true' ) {
 		add_feed( 'my-calendar-print', 'my_calendar_print' );
-	}	
+	}
+	if ( $changed['prev'] != $changed['curr'] ) { flush_rewrite_rules(); update_option( 'mc_modified_feeds', array( 'prev'=>$changed['curr'], 'curr'=>$changed['curr'] ) ); }
 }
 
 if ( ! function_exists( 'is_ssl' ) ) {
@@ -109,6 +111,7 @@ function mc_shift_color( $color ) {
 function my_calendar_wp_head() {
   global $wpdb, $wp_query;
 	$mcdb = $wpdb;
+	$array = array();
   // If the calendar isn't installed or upgraded this won't work
   check_my_calendar();
   $styles = mc_get_style_path( get_option( 'mc_css_file' ),'url' );
@@ -122,10 +125,7 @@ function my_calendar_wp_head() {
 			}
 		} 
 		if ( get_option( 'mc_show_css' ) != '' ) {
-		$array = explode( ",",get_option( 'mc_show_css' ) );
-			if (!is_array($array)) {
-				$array = array();
-			}
+			$array = explode( ",",get_option( 'mc_show_css' ) );
 		}
 		if ( @in_array( $id, $array ) || get_option( 'mc_show_css' ) == '' ) {
 	// generate category colors
@@ -528,6 +528,9 @@ function check_my_calendar() {
 	foreach ($upgrade_path as $upgrade) {
 		switch ($upgrade) {
 		// only upgrade db on most recent version
+			case '2.2.8':
+				delete_option( 'mc_draggable' );
+				break;
 			case '2.2.6':
 				delete_option( 'mc_caching_enabled' ); // remove caching support via options. Filter only.
 				break;
@@ -573,9 +576,6 @@ function check_my_calendar() {
 			case '1.10.0':
 				update_option( 'mc_week_caption',"The week's events" );
 				update_option( 'mc_show_print','false' );
-				break;
-			case '1.9.3':
-				update_option( 'mc_draggable', 0 );
 				break;
 			case '1.9.1':
 				update_option( 'mc_widget_defaults', $defaults);
@@ -954,6 +954,7 @@ function mc_is_selected( $theFieldname,$theValue,$theArray='' ){
 
 function my_calendar_fouc() {
 global $wp_query;
+	$array = array();
 	if ( get_option('mc_calendar_javascript') != 1 || get_option('mc_list_javascript') != 1 || get_option('mc_mini_javascript') != 1 ) {
 		$scripting = "\n<script type='text/javascript'>\n";
 		$scripting .= "jQuery('html').addClass('mcjs');\n";
@@ -966,10 +967,7 @@ global $wp_query;
 				$id = '';
 			}
 			if ( get_option( 'mc_show_js' ) != '' ) {
-			$array = explode( ",",get_option( 'mc_show_js' ) );
-				if ( !is_array( $array ) ) {
-					$array = array();
-				}
+				$array = explode( ",",get_option( 'mc_show_js' ) );
 			}
 			if ( @in_array( $id, $array ) || trim ( get_option( 'mc_show_js' ) ) == '' ) {
 				echo $scripting;
@@ -1046,12 +1044,13 @@ function mc_can_edit_event($author_id) {
 	$user = get_userdata($user_ID);	
 	
 	if ( current_user_can( 'mc_manage_events' ) ) {
-			return true;
-		} elseif ( $user_ID == $author_id ) {
-			return true;
-		} else {
-			return false;
-		}
+		$return = true;
+	} elseif ( $user_ID == $author_id ) {
+		$return = true;
+	} else {
+		$return = false;
+	}
+	return apply_filters( 'mc_can_edit_event', $return, $author_id );	
 }
 
 function jd_option_selected($field,$value,$type='checkbox') {
@@ -1087,12 +1086,11 @@ function my_calendar_admin_bar() {
 	if ( current_user_can( 'mc_add_events' ) ) {
 		$url = admin_url('admin.php?page=my-calendar');
 		$args = array( 'id'=>'my-calendar','title'=>__('Add Event','my-calendar'),'href'=>$url );
-		$wp_admin_bar->add_menu($args);
+		$wp_admin_bar->add_node($args);
 	}
 }
 
 // functions to route db queries
-
 function my_calendar_table() {
 	$option = (int) get_site_option('mc_multisite');
 	$choice = (int) get_option('mc_current_table');
@@ -1156,45 +1154,71 @@ $event = event_as_array($details);
 
 
 // checks submitted events against akismet, if available, otherwise just returns false 
-function mc_akismet( $event_url='', $description='' ) {
-	global $akismet_api_host, $akismet_api_port, $user;
+function mc_spam( $event_url='', $description='', $post=array() ) {
+	global $akismet_api_host, $akismet_api_port, $current_user;
+	get_currentuserinfo();
 	if ( current_user_can( 'mc_manage_events' ) ) { // is a privileged user
 		return 0;
 	} 
+	$bs = $akismet = false;
 	$c = array();
+	// check for Akismet
 	if ( ! function_exists( 'akismet_http_post' ) || ! ( get_option( 'wordpress_api_key' ) || $wpcom_api_key ) ) {
-		return 0;
+		// check for BotSmasher
+		$bs = get_option( 'bs_options' );
+		if ( is_array( $bs ) ) {
+			$bskey = $bs['bs_api_key'];
+		} else {
+			$bskey = '';
+		}
+		if ( !function_exists( 'bs_checker' ) || $bskey == '' ) {
+			return 0; // if neither exist
+		} else {
+			$bs = true;
+		}
+	} else {
+		$akismet = true;
 	}
+	if ( $akismet ) {
+		$c['blog'] = get_option( 'home' );
+		$c['user_ip'] = preg_replace( '/[^0-9., ]/', '', $_SERVER['REMOTE_ADDR'] );
+		$c['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+		$c['referrer'] = $_SERVER['HTTP_REFERER'];
+		$c['comment_type'] = 'my_calendar_event';
+		if ( $permalink = get_permalink() ) { $c['permalink'] = $permalink; }
+		if ( '' != $event_url ) { $c['comment_author_url'] = $event_url; }
+		if ( '' != $description ) {	$c['comment_content'] = $description; }
+		$ignore = array( 'HTTP_COOKIE' );
 
-	$c['blog'] = get_option( 'home' );
-	$c['user_ip'] = preg_replace( '/[^0-9., ]/', '', $_SERVER['REMOTE_ADDR'] );
-	$c['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-	$c['referrer'] = $_SERVER['HTTP_REFERER'];
-	$c['comment_type'] = 'my_calendar_event';
-	if ( $permalink = get_permalink() )
-		$c['permalink'] = $permalink;
-		
-	if ( '' != $event_url )
-		$c['comment_author_url'] = $event_url;
-	if ( '' != $description )
-		$c['comment_content'] = $description;
-
-	$ignore = array( 'HTTP_COOKIE' );
-
-	foreach ( $_SERVER as $key => $value )
-		if ( ! in_array( $key, (array) $ignore ) )
-			$c["$key"] = $value;
-
-	$query_string = '';
-	foreach ( $c as $key => $data )
-		$query_string .= $key . '=' . urlencode( stripslashes( (string) $data ) ) . '&';
-
-	$response = akismet_http_post( $query_string, $akismet_api_host,
-		'/1.1/comment-check', $akismet_api_port );
-	if ( 'true' == $response[1] )
-		return 1;
-	else
-		return 0;
+		foreach ( $_SERVER as $key => $value ) {
+			if ( ! in_array( $key, (array) $ignore ) ) { $c["$key"] = $value; }
+		}
+		$query_string = '';
+		foreach ( $c as $key => $data ) {
+			$query_string .= $key . '=' . urlencode( stripslashes( (string) $data ) ) . '&';
+		}
+		$response = akismet_http_post( $query_string, $akismet_api_host, '/1.1/comment-check', $akismet_api_port );
+		if ( 'true' == $response[1] ) {	return 1; } else {return 0; }
+	}
+	if ( $bs ) {
+		if ( is_user_logged_in() ) {
+			$name = $current_user->user_login;
+			$email = $current_user->user_email;
+		} else {
+			$name = $post['mcs_name'];
+			$email = $post['mcs_email'];
+		}
+		$args = array( 
+			'ip'=>preg_replace( '/[^0-9., ]/', '', $_SERVER['REMOTE_ADDR'] ), 
+			'email'=> $email, 
+			'name'=> $name, 
+			'action'=>'check'
+		);
+		$args['ip'] = "216.152.251.41";
+		$response = bs_checker( $args );
+		if ( $response ) { return 1; } else { return 0; }
+	}
+	return 0;
 }
 
 // duplicate of mc_is_url, which really should have been in this file. Bugger.
@@ -1224,16 +1248,14 @@ add_action('init', 'mc_addbuttons');
 // Add button hooks to the Tiny MCE 
 function mc_addbuttons() {
 	global $mc_version;
-	if (!current_user_can('edit_posts') && !current_user_can('edit_pages') ) {
-		return;
-	}
+	if ( !current_user_can('edit_posts') && !current_user_can('edit_pages') ) { return; }
 	if ( get_user_option('rich_editing') == 'true') {
 		add_filter( 'tiny_mce_version', 'mc_tiny_mce_version', 0 );
 		add_filter( 'mce_external_plugins', 'mc_plugin', 0 );
 		add_filter( 'mce_buttons', 'mc_button', 0 );
 	}
 	// Register Hooks
-	if (is_admin()) {	
+	if (is_admin()) {
 		// Add Quicktag
 		add_action( 'edit_form_advanced', 'mc_add_quicktags' );
 		add_action( 'edit_page_form', 'mc_add_quicktags' );

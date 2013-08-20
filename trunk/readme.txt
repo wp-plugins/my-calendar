@@ -3,9 +3,9 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager, event calendar
 Requires at least: 3.3.0
-Tested up to: 3.6 beta
+Tested up to: 3.6
 License: GPLv2 or later
-Stable tag: trunk
+Stable tag: 2.2.8
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
@@ -46,11 +46,12 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 	* registration status (open, closed or irrelevant), 
 	* event location
 * 	Email notification to administrator when events are scheduled or reserved
-* 	Post to Twitter when new events are created. (with [WP to Twitter](http://wordpress.org/extend/plugins/wp-to-twitter/))
-*	Location Manager for storing frequently used venues
+* 	Post to Twitter when events are created. (with [WP to Twitter](http://wordpress.org/extend/plugins/wp-to-twitter/))
+*	Location Manager for frequently used venues
 *   Fetch events from a remote MySQL database. (Sharing events in a network of sites.)
 *   Import from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/)
 * 	Integrated Help page to guide in use of shortcodes and template tags
+*   New: [Developer Documentation](http://www.joedolson.com/articles/doc-category/my-calendar-3/)
 
 = Translations =
 
@@ -84,6 +85,21 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.2.8 =
+
+* Bug fix: Fix in mini calendar scripting with AJAX.
+* Bug fix: Strict error in My Calendar Search widget.
+* Bug fix: My Calendar screen options disabled other screen options.
+* Updated: Slovenian
+* Documentation error: cat_id, not category_id
+* Added support for <a href="http://wordpress.org/plugins/botsmasher/">BotSmasher</a> as a spam filter for events.
+* Removed location region from Google Maps string (Google Maps choked on that data.)
+* Removed EasyDrag jQuery plug-in due to compatibility issues.
+* Eliminated 4 filters: mc_event_content_{$type}; replaced with single filter mc_event_content with $type parameter.
+* Added support for WP 3.6 shortcode attribute filters.
+* Added more filters & actions. Lots and lots of filters. Actions. Yeah.
+* Maybe I'm the only one excited about the last thing.
 
 = 2.2.7 =
 
@@ -1085,5 +1101,5 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 == Upgrade Notice ==
 
-= 2.2.0 =
-Lots of new features and bug fixes; check out the changelog!
+= 2.2.8 =
+Bug fixes and loads of new filters and actions for developers.

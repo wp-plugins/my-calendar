@@ -55,9 +55,9 @@ if ( isset( $_POST['event_action'] ) ) {
 				if ( $result === false ) {
 					$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Event not updated.','my-calendar')."$url</p></div>";
 				} else if ( $result === 0 ) {
-					$message = "<div class='updated'><p>".__('Nothing was changed in that update.','my-calendar')."$url</p></div>";
+					$message = "<div class='updated'><p>#$event_id: ".__('Nothing was changed in that update.','my-calendar')."$url</p></div>";
 				} else {
-					$message = "<div class='updated'><p>".__('Event updated successfully','my-calendar').".$url</p></div>";
+					$message = "<div class='updated'><p>#$event_id: ".__('Event updated successfully','my-calendar').".$url</p></div>";
 				}
 		}
 	break;
@@ -81,9 +81,9 @@ if ( isset( $_POST['event_action'] ) ) {
 				if ( $result === false ) {
 					$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Event not grouped.','my-calendar')."</p></div>";
 				} else if ( $result === 0 ) {
-					$message = "<div class='updated'><p>".__('Nothing was changed in that update.','my-calendar')."</p></div>";
+					$message = "<div class='updated'><p>#$event_id: ".__('Nothing was changed in that update.','my-calendar')."</p></div>";
 				} else {
-					$message = "<div class='updated'><p>".__('Event grouped successfully','my-calendar')."</p></div>";
+					$message = "<div class='updated'><p>#$event_id: ".__('Event grouped successfully','my-calendar')."</p></div>";
 				}
 		}	
 	break;
@@ -142,6 +142,7 @@ global $wpdb,$event_author;
 		$event_author = (int) ($_POST['event_author']);
 		if ( mc_can_edit_event( $event_author ) ) {	
 			$update = $output[2];
+			$update = apply_filters( 'mc_update_group_data', $update, $event_author, $action, $event_id );
 			$formats = array( 
 						'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
 						'%d','%d','%d','%d','%d',
@@ -156,16 +157,17 @@ global $wpdb,$event_author;
 					'%d' );
 			//$mcdb->print_error();
 			$url = ( get_option('mc_uri') != '' )?' '.sprintf(__('View <a href="%s">your calendar</a>.','my-calendar'),get_option('mc_uri') ):'';
+				do_action( 'mc_save_grouped_events', $result, $event_id, $update );
 				if ( $result === false ) {
-					$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Your event was not updated.','my-calendar')."$url</p></div>";
+					$message = "<div class='error'><p><strong>#$event_id; ".__('Error','my-calendar').":</strong>".__('Your event was not updated.','my-calendar')."$url</p></div>";
 				} else if ( $result === 0 ) {
-					$message = "<div class='updated'><p>".__('Nothing was changed in that update.','my-calendar')."$url</p></div>";
+					$message = "<div class='updated'><p>#$event_id: ".__('Nothing was changed in that update.','my-calendar')."$url</p></div>";
 				} else {
-					$message = "<div class='updated'><p>".__('Event updated successfully','my-calendar').".$url</p></div>";
+					$message = "<div class='updated'><p>#$event_id: ".__('Event updated successfully','my-calendar').".$url</p></div>";
 					mc_delete_cache();
 				}
 		} else {
-			$message = "<div class='error'><p><strong>".__('You do not have sufficient permissions to edit that event.','my-calendar')."</strong></p></div>";
+			$message = "<div class='error'><p><strong>#$event_id: ".__('You do not have sufficient permissions to edit that event.','my-calendar')."</strong></p></div>";
 		}			
 	}
 	$message = $message ."\n". $output[3];
@@ -520,6 +522,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 <?php }
 
 function mc_check_group_data( $action,$post ) {
+	$post = apply_filters( 'mc_groups_pre_checkdata', $post, $action );
 	global $wpdb, $current_user, $users_entries;
 	$mcdb = $wpdb;
 

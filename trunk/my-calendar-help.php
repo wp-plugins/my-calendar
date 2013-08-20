@@ -12,6 +12,7 @@ function my_calendar_help() { ?>
 <div class="postbox">
 	<h3><?php _e('My Calendar Help','my-calendar'); ?></h3>
 	<div class="inside">
+	<?php do_action( 'mc_before_help' ); ?>
 	<ul class="mc-settings">
 		<li><a href="#mc-shortcodes"><?php _e('Shortcodes','my-calendar'); ?></a></li>
 		<li><a href="#icons"><?php _e('Icons','my-calendar'); ?></a></li>
@@ -329,7 +330,7 @@ function my_calendar_help() { ?>
 		<dt><code>{color}</code></dt>
 		<dd><?php _e('Produces the hex code for the current event\'s category color.','my-calendar'); ?></dd>
 
-		<dt><code>{category_id}</code></dt>
+		<dt><code>{cat_id}</code></dt>
 		<dd><?php _e('Displays the ID for
 		 the category the event is in.','my-calendar'); ?></dd>
 		</dl>
@@ -344,36 +345,36 @@ function my_calendar_help() { ?>
 		<dd><?php _e('The ID for the event record associated with the current instance of an event.','my-calendar'); ?></dd>
 
 		</dl>
-
+		<?php do_action( 'mc_after_help' ); ?>
 		</div>
 	</div>
 </div>
 
 <div class="ui-sortable meta-box-sortables" id="get-support">
-<div class="postbox">
-<h3 id="support"><?php _e('Get Plug-in Support','my-calendar'); ?></h3>
-	<div class="inside">
-	<?php if ( current_user_can('administrator') ) { ?>
-		<?php jcd_get_support_form(); ?>
-	<?php } else { ?>
-		<?php _e('My Calendar support requests can only be sent by administrators.','my-calendar'); ?>
-	<?php } ?>	
+	<div class="postbox">
+	<h3 id="support"><?php _e('Get Plug-in Support','my-calendar'); ?></h3>
+		<div class="inside">
+		<?php if ( current_user_can('administrator') ) { ?>
+			<?php jcd_get_support_form(); ?>
+		<?php } else { ?>
+			<?php _e('My Calendar support requests can only be sent by administrators.','my-calendar'); ?>
+		<?php } ?>	
+		</div>
 	</div>
-</div>
-		
-<div class="ui-sortable meta-box-sortables" id="notes">
-<div class="postbox">
-<h3 id="help"><?php _e('Helpful Information','my-calendar'); ?></h3>
-	<div class="inside">
-	<p>
-	<?php _e('<strong>Uninstalling the plugin</strong>: Although the WordPress standard and expectation is for plug-ins to delete any custom database tables when they\'re uninstalled, My Calendar <em>does not do this</em>. This was a conscious decision on my part -- the data stored in your My Calendar tables is yours; with the sole exception of the "General" category, you added every piece of it yourself. As such, I feel it would be a major disservice to you to delete this information if you uninstall the plug-in. As a result, if you wish to get rid of the plug-in completely, you\'ll need to remove those tables yourself. All your My Calendar settings will be deleted, however.','my-calendar'); ?>
-	</p>
-	<p>
-	<?php _e('<strong>Donations</strong>: I appreciate anything you can give. $2 may not seem like much, but it can really add up when thousands of people are using the software. Please note that I am not a non-profit organization, and your gifts are not tax deductible. Thank you!','my-calendar'); ?>
-	</p>
+			
+	<div class="ui-sortable meta-box-sortables" id="notes">
+		<div class="postbox">
+		<h3 id="help"><?php _e('Helpful Information','my-calendar'); ?></h3>
+			<div class="inside">
+			<p>
+			<?php _e('<strong>Uninstalling the plugin</strong>: Although the WordPress standard and expectation is for plug-ins to delete any custom database tables when they\'re uninstalled, My Calendar <em>does not do this</em>. This was a conscious decision on my part -- the data stored in your My Calendar tables is yours; with the sole exception of the "General" category, you added every piece of it yourself. As such, I feel it would be a major disservice to you to delete this information if you uninstall the plug-in. As a result, if you wish to get rid of the plug-in completely, you\'ll need to remove those tables yourself. All your My Calendar settings will be deleted, however.','my-calendar'); ?>
+			</p>
+			<p>
+			<?php _e('<strong>Donations</strong>: I appreciate anything you can give. $2 may not seem like much, but it can really add up when thousands of people are using the software. Please note that I am not a non-profit organization, and your gifts are not tax deductible. Thank you!','my-calendar'); ?>
+			</p>
+			</div>
+		</div>
 	</div>
-</div>
-</div>
 
 </div>
 </div>

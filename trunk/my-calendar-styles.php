@@ -3,23 +3,23 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function mc_get_style_path($filename,$type='path') {
-$wp_plugin_url = plugin_dir_url( __FILE__ );
-$wp_plugin_dir = plugin_dir_path( __FILE__ );
-		if ( strpos( $filename,'mc_custom_' ) === 0 ) {
-			$filename = str_replace('mc_custom_','',$filename);
-			$stylefile = ($type=='path')?str_replace('/my-calendar/','',$wp_plugin_dir).'/my-calendar-custom/styles/'.$filename:str_replace('/my-calendar/','',$wp_plugin_url).'/my-calendar-custom/styles/'.$filename;
+	$wp_plugin_url = plugin_dir_url( __FILE__ );
+	$wp_plugin_dir = plugin_dir_path( __FILE__ );
+	if ( strpos( $filename,'mc_custom_' ) === 0 ) {
+		$filename = str_replace('mc_custom_','',$filename);
+		$stylefile = ($type=='path')?str_replace('/my-calendar/','',$wp_plugin_dir).'/my-calendar-custom/styles/'.$filename:str_replace('/my-calendar/','',$wp_plugin_url).'/my-calendar-custom/styles/'.$filename;
+	} else {
+		$stylefile = ($type=='path')?dirname(__FILE__).'/styles/' . $filename:plugins_url('styles',__FILE__).'/'.$filename;
+	}
+	if ( $type == 'path' ) {
+		if ( is_file($stylefile) ) {
+		return $stylefile;
 		} else {
-			$stylefile = ($type=='path')?dirname(__FILE__).'/styles/' . $filename:plugins_url('styles',__FILE__).'/'.$filename;
+		return false;
 		}
-		if ( $type == 'path' ) {
-			if ( is_file($stylefile) ) {
-			return $stylefile;
-			} else {
-			return false;
-			}
-		} else {
-			return $stylefile;
-		}
+	} else {
+		return $stylefile;
+	}
 }
 
 function mc_is_custom_style( $filename ) {
@@ -50,7 +50,12 @@ function mc_default_style( $filename, $return='content' ) {
 }
 
 function mc_write_styles($stylefile, $my_calendar_style) {
-	if ( is_writeable( $stylefile ) ) {
+	if ( function_exists( 'wp_is_writable' ) ) {
+		$is_writable = wp_is_writable( $stylefile );
+	} else {
+		$is_writable = is_writeable( $stylefile );
+	}
+	if ( $is_writable ) {
 		$f = fopen( $stylefile, 'w+' );
 		fwrite( $f, $my_calendar_style ); // number of bytes to write, max.
 		fclose( $f );
@@ -77,7 +82,7 @@ function edit_my_calendar_styles() {
 		
 		$stylefile = mc_get_style_path($mc_css_file);
 		$wrote_styles = ( $my_calendar_style !== false )?mc_write_styles($stylefile, $my_calendar_style):'disabled';
-		if ($wrote_styles == true) {
+		if ( $wrote_styles == true ) {
 			delete_option('mc_file_permissions');
 			delete_option('mc_style');
 		}

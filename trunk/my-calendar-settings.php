@@ -4,8 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 // Display the admin configuration page
 function my_calendar_import() {
 	if ( get_option('ko_calendar_imported') != 'true' ) {
-	global $wpdb;
-	$mcdb = $wpdb;
+		global $wpdb;
+		$mcdb = $wpdb;
 		define('KO_CALENDAR_TABLE', $mcdb->prefix . 'calendar');
 		define('KO_CALENDAR_CATS', $mcdb->prefix . 'calendar_categories');
 		$events = $mcdb->get_results("SELECT * FROM " . KO_CALENDAR_TABLE, 'ARRAY_A');
@@ -86,11 +86,9 @@ function edit_my_calendar_config() {
 		if ( isset($_POST['remigrate']) ) { 
 			echo "<div class='updated fade'><ol>";
 			echo "<li>".__('Dropping occurrences database table','my-calendar')."</li>";
-			mc_drop_table( 'my_calendar_event_table' );
-			sleep(1);
+			mc_drop_table( 'my_calendar_event_table' );	sleep(1);
 			echo "<li>".__('Reinstalling occurrences database table.','my-calendar')."</li>";
-			mc_upgrade_db(); 
-			sleep(1);
+			mc_upgrade_db(); sleep(1);
 			echo "<li>".__('Generating event occurrences.','my-calendar')."</li>";
 			mc_migrate_db();
 			echo "<li>".__('Event generation completed.','my-calendar')."</li>";
@@ -181,12 +179,12 @@ function edit_my_calendar_config() {
 			// just paste 'em together as a string. All that matters is whether any of them have changed.
 			$prev_show = get_option('mc_show_rss').'-'.get_option('mc_show_ical').'-'.get_option('mc_show_print');
 			$curr_show = "$mc_show_rss-$mc_show_ical-$mc_show_print";
+			update_option( 'mc_modified_feeds', array( 'prev'=>$prev_show, 'curr'=>$curr_show ) );
 		update_option('mc_show_rss',$mc_show_rss);
 		update_option('mc_show_ical',$mc_show_ical);
 		update_option('mc_ical_utc',$mc_ical_utc);
 		update_option('mc_show_print',$mc_show_print);
-		if ( $prev_show != $curr_show ) { $update_text = " ".sprintf(__('Visit your <a href="%s">permalinks settings</a> and re-save them.','my-calendar'),admin_url('options-permalink.php')); } else { $update_text = ''; } 
-		echo "<div class=\"updated\"><p><strong>".__('Output Settings saved','my-calendar').".$update_text</strong></p></div>";
+		echo "<div class=\"updated\"><p><strong>".__('Output Settings saved','my-calendar')."</strong></p></div>";
 	}
 	// input
 	if ( isset($_POST['mc_dates']) ) {
@@ -388,8 +386,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<?php } ?>
 	<li><input type="checkbox" id="mc_event_approve" name="mc_event_approve" <?php mc_is_checked('mc_event_approve','true'); ?> /> <label for="mc_event_approve"><?php _e('Enable approval options.','my-calendar'); ?></label>	</li>
 	<?php
-	$caching = apply_filters( 'mc_caching_enabled', false, $category, $ltype, $lvalue, $author, $host ); 
-	if ( $caching ) { ?>
+	if ( apply_filters( 'mc_caching_clear', false ) ) { ?>
 	<li><input type="checkbox" id="mc_clear_cache" name="mc_clear_cache" value="clear" /> <label for="mc_clear_cache"><?php _e('Clear current cache. (Necessary if you edit shortcodes to change displayed categories, for example.)','my-calendar'); ?></label>
 	</li>	
 	<?php } ?>

@@ -144,7 +144,7 @@ $initial_minijs = '$(function() {
 	 e.preventDefault();	 
 	 $(this).parent().children().not(".trigger").toggle(); 
 	 });
-  $(".mini-event .close").on("click",
+  $(document).on("click", ".mini-event .close",
      function(e) {
          e.preventDefault();
 	 $(this).parent().parent().parent().toggle();
@@ -416,7 +416,6 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option( 'mc_convert','true' );	
 	add_option( 'mc_uri','' );	
 	add_option( 'mc_show_event_vcal','false' );
-	add_option( 'mc_draggable',0 );
 	add_option( 'mc_week_caption',"The week's events" );
 	add_option( 'mc_multisite_show', 0 );
 	add_option( 'mc_event_link', 'true' );
