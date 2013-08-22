@@ -74,7 +74,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 	$date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
 	$data = event_as_array($event);	
 	$details = apply_filters( 'mc_custom_template', false, $data, $event, $type, $process_date, $time, $template );
-	if ( $details !== false ) {
+	if ( $details === false ) {
 		$templates = get_option('mc_templates');
 		if ( $template != '' && file_exists( get_stylesheet_directory() . '/' . $template ) ) {
 			$template = @file_get_contents( get_stylesheet_directory() . '/' . $template );
