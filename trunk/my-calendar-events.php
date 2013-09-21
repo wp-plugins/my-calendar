@@ -97,7 +97,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 	return $arr_events;
 }
 
-function mc_get_rss_events( $cat_id=false) { // JCD TODO: figure out how to output in RSS given new event circumstances...
+function mc_get_rss_events( $cat_id=false) { 
 	global $wpdb;
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }

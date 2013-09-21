@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager, event calendar
 Requires at least: 3.3.0
-Tested up to: 3.6
+Tested up to: 3.6.1
 License: GPLv2 or later
 Stable tag: 2.2.9
 
@@ -58,7 +58,7 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 Available languages (in order of completeness):
 French, Japanese, Dutch, Galician, Spanish, Italian, Danish, Czech, Hindi, Turkish, Finnish, Polish, German, Portuguese, Russian, Swedish, Romanian, Slovenian, Basque, Persian
 
-Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check how complete a translation is.
+Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
 Translating my plug-ins is always appreciated. Visit <a href="http://translate.joedolson.com">my translations site</a> to start getting your language into shape!
 
@@ -85,6 +85,17 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.2.10 =
+
+* Bug fix: date comparison in grouped event date output.
+* Bug fix: editing a single occurrence of an event when location fields not displayed could result in duplicating the event.
+* Bug fix: Duplicated <a> onevent title in events manager.
+* Bug fix: Generated WP to Twitter empty sentence error.
+* Bug fix: Grouped events within a single day in upcoming events list.
+* Added: special value for 'author' attribute of 'current' to only show events created by the logged-in user.
+* Added: date and time to title field for My Calendar RSS feed.
+* Preparation: permission filtering for submissions and registrations add-ons.
 
 = 2.2.9 =
 

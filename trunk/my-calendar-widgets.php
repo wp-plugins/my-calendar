@@ -308,17 +308,20 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 		$i = 0;
 		$last_item = '';
 		$last_id = '';
+		$last_date = '';
 		foreach ( reverse_array($temp_array, true, $order) as $details ) {
 			$item = jd_draw_template($details,$template);
 			if ( $i < $skip && $skip != 0 ) {
 				$i++;
 			} else {
-				if ( $details['group'] !== $last_id || $details['group'] == '0' ) {
+				// if same group, and same date, use it. 
+				if ( ( $details['group'] !== $last_id || $details['date'] == $last_date ) || $details['group'] == '0' ) {
 					$output .= ( $item == $last_item )?'':"<li>$item</li>";	
 				}				
 			}
 			$last_id = $details['group']; // prevent group events from displaying in a row. Not if there are intervening events.
 			$last_item = $item;
+			$last_date = $details['date'];
 		}
 	} else {
 		$caching = apply_filters( 'mc_cache_enabled', false );

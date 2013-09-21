@@ -54,7 +54,8 @@ function mc_selected_users( $selected ) {
 	$options = '';
 	foreach($users as $u) {
 		if ( in_array( $u->ID, $selected ) ) { $checked = ' checked="checked"'; } else { $checked = ''; }
-		$options = '<option value="'.$u->ID.'"'.$checked.'>'.$u->display_name."</option>\n";
+		$display_name = ( $u->display_name == '' ) ? $u->user_nicename : $u->display_name;
+		$options = '<option value="'.$u->ID.'"'.$checked.">$display_name</option>\n";
 	}
 	return $options;
 } 
@@ -879,7 +880,7 @@ function check_my_calendar() {
 	}
 }
 // @data object with event_category value
-function mc_category_select( $data=false ) {
+function mc_category_select( $data=false, $option=true ) {
 	global $wpdb;
 	$mcdb=$wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
@@ -901,6 +902,10 @@ function mc_category_select( $data=false ) {
 			} else {
 				$default = $c;
 			}
+		}
+		if ( !$option ) {
+			$default = ( get_option( 'mc_default_category' ) ) ? get_option( 'mc_default_category' ) : 1 ;
+			return ( is_object( $data ) ) ? $data->event_category : $default;
 		}
 		return $default.$list;
 }
@@ -1777,7 +1782,16 @@ function xml_entities($text, $charset = 'UTF-8'){
 	//echo $text;
     return preg_replace($pattern, $replacement, $text);
 }
+
 // Actions -- these are action hooks attached to My Calendar events, usable to add additional actions during those events.
+
+add_action( 'init', 'mc_register_actions' );
+function mc_register_actions() {
+	apply_filters( "debug", 'my_calendar add actions/filters' );
+	add_action( 'mc_event_registration', 'mc_standard_event', 10, 2 );
+	add_action( 'mc_transition_event', 'mc_tweet_approval', 10, 2 );
+}
+
 // Actions are only performed after their respective My Calendar events have been successfully completed.
 // If there are errors in the My Calendar event, the action hook will not fire.
 /*

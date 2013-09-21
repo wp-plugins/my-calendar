@@ -368,7 +368,8 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 					} else if(  is_object($u) && $u->ID == $user->ID && empty($data->event_host) ) {
 				    echo ' selected="selected"';
 					}
-				echo '>'.$u->display_name."</option>\n";
+				$display_name = ( $u->display_name == '' ) ? $u->user_nicename : $u->display_name;
+				echo ">$display_name</option>\n";
 			}
 		?>
 	</select>

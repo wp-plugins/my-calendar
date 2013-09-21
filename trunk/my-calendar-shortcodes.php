@@ -25,6 +25,10 @@ function my_calendar_insert($atts,$content=null) {
 			$format = mysql_real_escape_string($_GET['format']);
 		}
 	}
+	if ( $author == 'current' ) {
+		global $user_ID;
+		$author = $user_ID;
+	}
 	return my_calendar($name, $format, $category, $showkey, $shownav, $showjump, $toggle, $time, $ltype, $lvalue, $id, $template, $content, $author, $host, $above, $below );
 }
 

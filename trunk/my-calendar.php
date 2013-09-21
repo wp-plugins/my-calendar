@@ -360,11 +360,19 @@ function my_calendar_menu() {
 		add_submenu_page('my-calendar', __('My Calendar Help','my-calendar'), __('Help','my-calendar'), 'mc_view_help', 'my-calendar-help', 'my_calendar_help');		
 	}
 	if ( function_exists( 'mcs_submissions' ) ) {
+		$permission = apply_filters( 'mcs_submission_permissions', 'manage_options' );
 		add_action( "admin_head", 'my_calendar_sub_js' );		
 		add_action( "admin_head", 'my_calendar_sub_styles' );	
-		add_submenu_page('my-calendar', __('Event Submissions','my-calendar'), __('Event Submissions','my-calendar'), 'manage_options', 'my-calendar-submissions', 'mcs_settings');
-		add_submenu_page('my-calendar', __('Payments','my-calendar'), __('Payments','my-calendar'), 'manage_options', 'my-calendar-payments', 'mcs_sales_page');
+		add_submenu_page('my-calendar', __('Event Submissions','my-calendar'), __('Event Submissions','my-calendar'), $permission, 'my-calendar-submissions', 'mcs_settings');
+		add_submenu_page('my-calendar', __('Payments','my-calendar'), __('Payments','my-calendar'), $permission, 'my-calendar-payments', 'mcs_sales_page');
 	}
+	if ( function_exists( 'mcr_registrations' ) ) {
+		$permission = apply_filters( 'mcr_registration_permissions', 'manage_options' );
+		add_action( "admin_head", 'mcr_sub_js' );		
+		add_action( "admin_head", 'mcr_reg_styles' );	
+		add_submenu_page('my-calendar', __('Event Registrations','my-calendar'), __('Event Registrations','my-calendar'), $permission, 'my-calendar-registrations', 'mcr_settings');
+		add_submenu_page('my-calendar', __('Registration Payments','my-calendar'), __('Registration Payments','my-calendar'), $permission, 'mcr-payments', 'mcr_sales_page');
+	}	
 }
 
 function mc_event_editing() {
