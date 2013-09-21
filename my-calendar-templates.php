@@ -342,9 +342,11 @@ function mc_format_date_span( $dates, $display='simple',$default='' ) {
 		foreach ($dates as $date ) {
 			$begin = $date->occur_begin;
 			$end = $date->occur_end;
+				$day_begin = date( 'Y-m-d', $date->occur_begin );
+				$day_end = date( 'Y-m-d', $date->occur_end );
 			$bformat = "<span class='multidate-date'>".date_i18n( get_option('mc_date_format'),strtotime( $begin ) ).'</span> <span class="multidate-time">'.date_i18n( get_option('mc_time_format'), strtotime( $begin ) )."</span>";
 			$endtimeformat = ($date->occur_end == '00:00:00')?'':' '.get_option('mc_time_format');
-			$eformat = ($date->occur_begin != $date->occur_end)?get_option('mc_date_format').$endtimeformat:$endtimeformat;
+			$eformat = ( $day_begin != $day_end )?get_option('mc_date_format').$endtimeformat:$endtimeformat;
 			$span = ($eformat != '')?" <span>&ndash;</span> <span class='multidate-end'>":'';
 			$endspan = ($eformat != '')?"</span>":'';
 			$return .= "<li>$bformat".$span.date_i18n( $eformat,strtotime( $end ))."$endspan</li>";

@@ -58,3 +58,4 @@ ul.links li {float: left;margin: 0 5px 10px;font-size: .9em}
 .jd-my-calendar .tablenav {  float: right}
 input[id=event_label], input[id=event_title], input[id=location_label], input[id=mc_twitter] { font-size: 1.4em; padding: 5px; width: 100%}
 label[for=mc_twitter] { background: url(images/twitter.png) no-repeat; padding-left: 20px; }
+strong.label { font-weight: 400; }

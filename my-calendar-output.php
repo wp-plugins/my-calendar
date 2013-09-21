@@ -1099,7 +1099,10 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 									// set up no events
 									if ( $format != "list" ) {
 										$weekend_class = ( $is_weekend )?'weekend':'';
-										$my_calendar_body .= "\n<td class='no-events $dayclass $dateclass $weekend_class $monthclass day-with-date'><span class='mc-date no-events'>$thisday_heading</span></td>\n";
+										$my_calendar_body .= "
+												<td class='no-events $dayclass $dateclass $weekend_class $monthclass day-with-date'>
+													<span class='mc-date no-events'>$thisday_heading</span>
+												</td>\n";
 									} else {
 										if ( $show_all == true ) {
 											$my_calendar_body .= "
@@ -1354,7 +1357,7 @@ $home = '';
 		} else if ( is_archive() ) {
 			$home = ''; // an empty string seems to work best; leaving it open.
 		} else {
-			wp_reset_query(); // break out of any alternate loop that's been set up.
+			wp_reset_query(); // break out of any alternate loop that's been set up. If a theme uses query_posts to fetch pages, this will cause problems. But themes should *never* use query_posts to replace the loop, so screw that.
 			$home = get_permalink();
 		}
 	}
@@ -1434,7 +1437,7 @@ function my_calendar_searchform($type) {
 	return '
 	<form role="search" method="get" id="mcsearchform" action="'.home_url().'" >
 	<div><label class="screen-reader-text" for="mcs">'.__('Search events:','my-calendar').'</label>
-	<input type="text" value="'.esc_attr(stripslashes($query)).'" name="mcs" id="mcs" />
+	<input type="text" value="'.stripslashes($query).'" name="mcs" id="mcs" />
 	<input type="submit" id="searchsubmit" value="'.__('Search Events','my-calendar').'" />
 	</div>
 	</form>';

@@ -62,7 +62,7 @@ $single_template = addslashes('<span class="event-time dtstart" title="{dtstart}
 <p><a href="{link}" class="event-link external">{title}</a></p></div>');
 
 $rss_template = addslashes("\n<item>
-    <title>{title}</title>
+    <title>{title}: {date}, {time}</title>
     <link>{link}</link>
 	<pubDate>{rssdate}</pubDate>
 	<dc:creator>{author}</dc:creator>  	
