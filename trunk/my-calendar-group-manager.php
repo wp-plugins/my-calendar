@@ -302,12 +302,9 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 <input type="hidden" name="event_nonce_name" value="<?php echo wp_create_nonce('event_nonce'); ?>" />
 </div>
 <div class="ui-sortable meta-box-sortables">
-<div class="postbox">	
+	<div class="postbox">	
 	<h3><?php _e('Manage Event Groups','my-calendar'); ?></h3>
 	<div class="inside">
-			<p>
-                <input type="submit" name="save" class="button-primary" value="<?php _e('Edit Event Group','my-calendar'); ?>" />
-			</p>
         <fieldset>
 		<legend><?php _e('Enter your Event Information','my-calendar'); ?></legend>
 		<p>
@@ -392,7 +389,10 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			</p>
 			<?php } ?>
 			</fieldset>
-</div>
+			<p>
+                <input type="submit" name="save" class="button-primary" value="<?php _e('Edit Event Group','my-calendar'); ?>" />
+			</p>			
+	</div>
 </div>
 </div>
 <?php if ($mc_input['event_open'] == 'on' || $mc_input_administrator ) { 

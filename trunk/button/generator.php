@@ -75,12 +75,14 @@ do_action('admin_head');
                     </select>
 					</p>
 					<p>
-					<label for="above"><?php _e('Navigation above calendar','my-calendar'); ?></label>
-					<input type="text" name="above" id="above" value="nav,toggle,jump,print,timeframe" />
+					<label for="above" id='labove'><?php _e('Navigation above calendar','my-calendar'); ?></label>
+					<input type="text" name="above" id="above" value="nav,toggle,jump,print,timeframe" aria-labelledby='labove aboveLabel' /><br />
+					<em id="aboveLabel"><?php _e('Use "none" for no navigation.','my-calendar'); ?></em>
 					</p>
 					<p>
-					<label for="below"><?php _e('Navigation below calendar','my-calendar'); ?></label>
-					<input type="text" name="below" id="below" value="key,feeds" />
+					<label for="below" id='lbelow'><?php _e('Navigation below calendar','my-calendar'); ?></label>
+					<input type="text" name="below" id="below" value="key,feeds" aria-labelledby='lbelow belowLabel' /><br />
+					<em id="belowLabel"><?php _e('Use "none" for no navigation.','my-calendar'); ?></em>
 					</p>					
 					<p>
 					<label for="time"><?php _e('Time Segment', 'my-calendar'); ?></label>

@@ -56,7 +56,7 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 = Translations =
 
 Available languages (in order of completeness):
-French, Japanese, Dutch, Galician, Spanish, Italian, Danish, Czech, Hindi, Turkish, Finnish, Polish, German, Portuguese, Russian, Swedish, Romanian, Slovenian, Basque, Persian
+French, Japanese, Dutch, German, Galician, Spanish, Italian, Danish, Czech, Hindi, Turkish, Finnish, Slovenian, Polish, Portuguese, Russian, Swedish, Romanian, Basque, Persian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -93,9 +93,13 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Bug fix: Duplicated <a> onevent title in events manager.
 * Bug fix: Generated WP to Twitter empty sentence error.
 * Bug fix: Grouped events within a single day in upcoming events list.
-* Added: special value for 'author' attribute of 'current' to only show events created by the logged-in user.
+* Changed: replaced mc_is_mobile() functionality with native wp_is_mobile(). Filterable for My Calendar using 'mc_is_mobile' filter.
+* Changed: properly registered and enqueue most front-end styles.
+* Changed: Removed classes 'prevMonth' and 'nextMonth' from navigation.
+* Added: special value for 'author' and 'host' attributes of 'current' to only show events created by the logged-in user. Filter via 'mc_display_author' and 'mc_display_host'
 * Added: date and time to title field for My Calendar RSS feed.
 * Preparation: permission filtering for submissions and registrations add-ons.
+* Updated: German & Slovenian Translations.
 
 = 2.2.9 =
 

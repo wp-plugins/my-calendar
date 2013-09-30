@@ -536,9 +536,6 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 <div class="postbox">	
 	<h3><?php _e('Add/Edit Event','my-calendar'); ?> <small>(<a href="<?php echo admin_url('admin.php?page=my-calendar-manage'); ?>"><?php _e('Edit events','my-calendar'); ?></a>)</small></h3>
 	<div class="inside">
-		<p>
-			<input type="submit" name="save" class="button-primary" value="<?php _e('Save Event','my-calendar'); ?>" />
-		</p>	
 <?php
 	if ( !empty( $_GET['date'] ) && $data->event_recur != 'S' ) {
 		$event = mc_get_event( $instance );
@@ -751,6 +748,9 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 			</p>
 			</div>
 			</fieldset>
+		<p>
+			<input type="submit" name="save" class="button-primary" value="<?php _e('Save Event','my-calendar'); ?>" />
+		</p>			
 </div>
 </div>
 </div>
@@ -1174,7 +1174,7 @@ function jd_events_display_list( $type='normal' ) {
 				<?php if ($event->event_time != "00:00:00") { $eventTime = date_i18n(get_option('mc_time_format'), strtotime($event->event_time)); } else { $eventTime = get_option('mc_notime_text'); } ?>
 				<td><?php $begin = date_i18n( get_option('mc_date_format'), strtotime( $event->event_begin ) ); echo "$begin, $eventTime"; ?>
 					<div class="recurs">
-					<strong><?php _e('Recurs:','my-calendar'); ?></strong> 
+					<strong><?php _e('Recurs','my-calendar'); ?></strong> 
 						<?php 
 						$recurs = str_split( $event->event_recur, 1 );
 						$recur = $recurs[0];

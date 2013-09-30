@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 2.2.9
+Version: 2.2.10
 */
 /*  Copyright 2009-2013  Joe Dolson (email : joe@joedolson.com)
 
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 apply_filters("debug", "MC Started");
 
 global $mc_version, $wpdb;
-$mc_version = '2.2.9';
+$mc_version = '2.2.10';
 
 // Define the tables used in My Calendar
 if ( function_exists('is_multisite') && is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
@@ -88,9 +88,6 @@ if ( version_compare( get_bloginfo( 'version' ) , '3.0' , '<' ) && is_ssl() ) {
 	$wp_content_url = get_option( 'siteurl' );
 }
 
-$wp_plugin_url = plugin_dir_url( __FILE__ );
-$wp_plugin_dir = plugin_dir_path( __FILE__ );
-
 // Add actions
 add_action( 'admin_menu', 'my_calendar_menu' );
 add_action( 'wp_head', 'my_calendar_wp_head' );
@@ -120,7 +117,7 @@ function mc_event_filter( $title, $sep, $seplocation ) {
 		$array = event_as_array( $event );
 		$left_sep = ( $seplocation != 'right' ? ' ' . $sep . ' ' : '' );
 		$right_sep = ( $seplocation != 'right' ? '' : ' ' . $sep . ' ' );		
-		$template = ( get_option( 'mc_event_title_template' ) != '' )? stripslashes( get_option( 'mc_event_title_template' ) ):"$left_sep {title} $sep {date} $right_sep ";
+		$template = ( get_option( 'mc_event_title_template' ) != '' )? stripslashes( get_option( 'mc_event_title_template' ) ):"$left_sep {title} $sep {date} $right_sep ";		
 		return strip_tags(jd_draw_template( $array, $template ) );
 	} else {
 		return $title;
@@ -174,9 +171,9 @@ function jd_show_support_box( $show='', $add=false, $remove=false ) {
 				<ul>
 					<li><strong><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>#get-started"><?php _e("Getting Started",'my-calendar'); ?></strong></a></li>								
 					<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>#get-support"><?php _e("Get Support",'my-calendar'); ?></a></li>
-					<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>"><?php _e("My Calendar Help",'my-calendar'); ?></a></li>				
+					<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>"><?php _e("My Calendar Help",'my-calendar'); ?></a></li>
 					<li><a href="http://profiles.wordpress.org/users/joedolson/"><?php _e('Check out my other plug-ins','my-calendar'); ?></a></li>
-					<li><a href="http://wordpress.org/extend/plugins/my-calendar/"><?php _e('Rate this plug-in 5 stars!','my-calendar'); ?></a></li>
+					<li><a href="http://wordpress.org/support/view/plugin-reviews/my-calendar"><?php _e('Rate this plug-in 5 stars!','my-calendar'); ?></a></li>
 					<li><a href="http://translate.joedolson.com/projects/my-calendar"><?php _e('Help translate this plug-in!','my-calendar'); ?></a></li>					</ul>
 			</div>
 			</div>
@@ -271,13 +268,13 @@ function jd_show_support_box( $show='', $add=false, $remove=false ) {
 		<dd><?php _e('Second line of the site address.','my-calendar'); ?></dd>
 
 		<dt><code>{city}</code></dt>
-		<dd><?php _e('City.','my-calendar'); ?></dd>
+		<dd><?php _e('City','my-calendar'); ?></dd>
 
 		<dt><code>{state}</code></dt>
-		<dd><?php _e('State.','my-calendar'); ?></dd>
+		<dd><?php _e('State','my-calendar'); ?></dd>
 
 		<dt><code>{postcode}</code></dt>
-		<dd><?php _e('Postal code/zip code.','my-calendar'); ?></dd>
+		<dd><?php _e('Postal Code','my-calendar'); ?></dd>
 
 		<dt><code>{region}</code></dt>
 		<dd><?php _e('Custom region.','my-calendar'); ?></dd>

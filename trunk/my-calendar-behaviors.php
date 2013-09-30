@@ -199,9 +199,6 @@ my_calendar_check_db();
 		echo '</em></div>';
 	}
 	?>		
-	<p>
-		<input type="submit" name="save" class="button-secondary" value="<?php _e('Save','my-calendar'); ?>" />
-	</p>	
 	</fieldset>	
 
 	<p>

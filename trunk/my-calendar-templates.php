@@ -133,7 +133,6 @@ function mc_hcard( $event, $address='true', $map='true', $source='event' ) {
 
 // Produces the array of event details used for drawing templates
 function event_as_array($event,$type='html') {
-	global $wp_plugin_dir,$wp_plugin_url;
 	// My Calendar must be updated to run this function
 	check_my_calendar();
 	$details = array();
