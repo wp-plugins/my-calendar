@@ -70,22 +70,18 @@ function my_calendar_help() { ?>
 	<li><code>author</code>: <?php _e('Author or comma-separated list of authors (usernames or IDs) to show events from.','my-calendar'); ?></li>
 	<li><code>host</code>: <?php _e('Host or comma-separated list of hosts (WordPress usernames or IDs) to show events from.','my-calendar'); ?></li>
 	<li><code>id</code>: <?php _e('String to give this specific calendar shortcode a unique ID. Use when showing multiple calendars in a Page or post.','my-calendar'); ?></li>
-	<li><code><del>showkey</del></code>: <strong><?php _e('Deprecated','my-calendar'); ?></strong> <?php _e('Use "key" in <code>above</code> or <code>below</code>','my-calendar'); ?></li>
-	<li><code><del>shownav</del></code>: <strong><?php _e('Deprecated','my-calendar'); ?></strong> <?php _e('Use "nav" in <code>above</code> or <code>below</code>','my-calendar'); ?></li>
-	<li><code><del>showjump</del></code>: <strong><?php _e('Deprecated','my-calendar'); ?></strong>  <?php _e('Use "jump" in <code>above</code> or <code>below</code>','my-calendar'); ?></li>
-	<li><code><del>toggle</del></code>: <strong><?php _e('Deprecated','my-calendar'); ?></strong> <?php _e('Use "toggle" in <code>above</code> or <code>below</code>','my-calendar'); ?></li>
 	</ul>
 <p>
-<em><?php _e('The main My Calendar short code can be generated from a button in your post and page editor. The mini calendar can also be accessed and configured as a widget.','my-calendar'); ?></em>
+<em><?php _e('The main My Calendar shortcode can be generated from a button in your post and page editor. The mini calendar can also be accessed and configured as a widget.','my-calendar'); ?></em>
 </p>
 <h4><?php _e('Additional Calendar Views (Upcoming events, today\'s events)','my-calendar'); ?></h4>
 <p class="example"><code>[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" author="1" template="{title} {date}" order="asc" show_today="yes" skip="0"]</code></p>
 <p>
-	<?php _e('This shortcode displays the output of the Upcoming Events widget. The <code>before</code> and <code>after</code> attributes should be numbers; the <code>type</code> attribute can be either "event" or "days", and the <code>category</code> and <code>author</code> attributes work the same way as on the main calendar shortcode. Templates work using the template codes listed below. <code>fallback</code> provides text in case there are no events meeting your criteria. Order provides a sort order for the events list &ndash; either ascending (<code>asc</code>) or descending (<code>desc</code>). <code>show_today</code> is an indicator whether or not to include today\'s events in the list. <code>Skip</code> is the number of events to skip in the upcoming events.','my-calendar'); ?>
+	<?php _e('Displays the output of the Upcoming Events widget. The <code>before</code> and <code>after</code> attributes should be numbers; the <code>type</code> attribute can be either "event" or "days", and the <code>category</code> and <code>author</code> attributes work the same way as on the main calendar shortcode. Templates work using the template codes listed below. <code>fallback</code> provides text in case there are no events meeting your criteria. Order provides a sort order for the events list &ndash; either ascending (<code>asc</code>) or descending (<code>desc</code>). <code>show_today</code> is an indicator whether or not to include today\'s events in the list. <code>Skip</code> is the number of events to skip in the upcoming events.','my-calendar'); ?>
 </p>
 <p class="example"><code>[my_calendar_today category="" author="1" fallback="Nothing today!" template="{title} {date}"]</code></p>
 <p>
-	<?php _e('Predictably enough, this shortcode displays the output of the Today\'s Events widget, with four configurable attributes: category, author, template and fallback text.','my-calendar'); ?>
+	<?php _e('Displays the output of the Today\'s Events widget, with four configurable attributes: category, author, template and fallback text.','my-calendar'); ?>
 </p>
 <p>
 <em><?php _e('Both Upcoming Events and Today\'s Events can also be configured using widgets.','my-calendar'); ?></em>
@@ -99,49 +95,46 @@ function my_calendar_help() { ?>
 
 <p class="example"><code>[my_calendar_locations show="list" type="saved" datatype="name"]</code></p>
 <p>
-	<?php _e('This shortcode produces a list of event locations, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>, <code>type</code> is either <code>saved</code> (to show items from your stored locations), or <code>custom</code> (to show the options configured in your user settings). <code>datatype</code> must be the type of data your limits are choosing from: <code>name</code> (business name), <code>city</code>, <code>state</code>, <code>country</code>, <code>zip</code> (postal code), or <code>region</code>.','my-calendar'); ?>
+	<?php _e('List of event locations, either as a list of links or as a select form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>, <code>type</code> is either <code>saved</code> (to show items from your stored locations), or <code>custom</code> (to show the options configured in your user settings). <code>datatype</code> must be the type of data your limits are choosing from: <code>name</code> (business name), <code>city</code>, <code>state</code>, <code>country</code>, <code>zip</code> (postal code), or <code>region</code>.','my-calendar'); ?>
 </p>
 <p class="example"><code>[my_calendar_show_locations datatype="" template=""]</code></p>
 <p>
-	<?php _e('If you want to display a list of locations in your database, use this shortcode. The <code>datatype</code> is the type of data displayed; all lists will include a link to the map of that location. In addition to basic location information as in the above shortcode, you can also use "hcard" to display all available location information.','my-calendar'); ?>
-	<?php _e('Use the <code>template</code> attribute to show your own customized set of data. The data will be sorted by the <code>datatype</code> value.','my-calendar'); ?>
+	<?php _e('Display a list of locations. The <code>datatype</code> is the type of data displayed; all lists will include a link to the map of that location. In addition to basic location information as in the above shortcode, you can also use "hcard" to display all available location information.','my-calendar'); ?>
+	<?php _e('Use the <code>template</code> attribute to show your customized set of data. Sorted by the <code>datatype</code> value.','my-calendar'); ?>
 	</p>
 <p class="example"><code>[my_calendar_categories show="list"]</code></p>
 <p>
-	<?php _e('This shortcode produces a list of event categories, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>.','my-calendar'); ?>
+	<?php _e('List of event categories, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>.','my-calendar'); ?>
 </p>	
 </div>
 </div>
-
 
 <div class="ui-sortable meta-box-sortables" id="icons">
 	<div class="postbox">
 	<h3><?php _e('Category Icons','my-calendar'); ?></h3>
 		<div class="inside">	
 		<p>
-		<?php _e('My Calendar is designed to manage multiple calendars. The basis for these calendars are categories; you can easily setup a calendar page which includes all categories, or you can dedicate separate pages to calendars in each category. For an example, this might be useful for you in managing the tour calendars for multiple bands; event calendars for a variety of locations, etc.','my-calendar'); ?>
+		<?php _e('My Calendar is designed to manage multiple calendars. The basis for these calendars are categories; you can setup a calendar page which includes all categories, or you can dedicate separate pages to calendars in each category. For an example, this might be useful for you in managing the tour calendars for multiple bands; event calendars for a variety of locations, etc.','my-calendar'); ?>
 		</p>
 		<p>
-		<?php _e('The pre-installed category icons may not be especially useful for your needs or design. I\'m assuming that you\'re going to upload your own icons -- all you need to do is upload them to the plugin\'s icons folder, and they\'ll be available for immediate use, or place them in a folder at "my-calendar-custom" to avoid having them overwritten by upgrades.','my-calendar'); ?> <?php _e('Your icons folder is:','my-calendar'); ?> <code><?php echo plugin_dir_path( __FILE__ ).'icons/'; ?></code> <?php _e('You can alternately place icons in:','my-calendar'); ?> <code><?php echo str_replace( '/my-calendar','',plugin_dir_path( __FILE__ ) ).'my-calendar-custom/'; ?></code>
+		<?php _e('The pre-installed category icons may not be what you need. I assume that you\'ll upload your own icons -- place your custom icons in a folder at "my-calendar-custom" to avoid having them overwritten by upgrades.','my-calendar'); ?> <?php _e('You can alternately place icons in:','my-calendar'); ?> <code><?php echo str_replace( '/my-calendar','',plugin_dir_path( __FILE__ ) ).'my-calendar-custom/'; ?></code>
 		</p>
 		</div>
 	</div>
 </div>
-
 
 <div class="ui-sortable meta-box-sortables" id="mc-styles">
 	<div class="postbox">
 	<h3><?php _e('Custom Styles','my-calendar'); ?></h3>
 		<div class="inside">	
 		<p>
-		<?php _e('My Calendar comes with four basic stylesheets. My Calendar will retain changes to these basic stylesheets on upgrade, but if you want to add an entirely new stylesheet, you may wish to store it in the My Calendar custom styles directory.','my-calendar'); ?>
+		<?php _e('My Calendar comes with five default stylesheets. My Calendar will retain your changes to stylesheets, but if you want to add an entirely new stylesheet, you may wish to store it in the My Calendar custom styles directory.','my-calendar'); ?>
 		</p>
 		<ul>
-		<li><?php _e('Your stylesheet directory is','my-calendar'); ?>: <code><?php echo plugin_dir_path( __FILE__ ).'styles/'; ?></code></li>
-		<li><?php _e('Your custom stylesheets directory is','my-calendar'); ?>: <code><?php echo str_replace( '/my-calendar','',plugin_dir_path( __FILE__ ) ).'my-calendar-custom/styles/'; ?></code></li>
+		<li><?php _e('Your custom style directory is','my-calendar'); ?>: <code><?php echo str_replace( '/my-calendar','',plugin_dir_path( __FILE__ ) ).'my-calendar-custom/styles/'; ?></code></li>
 		</ul>
 		<p>
-		<?php _e('You can also add custom styles to your theme directory to provide print styles, mobile styles, and tablet styles. <code>mc-print.css</code>, <code>mc-mobile.css</code>, and <code>mc-tablet.css</code>.','my-calendar'); ?>
+		<?php _e('You can also add custom styles to your custom directory or your theme directory for print styles, mobile styles, and tablet styles. <code>mc-print.css</code>, <code>mc-mobile.css</code>, and <code>mc-tablet.css</code>.','my-calendar'); ?>
 		</p>
 		</div>
 	</div>

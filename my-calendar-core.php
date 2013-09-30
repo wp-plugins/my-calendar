@@ -4,17 +4,9 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 function my_calendar_add_feed() {
 	global $wp_rewrite, $wpdb;
 	$mcdb = $wpdb;
-	$changed = get_option( 'mc_modified_feeds' );
-	if ( get_option('mc_show_rss') == 'true' ) {
-		add_feed( 'my-calendar-rss', 'my_calendar_rss' );
-	}
-	if ( get_option('mc_show_ical') == 'true' ) {
-		add_feed( 'my-calendar-ics', 'my_calendar_ical' );
-	}
-	if ( get_option('mc_show_print') == 'true' ) {
-		add_feed( 'my-calendar-print', 'my_calendar_print' );
-	}
-	if ( $changed['prev'] != $changed['curr'] ) { flush_rewrite_rules(); update_option( 'mc_modified_feeds', array( 'prev'=>$changed['curr'], 'curr'=>$changed['curr'] ) ); }
+	add_feed( 'my-calendar-rss', 'my_calendar_rss' );
+	add_feed( 'my-calendar-ics', 'my_calendar_ical' );
+	add_feed( 'my-calendar-print', 'my_calendar_print' );
 }
 
 if ( ! function_exists( 'is_ssl' ) ) {
@@ -103,70 +95,113 @@ function mc_shift_color( $color ) {
             $c = hexdec(substr($color,(2*$x),2)) + $per;
             $c = ($c > 255) ? 'ff' : dechex($c);
             $rgb .= (strlen($c) < 2) ? '0'.$c : $c;
-        }   
+        }
     }
     return '#'.$rgb; 	
 }
 
-// Function to add the calendar style into the header
-function my_calendar_wp_head() {
-  global $wpdb, $wp_query;
-	$mcdb = $wpdb;
-	$array = array();
-  // If the calendar isn't installed or upgraded this won't work
-  check_my_calendar();
-  $styles = mc_get_style_path( get_option( 'mc_css_file' ),'url' );
+function mc_file_exists( $file ) {
+	$dir = plugin_dir_path( __FILE__ );
+	$base = basename( $dir );
+	$return = apply_filters( 'mc_file_exists', false, $file );
+	if ( $return ) { return true; }
+	if ( file_exists( get_stylesheet_directory() . '/' . $file ) ) { return true; }
+	if ( file_exists( str_replace($base,'my-calendar-custom',$dir ) . $file ) ) { return true; }
+	return false;
+}
+
+function mc_get_file( $file, $type='path' ) {
+	$dir = plugin_dir_path( __FILE__ );
+	$url = plugin_dir_url( __FILE__ );
+	$base = basename( $dir );
+	if ( file_exists( get_stylesheet_directory() . '/' . $file ) ) { 
+		$path = ( $type == 'path' ) ? get_stylesheet_directory() . '/' . $file : get_stylesheet_directory_uri() .'/'. $file;
+	}
+	if ( file_exists( str_replace($base,'my-calendar-custom',$dir ).$file ) ) { 
+		$path = ( $type == 'path' ) ? str_replace($base,'my-calendar-custom',$dir ).$file : str_replace($base,'my-calendar-custom',$url ).$file; 
+	}
+	$path = apply_filters( 'mc_get_file', $path, $file );
+	return $path;
+}
+
+add_action( 'wp_enqueue_scripts', 'mc_register_styles' );
+function mc_register_styles() {
+	global $wp_query;
+	$stylesheet = mc_get_style_path( get_option( 'mc_css_file' ),'url' );
+	wp_register_style( 'my-calendar-style', $stylesheet );
+	$admin_stylesheet = plugins_url( 'mc-admin.css', __FILE__ );
+	wp_register_style( 'my-calendar-admin-style', $admin_stylesheet );
+	if ( current_user_can( 'mc_manage_events' ) ) {
+		wp_enqueue_style( 'my-calendar-admin-style' );
+	}
 	if ( get_option('mc_use_styles') != 'true' ) {
 		$this_post = $wp_query->get_queried_object();
-		if (is_object($this_post)) {
-			if ( isset( $this_post->ID ) ) {
-				$id = $this_post->ID;
-			} else {
-				$id = false;
-			}
-		} 
-		if ( get_option( 'mc_show_css' ) != '' ) {
-			$array = explode( ",",get_option( 'mc_show_css' ) );
-		}
+		$id = ( is_object($this_post) && isset( $this_post->ID ) ) ? $this_post->ID : false;
+		$array = ( get_option( 'mc_show_css' ) != '' ) ? explode( ",",get_option( 'mc_show_css' ) ) : $array ;
 		if ( @in_array( $id, $array ) || get_option( 'mc_show_css' ) == '' ) {
-	// generate category colors
-	$category_styles = '';
-	$categories = $mcdb->get_results("SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " ORDER BY category_id ASC");
-	foreach ( $categories as $category ) {
+			wp_enqueue_style( 'my-calendar-style' );
+		}
+	}
+	if ( mc_is_tablet() && mc_file_exists( 'mc-tablet.css' ) ) {
+		$tablet = mc_get_file( 'mc-tablet.css' );
+		wp_register_style( 'my-calendar-tablet-style', $tablet );
+		wp_enqueue_style( 'my-calendar-tablet-style' );
+	}
+	if ( mc_is_mobile() && mc_file_exists( 'mc-mobile.css' ) ) {
+		$mobile = mc_get_file( 'mc-mobile.css' );
+		wp_register_style( 'my-calendar-mobile-style', $mobile );
+		wp_enqueue_style( 'my-calendar-mobile-style' );		
+	}
+	if ( function_exists( 'mcs_submissions' ) ) {
+		$mcs = plugins_url('/my-calendar-submissions/mcs-styles.css');
+		$mcs_ui = plugins_url('/my-calendar-submissions/css/smoothness/jquery-ui-1.8.23.custom.css');
+		wp_register_style( 'my-calendar-submissions-ui-style', $mcs_ui );
+		wp_enqueue_style( 'my-calendar-submissions-ui-style' );			
+		wp_register_style( 'my-calendar-submissions-style', $mcs );
+		wp_enqueue_style( 'my-calendar-submissions-style' );		
+	}
+}
+
+// Function to add the calendar style into the header
+function my_calendar_wp_head() {
+	global $wpdb, $wp_query;
+	$mcdb = $wpdb;
+	$array = array();
+	// If the calendar isn't installed or upgraded this won't work
+	check_my_calendar();
+	if ( get_option('mc_use_styles') != 'true' ) {
+		$this_post = $wp_query->get_queried_object();
+		$id = ( is_object($this_post) && isset( $this_post->ID ) ) ? $this_post->ID : false;
+		$array = ( get_option( 'mc_show_css' ) != '' ) ? explode( ",",get_option( 'mc_show_css' ) ) : $array ;
+		if ( @in_array( $id, $array ) || get_option( 'mc_show_css' ) == '' ) {
+		// generate category colors
+		$category_styles = $inv = $type = $alt = '';
+		$categories = $mcdb->get_results("SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " ORDER BY category_id ASC");
+		foreach ( $categories as $category ) {
 			$class = "mc_".sanitize_title($category->category_name);
 			$hex = (strpos($category->category_color,'#') !== 0)?'#':'';
 			$color = $hex.$category->category_color;
 			if ( $color != '#' ) {
-				$hcolor = mc_shift_color($category->category_color);
-				$inv = '';
-			if ( get_option( 'mc_apply_color' ) == 'font' ) {
-				$type = 'color';
-				$alt = 'background';
-			} else if ( get_option( 'mc_apply_color' ) == 'background' ) {
-				$type = 'background';
-				$alt = 'color';
-			} else {
-				$type = $alt = '';
-			}
-			if ( get_option( 'mc_inverse_color' ) == 'true' ) {
-				$inverse = mc_inverse_color( $color );
-				$inv =  "$alt: $inverse;";
-			}
-			if ( get_option( 'mc_apply_color' )  == 'font' || get_option( 'mc_apply_color' ) == 'background' ) {
-				// always an anchor as of 1.11.0
-				$category_styles .= "\n.mc-main .$class .event-title a { $type: $color; $inv }";
-				$category_styles .= "\n.mc-main .$class .event-title a:hover, .mc-main .$class .event-title a:focus { $type: $hcolor;}";		
+					$hcolor = mc_shift_color($category->category_color);
+				if ( get_option( 'mc_apply_color' ) == 'font' ) {
+					$type = 'color';
+					$alt = 'background';
+				} else if ( get_option( 'mc_apply_color' ) == 'background' ) {
+					$type = 'background';
+					$alt = 'color';
+				}
+				if ( get_option( 'mc_inverse_color' ) == 'true' ) {
+					$inverse = mc_inverse_color( $color );
+					$inv =  "$alt: $inverse;";
+				}
+				if ( get_option( 'mc_apply_color' )  == 'font' || get_option( 'mc_apply_color' ) == 'background' ) {
+					// always an anchor as of 1.11.0, apply also to title
+					$category_styles .= "\n.mc-main .$class .event-title, .mc-main .$class .event-title a { $type: $color; $inv }";
+					$category_styles .= "\n.mc-main .$class .event-title a:hover, .mc-main .$class .event-title a:focus { $type: $hcolor;}";		
+				}
 			}
 		}
-	}
-	$add = '';
-	if ( is_user_logged_in() ) {
-		$stylesheet_url = plugins_url( 'mc-admin.css', __FILE__ );
-		$add = "<link rel=\"stylesheet\" href=\"$stylesheet_url\" type=\"text/css\" media=\"all\" />";
-	}
 $all_styles = "
-<link rel=\"stylesheet\" href=\"$styles\" type=\"text/css\" media=\"all\" />
-$add
 <style type=\"text/css\">
 <!--
 .mcjs .mc-main .details, .mcjs .mc-main .calendar-events { display: none; }
@@ -177,17 +212,6 @@ display: block!important;
 }
 -->
 </style>";
-if ( mc_is_tablet() && file_exists( get_stylesheet_directory() . '/mc-tablet.css' ) ) {
-	$all_styles .=  get_stylesheet_directory_uri() . '/mc-tablet.css';
-}
-if ( mc_is_mobile() && file_exists( get_stylesheet_directory() . '/mc-mobile.css' ) ) {
-	$all_styles .=  get_stylesheet_directory_uri() . '/mc-mobile.css';
-}
-if ( function_exists( 'mcs_submissions' ) ) {
-$all_styles .= "<link rel=\"stylesheet\" href=\"".plugins_url('/my-calendar-submissions/mcs-styles.css')."\" type=\"text/css\" media=\"all\" />";
-$all_styles .= "<link rel=\"stylesheet\" href=\"".plugins_url('/my-calendar-submissions/css/smoothness/jquery-ui-1.8.23.custom.css')."\" type=\"text/css\" media=\"all\" />";
-}
-$all_styles = apply_filters( 'mc_filter_styles',$all_styles,$styles );
 echo $all_styles;
 		}
 	}
@@ -529,6 +553,12 @@ function check_my_calendar() {
 	foreach ($upgrade_path as $upgrade) {
 		switch ($upgrade) {
 		// only upgrade db on most recent version
+			case '2.2.10':
+				delete_option( 'mc_show_print' );
+				delete_option( 'mc_show_ical' );
+				delete_option( 'mc_show_rss' );
+				flush_rewrite_rules();
+				break;
 			case '2.2.8':
 				delete_option( 'mc_draggable' );
 				break;
@@ -576,7 +606,6 @@ function check_my_calendar() {
 				break;
 			case '1.10.0':
 				update_option( 'mc_week_caption',"The week's events" );
-				update_option( 'mc_show_print','false' );
 				break;
 			case '1.9.1':
 				update_option( 'mc_widget_defaults', $defaults);
@@ -673,8 +702,6 @@ function check_my_calendar() {
 				}
 			break;				
 			case '1.7.0': 
-				add_option('mc_show_rss','false');
-				add_option('mc_show_ical','false');					
 				add_option('mc_skip_holidays','false');	
 				add_option('mc_event_edit_perms','manage_options');
 				$original_styles = get_option('mc_style');
@@ -1350,22 +1377,17 @@ function reverse_array($array, $boolean, $order) {
 	}
 }
 
-function mc_is_mobile() {
-	$uagent = new uagent_info();
-	if ( $uagent->DetectMobileQuick() == $uagent->true ) {
-		return true;
-	} else {
-		return false;
-	}
+if ( !function_exists( 'wp_is_mobile' ) ) {
+	function wp_is_mobile() { return false; }
 }
 
+function mc_is_mobile() {
+	return apply_filters( 'mc_is_mobile', wp_is_mobile() );
+}
+
+/* this function only provides a filter for custom dev. */
 function mc_is_tablet() {
-	$uagent = new uagent_info();
-	if ( $uagent->DetectTierTablet() == $uagent->true ) {
-		return true;
-	} else {
-		return false;
-	}
+	return apply_filters( 'mc_is_tablet', false );
 }
 
 function mc_guess_calendar() {
@@ -1374,12 +1396,10 @@ function mc_guess_calendar() {
 	/* If you're looking at this, and have suggestions for other slugs I could be looking at, feel free to let me know. I didn't feel a need to be overly thorough. */
 	$my_guesses = array( 'calendar','events','activities','classes','courses','rehearsals','schedule','calendario','actividades','eventos','kalender','veranstaltungen','unterrichten','eventi','classi' );
 	foreach( $my_guesses as $guess ) {
-		$value = $mcdb->get_var("SELECT id FROM $mcdb->posts WHERE post_name LIKE '%$guess%' AND post_status = 'publish'" );
-		if ( $value ) {
+		$value = $mcdb->get_var("SELECT id FROM $mcdb->posts WHERE post_title LIKE '%$guess%' AND post_status = 'publish'" );
+		if ( $value && get_option( 'mc_uri' ) == '' ) {
+			update_option( 'mc_uri', $value );
 			_e('Is this your calendar page?','my-calendar'); echo ' <code>'.get_permalink( $value ).'</code>';
-			return;
-		} else {
-			_e('I tried to guess, but don\'t have a suggestion for you.','my-calendar');;
 			return;
 		}
 	}

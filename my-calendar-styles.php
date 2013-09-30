@@ -3,11 +3,11 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function mc_get_style_path($filename,$type='path') {
-	$wp_plugin_url = plugin_dir_url( __FILE__ );
-	$wp_plugin_dir = plugin_dir_path( __FILE__ );
+	$url = plugin_dir_url( __FILE__ );
+	$dir = plugin_dir_path( __FILE__ );
 	if ( strpos( $filename,'mc_custom_' ) === 0 ) {
 		$filename = str_replace('mc_custom_','',$filename);
-		$stylefile = ($type=='path')?str_replace('/my-calendar/','',$wp_plugin_dir).'/my-calendar-custom/styles/'.$filename:str_replace('/my-calendar/','',$wp_plugin_url).'/my-calendar-custom/styles/'.$filename;
+		$stylefile = ($type=='path')?str_replace('/my-calendar/','',$dir).'/my-calendar-custom/styles/'.$filename:str_replace('/my-calendar/','',$url).'/my-calendar-custom/styles/'.$filename;
 	} else {
 		$stylefile = ($type=='path')?dirname(__FILE__).'/styles/' . $filename:plugins_url('styles',__FILE__).'/'.$filename;
 	}
@@ -32,7 +32,7 @@ function mc_is_custom_style( $filename ) {
 
 function mc_default_style( $filename, $return='content' ) {
 	$mc_css_file = get_option('mc_css_file');
-	$mc_current_file = dirname(__FILE__).'/templates/' . $mc_css_file;
+	$mc_current_file = dirname( __FILE__ ).'/templates/' . $mc_css_file;
 	if ( file_exists($mc_current_file) ) {
 		$f = "";
 		$f = fopen($mc_current_file,'r');
@@ -45,7 +45,7 @@ function mc_default_style( $filename, $return='content' ) {
 			case 'both':return array($mc_current_file,$mc_current_style);break;
 		}
 	} else {
-	return;
+		return;
 	}
 }
 
@@ -68,7 +68,7 @@ function mc_write_styles($stylefile, $my_calendar_style) {
 function edit_my_calendar_styles() {
 	$message = '';
 	global $wpdb;
-	$wp_plugin_dir = plugin_dir_path( __FILE__ );
+	$dir = plugin_dir_path( __FILE__ );
 	$mcdb = $wpdb;
 	$wrote_styles = '';
 	// We can't use this page unless My Calendar is installed/upgraded
@@ -155,7 +155,7 @@ my_calendar_check_db();
 	<label for="mc_css_file"><?php _e('Select My Calendar Theme','my-calendar'); ?></label>
 	<select name="mc_css_file" id="mc_css_file">
 <?php
-	$custom_directory = str_replace('/my-calendar/','',$wp_plugin_dir) . '/my-calendar-custom/styles/';
+	$custom_directory = str_replace('/my-calendar/','',$dir) . '/my-calendar-custom/styles/';
 	$directory = dirname(__FILE__).'/styles/';
 	
 	$files = @my_csslist($custom_directory);

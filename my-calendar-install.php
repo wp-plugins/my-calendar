@@ -407,9 +407,6 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	));
 	add_option('mc_skip_holidays','false');
 	add_option('mc_css_file','refresh.css');
-	add_option('mc_show_rss','false');
-	add_option('mc_show_ical','false');	
-	add_option('mc_show_print','false');
 	add_option('mc_time_format',get_option('time_format'));
 	add_option( 'mc_widget_defaults',$defaults);
 	add_option( 'mc_show_weekends','true' );

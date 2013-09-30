@@ -25,9 +25,12 @@ function my_calendar_insert($atts,$content=null) {
 			$format = mysql_real_escape_string($_GET['format']);
 		}
 	}
+	global $user_ID;			
 	if ( $author == 'current' ) {
-		global $user_ID;
-		$author = $user_ID;
+		$author = apply_filters( 'mc_display_author', $user_ID, 'main' );
+	}
+	if ( $host == 'current' ) {
+		$host = apply_filters( 'mc_display_host', $user_ID, 'main' );
 	}
 	return my_calendar($name, $format, $category, $showkey, $shownav, $showjump, $toggle, $time, $ltype, $lvalue, $id, $template, $content, $author, $host, $above, $below );
 }
@@ -46,6 +49,13 @@ function my_calendar_insert_upcoming($atts) {
 				'author' => 'default',
 				'host' => 'default'
 			), $atts, 'my_calendar_upcoming' ) );
+	global $user_ID;			
+	if ( $author == 'current' ) {
+		$author = apply_filters( 'mc_display_author', $user_ID, 'upcoming' );
+	}
+	if ( $host == 'current' ) {
+		$host = apply_filters( 'mc_display_host', $user_ID, 'upcoming' );
+	}	
 	return my_calendar_upcoming_events($before, $after, $type, $category, $template, $fallback, $order, $skip, $show_today, $author );
 }
 
@@ -57,6 +67,13 @@ function my_calendar_insert_today($atts) {
 				'template' => 'default',
 				'fallback' => ''
 			), $atts, 'my_calendar_today' ));
+	global $user_ID;			
+	if ( $author == 'current' ) {
+		$author = apply_filters( 'mc_display_author', $user_ID, 'today' );
+	}
+	if ( $host == 'current' ) {
+		$host = apply_filters( 'mc_display_host', $user_ID, 'today' );
+	}			
 	return my_calendar_todays_events($category, $template, $fallback, $author);
 }
 

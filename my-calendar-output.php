@@ -64,7 +64,9 @@ function my_calendar_draw_events($events, $type, $process_date, $time, $template
 }
 // Used to draw an event to the screen
 function my_calendar_draw_event($event, $type="calendar", $process_date, $time, $template='') {
-	global $wpdb,$wp_plugin_url;
+	global $wpdb;
+	$url = plugin_dir_url( __FILE__ );
+
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	// My Calendar must be updated to run this function
@@ -76,8 +78,8 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 	$details = apply_filters( 'mc_custom_template', false, $data, $event, $type, $process_date, $time, $template );
 	if ( $details === false ) {
 		$templates = get_option('mc_templates');
-		if ( $template != '' && file_exists( get_stylesheet_directory() . '/' . $template ) ) {
-			$template = @file_get_contents( get_stylesheet_directory() . '/' . $template );
+		if ( $template != '' && mc_file_exists( $template ) ) {
+			$template = @file_get_contents( mc_get_file( $template ) );
 			$details = jd_draw_template( $data, $template );
 		} else {
 			switch ($type) {
@@ -125,7 +127,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 		$image = "";
 	} else {
 	    if ($event->category_icon != "") {
-			$path = (is_custom_icon())?str_replace('my-calendar','',$wp_plugin_url).'/my-calendar-custom/':plugins_url('icons',__FILE__).'/';
+			$path = (is_custom_icon())?str_replace('my-calendar','',$url).'/my-calendar-custom/':plugins_url('icons',__FILE__).'/';
 			$hex = (strpos($event->category_color,'#') !== 0)?'#':'';
 			$image = '<img src="'.$path.$event->category_icon.'" alt="'.__('Category','my-calendar').': '.esc_attr($event->category_name).'" class="category-icon" style="background:'.$hex.$event->category_color.'" />';
 		} else {
@@ -399,7 +401,7 @@ $current_url = mc_get_current_url();
 }
 
 function my_calendar_print() {
-$wp_plugin_url = plugin_dir_url( __FILE__ );
+$url = plugin_dir_url( __FILE__ );
 $category=(isset($_GET['mcat']))?$_GET['mcat']:''; // these are all sanitized elsewhere
 $time=(isset($_GET['time']))?$_GET['time']:'month';
 $ltype=(isset($_GET['ltype']))?$_GET['ltype']:'';
@@ -424,10 +426,10 @@ echo '<!DOCTYPE html>
 <title>'.get_bloginfo('name').' - '.__('Calendar: Print View','my-calendar').'</title>
 <meta name="generator" content="My Calendar for WordPress" />
 <meta name="robots" content="noindex,nofollow" />';
-if ( file_exists( get_stylesheet_directory() . '/mc-print.css' ) ) {
-	$stylesheet = get_stylesheet_directory_uri() . '/mc-print.css';
+if ( mc_file_exists( 'mc-print.css' ) ) {
+	$stylesheet = mc_get_file( 'mc-print.css', 'url' );
 } else {
-	$stylesheet = $wp_plugin_url."mc-print.css";
+	$stylesheet = $url."mc-print.css";
 }
 echo "
 <!-- Copy mc-print.css to your theme directory if you wish to replace the default print styles -->
@@ -836,17 +838,13 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 		// if use strtotime can do +1 day to get each date.		
 
 		// setup print link
-		if ( get_option( 'mc_show_print' ) == 'true' ) {
-			$add = array( 'time'=>$time,'ltype'=>$ltype,'lvalue'=>$lvalue,'mcat'=>$category,'yr'=>$c_year,'month'=>$c_month,'dy'=>$c_day, 'cid'=>'print' );
-			$subtract = array(); 
-			if ( $ltype == '' ) { $subtract[] = 'ltype'; unset( $add['ltype'] ); }
-			if ( $lvalue == '' ) { $subtract[] = 'lvalue'; unset( $add['lvalue'] );  }
-			if ( $category == 'all' ) { $subtract[] = 'mcat'; unset( $add['mcat'] );  }
-			$mc_print_url = mc_build_url( $add, $subtract, mc_feed_base() . 'my-calendar-print' );
-			$print = "<p class='mc-print'><a href='$mc_print_url'>".__('Print View','my-calendar')."</a></p>";
-		} else {
-			$print = '';
-		}
+		$add = array( 'time'=>$time,'ltype'=>$ltype,'lvalue'=>$lvalue,'mcat'=>$category,'yr'=>$c_year,'month'=>$c_month,'dy'=>$c_day, 'cid'=>'print' );
+		$subtract = array(); 
+		if ( $ltype == '' ) { $subtract[] = 'ltype'; unset( $add['ltype'] ); }
+		if ( $lvalue == '' ) { $subtract[] = 'lvalue'; unset( $add['lvalue'] );  }
+		if ( $category == 'all' ) { $subtract[] = 'mcat'; unset( $add['mcat'] );  }
+		$mc_print_url = mc_build_url( $add, $subtract, mc_feed_base() . 'my-calendar-print' );
+		$print = "<p class='mc-print'><a href='$mc_print_url'>".__('Print View','my-calendar')."</a></p>";
 		// set up format toggle
 		if ( $toggle == 'yes' || in_array( 'toggle', $used ) ) {
 			$toggle = mc_format_toggle( $format, 'yes' );
@@ -887,8 +885,8 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 			$nLink = my_calendar_next_link($c_year,$c_month,$c_day,$format,$time);	
 			$prevLink = mc_build_url( array( 'yr'=>$pLink['yr'],'month'=>$pLink['month'],'dy'=>$pLink['day'],'cid'=>$main_class ),array() );
 			$nextLink = mc_build_url( array( 'yr'=>$nLink['yr'],'month'=>$nLink['month'],'dy'=>$nLink['day'],'cid'=>$main_class ),array() );
-			$previous_link = apply_filters('mc_previous_link','		<li class="my-calendar-prev"><a class="prevMonth" href="' . $prevLink.'" rel="'.$id.'">'.$pLink['label'].'</a></li>',$pLink);
-			$next_link = apply_filters('mc_next_link','		<li class="my-calendar-next"><a class="nextMonth" href="' . $nextLink .'" rel="'.$id.'">'.$nLink['label'].'</a></li>',$nLink);
+			$previous_link = apply_filters('mc_previous_link','		<li class="my-calendar-prev"><a href="' . $prevLink.'" rel="'.$id.'">'.$pLink['label'].'</a></li>',$pLink);
+			$next_link = apply_filters('mc_next_link','		<li class="my-calendar-next"><a href="' . $nextLink .'" rel="'.$id.'">'.$nLink['label'].'</a></li>',$nLink);
 			$nav = '
 				<div class="my-calendar-nav">
 					<ul>
@@ -1135,7 +1133,9 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 }
 
 function my_category_key( $category ) {
-global $wpdb,$wp_plugin_url;
+global $wpdb;
+	$url = plugin_dir_url( __FILE__ );
+	$dir = plugin_dir_path( __FILE__ );
 	$mcdb = $wpdb;
 	$category_key = '';
 if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
@@ -1146,7 +1146,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 			$category_key .= '<div class="category-key">
 			<h3>'.__('Category Key','my-calendar')."</h3>\n<ul>\n";
 				$subpath = (is_custom_icon())?'my-calendar-custom/':'my-calendar/icons/';
-				$path = str_replace('my-calendar','',$wp_plugin_url) .'/'. $subpath;
+				$path = str_replace( basename( $dir ) . '/','',$url) . $subpath;
 			foreach($cat_details as $cat_detail) {
 				$hex = ( strpos( $cat_detail->category_color,'#' ) !== 0 )?'#':'';
 				$title_class = sanitize_title($cat_detail->category_name);
@@ -1167,15 +1167,13 @@ global $wp_rewrite;
 	$feed = mc_feed_base().'my-calendar-rss';
 	$ics_extend = ( $wp_rewrite->using_permalinks() )?"my-calendar-ics/?yr=$y&amp;month=$m":"my-calendar-ics&amp;yr=$y&amp;month=$m";
 	$ics = mc_feed_base(). $ics_extend;
-	$rss = (get_option('mc_show_rss')=='true')?"	<li class='rss'><a href='".$feed."'>".__('Subscribe by <abbr title="Really Simple Syndication">RSS</abbr>','my-calendar')."</a></li>":'';
-	$ical = (get_option('mc_show_ical')=='true')?"	<li class='ics'><a href='".$ics."'>".__('Download as <abbr title="iCal Events Export">iCal</abbr>','my-calendar')."</a></li>":'';
+	$rss = "	<li class='rss'><a href='".$feed."'>".__('Subscribe by <abbr title="Really Simple Syndication">RSS</abbr>','my-calendar')."</a></li>";
+	$ical = "	<li class='ics'><a href='".$ics."'>".__('Download as <abbr title="iCal Events Export">iCal</abbr>','my-calendar')."</a></li>";
 	$output = "\n
 <ul id='mc-export'>$rss
 $ical
 </ul>\n";	
-	if ( get_option('mc_show_rss')=='true' || get_option('mc_show_ical')=='true' ) {
 	return $output;
-	}
 }
 
 function mc_feed_base() {
@@ -1436,7 +1434,7 @@ function my_calendar_searchform($type) {
 	if ( $type == 'simple' ) {
 	return '
 	<form role="search" method="get" id="mcsearchform" action="'.home_url().'" >
-	<div><label class="screen-reader-text" for="mcs">'.__('Search events:','my-calendar').'</label>
+	<div><label class="screen-reader-text" for="mcs">'.__('Search Events','my-calendar').'</label>
 	<input type="text" value="'.stripslashes($query).'" name="mcs" id="mcs" />
 	<input type="submit" id="searchsubmit" value="'.__('Search Events','my-calendar').'" />
 	</div>

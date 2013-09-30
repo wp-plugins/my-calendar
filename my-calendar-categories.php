@@ -59,9 +59,10 @@ function my_csslist($directory) {
 }
 
 function is_custom_icon() {
-	global $wp_plugin_dir;
-	if (file_exists( str_replace('/my-calendar','',$wp_plugin_dir ). '/my-calendar-custom/' ) ) {
-		$results = my_dirlist(  str_replace('/my-calendar','',$wp_plugin_dir ) . '/my-calendar-custom/' );
+	$dir = plugin_dir_path( __FILE__ );
+	$base = basename( $dir );
+	if ( file_exists( str_replace( $base,'',$dir ). 'my-calendar-custom' ) ) {
+		$results = my_dirlist(  str_replace( $base,'',$dir ) . 'my-calendar-custom' );
 		if ( empty($results) ) {
 			return false;
 		} else {
@@ -165,6 +166,8 @@ function my_calendar_manage_categories() {
 
 function mc_edit_category_form($view='edit',$catID='') {
 	global $wpdb;
+	$dir = plugin_dir_path( __FILE__ );
+	$url = plugin_dir_url( __FILE__ );
 	$mcdb = $wpdb;
 	$cur_cat = false;
 	if ( $catID != '' ) {
@@ -172,9 +175,8 @@ function mc_edit_category_form($view='edit',$catID='') {
 		$sql = "SELECT * FROM " . my_calendar_categories_table() . " WHERE category_id=$catID";
 		$cur_cat = $mcdb->get_row($sql);
 	}
-	global $path, $wp_plugin_dir,$wp_plugin_url;
 	if ( is_custom_icon() ) {
-		$directory = str_replace('/my-calendar','',$wp_plugin_dir) . '/my-calendar-custom/';
+		$directory = str_replace('/my-calendar','',$dir) . '/my-calendar-custom/';
 		$path = '/my-calendar-custom';
 		$iconlist = my_dirlist($directory);
 	} else {
@@ -220,7 +222,7 @@ function mc_edit_category_form($view='edit',$catID='') {
 			} else {
 				$selected = "";
 			}
-			echo "<option value='$value'$selected style='background: url(".str_replace('my-calendar/','',$wp_plugin_url)."$path/$value) left 50% no-repeat;'>$value</option>";
+			echo "<option value='$value'$selected style='background: url(".str_replace('my-calendar/','',$url)."$path/$value) left 50% no-repeat;'>$value</option>";
 		}
 		?>
 					</select>
@@ -254,7 +256,7 @@ function mc_edit_category_form($view='edit',$catID='') {
 }
 
 function mc_manage_categories() {
-	global $wpdb, $path, $wp_plugin_url;
+	global $wpdb, $url;
 	$mcdb = $wpdb;
 ?>
  <h2><?php _e('Manage Categories','my-calendar'); ?></h2>
@@ -290,7 +292,7 @@ function mc_manage_categories() {
 			<th scope="row"><?php echo $category->category_id; ?></th>
 			<td><?php echo stripslashes( esc_attr( $category->category_name ) ); ?></td>
 			<td style="background-color:<?php echo (strpos($category->category_color,'#') !== 0)?'#':''; echo $category->category_color; ?>;">&nbsp;</td>
-			<td style="background-color:<?php echo (strpos($category->category_color,'#') !== 0)?'#':''; echo $category->category_color; ?>;"><img src="<?php echo str_replace('my-calendar/','',$wp_plugin_url). $path; ?>/<?php echo stripslashes( esc_attr( $category->category_icon ) ); ?>" alt="" /></td>		 
+			<td style="background-color:<?php echo (strpos($category->category_color,'#') !== 0)?'#':''; echo $category->category_color; ?>;"><img src="<?php echo str_replace('my-calendar/','',$url); ?>/<?php echo stripslashes( esc_attr( $category->category_icon ) ); ?>" alt="" /></td>		 
 			<td><?php echo ( $category->category_private == 1 )?__('Yes','my-calendar'):__('No','my-calendar'); ?></td>
 			<td><a href="<?php echo admin_url("admin.php?page=my-calendar-categories&amp;mode=edit&amp;category_id=$category->category_id"); ?>" class='edit'><?php _e('Edit','my-calendar'); ?></a></td>
 			<?php

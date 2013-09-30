@@ -30,7 +30,7 @@ function my_calendar_check_db() {
 	<?php } else { ?>
 	<div class='upgrade-db error'>
 		<p>
-		<?php _e('The My Calendar database needs to be updated.','my-calendar'); ?> <a href="<?php echo admin_url("admin.php?page=my-calendar-config"); ?>"><?php _e('Update now.','my-calendar'); ?></a>
+		<?php _e('The My Calendar database needs to be updated.','my-calendar'); ?> <a href="<?php echo admin_url("admin.php?page=my-calendar-config"); ?>"><?php _e('Update now','my-calendar'); ?></a>
 		</p>
 	</div><?php 
 		}

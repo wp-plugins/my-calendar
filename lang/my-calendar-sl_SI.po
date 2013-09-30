@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the My Calendar package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2013-08-20 19:44:56+0000\n"
+"PO-Revision-Date: 2013-09-30 19:43:32+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1154,7 +1154,7 @@ msgstr ""
 
 #: my-calendar-core.php:1496
 msgid "Please note: I do keep records of those who have donated, <strong>but if your donation came from somebody other than your account at this web site, please note this in your message.</strong>"
-msgstr ""
+msgstr "Opomba: Hranim seznam ljudi ki so donirali, <strong>vendar, v primeru da je bila vaša donacija opravljena z drugim računom na tej strani, prosim na to opozorite v sporočilu.</strong>"
 
 #: my-calendar-core.php:1498
 msgid "From:"
@@ -1162,39 +1162,39 @@ msgstr "Od:"
 
 #: my-calendar-core.php:1501
 msgid "I have read <a href=\"http://www.joedolson.com/articles/my-calendar/faq/\">the FAQ for this plug-in</a>."
-msgstr ""
+msgstr "Prebral sem <a href=\"http://www.joedolson.com/articles/my-calendar/faq/\">pogosto zastavljena vprašanja (FAQ)</a> za ta vtičnik."
 
 #: my-calendar-core.php:1504
 msgid "I have <a href=\"http://www.joedolson.com/donate.php\">made a donation to help support this plug-in</a>."
-msgstr ""
+msgstr "<a href=\"http://www.joedolson.com/donate.php\">Doniral sem, da pomagam razvijalcem vtičnika</a>."
 
 #: my-calendar-core.php:1507
 msgid "I have <a href=\"http://www.joedolson.com/articles/my-calendar/users-guide/\">purchased the User's Guide</a>, but could not find an answer to this question."
-msgstr ""
+msgstr "<a href=\"http://www.joedolson.com/articles/my-calendar/users-guide/\">Kupil sem navodila za uporabo</a>, vendar v njem nisem našel odgovora za to vprašanje."
 
 #: my-calendar-core.php:1513
 msgid "Send Support Request"
-msgstr ""
+msgstr "Pošlji prošnjo za pomoč"
 
 #: my-calendar-core.php:1516
 msgid "The following additional information will be sent with your support request:"
-msgstr ""
+msgstr "Naslednje dodatne informacije bodo poslane poleg vaše prošnje za pomoč:"
 
 #: my-calendar-event-manager.php:169 my-calendar-settings.php:333
 msgid "My Calendar has identified that you have the Calendar plugin by Kieran O'Shea installed. You can import those events and categories into the My Calendar database. Would you like to import these events?"
-msgstr ""
+msgstr "Vtičnik My Calendar je zaznal, da imate naložen naložen koledarski vtičnik proizvajalca Kieran O'Shea. Lahko uvozite dogodke in kategorijo v podatkovno bazo vtičnika My Calendar. Ali ćelite uvoziti te dogodke?"
 
 #: my-calendar-event-manager.php:176 my-calendar-settings.php:339
 msgid "Import from Calendar"
-msgstr ""
+msgstr "Uvozi iz koledarja"
 
 #: my-calendar-event-manager.php:181
 msgid "Although it is possible that this import could fail to import your events correctly, it should not have any impact on your existing Calendar database. If you encounter any problems, <a href=\"http://www.joedolson.com/contact.php\">please contact me</a>!"
-msgstr ""
+msgstr "Čeprav je mogoče, da prenos dogodkov ne bo uspešno zaključen, to nebi smelo vplivati na vašo obstoječo podatkovno bazo koledarja. V primeru, da naletite na težave, <a href=\"http://www.joedolson.com/contact.php\">me prosim kontaktirajte</a>!"
 
 #: my-calendar-event-manager.php:105
 msgid "%1$d events deleted successfully out of %2$d selected"
-msgstr ""
+msgstr "%1$d od %2$d izbranih dogodkov je bilo uspešno izbrisanih"
 
 #: my-calendar-event-manager.php:107 my-calendar-event-manager.php:137
 #: my-calendar-event-manager.php:305 my-calendar-event-manager.php:379
@@ -1206,19 +1206,19 @@ msgstr ""
 #: my-calendar-group-manager.php:84 my-calendar-group-manager.php:162
 #: my-calendar-group-manager.php:599
 msgid "Error"
-msgstr ""
+msgstr "Napaka"
 
 #: my-calendar-event-manager.php:107
 msgid "Your events have not been deleted. Please investigate."
-msgstr ""
+msgstr "Vaši dogodki niso bili odstranjeni. Prosim preverite."
 
 #: my-calendar-event-manager.php:26
 msgid "Delete Event"
-msgstr ""
+msgstr "Odstrani dogodek"
 
 #: my-calendar-event-manager.php:26
 msgid "Are you sure you want to delete this event?"
-msgstr ""
+msgstr "Ali ste prepričani, da želite odstraniti ta dogodek?"
 
 #: my-calendar-event-manager.php:42
 msgid "You do not have permission to delete that event."
@@ -1286,604 +1286,604 @@ msgstr "Brisanje dogodka ni mogoče brez vnešenega id-ja dogodka."
 
 #: my-calendar-event-manager.php:414
 msgid "Event deleted successfully"
-msgstr ""
+msgstr "Dogodek je bil uspešno odstranjen"
 
 #: my-calendar-event-manager.php:416
 msgid "Despite issuing a request to delete, the event still remains in the database. Please investigate."
-msgstr ""
+msgstr "Kljub zahtevi za brisanje dogodka, le ta še vedno ostaja v podatkovni bazi. Prosim preverite."
 
 #: my-calendar-event-manager.php:429 my-calendar-group-manager.php:182
 msgid "Sorry! That's an invalid event key."
-msgstr ""
+msgstr "Oprostite! Ključ dogodka ni veljaven."
 
 #: my-calendar-event-manager.php:433 my-calendar-group-manager.php:186
 msgid "Sorry! We couldn't find an event with that ID."
-msgstr ""
+msgstr "Oprostite! Dogodka s tem ID-jem ni bilo mogoče najti."
 
 #: my-calendar-event-manager.php:458
 msgid "This event must be approved in order for it to appear on the calendar."
-msgstr ""
+msgstr "Ta dogodek mora biti potrjen preden bo viden v koledarju."
 
 #: my-calendar-event-manager.php:526
 msgid "Add/Edit Event"
-msgstr ""
+msgstr "Dodaj/uredi dogodek"
 
 #: my-calendar-event-manager.php:529 my-calendar-event-manager.php:964
 msgid "Save Event"
-msgstr ""
+msgstr "Shrani dogodek"
 
 #: my-calendar-event-manager.php:543 my-calendar-group-manager.php:312
 msgid "Enter your Event Information"
-msgstr ""
+msgstr "Vnesite informacije vašega dogodka"
 
 #: my-calendar-event-manager.php:545 my-calendar-group-manager.php:314
 msgid "Event Title"
-msgstr ""
+msgstr "Naslov dogodka"
 
 #: my-calendar-event-manager.php:545 my-calendar-event-manager.php:693
 #: my-calendar-group-manager.php:314
 msgid "(required)"
-msgstr ""
+msgstr "(obvezno)"
 
 #: my-calendar-event-manager.php:550
 msgid "Publish"
-msgstr ""
+msgstr "Objavi"
 
 #: my-calendar-event-manager.php:550
 msgid "You must approve this event to promote it to the calendar."
-msgstr ""
+msgstr "Ta dogodek morate potrditi da ga uvrstite na koledar."
 
 #: my-calendar-event-manager.php:552
 msgid "An administrator must approve your new event."
-msgstr ""
+msgstr "Administrator mora potrditi vaš dogodek."
 
 #: my-calendar-event-manager.php:567
 msgid "This event is not spam"
-msgstr ""
+msgstr "To ni nezaželjen dogodek"
 
 #: my-calendar-event-manager.php:582 my-calendar-group-manager.php:328
 msgid "Event Description (<abbr title=\"hypertext markup language\">HTML</abbr> allowed)"
-msgstr ""
+msgstr "Opis dogodka (<abbr title=\"hypertext markup language\">HTML</abbr> dovoljen)"
 
 #: my-calendar-event-manager.php:603 my-calendar-event-manager.php:616
 #: my-calendar-group-manager.php:339 my-calendar-group-manager.php:347
 msgid "This event's image:"
-msgstr ""
+msgstr "Slika tega dogodka:"
 
 #: my-calendar-event-manager.php:605 my-calendar-group-manager.php:341
 msgid "Add an image:"
-msgstr ""
+msgstr "Dodaj sliko:"
 
 #: my-calendar-event-manager.php:607
 msgid "(URL to Event image)"
-msgstr ""
+msgstr "(povezava do slike dogodka)"
 
 #: my-calendar-event-manager.php:609 my-calendar-group-manager.php:341
 msgid "Upload Image"
-msgstr ""
+msgstr "Naloži sliko"
 
 #: my-calendar-event-manager.php:609 my-calendar-group-manager.php:341
 msgid "Include your image URL or upload an image."
-msgstr ""
+msgstr "Vnesite povezavo do slike ali naložite novo sliko."
 
 #: my-calendar-event-manager.php:622 my-calendar-group-manager.php:353
 msgid "Event Short Description (<abbr title=\"hypertext markup language\">HTML</abbr> allowed)"
-msgstr ""
+msgstr "Kratek opis dogodka (<abbr title=\"hypertext markup language\">HTML</abbr> dovoljen)"
 
 #: my-calendar-event-manager.php:626 my-calendar-group-manager.php:357
 msgid "Event Host"
-msgstr ""
+msgstr "Gostitelj dogodka"
 
 #: my-calendar-event-manager.php:645 my-calendar-group-manager.php:376
 msgid "Event Category"
-msgstr ""
+msgstr "Kategorija dogodka"
 
 #: my-calendar-event-manager.php:657 my-calendar-group-manager.php:388
 msgid "Event Link (Optional)"
-msgstr ""
+msgstr "Povezava dogodka (neobvezno)"
 
 #: my-calendar-event-manager.php:657 my-calendar-group-manager.php:388
 msgid "This link will expire when the event passes."
-msgstr ""
+msgstr "Ta povezava bo potekla po preteku dogodka."
 
 #: my-calendar-event-manager.php:667 my-calendar-event-manager.php:675
 msgid "Event Date and Time"
-msgstr ""
+msgstr "Datum in čas dogodka"
 
 #: my-calendar-event-manager.php:693
 msgid "Start Date (YYYY-MM-DD)"
-msgstr ""
+msgstr "Datum začetka (LLLL-MM-DD)"
 
 #: my-calendar-event-manager.php:693
 msgid "Time (hh:mm am/pm)"
-msgstr ""
+msgstr "Čas (uu:mm am/pm)"
 
 #: my-calendar-event-manager.php:702
 msgid "End Date (YYYY-MM-DD)"
-msgstr ""
+msgstr "Datum zaključka (LLLL-MM-DD)"
 
 #: my-calendar-event-manager.php:702
 msgid "End Time (hh:mm am/pm)"
-msgstr ""
+msgstr "Čas zaključka (uu:mm am/pm)"
 
 #: my-calendar-event-manager.php:713
 msgid "This is a multi-day event."
-msgstr ""
+msgstr "To je večdnevni dogodek."
 
 #: my-calendar-event-manager.php:715
 msgid "Enter the beginning and ending dates/times for each occurrence of the event."
-msgstr ""
+msgstr "Vnesite začetne in končne datume in čase za vsako ponovitev dogodka."
 
 #: my-calendar-event-manager.php:715
 msgid "If this is a multi-day event, it creates a single event with multiple dates/times; otherwise it creates separate events for each occurrence."
-msgstr ""
+msgstr "Če gre za več-dnevni dogodek, bo ustvarjen en dogodek z večimi datumi; drugače bo ustvarjen posamezen dogodek pri vsakem pojavljanju dogodka."
 
 #: my-calendar-event-manager.php:717
 msgid "Add another occurrence"
-msgstr ""
+msgstr "Dodaj nov pojav dogodka"
 
 #: my-calendar-event-manager.php:718
 msgid "Remove last occurrence"
-msgstr ""
+msgstr "Odstrani zadnji pojav dogodka"
 
 #: my-calendar-event-manager.php:740
 msgid "Current time difference from GMT is "
-msgstr ""
+msgstr "Trenutni časovni zamik od GTM je"
 
 #: my-calendar-event-manager.php:740
 msgid " hour(s)"
-msgstr ""
+msgstr "ur(a)"
 
 #: my-calendar-event-manager.php:750 my-calendar-event-manager.php:764
 msgid "Recurring Events"
-msgstr ""
+msgstr "Ponavljajoči dogodki"
 
 #: my-calendar-event-manager.php:769
 msgid "Units"
-msgstr ""
+msgstr "Enote"
 
 #: my-calendar-core.php:1536 my-calendar-templates.php:173
 msgid "Does not recur"
-msgstr ""
+msgstr "Se ne ponavlja"
 
 #: my-calendar-event-manager.php:1167 my-calendar-group-manager.php:802
 #: my-calendar-templates.php:174
 msgid "Daily"
-msgstr ""
+msgstr "Dnevno"
 
 #: my-calendar-templates.php:175
 msgid "Daily, weekdays only"
-msgstr ""
+msgstr "Dnevno, samo med delavniki"
 
 #: my-calendar-event-manager.php:1169 my-calendar-group-manager.php:804
 #: my-calendar-templates.php:176
 msgid "Weekly"
-msgstr ""
+msgstr "Tedensko"
 
 #: my-calendar-templates.php:177
 msgid "Bi-weekly"
-msgstr ""
+msgstr "Dvo-tedensko"
 
 #: my-calendar-templates.php:180
 msgid "Annually"
-msgstr ""
+msgstr "Letno"
 
 #: my-calendar-event-manager.php:772
 msgid "Your entry is the number of events after the first occurrence of the event: a recurrence of <em>2</em> means the event will happen three times."
-msgstr ""
+msgstr "Vaš vnos je število dogodkov po prvem pojavu tega dogodka: vrednost ponavljanja <em>2</em> pomeni, da se bo dogodek pojavil trikrat."
 
 #: my-calendar-event-manager.php:793
 msgid "Event Registration Settings"
-msgstr ""
+msgstr "Nastavitve prijavljanja na dogodek"
 
 #: my-calendar-event-manager.php:796 my-calendar-group-manager.php:402
 msgid "Event Registration Status"
-msgstr ""
+msgstr "Status prijavljanja na dogodk"
 
 #: my-calendar-event-manager.php:797 my-calendar-group-manager.php:403
 msgid "My Calendar does not manage event registrations. Use this for information only."
-msgstr ""
+msgstr "My Calendar ne ureja registracij dogodka. Uporabite to le za informacije."
 
 #: my-calendar-event-manager.php:799 my-calendar-group-manager.php:405
 msgid "Open"
-msgstr ""
+msgstr "Odprto"
 
 #: my-calendar-event-manager.php:800 my-calendar-group-manager.php:406
 msgid "Closed"
-msgstr ""
+msgstr "Zaprto"
 
 #: my-calendar-event-manager.php:801 my-calendar-group-manager.php:407
 msgid "Does not apply"
-msgstr ""
+msgstr "Ne velja"
 
 #: my-calendar-event-manager.php:804 my-calendar-group-manager.php:410
 msgid "If this event recurs, it can only be registered for as a complete series."
-msgstr ""
+msgstr "V primeru da gre za ponovljiv dogodek, se lahko prijavite le na vse dogodke."
 
 #: my-calendar-event-manager.php:821 my-calendar-event-manager.php:824
 #: my-calendar-group-manager.php:427 my-calendar-group-manager.php:430
 #: my-calendar-locations.php:129
 msgid "Event Location"
-msgstr ""
+msgstr "Lokacija dogodka"
 
 #: my-calendar-event-manager.php:831 my-calendar-group-manager.php:437
 msgid "Choose a preset location:"
-msgstr ""
+msgstr "izberite trenutno lokacijo:"
 
 #: my-calendar-event-manager.php:841 my-calendar-group-manager.php:450
 msgid "Add recurring locations for later use."
-msgstr ""
+msgstr "Dodajte ponavljajočo lokacijo za kasnejšo uporabo."
 
 #: my-calendar-event-manager.php:848 my-calendar-group-manager.php:459
 #: my-calendar-locations.php:131
 msgid "All location fields are optional: <em>insufficient information may result in an inaccurate map</em>."
-msgstr ""
+msgstr "Nobeno polje za lokacijo ni obvezno: <em>pomankanje informacije lahko povzroči nepopoln zemljevid</em>."
 
 #: my-calendar-event-manager.php:852 my-calendar-group-manager.php:462
 #: my-calendar-locations.php:134
 msgid "Name of Location (e.g. <em>Joe's Bar and Grill</em>)"
-msgstr ""
+msgstr "Ime lokacije (primer: <em>gostilna pri Martinu</em>)"
 
 #: my-calendar-event-manager.php:861 my-calendar-group-manager.php:465
 #: my-calendar-locations.php:143
 msgid "Street Address"
-msgstr ""
+msgstr "Naslov"
 
 #: my-calendar-event-manager.php:864 my-calendar-group-manager.php:468
 #: my-calendar-locations.php:146
 msgid "Street Address (2)"
-msgstr ""
+msgstr "Naslov (2)"
 
 #: my-calendar-event-manager.php:867 my-calendar-group-manager.php:471
 #: my-calendar-locations.php:149
 msgid "Phone"
-msgstr ""
+msgstr "Telefon"
 
 #: my-calendar-event-manager.php:877 my-calendar-group-manager.php:474
 #: my-calendar-locations.php:159 my-calendar-settings.php:941
 msgid "State/Province"
-msgstr ""
+msgstr "Regija"
 
 #: my-calendar-event-manager.php:911 my-calendar-group-manager.php:484
 #: my-calendar-locations.php:191
 msgid "Initial Zoom"
-msgstr ""
+msgstr "Prvotna povečava"
 
 #: my-calendar-event-manager.php:913 my-calendar-group-manager.php:486
 #: my-calendar-locations.php:193
 msgid "Neighborhood"
-msgstr ""
+msgstr "Soseska"
 
 #: my-calendar-event-manager.php:914 my-calendar-group-manager.php:487
 #: my-calendar-locations.php:194
 msgid "Small City"
-msgstr ""
+msgstr "Majhno mesto"
 
 #: my-calendar-event-manager.php:915 my-calendar-group-manager.php:488
 #: my-calendar-locations.php:195
 msgid "Large City"
-msgstr ""
+msgstr "Veliko mesto"
 
 #: my-calendar-event-manager.php:916 my-calendar-group-manager.php:489
 #: my-calendar-locations.php:196
 msgid "Greater Metro Area"
-msgstr ""
+msgstr "Širše območje"
 
 #: my-calendar-event-manager.php:922 my-calendar-group-manager.php:495
 msgid "Location URL"
-msgstr ""
+msgstr "Povezava lokacije"
 
 #: my-calendar-event-manager.php:925 my-calendar-group-manager.php:498
 #: my-calendar-locations.php:205
 msgid "GPS Coordinates (optional)"
-msgstr ""
+msgstr "Koordinate GPS (ni obvezno)"
 
 #: my-calendar-event-manager.php:927 my-calendar-group-manager.php:500
 msgid "If you supply GPS coordinates for your location, they will be used in place of any other address information to provide your map link."
-msgstr ""
+msgstr "V primeru, da navedete GPS koordinate, bodo uporabljene namesto ostalih navedenih naslovov za prikaz zemljevida."
 
 #: my-calendar-event-manager.php:930 my-calendar-group-manager.php:503
 #: my-calendar-locations.php:210
 msgid "Latitude"
-msgstr ""
+msgstr "pasovna širina"
 
 #: my-calendar-event-manager.php:930 my-calendar-group-manager.php:503
 #: my-calendar-locations.php:211
 msgid "Longitude"
-msgstr ""
+msgstr "pasovna dolžina"
 
 #: my-calendar-event-manager.php:943
 msgid "Special scheduling options"
-msgstr ""
+msgstr "Posebne možnosti sporeda"
 
 #: my-calendar-event-manager.php:946
 msgid "Special Options"
-msgstr ""
+msgstr "Posebne možnosti"
 
 #: my-calendar-event-manager.php:948
 msgid "Cancel this event if it occurs on a date with an event in the Holidays category"
-msgstr ""
+msgstr "Prekličite ta dogodek, v primeru, da datum sovpada z dogodkom v kategoriiji počitnic."
 
 #: my-calendar-event-manager.php:951
 msgid "If this event recurs, and falls on the 5th week of the month in a month with only four weeks, move it back one week."
-msgstr ""
+msgstr "Če ponavljajoči dogodek pridena peti teden v mesecu s štirimi tedni, premakni ta dogodek za en teden nazaj."
 
 #: my-calendar-event-manager.php:144 my-calendar-settings.php:120
 #: my-calendar-settings.php:799 my-calendar.php:347
 msgid "Manage Events"
-msgstr ""
+msgstr "Urejaj dogodke"
 
 #: my-calendar-event-manager.php:1051 my-calendar-templates.php:271
 msgid "Published"
-msgstr ""
+msgstr "Objavljeno"
 
 #: my-calendar-event-manager.php:1052 my-calendar-templates.php:271
 msgid "Reserved"
-msgstr ""
+msgstr "Rezervirano"
 
 #: my-calendar-event-manager.php:1053 my-calendar-group-manager.php:726
 msgid "All"
-msgstr ""
+msgstr "Vsi"
 
 #: my-calendar-event-manager.php:1092 my-calendar-group-manager.php:747
 #: my-calendar-settings.php:399 my-calendar-widgets.php:60
 #: my-calendar-widgets.php:169 my-calendar-widgets.php:679
 msgid "Title"
-msgstr ""
+msgstr "Naslov"
 
 #: my-calendar-group-manager.php:748
 msgid "Where"
-msgstr ""
+msgstr "Kje"
 
 #: my-calendar-settings.php:400
 msgid "Description"
-msgstr ""
+msgstr "Opis"
 
 #: my-calendar-group-manager.php:749
 msgid "Starts"
-msgstr ""
+msgstr "Se prične"
 
 #: my-calendar-group-manager.php:750
 msgid "Recurs"
-msgstr ""
+msgstr "Se ponavlja"
 
 #: my-calendar-event-manager.php:1095 my-calendar-group-manager.php:751
 #: my-calendar-settings.php:402
 msgid "Author"
-msgstr ""
+msgstr "Avtor"
 
 #: my-calendar-event-manager.php:1096 my-calendar-group-manager.php:752
 #: my-calendar-output.php:138 my-calendar-settings.php:403
 #: my-calendar-templates.php:269
 msgid "Category"
-msgstr ""
+msgstr "Kategorija"
 
 #: my-calendar-event-manager.php:1166 my-calendar-group-manager.php:801
 msgid "Never"
-msgstr ""
+msgstr "Nikoli"
 
 #: my-calendar-event-manager.php:1168 my-calendar-group-manager.php:803
 msgid "Weekdays"
-msgstr ""
+msgstr "Delavniki"
 
 #: my-calendar-event-manager.php:1170 my-calendar-group-manager.php:805
 msgid "Bi-Weekly"
-msgstr ""
+msgstr "Dvo-tedenski"
 
 #: my-calendar-event-manager.php:1171 my-calendar-group-manager.php:806
 msgid "Monthly (by date)"
-msgstr ""
+msgstr "Mesečno (po datumu)"
 
 #: my-calendar-event-manager.php:1172 my-calendar-group-manager.php:807
 msgid "Monthly (by day)"
-msgstr ""
+msgstr "Mesečno (po dnevih)"
 
 #: my-calendar-event-manager.php:1173 my-calendar-group-manager.php:808
 msgid "Yearly"
-msgstr ""
+msgstr "Letno"
 
 #: my-calendar-group-manager.php:811
 msgid "Forever"
-msgstr ""
+msgstr "Vedno"
 
 #: my-calendar-group-manager.php:812
 msgid "%d Times"
-msgstr ""
+msgstr "%d časov"
 
 #: my-calendar-event-manager.php:1129
 msgid "Copy"
-msgstr ""
+msgstr "Kopiraj"
 
 #: my-calendar-event-manager.php:1132 my-calendar-group-manager.php:784
 #: my-calendar-output.php:316
 msgid "Edit Group"
-msgstr ""
+msgstr "Uredi skupino"
 
 #: my-calendar-event-manager.php:1135 my-calendar-group-manager.php:788
 msgid "Not editable."
-msgstr ""
+msgstr "Urejanje onemogočeno"
 
 #: my-calendar-event-manager.php:1139
 msgid "Reject"
-msgstr ""
+msgstr "Zavrni"
 
 #: my-calendar-event-manager.php:1139
 msgid "Approve"
-msgstr ""
+msgstr "Potrdi"
 
 #: my-calendar-event-manager.php:1144
 msgid "Approved"
-msgstr ""
+msgstr "Potrjeno"
 
 #: my-calendar-event-manager.php:1146
 msgid "Rejected"
-msgstr ""
+msgstr "Zavrnjeno"
 
 #: my-calendar-event-manager.php:1148
 msgid "Awaiting Approval"
-msgstr ""
+msgstr "Čakam na potrditev"
 
 #: my-calendar-event-manager.php:1082 my-calendar-event-manager.php:1199
 msgid "Delete checked events"
-msgstr ""
+msgstr "Zbriči izbrane dogodke"
 
 #: my-calendar-group-manager.php:838
 msgid "There are no events in the database!"
-msgstr ""
+msgstr "Ni dogodkov v podatkovni bazi!"
 
 #: my-calendar-event-manager.php:1366
 msgid "Your event end date must be either after or the same as your event begin date"
-msgstr ""
+msgstr "Končni datum vašega dogodka mora biti za ali kvečjemu enak začetnemu datumu"
 
 #: my-calendar-event-manager.php:1369
 msgid "Your date formatting is correct but one or more of your dates is invalid. Check for number of days in month and leap year related errors."
-msgstr ""
+msgstr "Vaš zapis datumov je pravilen vendar je eden ali več od navedenih datumov neveljaven. Preverite število dni v mesecih in napake povezane z prestopnimi leti."
 
 #: my-calendar-event-manager.php:1402 my-calendar-group-manager.php:599
 msgid "The event title must be between 1 and 255 characters in length."
-msgstr ""
+msgstr "Naslov dogodka mora vsebovati vsaj en in največ 255 znakov."
 
 #: my-calendar-event-manager.php:1409
 msgid "The repetition value must be 0 unless a type of recurrence is selected."
-msgstr ""
+msgstr "Vrednost ponavljanja mora biti 0 razen če je izbran način ponavljanja."
 
 #: my-calendar-group-manager.php:58
 msgid "Event not updated."
-msgstr ""
+msgstr "Dogodek ni bil posodobljen."
 
 #: my-calendar-group-manager.php:84
 msgid "Event not grouped."
-msgstr ""
+msgstr "Dogodek ni v skupini."
 
 #: my-calendar-group-manager.php:88
 msgid "Event grouped successfully"
-msgstr ""
+msgstr "Dogodek je bil uspešno dodan v skupino"
 
 #: my-calendar-group-manager.php:103 my-calendar-group-manager.php:309
 #: my-calendar-group-manager.php:514
 msgid "Edit Event Group"
-msgstr ""
+msgstr "Urejaj skupino dogodka"
 
 #: my-calendar-group-manager.php:106
 msgid "You must provide an event group id in order to edit it"
-msgstr ""
+msgstr "Za urejanje skupine dogodka morate vnesti njen id"
 
 #: my-calendar-group-manager.php:113 my-calendar-group-manager.php:121
 #: my-calendar-group-manager.php:306 my-calendar.php:351
 msgid "Manage Event Groups"
-msgstr ""
+msgstr "Urejaj skupine dogodka"
 
 #: my-calendar-group-manager.php:114
 msgid "Grouped events can be edited simultaneously. When you choose a group of events to edit, the form will be pre-filled with the content applicable to the member of the event group you started from. (e.g., if you click on the \"Edit Group\" link for the 3rd of a set of events, the boxes will use the content applicable to that event.). You will also receive a set of checkboxes which will indicate which events in the group should have these changes applied. (All grouped events can also be edited individually.)"
-msgstr ""
+msgstr "Dogodke v isti skupina lahko urejate istočasno. Ko izberete skupino dogodkov za urejanje, bo obrazec avtomatično zapolnjen s podatki, ki ustrezajo članu skupine dogodka iz katerega ste začeli. (primer: če kliknete na povezavo \"Uredi skupino\" za tretji skupek dogodkov, bodo uporabljeni podatki skladni s tem dogodkom.). Prikazana bodo tudi potrditvena polja, ki bodo določala za katere dogodke bodo uporabljene spremembe. (Vse dogodke v skupinah se lahko ureja tudi posamično.)"
 
 #: my-calendar-group-manager.php:115
 msgid "The following fields will never be changed when editing groups: registration availability, event publication status, spam flagging, event recurrence, event repetitions, and the start and end dates and times for that event."
-msgstr ""
+msgstr "Med urejanjem skupin naslednja polja ne bodo nikoli spremenjena: odprtost prijave, status objave dogodka, nezaželjeno označevanje, ponovljiv dogodek, ponavljanje dogodka in datum pričetka in datum zaključka in časov dogodka."
 
 #: my-calendar-group-manager.php:234
 msgid "<strong>NOTE:</strong> The group editable fields for the events in this group do not match"
-msgstr ""
+msgstr "<strong>OPOMBA:</strong> Polja za urejanje dogodkov v tej skupini se ne ujemajo"
 
 #: my-calendar-group-manager.php:234
 msgid "The group editable fields for the events in this group match."
-msgstr ""
+msgstr "Polja za urejanje dogodkov v tej skupini se ujemajo."
 
 #: my-calendar-group-manager.php:241
 msgid "Apply these changes to:"
-msgstr ""
+msgstr "Uveljavi te spremembe za:"
 
 #: my-calendar-event-manager.php:1091 my-calendar-group-manager.php:252
 msgid "Check/Uncheck all"
-msgstr ""
+msgstr "Izberi vse/ne izberi ničesar"
 
 #: my-calendar-group-manager.php:254
 msgid "Remove checked events from this group"
-msgstr ""
+msgstr "Odstrani označene dogodke iz te skupine"
 
 #: my-calendar-group-manager.php:272
 msgid "You must provide a group ID to edit groups"
-msgstr ""
+msgstr "Vnesti morate ID skupine za urejanje skupin"
 
 #: my-calendar-group-manager.php:322
 msgid "Selected dates are a single multi-day event."
-msgstr ""
+msgstr "Izbrani datumi spadajo pod en več-dneven dogodek."
 
 #: my-calendar-group-manager.php:399
 msgid "Event Registration Options"
-msgstr ""
+msgstr "Možnosti prijavljanja na dogodek"
 
 #: my-calendar-group-manager.php:721
 msgid "Create/Modify Groups"
-msgstr ""
+msgstr "Ustvari/uredi skupine"
 
 #: my-calendar-group-manager.php:730
 msgid "Check a set of events to group them for mass editing."
-msgstr ""
+msgstr "Izberite sklop dogodkov za množično urejanje."
 
 #: my-calendar-group-manager.php:740 my-calendar-group-manager.php:832
 msgid "Group checked events for mass editing"
-msgstr ""
+msgstr "Dogodki izbrani za množično urejanje"
 
 #: my-calendar-group-manager.php:746
 msgid "Group"
-msgstr ""
+msgstr "Skupina"
 
 #: my-calendar-group-manager.php:786
 msgid "Ungrouped"
-msgstr ""
+msgstr "Ni v skupini"
 
 #: my-calendar-help.php:4
 msgid "How to use My Calendar"
-msgstr ""
+msgstr "Kako uporabljati My Calendar"
 
 #: my-calendar-help.php:45
 msgid "Shortcode Syntax"
-msgstr ""
+msgstr "Sintaksa kratke kode"
 
 #: my-calendar-help.php:48
 msgid "These shortcodes can be used in Posts, Pages, or in text widgets."
-msgstr ""
+msgstr "Kratke kode lahko uporabljate v prispevkih, na straneh in v tekstovnih gradnikih."
 
 #: my-calendar-help.php:50
 msgid "Main Calendar Shortcode (List or Grid, Weekly or Monthly view)"
-msgstr ""
+msgstr "Kratka koda glavnega koledarja (seznam ali tabela, tedenski ali mesečni pogeld)"
 
 #: my-calendar-help.php:60
 msgid "Names or IDs of categories included in this calendar, comma or pipe separated."
-msgstr ""
+msgstr "Imena ali ID-ji vključenih kategorij v tem koledarju ločene z vejico ali z |."
 
 #: my-calendar-help.php:61
 msgid "Either \"list\" or \"mini\" to show the list view or the mini calendar; exclude or any other value to show the main grid calendar."
-msgstr ""
+msgstr "\"seznam\" ali \"mini\" za prikaz pogleda seznama ali mini koledarja; izpustite ali vnesite katerokoli drugo vrednost za prikaz glavne tabele koledarja."
 
 #: my-calendar-help.php:63
 msgid "Set to \"week\" to show a one week view or to \"day\" to show a single day view. Any other value will show a month view. (Day view shows as a list regardless of format setting.)"
-msgstr ""
+msgstr "Nastavite \"teden\" za tedenski prikaz ali na \"dan\" za dnevni prikaz. Ob katerikoli drugi vrednosti bo prikazan mesečni pogled. (Dnevni prikaz prikaže seznam ne glede na nastavitve formata.)"
 
 #: my-calendar-help.php:64
 msgid "The type of location data to restrict by."
-msgstr ""
+msgstr "Tip podatka lokacije za omejevanje."
 
 #: my-calendar-help.php:65
 msgid "The specific location information to filter to."
-msgstr ""
+msgstr "Željena informacija lokacije za filtriranje."
 
 #: my-calendar-help.php:75
 msgid "The main My Calendar short code can be generated from a button in your post and page editor. The mini calendar can also be accessed and configured as a widget."
-msgstr ""
+msgstr "Glavne kratke kode My Calendar vtičnika lahko zgenerirate z gumbom v urejevalniku prispevkov in strani. Mini koledar je prav tako nastavljiv kot gradnik."
 
 #: my-calendar-help.php:77
 msgid "Additional Calendar Views (Upcoming events, today's events)"
-msgstr ""
+msgstr "Dodatni prikazi koledarja (prihajajoči dogodki, današnji dogodki)"
 
 #: my-calendar-help.php:87
 msgid "Both Upcoming Events and Today's Events can also be configured using widgets."
-msgstr ""
+msgstr "Prikaz prihodnjih dogodkov in današnjih dogodkov se lahko nastavi tudi z uporabo gradnika."
 
 #: my-calendar-help.php:94
 msgid "Supplement Features (Locations filter, Categories filter)"
-msgstr ""
+msgstr "Dopolnjevalne lastnosti (filtri lokacije, filtri kategorij)"
 
 #: my-calendar-help.php:98
 msgid "This shortcode produces a list of event locations, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>, <code>type</code> is either <code>saved</code> (to show items from your stored locations), or <code>custom</code> (to show the options configured in your user settings). <code>datatype</code> must be the type of data your limits are choosing from: <code>name</code> (business name), <code>city</code>, <code>state</code>, <code>country</code>, <code>zip</code> (postal code), or <code>region</code>."
@@ -1911,87 +1911,87 @@ msgstr ""
 
 #: my-calendar-help.php:121
 msgid "Your icons folder is:"
-msgstr ""
+msgstr "Vaša mapa za ikone je:"
 
 #: my-calendar-help.php:121
 msgid "You can alternately place icons in:"
-msgstr ""
+msgstr "Alternativno lahko vstavite ikone v:"
 
 #: my-calendar-help.php:130
 msgid "Custom Styles"
-msgstr ""
+msgstr "Slogi po meri"
 
 #: my-calendar-help.php:133
 msgid "My Calendar comes with four basic stylesheets. My Calendar will retain changes to these basic stylesheets on upgrade, but if you want to add an entirely new stylesheet, you may wish to store it in the My Calendar custom styles directory."
-msgstr ""
+msgstr "My Calendar že vsebuje štiri osnovne slogovne predloge. My Calendar bo, med posodobitvijo, obdržal spremembe, ki so bile narjene v osnovnih slogovnih predlogah. Če želite dodati novo slogovno predlogo je priporočljivo, da jo shranite v direktoriju za slogovne predloge po meri."
 
 #: my-calendar-help.php:136
 msgid "Your stylesheet directory is"
-msgstr ""
+msgstr "Vaš direktorij z slogovnimi predlogami je"
 
 #: my-calendar-help.php:137
 msgid "Your custom stylesheets directory is"
-msgstr ""
+msgstr "Direktorij za slogovne predloge po meri je"
 
 #: my-calendar-help.php:140
 msgid "You can also add custom styles to your theme directory to provide print styles, mobile styles, and tablet styles. <code>mc-print.css</code>, <code>mc-mobile.css</code>, and <code>mc-tablet.css</code>."
-msgstr ""
+msgstr "Prav tako lahko dodate sloge po meri v direktorij teme in s tem priskrbite slog za printanje, mobilni slog in slog za tablice. <code>mc-print.css</code>, <code>mc-mobile.css</code> in <code>mc-tablet.css</code>."
 
 #: my-calendar-help.php:148
 msgid "Widget Templating"
-msgstr ""
+msgstr "Predloga vričnika"
 
 #: my-calendar-help.php:151
 msgid "All template tags support two attributes: before=\"value\" and after=\"value\". The values of the attributes will be placed before and after the output value. These attribute values <strong>must</strong> be wrapped in double quotes."
-msgstr ""
+msgstr "Vse značke predloge podpirajo dva atributa: before=\"vrednost\" in after=\"vrednost\". Vrednost atributov bo postavljena pred in za izhodno vrednostjo. Te vrednosti atributov <strong>morajo</strong> biti obdane z dvojnimi narekovaji."
 
 #: my-calendar-help.php:154
 msgid "Date/Time template tags support the \"format\" attribute: format=\"M, Y\", where the value is a PHP formatted date string. Only <code>dtstart</code> and <code>dtend</code> include the full date/time information for formatting."
-msgstr ""
+msgstr "Značke predloge datuma/časa  podpirajo atribute \"format\": format=\"M, Y\", kjer je vrednost predstavljena s časovnim tekstom formatiranim po PHP standardu. Samo <code>dtstart</code> in <code>dtend</code> vključujeta polno informacijo za datuma/časa."
 
 #: my-calendar-help.php:157
 msgid "Example:"
-msgstr ""
+msgstr "Primer:"
 
 #: my-calendar-help.php:159 my-calendar.php:198
 msgid "Event Template Tags"
-msgstr ""
+msgstr "Značke predloge dogodka"
 
 #: my-calendar-help.php:162
 msgid "Displays the title of the event."
-msgstr ""
+msgstr "Prikaži naslov dogodka."
 
 #: my-calendar-help.php:165
 msgid "Displays title of the event as a link if a URL is present, or the title alone if no URL is available."
-msgstr ""
+msgstr "Prikaže naslov dogodka kot povezavo, če je URL obstaja, drugače prikaže samo naslov."
 
 #: my-calendar-help.php:168
 msgid "Displays the start time for the event."
-msgstr ""
+msgstr "Prikaže čas začetka za dogodek."
 
 #: my-calendar-help.php:171
 msgid "Displays the start time for the event adjusted to the current user's time zone settings. Returns <code>{time}</code> if user settings are disabled or if the user has not selected a preferred time zone."
-msgstr ""
+msgstr "Prikaže čas začetka dogodka prilagojen za uporabnikov časovni pas. Vrne <code>{time}</code> v primeru da so uporabniške nastavitve onemogočene ali če uporabnik ni nastavil željenega časovnega območja."
 
 #: my-calendar-help.php:174
 msgid "Displays the end time for the event adjusted to the current user's time zone settings. Returns <code>{endtime}</code> if user settings are disabled or if the user has not selected a preferred time zone."
-msgstr ""
+msgstr "Prikaže čas konca dogodka prilagojem uporabnikovim nastavitvam časovnega pasu. Vrne <code>{endtime}</code>, če so uporabniške nastavitve onemogočene ali če uporabnik ni nastavil časovnega pasu."
 
 #: my-calendar-help.php:177
 msgid "Displays the date on which the event begins."
-msgstr ""
+msgstr "Prikaže datum na katerega se dogodek prične."
 
 #: my-calendar-help.php:183
 msgid "Displays the date on which the event ends."
-msgstr ""
+msgstr "Prikaže datum na katerega se dogodek konča."
 
 #: my-calendar-help.php:186
 msgid "Displays the time at which the event ends."
-msgstr ""
+msgstr "Prikaže čas ob katerem se dogodek konča."
 
 #: my-calendar-help.php:189
 msgid "Displays the beginning date to the end date for events. Does not show end date if same as start date."
-msgstr ""
+msgstr "Prikaže datum začetka in datum konca za dogodke. Ne prikaže datuma v primeru, da sta datum začetka in datum konca dogodka enaka."
 
 #: my-calendar-help.php:195
 msgid "Timestamp for beginning of event."
@@ -2007,7 +2007,7 @@ msgstr ""
 
 #: my-calendar-help.php:204
 msgid "Displays the WordPress author who posted the event."
-msgstr ""
+msgstr "Prikaže avtorja Wordpress-a, ki je objavil dogodek."
 
 #: my-calendar-help.php:210
 msgid "Displays the name of the person assigned as host for the event."
@@ -2031,83 +2031,83 @@ msgstr ""
 
 #: my-calendar-help.php:231
 msgid "Displays description without converting paragraphs."
-msgstr ""
+msgstr "Prikaže opis brez pretvarjanja odstavkov."
 
 #: my-calendar.php:244
 msgid "Image associated with the event."
-msgstr ""
+msgstr "Sliak pripeta k dogodku."
 
 #: my-calendar-help.php:243
 msgid "Displays the URL provided for the event."
-msgstr ""
+msgstr "Prikaže URL, ki je bil dodan k dogodku."
 
 #: my-calendar-help.php:246
 msgid "Produces the URL to download an iCal formatted record for the event."
-msgstr ""
+msgstr "Prikaže spletno povezavo za prenos dogodka v formatu za iCal."
 
 #: my-calendar-help.php:249
 msgid "Produces a hyperlink to download an iCal formatted record for the event."
-msgstr ""
+msgstr "Proizvede povezavo za prenos dogodka v formatu za iCal."
 
 #: my-calendar-help.php:252
 msgid "Shows the recurrence status of the event. (Daily, Weekly, etc.)"
-msgstr ""
+msgstr "Prikaže status ponavljanja dogodka. (dnevno, tedensko, ...)"
 
 #: my-calendar-help.php:255
 msgid "Shows the number of repetitions of the event."
-msgstr ""
+msgstr "Prikaže število ponovitev dogodka."
 
 #: my-calendar-help.php:258
 msgid "Provides a link to an auto-generated page containing all information on the given event."
-msgstr ""
+msgstr "Proizvede povezavo do avtomatsko zgenerirane strani, ki vsebuje vse informacije o danem dogodku."
 
 #: my-calendar-help.php:258 my-calendar-help.php:261
 msgid "Requires that the site URL has been provided on the Settings page"
-msgstr ""
+msgstr "Potrebuje vpisano spletno povezavo do strani na nastavitveni strani."
 
 #: my-calendar-help.php:264
 msgid "Displays text indicating whether registration for the event is currently open or closed; displays nothing if that choice is selected in the event."
-msgstr ""
+msgstr "Prikaže tekst, ki ponazarja status prijavljanja na trenuten dogodek (odprto ali zaprto); Ne prikaže ničesar. če je ta možnost izbrana za dogodek."
 
 #: my-calendar-help.php:267
 msgid "Displays the current status of the event: either \"Published\" or \"Reserved\" - primary used in email templates."
-msgstr ""
+msgstr "Prikaže trenuten status dogodka: \"Objavljeno\" ali \"Rezervirano\" - primarno za uporabo v predlogah za email."
 
 #: my-calendar-help.php:269 my-calendar.php:258
 msgid "Location Template Tags"
-msgstr ""
+msgstr "Značke predlog lokacije"
 
 #: my-calendar-help.php:273
 msgid "Displays the name of the location of the event."
-msgstr ""
+msgstr "Prikaže ime lokacije dogodka."
 
 #: my-calendar-help.php:276
 msgid "Displays the first line of the site address."
-msgstr ""
+msgstr "Prikaže prvo vrstico naslova."
 
 #: my-calendar-help.php:279
 msgid "Displays the second line of the site address."
-msgstr ""
+msgstr "Prikaže drugo vrstico naslova."
 
 #: my-calendar-help.php:282
 msgid "Displays the city for the location."
-msgstr ""
+msgstr "Prikaže naselje lokacije dogodka."
 
 #: my-calendar-help.php:285
 msgid "Displays the state for the location."
-msgstr ""
+msgstr "Prikaže državo za lokacijo."
 
 #: my-calendar-help.php:288
 msgid "Displays the postcode for the location."
-msgstr ""
+msgstr "Prikaže poštno številko za lokacijo."
 
 #: my-calendar-help.php:291
 msgid "Shows the custom region entered for the location."
-msgstr ""
+msgstr "Prikaže vnešeno regijo po meri za lokacijo."
 
 #: my-calendar-help.php:294
 msgid "Displays the country for the event location."
-msgstr ""
+msgstr "Prikaže drgažvo za lokacijo dogodka."
 
 #: my-calendar-help.php:297
 msgid "Output the URL for the location link."
@@ -2233,7 +2233,7 @@ msgstr ""
 
 #: my-calendar-locations.php:202
 msgid "Website"
-msgstr ""
+msgstr "Spletna stran"
 
 #: my-calendar-locations.php:207
 msgid "If you supply GPS coordinates for your location, they will be used in place of any other address information to pinpoint your location."
@@ -2241,11 +2241,11 @@ msgstr ""
 
 #: my-calendar-locations.php:215
 msgid "Add Location"
-msgstr ""
+msgstr "Dodaj lokacijo"
 
 #: my-calendar-locations.php:223
 msgid "Add a New Location"
-msgstr ""
+msgstr "Dodaj novo lokacijo"
 
 #: my-calendar-locations.php:228 my-calendar.php:350
 msgid "Manage Locations"
@@ -2253,7 +2253,7 @@ msgstr ""
 
 #: my-calendar-event-manager.php:1093 my-calendar-locations.php:289
 msgid "Location"
-msgstr ""
+msgstr "Uredi lokacije"
 
 #: my-calendar-locations.php:311
 msgid "There are no locations in the database yet!"
@@ -2265,7 +2265,7 @@ msgstr ""
 
 #: my-calendar-output.php:187 my-calendar-output.php:311
 msgid "Close"
-msgstr ""
+msgstr "Zapri"
 
 #: my-calendar-output.php:200
 msgid "(%s in your time zone)"
@@ -2313,19 +2313,19 @@ msgstr ""
 
 #: my-calendar-core.php:1542 my-calendar-output.php:395
 msgid "Year"
-msgstr ""
+msgstr "Leto"
 
 #: my-calendar-output.php:423
 msgid "Go"
-msgstr ""
+msgstr "Pojdi"
 
 #: my-calendar-output.php:452
 msgid "Calendar: Print View"
-msgstr ""
+msgstr "Prikaz za tisk"
 
 #: my-calendar-output.php:467
 msgid "Return to site"
-msgstr ""
+msgstr "Vrni se na stran"
 
 #: my-calendar-output.php:480
 msgid "View as Grid"
@@ -2337,59 +2337,59 @@ msgstr ""
 
 #: my-calendar-output.php:738
 msgid "<abbr title=\"Sunday\">Sun</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Sunday\">Ned</abbr>"
 
 #: my-calendar-output.php:739
 msgid "<abbr title=\"Monday\">Mon</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Monday\">Pon</abbr>"
 
 #: my-calendar-output.php:740
 msgid "<abbr title=\"Tuesday\">Tues</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Tuesday\">Tor</abbr>"
 
 #: my-calendar-output.php:741
 msgid "<abbr title=\"Wednesday\">Wed</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Wednesday\">Sre</abbr>"
 
 #: my-calendar-output.php:742
 msgid "<abbr title=\"Thursday\">Thur</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Thursday\">Čet</abbr>"
 
 #: my-calendar-output.php:743
 msgid "<abbr title=\"Friday\">Fri</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Friday\">Pet</abbr>"
 
 #: my-calendar-output.php:744
 msgid "<abbr title=\"Saturday\">Sat</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Saturday\">Sob</abbr>"
 
 #: my-calendar-output.php:749
 msgid "<abbr title=\"Sunday\">S</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Sunday\">N</abbr>"
 
 #: my-calendar-output.php:750
 msgid "<abbr title=\"Monday\">M</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Monday\">P</abbr>"
 
 #: my-calendar-output.php:751
 msgid "<abbr title=\"Tuesday\">T</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Tuesday\">T</abbr>"
 
 #: my-calendar-output.php:752
 msgid "<abbr title=\"Wednesday\">W</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Wednesday\">S</abbr>"
 
 #: my-calendar-output.php:753
 msgid "<abbr title=\"Thursday\">T</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Thursday\">Č</abbr>"
 
 #: my-calendar-output.php:754
 msgid "<abbr title=\"Friday\">F</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Friday\">P</abbr>"
 
 #: my-calendar-output.php:755
 msgid "<abbr title=\"Saturday\">S</abbr>"
-msgstr ""
+msgstr "<abbr title=\"Saturday\">S</abbr>"
 
 #: my-calendar-output.php:861
 msgid "Print View"
@@ -2401,7 +2401,7 @@ msgstr ""
 
 #: my-calendar-output.php:983
 msgid "and"
-msgstr ""
+msgstr "in"
 
 #: my-calendar-output.php:997
 msgid "Events in"
@@ -2417,7 +2417,7 @@ msgstr ""
 
 #: my-calendar-output.php:1029
 msgid "There are no events scheduled during this period."
-msgstr ""
+msgstr "V tem obdobju ni predvidenih dogodkov."
 
 #: my-calendar-output.php:1140
 msgid "Unrecognized calendar format. Please use one of 'list','calendar', or 'mini'."
@@ -2425,7 +2425,7 @@ msgstr ""
 
 #: my-calendar-output.php:1160
 msgid "Category Key"
-msgstr ""
+msgstr "Legenda kategorij"
 
 #: my-calendar-output.php:1183
 msgid "Subscribe by <abbr title=\"Really Simple Syndication\">RSS</abbr>"
@@ -2453,11 +2453,11 @@ msgstr ""
 
 #: my-calendar-output.php:1329 my-calendar-output.php:1332
 msgid "All Categories"
-msgstr ""
+msgstr "Vse kategorije"
 
 #: my-calendar-output.php:1330
 msgid "Categories"
-msgstr ""
+msgstr "Kategorije"
 
 #: my-calendar-output.php:1351 my-calendar-output.php:1561
 msgid "Submit"
@@ -2465,7 +2465,7 @@ msgstr ""
 
 #: my-calendar-output.php:1502 my-calendar-output.php:1523
 msgid "Show all"
-msgstr ""
+msgstr "Prikaži vse"
 
 #: my-calendar-output.php:1521
 msgid "Show events in:"
@@ -3539,7 +3539,7 @@ msgstr ""
 
 #: my-calendar.php:271
 msgid "City."
-msgstr ""
+msgstr "Mesto"
 
 #: my-calendar.php:274
 msgid "State."
@@ -3547,7 +3547,7 @@ msgstr ""
 
 #: my-calendar.php:277
 msgid "Postal code/zip code."
-msgstr ""
+msgstr "Poštna številka"
 
 #: my-calendar.php:280
 msgid "Custom region."
