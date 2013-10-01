@@ -213,15 +213,11 @@ function mc_edit_category_form($view='edit',$catID='') {
 			<fieldset>
 			<legend><?php if ($view == 'add') { _e('Add Category','my-calendar'); } else { _e('Edit Category','my-calendar'); } ?></legend>
 				<label for="cat_name"><?php _e('Category Name','my-calendar'); ?>:</label> <input type="text" id="cat_name" name="category_name" class="input" size="30" value="<?php if ( !empty($cur_cat) && is_object($cur_cat) ) echo stripslashes( esc_attr( $cur_cat->category_name ) ); ?>" /><br />
-				<label for="cat_color"><?php _e('Category Color (Hex format)','my-calendar'); ?>:</label> <input type="text" id="cat_color" name="category_color" class="input" size="10" maxlength="7" value="<?php if ( !empty($cur_cat) &&  is_object($cur_cat) ) { echo (strpos($cur_cat->category_color,'#') !== 0)?'#':''; echo $cur_cat->category_color; } else { echo '#'; } ?>" /><br />
+				<label for="cat_color"><?php _e('Category Color','my-calendar'); ?>:</label> <input type="text" id="cat_color" name="category_color" class="mc-color-input" size="10" maxlength="7" value="<?php if ( !empty($cur_cat) &&  is_object($cur_cat) ) { echo (strpos($cur_cat->category_color,'#') !== 0)?'#':''; echo $cur_cat->category_color; } else { echo '#'; } ?>" /><br />
 				<label for="cat_icon"><?php _e('Category Icon','my-calendar'); ?>:</label> <select name="category_icon" id="cat_icon">
 		<?php
 		foreach ($iconlist as $value) {
-			if ( ( !empty($cur_cat) && is_object($cur_cat) ) && $cur_cat->category_icon == $value) {
-				$selected = " selected='selected'";
-			} else {
-				$selected = "";
-			}
+			$selected =  ( ( !empty($cur_cat) && is_object($cur_cat) ) && $cur_cat->category_icon == $value) ? " selected='selected'" : '';
 			echo "<option value='$value'$selected style='background: url(".str_replace('my-calendar/','',$url)."$path/$value) left 50% no-repeat;'>$value</option>";
 		}
 		?>
@@ -273,33 +269,35 @@ function mc_manage_categories() {
 	<table class="widefat page fixed" id="my-calendar-admin-table">
 	<thead>
 		<tr>
-			<th class="manage-column" scope="col"><?php echo ($co==2)?"<a href='".admin_url("admin.php?page=my-calendar-categories&amp;co=1")."'>":''; ?><?php _e('ID','my-calendar') ?><?php echo ($co==2)?'</a>':''; ?></th>
-			<th class="manage-column" scope="col"><?php echo ($co==1)?"<a href='".admin_url("admin.php?page=my-calendar-categories&amp;co=2")."'>":''; ?><?php _e('Category Name','my-calendar') ?><?php echo ($co==1)?'</a>':''; ?></th>
-			<th class="manage-column" scope="col"><?php _e('Category Color','my-calendar'); ?></th>
-			<th class="manage-column" scope="col"><?php _e('Category Icon','my-calendar'); ?></th>
-			<th class="manage-column" scope="col"><?php _e('Private','my-calendar'); ?></th>
-			<th class="manage-column" scope="col"><?php _e('Edit','my-calendar'); ?></th>
-			<th class="manage-column" scope="col"><?php _e('Delete','my-calendar'); ?></th>
+			<th scope="col"><?php echo ($co==2)?"<a href='".admin_url("admin.php?page=my-calendar-categories&amp;co=1")."'>":''; ?><?php _e('ID','my-calendar') ?><?php echo ($co==2)?'</a>':''; ?></th>
+			<th scope="col"><?php echo ($co==1)?"<a href='".admin_url("admin.php?page=my-calendar-categories&amp;co=2")."'>":''; ?><?php _e('Category Name','my-calendar') ?><?php echo ($co==1)?'</a>':''; ?></th>
+			<th scope="col"><?php _e('Category Color','my-calendar'); ?></th>
+			<th scope="col"><?php _e('Category Icon','my-calendar'); ?></th>
+			<th scope="col"><?php _e('Private','my-calendar'); ?></th>
+			<th scope="col"><?php _e('Edit','my-calendar'); ?></th>
+			<th scope="col"><?php _e('Delete','my-calendar'); ?></th>
 		</tr>
 	</thead>
 		<?php
 		$class = '';
-		foreach ( $categories as $category ) {
+		foreach ( $categories as $cat ) {
 			$class = ($class == 'alternate') ? '' : 'alternate';
-			$default = ( $category->category_id == get_option('mc_default_category') )?' default':'';
+			$icon_src = ( mc_file_exists( $cat->category_icon ) ) ? mc_get_file( $cat->category_icon, 'url' ) : plugins_url( 'my-calendar/icons/'.$cat->category_icon );
+			$background = (strpos($cat->category_color,'#') !== 0)?'#':'' . $cat->category_color;
+			$foreground = mc_inverse_color( $background );
 			?>
-			<tr class="<?php echo $class.$default; ?>">
-			<th scope="row"><?php echo $category->category_id; ?></th>
-			<td><?php echo stripslashes( esc_attr( $category->category_name ) ); ?></td>
-			<td style="background-color:<?php echo (strpos($category->category_color,'#') !== 0)?'#':''; echo $category->category_color; ?>;">&nbsp;</td>
-			<td style="background-color:<?php echo (strpos($category->category_color,'#') !== 0)?'#':''; echo $category->category_color; ?>;"><img src="<?php echo str_replace('my-calendar/','',$url); ?>/<?php echo stripslashes( esc_attr( $category->category_icon ) ); ?>" alt="" /></td>		 
-			<td><?php echo ( $category->category_private == 1 )?__('Yes','my-calendar'):__('No','my-calendar'); ?></td>
-			<td><a href="<?php echo admin_url("admin.php?page=my-calendar-categories&amp;mode=edit&amp;category_id=$category->category_id"); ?>" class='edit'><?php _e('Edit','my-calendar'); ?></a></td>
+			<tr class="<?php echo $class; ?>">
+			<th scope="row"><?php echo $cat->category_id; ?></th>
+			<td><?php echo stripslashes( esc_attr( $cat->category_name ) ); echo ' '; if ( $cat->category_id == get_option( 'mc_default_category' ) ) { _e( '(Default)' ); } ?></td>
+			<td style="background-color:<?php echo $background; ?>; color: <?php echo $foreground; ?>"><?php echo $background; ?></td>
+			<td style="background-color:<?php echo $background; ?>;"><img src="<?php echo $icon_src; ?>" alt="" /></td>		 
+			<td><?php echo ( $cat->category_private == 1 )?__('Yes','my-calendar'):__('No','my-calendar'); ?></td>
+			<td><a href="<?php echo admin_url("admin.php?page=my-calendar-categories&amp;mode=edit&amp;category_id=$cat->category_id"); ?>" class='edit'><?php _e('Edit','my-calendar'); ?></a></td>
 			<?php
-			if ($category->category_id == 1) {
+			if ($cat->category_id == 1) {
 				echo '<td>'.__('N/A','my-calendar').'</td>';
 			} else { ?>
-				<td><a href="<?php echo admin_url("admin.php?page=my-calendar-categories&amp;mode=delete&amp;category_id=$category->category_id"); ?>" class="delete" onclick="return confirm('<?php _e('Are you sure you want to delete this category?','my-calendar'); ?>')"><?php _e('Delete','my-calendar'); ?></a></td>
+				<td><a href="<?php echo admin_url("admin.php?page=my-calendar-categories&amp;mode=delete&amp;category_id=$cat->category_id"); ?>" class="delete" onclick="return confirm('<?php _e('Are you sure you want to delete this category?','my-calendar'); ?>')"><?php _e('Delete','my-calendar'); ?></a></td>
 			<?php
 			}  ?>
 			</tr>

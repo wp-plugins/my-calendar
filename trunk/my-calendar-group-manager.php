@@ -500,9 +500,6 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			<fieldset>
 			<legend><?php _e('GPS Coordinates (optional)','my-calendar'); ?></legend>
 			<p>
-			<small><?php _e('If you supply GPS coordinates for your location, they will be used in place of any other address information to provide your map link.','my-calendar'); ?></small>
-			</p>
-			<p>
 			<label for="event_latitude"><?php _e('Latitude','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_latitude' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?><?php if ( !mc_compare_group_members( $group_id,'event_longitude' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_latitude" name="event_latitude" class="input" size="10" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_latitude)); ?>" /> <label for="event_longitude"><?php _e('Longitude','my-calendar'); ?></label> <input type="text" id="event_longitude" name="event_longitude" class="input" size="10" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_longitude)); ?>" />
 			</p>
 			</fieldset>	
@@ -746,14 +743,14 @@ function jd_groups_display_list() {
 <table class="widefat wp-list-table" id="my-calendar-admin-table">
 	<thead>
 	<tr>
-		<th class="manage-column" scope="col" style="width: 50px;"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=1$sorting"); ?>"><?php _e('ID','my-calendar') ?></a></th>
-		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=8$sorting"); ?>"><?php _e('Group','my-calendar') ?></a></th>
-		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=2$sorting"); ?>"><?php _e('Title','my-calendar') ?></a></th>
-		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=7$sorting"); ?>"><?php _e('Where','my-calendar') ?></a></th>
-		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=4$sorting"); ?>"><?php _e('Starts','my-calendar') ?></a></th>
-		<th class="manage-column" scope="col"><?php _e('Recurs','my-calendar') ?></th>
-		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=5$sorting"); ?>"><?php _e('Author','my-calendar') ?></a></th>
-		<th class="manage-column" scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=6$sorting"); ?>"><?php _e('Category','my-calendar') ?></a></th>
+		<th  scope="col" style="width: 50px;"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=1$sorting"); ?>"><?php _e('ID','my-calendar') ?></a></th>
+		<th  scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=8$sorting"); ?>"><?php _e('Group','my-calendar') ?></a></th>
+		<th  scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=2$sorting"); ?>"><?php _e('Title','my-calendar') ?></a></th>
+		<th  scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=7$sorting"); ?>"><?php _e('Where','my-calendar') ?></a></th>
+		<th  scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=4$sorting"); ?>"><?php _e('Starts','my-calendar') ?></a></th>
+		<th  scope="col"><?php _e('Recurs','my-calendar') ?></th>
+		<th  scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=5$sorting"); ?>"><?php _e('Author','my-calendar') ?></a></th>
+		<th  scope="col"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=6$sorting"); ?>"><?php _e('Category','my-calendar') ?></a></th>
 	</tr>
 	</thead>
 		<?php

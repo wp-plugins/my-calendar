@@ -57,3 +57,4 @@ input[id=event_label], input[id=event_title], input[id=location_label], input[id
 label[for=mc_twitter] { background: url(images/twitter.png) no-repeat; padding-left: 20px; }
 strong.label { font-weight: 400; }
 #my-calendar-text label { display: inline-block; width: 12em; }
+.wp-picker-container { position: relative; top:3px;  }

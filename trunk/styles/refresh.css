@@ -13,7 +13,8 @@
 .mc-main .current-day .mc-date {color: #000; background: #ffd}
 .mc-main .mc-date, .mc-main.mini td {background:#f6f6f6}
 .mc-main .weekend .mc-date {background:#f0f1f5; color: #000}
-.mc-main .details .mc-event-date {font-weight: 700; font-size: 1.3em; text-shadow: 1px 1px 2px #aaa}
+.mc-main .details .mc-event-date { font-weight: 700; font-size: 1.3em; }
+.mc-main .details .time-block p { padding: 0; margin: 0; }
 .mc-main .my-calendar-nav li a {
 color: #fff; text-decoration: none; 
 border: 1px solid #ddd;

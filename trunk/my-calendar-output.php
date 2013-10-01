@@ -175,7 +175,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 				$body_details .= "\n<span class='event-time dtstart'><time datetime='".$id_start.'T'.$event->event_time."'>".date_i18n(get_option('mc_time_format'), strtotime($event->event_time)).'</time>';
 				if ( $event->event_hide_end == 0 ) {
 					if ($event->event_endtime != '' && $event->event_endtime != $event->event_time ) {
-						$body_details .= "<span class='time-separator'> &ndash; </span><span class='end-time dtend' title='".$id_end.'T'.$event->event_endtime."'>".date_i18n(get_option('mc_time_format'), strtotime($event->event_endtime))."</span>";
+						$body_details .= "<span class='time-separator'> &ndash; </span><time class='end-time dtend' datetime='".$id_end.'T'.$event->event_endtime."'>".date_i18n(get_option('mc_time_format'), strtotime($event->event_endtime))."</span>";
 					}
 				}
 				if ($tz != '') {
@@ -243,11 +243,11 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 		$event_image = ($event->event_image!='')?"<img src='$event->event_image' alt='' class='mc-image' />":'';
 		$short = '';
 		if ( get_option('mc_short') == 'true' && $type != 'single' ) {
-			$short = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',$event->event_short):wpautop(stripcslashes($event->event_short),1);
+			$short = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',stripcslashes($event->event_short)):wpautop(stripcslashes($event->event_short),1);
 			$short = "<div class='shortdesc'>$event_image".$short."</div>";	
 		}
 		if ( get_option('mc_desc') == 'true' || $type == 'single' ) {
-			$description = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',$event->event_desc):wpautop(stripcslashes($event->event_desc),1);
+			$description = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',stripcslashes($event->event_desc)):wpautop(stripcslashes($event->event_desc),1);
 			$description = "<div class='longdesc'>$event_image".$description."</div>";
 		} else {
 			$description = '';
@@ -297,7 +297,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 	}
 	// create edit links
 	if ( mc_can_edit_event( $event->event_author ) && get_option('mc_remote') != 'true' ) {
-		$groupedit = ( $event->event_group_id != 0 )?"<li><a href='".admin_url("admin.php?page=my-calendar-groups&amp;mode=edit&amp;event_id=$event->event_id&amp;group_id=$event->event_group_id")."' class='group'>".__('Edit Group','my-calendar')."</a></li>\n":'';	
+		$groupedit = ( $event->event_group_id != 0 )?" &bull; <a href='".admin_url("admin.php?page=my-calendar-groups&amp;mode=edit&amp;event_id=$event->event_id&amp;group_id=$event->event_group_id")."' class='group'>".__('Edit Group','my-calendar')."</a>\n":'';	
 		$recurs = str_split( $event->event_recur, 1 );
 		$recur = $recurs[0];
 		$every = ( isset($recurs[1]) )?$recurs[1]:1;	
@@ -305,21 +305,16 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 		if ( $recur == 'S' ) {
 			$edit = "
 			<div class='mc_edit_links'>
-			<ul>
-			<li><a href='".admin_url("admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id&amp;ref=$referer")."' class='edit'>".__('Edit','my-calendar')."</a></li>
-			<li><a href='".admin_url("admin.php?page=my-calendar-manage&amp;mode=delete&amp;event_id=$event->event_id&amp;ref=$referer")."' class='delete'>".__('Delete','my-calendar')."</a></li>
-			$groupedit
-			</ul>
+			<p>
+			<a href='".admin_url("admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id&amp;ref=$referer")."' class='edit'>".__('Edit','my-calendar')."</a> &bull; <a href='".admin_url("admin.php?page=my-calendar-manage&amp;mode=delete&amp;event_id=$event->event_id&amp;ref=$referer")."' class='delete'>".__('Delete','my-calendar')."</a>$groupedit
+			</p>
 			</div>";
 		} else {
 			$edit = "<div class='mc_edit_links'>
-			<ul>
-			<li><a href='".admin_url("admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id&amp;date=$dateid&amp;ref=$referer")."' class='edit'>".__('Edit This Date','my-calendar')."</a></li>
-			<li><a href='".admin_url("admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id&amp;ref=$referer")."' class='edit'>".__('Edit All','my-calendar')."</a></li>
-			<li><a href='".admin_url("admin.php?page=my-calendar-manage&amp;mode=delete&amp;event_id=$event->event_id&amp;date=$dateid&amp;ref=$referer")."' class='delete'>".__('Delete This Date','my-calendar')."</a></li>
-			<li><a href='".admin_url("admin.php?page=my-calendar-manage&amp;mode=delete&amp;event_id=$event->event_id&amp;ref=$referer")."' class='delete'>".__('Delete All','my-calendar')."</a></li>
+			<p>
+			<a href='".admin_url("admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id&amp;date=$dateid&amp;ref=$referer")."' class='edit'>".__('Edit This Date','my-calendar')."</a> &bull; <a href='".admin_url("admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id&amp;ref=$referer")."' class='edit'>".__('Edit All','my-calendar')."</a> &bull; <a href='".admin_url("admin.php?page=my-calendar-manage&amp;mode=delete&amp;event_id=$event->event_id&amp;date=$dateid&amp;ref=$referer")."' class='delete'>".__('Delete This Date','my-calendar')."</a> &bull; <a href='".admin_url("admin.php?page=my-calendar-manage&amp;mode=delete&amp;event_id=$event->event_id&amp;ref=$referer")."' class='delete'>".__('Delete All','my-calendar')."</a>
 			$groupedit
-			</ul>
+			</p>
 			</div>";	
 		}
 	} else {
