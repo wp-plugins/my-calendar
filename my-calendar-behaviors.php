@@ -199,8 +199,7 @@ my_calendar_check_db();
 		echo '</em></div>';
 	}
 	?>		
-	</fieldset>	
-
+	</fieldset>
 	<p>
 		<input type="submit" name="save" class="button-primary" value="<?php _e('Save','my-calendar'); ?>" />
 	</p>		
@@ -212,6 +211,6 @@ my_calendar_check_db();
  </div>
  </div>
  <?php jd_show_support_box(); ?>
-
  </div>
-<?php }
+<?php 
+}

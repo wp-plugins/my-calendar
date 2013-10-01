@@ -137,7 +137,7 @@ function mc_register_styles() {
 	if ( get_option('mc_use_styles') != 'true' ) {
 		$this_post = $wp_query->get_queried_object();
 		$id = ( is_object($this_post) && isset( $this_post->ID ) ) ? $this_post->ID : false;
-		$array = ( get_option( 'mc_show_css' ) != '' ) ? explode( ",",get_option( 'mc_show_css' ) ) : $array ;
+		$array = ( get_option( 'mc_show_css' ) != '' ) ? explode( ",",get_option( 'mc_show_css' ) ) : array() ;
 		if ( @in_array( $id, $array ) || get_option( 'mc_show_css' ) == '' ) {
 			wp_enqueue_style( 'my-calendar-style' );
 		}
@@ -543,7 +543,7 @@ function check_my_calendar() {
 	if ( $new_install == true ) {
 		 //add default settings
 		mc_default_settings();
-		$sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_color='#ffffff', category_icon='event.png'";
+		$sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_color='#ffffcc', category_icon='event.png'";
 		$mcdb->query($sql);
     } else {
 		// clear cache so updates are immediately available
@@ -1330,6 +1330,10 @@ function mc_scripts( $hook ) {
 	if ( $current_screen->id == 'toplevel_page_my-calendar' ) {
 		// later.
 		//wp_enqueue_script(  'charCount', plugins_url( 'wp-to-twitter/js/jquery.charcount.js'), array('jquery') );
+	}
+	if ( $current_screen->id == 'my-calendar_page_my-calendar-categories' ) {
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_script( 'mc-color-picker', plugins_url('js/color-picker.js', __FILE__ ), array( 'wp-color-picker' ), false, true );	
 	}
 }
 
