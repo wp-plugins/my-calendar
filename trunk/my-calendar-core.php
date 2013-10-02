@@ -257,6 +257,9 @@ function my_calendar_write_js() {
 	//<![CDATA[
 	jQuery(document).ready(function($) {
 	    $('#event_begin, #event_time,' + '#event_end, #event_endtime').calendricalDateTimeRange();
+		<?php if ( function_exists( 'jd_doTwitterAPIPost' ) ) { ?>
+		$('#mc_twitter').charCount( { allowed: 140, counterText: '<?php _e('Characters left: ','my-calendar') ?>' } );
+		<?php } ?>
 	});
 	//]]>
 	</script>
@@ -535,7 +538,8 @@ function check_my_calendar() {
 		if ( version_compare( $current_version, "2.0.4", "<" ) ) { $upgrade_path[] = "2.0.4"; }	
 		if ( version_compare( $current_version, "2.1.0", "<" ) ) { $upgrade_path[] = "2.1.0"; }	
 		if ( version_compare( $current_version, "2.2.0", "<" ) ) { $upgrade_path[] = "2.2.0"; }	
-		if ( version_compare( $current_version, "2.2.6", "<" ) ) { $upgrade_path[] = "2.2.6"; }			
+		if ( version_compare( $current_version, "2.2.6", "<" ) ) { $upgrade_path[] = "2.2.6"; }	
+		if ( version_compare( $current_version, "2.2.10", "<" ) ) { $upgrade_path[] = "2.2.10"; }			
 	}
 	// having determined upgrade path, assign new version number
 	update_option( 'mc_version' , $mc_version );
@@ -1329,7 +1333,7 @@ function mc_scripts( $hook ) {
 	global $current_screen;
 	if ( $current_screen->id == 'toplevel_page_my-calendar' ) {
 		// later.
-		//wp_enqueue_script(  'charCount', plugins_url( 'wp-to-twitter/js/jquery.charcount.js'), array('jquery') );
+		wp_enqueue_script(  'charCount', plugins_url( 'wp-to-twitter/js/jquery.charcount.js'), array('jquery') );
 	}
 	if ( $current_screen->id == 'my-calendar_page_my-calendar-categories' ) {
 		wp_enqueue_style( 'wp-color-picker' );

@@ -150,7 +150,7 @@ function jd_show_support_box( $show='', $add=false, $remove=false ) {
 				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 				</p>
 				<p class="mcbuy"><img src="<?php echo plugins_url('my-calendar/images/guide.png'); ?>" alt="My Calendar User's Guide" class="alignleft" /><?php _e('Help me help you:','my-calendar'); ?> <a href="http://www.joedolson.com/articles/my-calendar/users-guide/" rel="external"><?php _e("Buy the My Calendar User's Guide",'my-calendar'); ?></a></p>
-				<p><?php _e('<strong>Or make a donation today!</strong> Every donation counts - donate $2, $10, or $100 and help me keep this plug-in running!','my-calendar'); ?></p>
+				<p><?php _e('<strong>Or make a donation today!</strong> Every donation counts - donate $5, $20, or $100 and help me keep this plug-in running!','my-calendar'); ?></p>
 				<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 				<p class="mcd">
 					<input type="hidden" name="cmd" value="_s-xclick" />

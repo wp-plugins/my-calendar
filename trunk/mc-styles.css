@@ -35,8 +35,8 @@ ul.links li {float: left;margin: 0 5px 10px;font-size: .9em}
 #my-calendar .break ul {padding: 10px 10px 0;margin-right: 180px}
 #my-calendar .columns, .jd-my-calendar .columns {-moz-column-count: 3;-moz-column-gap: 20px;-webkit-column-count: 3;-webkit-column-gap: 20px;column-count: 3;column-gap: 20px}
 #my-calendar .two-columns {-moz-column-count: 2;-moz-column-gap: 30px;-webkit-column-count: 2;-webkit-column-gap: 30px;column-count: 2;column-gap: 30px}
-.jd-my-calendar .event_image img { max-width: 480px}
-.event_image img {margin-top: 2px}
+.jd-my-calendar .event_image { float: right; margin-left: 10px; }
+.jd-my-calendar .event_image img { width: 150px; height: auto; margin: 2px 0; border-radius: 3px; }
 .mc_support {font-family:'Courier New';background:#fff;padding:5px}
 .template-editor, .style-editor { width: 98%}
 .roles { width: 24%; float: left; min-height: 300px}
@@ -57,4 +57,7 @@ input[id=event_label], input[id=event_title], input[id=location_label], input[id
 label[for=mc_twitter] { background: url(images/twitter.png) no-repeat; padding-left: 20px; }
 strong.label { font-weight: 400; }
 #my-calendar-text label { display: inline-block; width: 12em; }
-.wp-picker-container { position: relative; top:3px;  }
+.wp-picker-container { position: relative; top:3px; }
+.jd-my-calendar .counter { padding-right: 6px; border-right: 16px solid green; border-radius: 20px; }
+.jd-my-calendar .counter.warning { border-color: orange; }
+.jd-my-calendar .counter.exceeded { border-color: red; }
