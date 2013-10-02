@@ -90,12 +90,15 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 * Bug fix: date comparison in grouped event date output.
 * Bug fix: editing a single occurrence of an event when location fields not displayed could result in duplicating the event.
-* Bug fix: Duplicated <a> onevent title in events manager.
+* Bug fix: Duplicated <a> on event title in events manager.
 * Bug fix: Generated WP to Twitter empty sentence error.
 * Bug fix: Grouped events within a single day in upcoming events list.
+* Bug fix: Run My Calendar upgrade stylesheet archiving only when My Calendar is updated.
+* Bug fix: 
 * Changed: replaced mc_is_mobile() functionality with native wp_is_mobile(). Filterable for My Calendar using 'mc_is_mobile' filter.
 * Changed: properly registered and enqueue most front-end styles.
 * Changed: Removed classes 'prevMonth' and 'nextMonth' from navigation.
+* Misc. minor style changes to front and back end UI.
 * Added: special value for 'author' and 'host' attributes of 'current' to only show events created by the logged-in user. Filter via 'mc_display_author' and 'mc_display_host'
 * Added: date and time to title field for My Calendar RSS feed.
 * Preparation: permission filtering for submissions and registrations add-ons.

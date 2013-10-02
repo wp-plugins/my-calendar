@@ -601,6 +601,11 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 		} ?>
 		</div>
 		<?php } ?>
+		<?php if ( mc_show_edit_block( 'event_short' ) ) { ?>
+		<p>
+		<label for="event_short"><?php _e('Event Short Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><textarea id="event_short" name="event_short" class="input" rows="2" cols="80"><?php if ( $has_data ) echo stripslashes(esc_attr($data->event_short)); ?></textarea>
+		</p>
+		<?php } ?>
 		<?php
 		// If the editor is enabled, shouldn't display the image uploader. 
 		// It restricts use of the image uploader to a single image and forces it to be in 
@@ -608,9 +613,9 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 		if ( mc_show_edit_block( 'event_image' ) ) { ?>
 		<p>
 		<?php if ( !empty($data->event_image) ) { ?>
-		<div class="event_image"><?php _e("This event's image:",'my-calendar'); ?><br /><img src="<?php if ( $has_data ) echo esc_attr($data->event_image); ?>" alt="" /></div>
+		<div class="event_image"><img src="<?php if ( $has_data ) echo esc_attr($data->event_image); ?>" alt="" /></div>
 		<?php } ?>
-		<label for="event_image"><?php _e("Add an image:",'my-calendar'); ?></label> <input type="text" name="event_image" id="event_image" size="60" value="<?php if ( $has_data ) echo esc_attr($data->event_image); ?>" /> 
+		<label for="event_image"><?php _e("Add an image:",'my-calendar'); ?></label> <input type="text" name="event_image" id="event_image" size="60" value="<?php if ( $has_data ) echo esc_attr($data->event_image); ?>" placeholder="http://yourdomain.com/image.jpg" /> 
 			<?php if ( mc_show_edit_block( 'event_use_editor' ) ) { ?>
 				<?php echo " "; _e('(URL to Event image)','my-calendar'); ?>
 			<?php } else { ?>
@@ -621,15 +626,10 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 		<div>
 			<input type="hidden" name="event_image" value="<?php if ( $has_data ) echo esc_attr($data->event_image); ?>" />
 			<?php if ( !empty($data->event_image) ) { ?>
-			<div class="event_image"><?php _e("This event's image:",'my-calendar'); ?><br /><img src="<?php echo esc_attr($data->event_image); ?>" alt="" /></div>
+			<div class="event_image"><img src="<?php echo esc_attr($data->event_image); ?>" alt="" /></div>
 			<?php } ?>
 		</div>
-		<?php } ?>
-		<?php if ( mc_show_edit_block( 'event_short' ) ) { ?>
-		<p>
-		<label for="event_short"><?php _e('Event Short Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?></label><br /><textarea id="event_short" name="event_short" class="input" rows="2" cols="80"><?php if ( $has_data ) echo stripslashes(esc_attr($data->event_short)); ?></textarea>
-		</p>
-		<?php } ?>
+		<?php } ?>		
 	<p>
 	<label for="event_host"><?php _e('Event Host','my-calendar'); ?></label>
 	<select id="event_host" name="event_host">
@@ -661,7 +661,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 		<?php } ?>
 		<?php if ( mc_show_edit_block( 'event_link' ) ) { ?>
 		<p>
-		<label for="event_link"><?php _e('Event Link (Optional)','my-calendar'); ?></label> <input type="text" id="event_link" name="event_link" class="input" size="40" value="<?php if ( $has_data ) { echo esc_url($data->event_link); } ?>" /> <input type="checkbox" value="1" id="event_link_expires" name="event_link_expires"<?php if ( $has_data && $data->event_link_expires == '1' ) { echo " checked=\"checked\""; } else if ( $has_data && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_link_expires' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_link_expires"><?php _e('This link will expire when the event passes.','my-calendar'); ?></label>
+		<label for="event_link"><?php _e('Event Link (Optional)','my-calendar'); ?></label> <input type="text" id="event_link" name="event_link" class="input" size="40" value="<?php if ( $has_data ) { echo esc_url($data->event_link); } ?>" /> <input type="checkbox" value="1" id="event_link_expires" name="event_link_expires"<?php if ( $has_data && $data->event_link_expires == '1' ) { echo " checked=\"checked\""; } else if ( $has_data && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_link_expires' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_link_expires"><?php _e('Link will expire after event','my-calendar'); ?></label>
 		</p>
 	<?php } ?>
 	</fieldset>
@@ -697,20 +697,19 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 			}
 			?>
 			<p>
-			<label for="event_begin" id="eblabel"><?php _e('Start Date (YYYY-MM-DD)','my-calendar'); ?> <span><?php _e('(required)','my-calendar'); ?></span></label> <input type="text" id="event_begin" name="event_begin[]" class="event_begin calendar_input" size="11" value="<?php echo $event_begin; ?>" /> <label for="event_time"><?php _e('Time (hh:mm am/pm)','my-calendar'); ?></label> <input type="text" id="event_time" name="event_time[]" class="input" size="10"	value="<?php 
-					$offset = (60*60*get_option('gmt_offset')); // need this for below
+			<label for="event_begin" id="eblabel"><?php _e('Start Date (YYYY-MM-DD)','my-calendar'); ?> <span><?php _e('(required)','my-calendar'); ?></span></label> <input type="text" id="event_begin" name="event_begin[]" class="event_begin calendar_input" size="11" value="<?php echo $event_begin; ?>" /> <label for="event_time"><?php _e('Time (hh:mm am/pm)','my-calendar'); ?></label> <input type="text" id="event_time" name="event_time[]" class="input" size="10" value="<?php 
 					if ( $has_data ) {
 						echo ($data->event_time == "00:00:00" && $data->event_endtime == "00:00:00")?'':date("h:i a",strtotime($data->event_time));
 					} else {
 						echo date_i18n("h:i a",current_time('timestamp') );
-					}?>" /> <input type="checkbox" value="1" id="event_allday" name="event_allday"<?php if ( $has_data && ( $data->event_time == '00:00:00' && $data->event_endtime == '00:00:00' ) ) { echo " checked=\"checked\""; } ?> /> <label for="event_allday"><?php _e('All day event','my-calendar'); ?></label>
+					} ?>" /> <input type="checkbox" value="1" id="event_allday" name="event_allday"<?php if ( $has_data && ( $data->event_time == '00:00:00' && $data->event_endtime == '00:00:00' ) ) { echo " checked=\"checked\""; } ?> /> <label for="event_allday"><?php _e('All day event','my-calendar'); ?></label>
 			</p>
 			<p>
 			<label for="event_end" id="eelabel"><?php _e('End Date (YYYY-MM-DD)','my-calendar'); ?> <small><?php _e('(optional)','my-calendar'); ?></small></label> <input type="text" name="event_end[]" id="event_end" class="event_end calendar_input" size="11" value="<?php echo $event_end; ?>" /> <label for="event_endtime"><?php _e('End Time (hh:mm am/pm)','my-calendar'); ?></label> <input type="text" id="event_endtime" name="event_endtime[]" class="input" size="10" value="<?php
 					if ( $has_data ) {
 						echo ($data->event_endtime == "00:00:00" && $data->event_time == "00:00:00")?'':date("h:i a",strtotime($data->event_endtime));
 					} else {
-						echo date("h:i a",strtotime( "+1 hour" )+$offset );
+						echo date_i18n( "h:i a",strtotime( "+1 hour" )+(60*60*get_option('gmt_offset') ) );
 					}?>" /> <input type="checkbox" value="1" id="event_hide_end" name="event_hide_end"<?php if ( $has_data && $data->event_hide_end == '1' ) { echo " checked=\"checked\""; } ?> /> <label for="event_hide_end"><?php _e('Hide end time','my-calendar'); ?></label>
 
 			</p>
@@ -1609,11 +1608,11 @@ function mc_instance_list( $id, $occur=false, $template='<h3>{title}</h3>{descri
 	if ( is_array($results) && is_admin() ) {
 		foreach ( $results as $result ) {
 			if ( $result->occur_id == $occur ) { 
-				$current = "<em>".__('Editing: ','my-calendar')."</em>";  $end = '';
+				$current = "<em>".__('Editing: ','my-calendar')."</em>"; $end = '';
 			} else { 
 				$current = "<a href='".admin_url('admin.php?page=my-calendar')."&amp;mode=edit&amp;event_id=$id&amp;date=$result->occur_id'>"; $end = "</a>";
 			}
-			$begin = date( get_option('mc_date_format'),strtotime($result->occur_begin) ) . ' ' . date( get_option('mc_time_format'),strtotime($result->occur_begin) );
+			$begin = date_i18n( get_option('mc_date_format'),strtotime($result->occur_begin) ) . ' ' . date( get_option('mc_time_format'),strtotime($result->occur_begin) );
 			$output.= "<li>$current$begin$end</li>";
 		}
 	} else {
@@ -1652,10 +1651,9 @@ function mc_related_events( $id ) {
 	if ( is_array($results) && !empty($results) ) {
 		foreach ( $results as $result ) {
 			$event = $result->occur_event_id;
-			$title = mc_get_data('event_title',$result->occur_event_id );
 			$current = "<a href='".admin_url('admin.php?page=my-calendar')."&amp;mode=edit&amp;event_id=$event'>"; $end = "</a>";
-			$begin = date( get_option('mc_date_format'),strtotime($result->occur_begin) ) . ' ' . date( get_option('mc_time_format'),strtotime($result->occur_begin) );
-			$output.= "<li>$title; $current$begin$end</li>";
+			$begin = date_i18n( get_option('mc_date_format'),strtotime($result->occur_begin) ) . ' ' . date( get_option('mc_time_format'),strtotime($result->occur_begin) );
+			$output.= "<li>$current$begin$end</li>";
 		}
 	} else {
 		$output = "<li>".__('No related events','my-calendar')."</li>";

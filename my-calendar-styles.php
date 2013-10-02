@@ -222,14 +222,15 @@ my_calendar_check_db();
 			echo '<div class="wrap jd-my-calendar" id="diff">';
 			echo wp_text_diff( $left_string,$right_string, array( 'title' => __('Comparing Your Style with latest installed version of My Calendar','my-calendar'), 'title_right' => __('Latest (from plugin)','my-calendar'), 'title_left' => __('Current (in use)','my-calendar') ) );
 			echo '</div>';
-		} else if ( trim($left_string)!=trim($right_string) ) {
+		} else if ( trim( $left_string )!=trim( $right_string ) ) {
 			echo '<div class="wrap jd-my-calendar">';
 			echo '<div class="updated"><p>'.__('There have been updates to the stylesheet.','my-calendar').' <a href="'.admin_url("admin.php?page=my-calendar-styles&amp;diff#diff").'">'.__('Compare Your Stylesheet with latest installed version of My Calendar.','my-calendar').'</a></p></div>';
 			echo '</div>';
 		} else {
-			echo '<div class="wrap jd-my-calendar">';
-			echo '<p>'.__('Your stylesheet matches that included with My Calendar.','my-calendar').'</p>';
-			echo '</div>';
+			echo '
+			<div class="wrap jd-my-calendar">
+				<p>'.__('Your stylesheet matches that included with My Calendar.','my-calendar').'</p>
+			</div>';
 		}
 	}
 

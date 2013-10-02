@@ -327,6 +327,11 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 		<label for="content"><?php _e('Event Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_desc' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label><br /><?php if ( $mc_input['event_use_editor'] == 'on' ) {  if ( version_compare( get_bloginfo( 'version' ) , '3.3' , '>=' ) ) { wp_editor( stripslashes($description), 'content', array( 'textarea_rows'=>10 ) ); } else { the_editor( stripslashes($description) ); } }  else { ?><textarea id="content" name="content" class="event_desc" rows="5" cols="80"><?php echo stripslashes(esc_attr($description)); ?></textarea><?php if ( $mc_input['event_use_editor'] == 'on' ) { ?></div><?php } } ?>
 		</div>		
 		<?php } ?>
+		<?php if ($mc_input['event_short'] == 'on' || $mc_input_administrator ) { ?>
+		<p>
+		<label for="event_short"><?php _e('Event Short Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_short' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label><br /><textarea id="event_short" name="event_short" class="input" rows="2" cols="80"><?php if ( !empty($data) ) echo stripslashes(esc_attr($data->event_short)); ?></textarea>
+		</p>
+		<?php } ?>
 		<?php 
 		// If the editor is enabled, shouldn't display the image uploader. 
 		// It restricts use of the image uploader to a single image and forces it to be in 
@@ -335,23 +340,18 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 		if ( ( $mc_input['event_image'] == 'on' && $mc_input['event_use_editor'] != 'on' ) || ( $mc_input_administrator && $mc_input['event_use_editor'] != 'on' ) ) { ?>
 		<p>
 		<?php if ( !empty($data->event_image) ) { ?>
-		<div class="event_image"><?php _e("This event's image:",'my-calendar'); ?><br /><img src="<?php if ( !empty($data) ) echo esc_attr($data->event_image); ?>" alt="" /></div>
+		<div class="event_image"><img src="<?php if ( !empty($data) ) echo esc_attr($data->event_image); ?>" alt="" /></div>
 		<?php } ?>
-		<label for="event_image"><?php _e("Add an image:",'my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_image' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" name="event_image" id="event_image" size="60" value="<?php if ( !empty($data) ) echo esc_attr($data->event_image); ?>" /> <input id="upload_image_button" type="button" class="button" value="<?php _e('Upload Image','my-calendar'); ?>" /><br /><?php _e('Include your image URL or upload an image.','my-calendar'); ?>
+		<label for="event_image"><?php _e("Add an image:",'my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_image' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" name="event_image" id="event_image" size="60" value="<?php if ( !empty($data) ) echo esc_attr($data->event_image); ?>" placeholder="http://yourdomain.com/image.jpg" /> <input id="upload_image_button" type="button" class="button" value="<?php _e('Upload Image','my-calendar'); ?>" /><br /><?php _e('Include your image URL or upload an image.','my-calendar'); ?>
 		</p>
 		<?php } else { ?>
 		<div>
 		<input type="hidden" name="event_image" value="<?php if ( !empty($data) ) echo esc_attr($data->event_image); ?>" />
 		<?php if ( !empty($data->event_image) ) { ?>
-		<div class="event_image"><?php _e("This event's image:",'my-calendar'); ?><br /><img src="<?php echo esc_attr($data->event_image); ?>" alt="" /></div>
+		<div class="event_image"><img src="<?php echo esc_attr($data->event_image); ?>" alt="" /></div>
 		<?php } ?>
 		</div>
-		<?php } ?>		
-		<?php if ($mc_input['event_short'] == 'on' || $mc_input_administrator ) { ?>
-		<p>
-		<label for="event_short"><?php _e('Event Short Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_short' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label><br /><textarea id="event_short" name="event_short" class="input" rows="2" cols="80"><?php if ( !empty($data) ) echo stripslashes(esc_attr($data->event_short)); ?></textarea>
-		</p>
-		<?php } ?>
+		<?php } ?>			
 	<p>
 	<label for="event_host"><?php _e('Event Host','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_host' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label>
 	<select id="event_host" name="event_host">
@@ -385,7 +385,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			<?php } ?>
 			<?php if ($mc_input['event_link'] == 'on' || $mc_input_administrator ) { ?>
 			<p>
-			<label for="event_link"><?php _e('Event Link (Optional)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_link' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_link" name="event_link" class="input" size="40" value="<?php if ( !empty($data) ) { echo esc_url($data->event_link); } ?>" /> <input type="checkbox" value="1" id="event_link_expires" name="event_link_expires"<?php if ( !empty($data) && $data->event_link_expires == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_link_expires' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_link_expires"><?php _e('This link will expire when the event passes.','my-calendar'); ?></label>
+			<label for="event_link"><?php _e('Event Link (Optional)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_link' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_link" name="event_link" class="input" size="40" value="<?php if ( !empty($data) ) { echo esc_url($data->event_link); } ?>" /> <input type="checkbox" value="1" id="event_link_expires" name="event_link_expires"<?php if ( !empty($data) && $data->event_link_expires == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_link_expires' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_link_expires"><?php _e('Link will expire after event.','my-calendar'); ?></label>
 			</p>
 			<?php } ?>
 			</fieldset>

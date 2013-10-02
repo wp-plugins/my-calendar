@@ -2,19 +2,16 @@
     var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'];
         
-    function getToday()
-    {
+    function getToday() {
         var date = new Date();
         return new Date(date.getFullYear(), date.getMonth(), date.getDate());
     }
     
-    function areDatesEqual(date1, date2)
-    {
+    function areDatesEqual(date1, date2) {
         return String(date1) == String(date2);
     }
     
-    function daysInMonth(year, month)
-    {
+    function daysInMonth(year, month) {
         if (year instanceof Date) return daysInMonth(year.getFullYear(), year.getMonth());
         if (month == 1) {
             var leapYear = (year % 4 == 0) &&
@@ -27,8 +24,7 @@
         }
     }
     
-    function dayAfter(date)
-    {
+    function dayAfter(date) {
         var year = date.getFullYear();
         var month = date.getMonth();
         var day = date.getDate();
@@ -41,8 +37,7 @@
             new Date(year, month, day + 1);
     }
     
-    function dayBefore(date)
-    {
+    function dayBefore(date) {
         var year = date.getFullYear();
         var month = date.getMonth();
         var day = date.getDate();
@@ -54,15 +49,13 @@
             new Date(year, month, day - 1);
     }
     
-    function monthAfter(year, month)
-    {
+    function monthAfter(year, month) {
         return (month == 11) ?
             new Date(year + 1, 0, 1) :
             new Date(year, month + 1, 1);
     }
     
-    function formatDate(date)
-    {
+    function formatDate(date) {
 		var d = date.getDate();
 		var m = date.getMonth() + 1;
 		var dlen = d.toString();
@@ -72,8 +65,7 @@
 		return (date.getFullYear() + '-' + month + '-' + day );
     }
     
-    function parseDate(date)
-    {
+    function parseDate(date) {
         a = date.split(/[\.\-\/]/);
         var year = a.shift();
         var month = a.shift()-1;
@@ -81,19 +73,21 @@
         return new Date( year, month, day );
     }
     
-    function formatTime(hour, minute)
-    {
-        var printHour = hour % 12;
-        if (printHour == 0) printHour = 12;
+    function formatTime(hour, minute, i18n) {
         var printMinute = minute;
-        if (minute < 10) printMinute = '0' + minute;
-        var half = (hour < 12) ? 'am' : 'pm';
-        
+        if (minute < 10) printMinute = '0' + minute;	
+		if ( i18n ) { 
+			var printHour = hour % 12;
+			if (printHour == 0) printHour = 12;
+			var half = (hour < 12) ? 'am' : 'pm';
+        } else {
+			var printHour = hour;
+			var half = '';
+		}
         return printHour + ':' + printMinute + half;
     }
     
-    function parseTime(text)
-    {
+    function parseTime(text) {
         var match = match = /(\d+)\s*[:\-\.,]\s*(\d+)\s*(am|pm)?/i.exec(text);
         if (match && match.length >= 3) {
             var hour = Number(match[1]);
@@ -113,8 +107,7 @@
      * Generates calendar header, with month name, << and >> controls, and
      * initials for days of the week.
      */
-    function renderCalendarHeader(element, year, month, options)
-    {
+    function renderCalendarHeader(element, year, month, options) {
         //Prepare thead element
         var thead = $('<thead />');
         var titleRow = $('<tr />').appendTo(thead);
@@ -123,7 +116,7 @@
         $('<th />').addClass('monthCell').append(
           $('<a href="javascript:;">&laquo;</a>')
                   .addClass('prevMonth')
-                  .mousedown(function(e) {
+                  .on('click',function(e) {
                       renderCalendarPage(element,
                           month == 0 ? (year - 1) : year,
                           month == 0 ? 11 : (month - 1), options
@@ -142,7 +135,7 @@
         $('<th />').addClass('monthCell').append(
             $('<a href="javascript:;">&raquo;</a>')
                 .addClass('nextMonth')
-                .mousedown(function() {
+                .on('click',function() {
                     renderCalendarPage(element,
                         month == 11 ? (year + 1) : year,
                         month == 11 ? 0 : (month + 1), options
@@ -159,8 +152,7 @@
         return thead;
     }
     
-    function renderCalendarPage(element, year, month, options)
-    {
+    function renderCalendarPage(element, year, month, options) {
         options = options || {};
         
         var today = getToday();
@@ -231,8 +223,7 @@
 		return result;	
 	}
 	
-    function renderTimeSelect(element, options)
-    {
+    function renderTimeSelect(element, options) {
         var selection = options.selection && parseTime(options.selection);
         if (selection) {
             selection.minute = Math.floor(selection.minute / 15.0) * 15;
@@ -254,10 +245,9 @@
                     ).appendTo(ul);
         for (var hour = 0; hour < 24; hour++) {
             for (var minute = 0; minute < 60; minute += 15) {
-                //if (startTime && startTime > (hour * 60 + minute)) continue;
 
                 (function() {
-                    var timeText = formatTime(hour, minute);
+					var timeText = formatTime(hour, minute, i18n);
                     var fullText = timeText;
                     if (startTime != null) {
                         var duration = roundNumber( ( (hour * 60 + minute) - startTime ), 2 );
@@ -324,8 +314,7 @@
         element.empty().append(ul);
     }
     
-    $.fn.calendricalDate = function( options )
-    {
+    $.fn.calendricalDate = function( options ) {
         options = options || {};
         options.padding = options.padding || 4;
         
@@ -394,8 +383,7 @@
         });
     };
     
-    $.fn.calendricalDateRange = function(options)
-    {
+    $.fn.calendricalDateRange = function(options) {
         if (this.length >= 2) {
             $(this[0]).calendricalDate($.extend({
                 endDate:   $(this[1])
@@ -405,8 +393,7 @@
         return this;
     };
     
-    $.fn.calendricalTime = function(options)
-    {
+    $.fn.calendricalTime = function(options) {
         options = options || {};
         options.padding = options.padding || 4;
         
@@ -475,8 +462,7 @@
         });
     },
     
-    $.fn.calendricalTimeRange = function(options)
-    {
+    $.fn.calendricalTimeRange = function(options) {
         if (this.length >= 2) {
             $(this[0]).calendricalTime(options);
             $(this[1]).calendricalTime($.extend({
@@ -486,8 +472,7 @@
         return this;
     };
 
-    $.fn.calendricalDateTimeRange = function(options)
-    {
+    $.fn.calendricalDateTimeRange = function(options) {
         if (this.length >= 4) {
             $(this[0]).calendricalDate($.extend({
                 endDate:   $(this[2])
