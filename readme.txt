@@ -86,6 +86,10 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.2.12 =
+
+* Bug fix: jquery.calendrical time rendering.
+
 = 2.2.11 = 
 
 * Required deleted file.
@@ -1127,5 +1131,5 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 == Upgrade Notice ==
 
-= 2.2.8 =
-Bug fixes and loads of new filters and actions for developers.
+= 2.2.12 =
+Believe me, it's frustrating to me, too. Bug fix to jQuery time output.
