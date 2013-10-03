@@ -73,17 +73,12 @@
         return new Date( year, month, day );
     }
     
-    function formatTime(hour, minute, i18n) {
+    function formatTime(hour, minute) {
         var printMinute = minute;
         if (minute < 10) printMinute = '0' + minute;	
-		if ( i18n ) { 
-			var printHour = hour % 12;
-			if (printHour == 0) printHour = 12;
-			var half = (hour < 12) ? 'am' : 'pm';
-        } else {
-			var printHour = hour;
-			var half = '';
-		}
+		var printHour = hour % 12;
+		if (printHour == 0) printHour = 12;
+		var half = (hour < 12) ? 'am' : 'pm';
         return printHour + ':' + printMinute + half;
     }
     
@@ -247,7 +242,7 @@
             for (var minute = 0; minute < 60; minute += 15) {
 
                 (function() {
-					var timeText = formatTime(hour, minute, i18n);
+					var timeText = formatTime(hour, minute);
                     var fullText = timeText;
                     if (startTime != null) {
                         var duration = roundNumber( ( (hour * 60 + minute) - startTime ), 2 );
