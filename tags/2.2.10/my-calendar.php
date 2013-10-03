@@ -103,7 +103,6 @@ add_action( 'init', 'my_calendar_add_feed' );
 add_action( 'admin_menu', 'my_calendar_add_javascript' );
 add_action( 'wp_footer','mc_footer_js' );
 add_action( 'wp_head','my_calendar_fouc' );
-add_action( 'wp_enqueue_scripts','mc_enqueue' );
 add_action( 'init', 'my_calendar_export_vcal', 200 );
 // Add filters 
 add_filter( 'widget_text', 'do_shortcode', 9 );
