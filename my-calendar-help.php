@@ -75,11 +75,11 @@ function my_calendar_help() { ?>
 <em><?php _e('The main My Calendar shortcode can be generated from a button in your post and page editor. The mini calendar can also be accessed and configured as a widget.','my-calendar'); ?></em>
 </p>
 <h4><?php _e('Additional Calendar Views (Upcoming events, today\'s events)','my-calendar'); ?></h4>
-<p class="example"><code>[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" author="1" template="{title} {date}" order="asc" show_today="yes" skip="0"]</code></p>
+<p class="example"><code>[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" author="1" host="1" template="{title} {date}" order="asc" show_today="yes" skip="0"]</code></p>
 <p>
 	<?php _e('Displays the output of the Upcoming Events widget. The <code>before</code> and <code>after</code> attributes should be numbers; the <code>type</code> attribute can be either "event" or "days", and the <code>category</code> and <code>author</code> attributes work the same way as on the main calendar shortcode. Templates work using the template codes listed below. <code>fallback</code> provides text in case there are no events meeting your criteria. Order provides a sort order for the events list &ndash; either ascending (<code>asc</code>) or descending (<code>desc</code>). <code>show_today</code> is an indicator whether or not to include today\'s events in the list. <code>Skip</code> is the number of events to skip in the upcoming events.','my-calendar'); ?>
 </p>
-<p class="example"><code>[my_calendar_today category="" author="1" fallback="Nothing today!" template="{title} {date}"]</code></p>
+<p class="example"><code>[my_calendar_today category="" author="1" host="1" fallback="Nothing today!" template="{title} {date}"]</code></p>
 <p>
 	<?php _e('Displays the output of the Today\'s Events widget, with four configurable attributes: category, author, template and fallback text.','my-calendar'); ?>
 </p>

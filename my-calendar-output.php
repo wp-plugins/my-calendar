@@ -432,7 +432,7 @@ echo "
 </head>
 <body>\n";
 echo my_calendar('print','calendar',$category,'','','','',$time,$ltype,$lvalue,'mc-print-view','','',null,null,'','');
-$return_url = ( get_option('mc_uri') != '' )?get_option('mc_uri'):home_url();
+$return_url = ( get_option('mc_uri') != '' && !is_numeric( get_option('mc_uri') ) )?get_option('mc_uri'):home_url();
 $add = $_GET;
 unset( $add['cid'] );
 unset( $add['feed'] );
@@ -839,7 +839,7 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 		if ( $lvalue == '' ) { $subtract[] = 'lvalue'; unset( $add['lvalue'] );  }
 		if ( $category == 'all' ) { $subtract[] = 'mcat'; unset( $add['mcat'] );  }
 		$mc_print_url = mc_build_url( $add, $subtract, mc_feed_base() . 'my-calendar-print' );
-		$print = "<p class='mc-print'><a href='$mc_print_url'>".__('Print View','my-calendar')."</a></p>";
+		$print = "<div class='mc-print'><a href='$mc_print_url'>".__('Print View','my-calendar')."</a></div>";
 		// set up format toggle
 		if ( $toggle == 'yes' || in_array( 'toggle', $used ) ) {
 			$toggle = mc_format_toggle( $format, 'yes' );
@@ -880,8 +880,8 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 			$nLink = my_calendar_next_link($c_year,$c_month,$c_day,$format,$time);	
 			$prevLink = mc_build_url( array( 'yr'=>$pLink['yr'],'month'=>$pLink['month'],'dy'=>$pLink['day'],'cid'=>$main_class ),array() );
 			$nextLink = mc_build_url( array( 'yr'=>$nLink['yr'],'month'=>$nLink['month'],'dy'=>$nLink['day'],'cid'=>$main_class ),array() );
-			$previous_link = apply_filters('mc_previous_link','		<li class="my-calendar-prev"><a href="' . $prevLink.'" rel="'.$id.'">'.$pLink['label'].'</a></li>',$pLink);
-			$next_link = apply_filters('mc_next_link','		<li class="my-calendar-next"><a href="' . $nextLink .'" rel="'.$id.'">'.$nLink['label'].'</a></li>',$nLink);
+			$previous_link = apply_filters( 'mc_previous_link','		<li class="my-calendar-prev"><a href="' . $prevLink.'" rel="'.$id.'">'.$pLink['label'].'</a></li>',$pLink );
+			$next_link = apply_filters( 'mc_next_link','		<li class="my-calendar-next"><a href="' . $nextLink .'" rel="'.$id.'">'.$nLink['label'].'</a></li>',$nLink );
 			$nav = '
 				<div class="my-calendar-nav">
 					<ul>
@@ -1039,7 +1039,7 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 											$target = array('yr'=>date('Y',$start),'month'=>date('m',$start),'dy'=>date( 'j',$start ),'time'=>'day' );
 											if ( $category != '' ) { $target['mcat'] = $category; }
 											$day_url = mc_build_url( $target, array('month','dy','yr','ltype','loc','mcat','cid'), apply_filters ( 'mc_modify_day_uri', get_option( 'mc_uri' ) ) );
-											$link = ( get_option('mc_uri') != '' )?$day_url:'#';
+											$link = ( get_option('mc_uri') != '' && !is_numeric( get_option('mc_uri') ) )?$day_url:'#';
 										} else {
 											$atype = str_replace( 'anchor','',get_option('mc_open_day_uri') );
 											$ad = str_pad( date( 'j',$start ), 2, '0', STR_PAD_LEFT ); // need to match format in ID
@@ -1341,6 +1341,7 @@ function mc_build_url( $add, $subtract, $root='' ) {
 global $wp_rewrite;
 $home = '';
 	if ( $root != '' ) { $home = $root; }
+	if ( is_numeric( $root ) ) { $home = get_permalink( $root ); }	
 	if ( $home == '' ) {
 		if ( is_front_page() ) { 
 			$home = get_bloginfo('url') . '/'; 		

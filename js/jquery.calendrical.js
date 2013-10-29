@@ -1,7 +1,6 @@
 (function($) { 
-    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'];
-        
+    var monthNames = mc_months;
+	
     function getToday() {
         var date = new Date();
         return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -13,7 +12,7 @@
     
     function daysInMonth(year, month) {
         if (year instanceof Date) return daysInMonth(year.getFullYear(), year.getMonth());
-        if (month == 1) {
+        if ( month == 1 ) {
             var leapYear = (year % 4 == 0) &&
                 (!(year % 100 == 0) || (year % 400 == 0));
             return leapYear ? 29 : 28;
@@ -73,22 +72,19 @@
         return new Date( year, month, day );
     }
     
-    function formatTime(hour, minute) {
-        var printMinute = minute;
-        if (minute < 10) printMinute = '0' + minute;	
-		var printHour = hour % 12;
-		if (printHour == 0) printHour = 12;
-		var half = (hour < 12) ? 'am' : 'pm';
-        return printHour + ':' + printMinute + half;
-    }
-    
+	function formatTime( hour, minute ) {
+		var d = new Date( 2013, 9, 1, hour, minute );
+		var t=d.toLocaleTimeString();
+		return t;
+	}
+	
     function parseTime(text) {
-        var match = match = /(\d+)\s*[:\-\.,]\s*(\d+)\s*(am|pm)?/i.exec(text);
+        var match = match = /(\d+)\s*[:\-\.,]\s*(\d+)\s*[:\-\.,]\s*(\d+)\s*(am|pm)?/i.exec(text);
         if (match && match.length >= 3) {
             var hour = Number(match[1]);
-            var minute = Number(match[2])
-            if (hour == 12 && match[3]) hour -= 12;
-            if (match[3] && match[3].toLowerCase() == 'pm') hour += 12;
+            var minute = Number(match[2]);
+            if (hour == 12 && match[4]) { hour -= 12; }
+            if (match[4] && match[4].toLowerCase() == 'pm') { hour += 12; }
             return {
                 hour:   hour,
                 minute: minute
@@ -225,7 +221,7 @@
         }
         var startTime = options.startTime &&
             (options.startTime.hour * 60 + options.startTime.minute);
-        
+        		
         var scrollTo;   //Element to scroll the dropdown box to when shown
         var ul = $('<ul />');
 		var first = $('<li />').append(
@@ -244,9 +240,11 @@
                 (function() {
 					var timeText = formatTime(hour, minute);
                     var fullText = timeText;
-                    if (startTime != null) {
+                    if ( startTime != null ) {
                         var duration = roundNumber( ( (hour * 60 + minute) - startTime ), 2 );
-                        if (duration < 60 && duration >= 0) {
+						if ( duration < 0 ) {
+							fullText = '<s>' + fullText + '</s>';
+                        } else if (duration < 60 && duration >= 0) {
                             fullText += ' (' + duration + ' mins)';
                         } else if (duration == 60) {
                             fullText += ' (1 hr)';
@@ -318,7 +316,8 @@
             var div;
             var within = false;
             
-            element.bind('focus click', function() {
+            element.bind('click', function() {
+			//element.bind('focus click', function() {
                 if (div) return;
                 var offset = element.position();
                 var padding = element.css('padding-left');
@@ -334,8 +333,7 @@
                         left: offset.left,
                         top: offset.top + element.height
                     });
-                element.after(div); 
-                
+                element.after(div);
                 var selected = parseDate(element.val());
                 if (!selected.getFullYear()) selected = getToday();
                 
@@ -398,7 +396,8 @@
             var within = false;
             
 			element.attr( "autocomplete", "off" );
-            element.bind('focus click', function() {
+            element.bind('click', function() {
+			//element.bind('focus click', function() { // only allow keyboard focus once it works properly.
                 if (div) return;
 
                 var useStartTime = options.startTime;

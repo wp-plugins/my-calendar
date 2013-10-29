@@ -51,7 +51,7 @@ if ( isset( $_POST['event_action'] ) ) {
 					$formats, 
 					'%d' );
 			//$mcdb->print_error();
-			$url = ( get_option('mc_uri') != '' )?' '.sprintf(__('View <a href="%s">your calendar</a>.','my-calendar'),get_option('mc_uri') ):'';
+			$url = ( get_option('mc_uri') != '' && !is_numeric( get_option('mc_uri') ) )?' '.sprintf(__('View <a href="%s">your calendar</a>.','my-calendar'),get_option('mc_uri') ):'';
 				if ( $result === false ) {
 					$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Event not updated.','my-calendar')."$url</p></div>";
 				} else if ( $result === 0 ) {
@@ -156,7 +156,7 @@ global $wpdb,$event_author;
 					$formats, 
 					'%d' );
 			//$mcdb->print_error();
-			$url = ( get_option('mc_uri') != '' )?' '.sprintf(__('View <a href="%s">your calendar</a>.','my-calendar'),get_option('mc_uri') ):'';
+			$url = ( get_option('mc_uri') != '' && !is_numeric( get_option('mc_uri') ) )?' '.sprintf(__('View <a href="%s">your calendar</a>.','my-calendar'),get_option('mc_uri') ):'';
 				do_action( 'mc_save_grouped_events', $result, $event_id, $update );
 				if ( $result === false ) {
 					$message = "<div class='error'><p><strong>#$event_id; ".__('Error','my-calendar').":</strong>".__('Your event was not updated.','my-calendar')."$url</p></div>";

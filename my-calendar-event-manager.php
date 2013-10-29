@@ -319,7 +319,7 @@ function my_calendar_save( $action,$output,$event_id=false ) {
 		}
 	}
 	if ( $action == 'edit' && $proceed == true ) {
-	$url = ( get_option('mc_uri') != '' )?' '.sprintf(__('View <a href="%s">your calendar</a>.','my-calendar'),get_option('mc_uri') ):'';	
+	$url = ( get_option('mc_uri') != '' && !is_numeric( get_option('mc_uri') ) )?' '.sprintf(__('View <a href="%s">your calendar</a>.','my-calendar'),get_option('mc_uri') ):'';	
 		$event_author = (int) ($_POST['event_author']);
 		if ( mc_can_edit_event( $event_author ) ) {	
 			$update = $output[2];
