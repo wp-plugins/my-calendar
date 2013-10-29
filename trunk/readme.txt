@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager, event calendar
 Requires at least: 3.3.0
-Tested up to: 3.6.1
+Tested up to: 3.7.0
 License: GPLv2 or later
 Stable tag: 2.2.12
 
@@ -85,6 +85,15 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.2.13 =
+
+* Bug fix: Threw error if network-activated (wp_is_mobile() not defined yet)
+* Bug fix: Calendar URI could be saved as integer instead of as URL.
+* Bug fix: hide screen options that current user can't use.
+* Improved localization of Calendrical jQuery plug-in.
+* Feature: my_calendar_upcoming and my_calendar_today shortcodes now support filtering by host.
+* New filter: mc_send_notification -- passes event and user data to determine whether a new event email notification should be sent. Return true|false.
 
 = 2.2.12 =
 

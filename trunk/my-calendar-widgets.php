@@ -28,7 +28,8 @@ class my_calendar_today_widget extends WP_Widget {
 		$the_category = ($instance['my_calendar_today_category']=='')?'default':esc_attr($instance['my_calendar_today_category']);
 		$author = ( !isset($instance['my_calendar_today_author']) || $instance['my_calendar_today_author']=='')?'all':esc_attr($instance['my_calendar_today_author']);
 		$host = ( !isset($instance['mc_host']) || $instance['mc_host']=='')?'all':esc_attr($instance['mc_host']);
-		$widget_link = (!empty($instance['my_calendar_today_linked']) && $instance['my_calendar_today_linked']=='yes')?get_option('mc_uri'):'';
+		$default_link = ( is_numeric( get_option('mc_uri') ) ) ? get_permalink( get_option('mc_uri') ) : get_option('mc_uri');
+		$widget_link = ( !empty($instance['my_calendar_today_linked']) && $instance['my_calendar_today_linked']=='yes')?$default_link:'';
 		$widget_link = ( !empty($instance['mc_link']) )?esc_url($instance['mc_link']):$widget_link;
 		$widget_title = empty($the_title) ? '' : $the_title;
 		$offset = (60*60*get_option('gmt_offset'));
@@ -52,7 +53,7 @@ class my_calendar_today_widget extends WP_Widget {
 		$widget_text = (isset($instance['my_calendar_no_events_text']))?esc_attr($instance['my_calendar_no_events_text']):'';
 		$widget_category = (isset($instance['my_calendar_today_category']))?esc_attr($instance['my_calendar_today_category']):'';
 		$widget_linked = (isset($instance['my_calendar_today_linked']))?esc_attr($instance['my_calendar_today_linked']):'';
-		if ( $widget_linked == 'yes' ) { $default_link = get_option('mc_uri'); } else { $default_link = ''; }
+		if ( $widget_linked == 'yes' ) { $default_link = ( is_numeric( get_option('mc_uri') ) ) ? get_permalink( get_option('mc_uri') ) : get_option('mc_uri'); } else { $default_link = ''; }
 		$widget_link = (!empty($instance['mc_link']))?esc_url($instance['mc_link']):$default_link;
 		$widget_author = (isset($instance['my_calendar_today_author']))?esc_attr($instance['my_calendar_today_author']):'';
 		$widget_host = (isset($instance['mc_host']))?esc_attr($instance['mc_host']):'';
@@ -153,7 +154,7 @@ class my_calendar_upcoming_widget extends WP_Widget {
 		$widget_type = (isset($instance['my_calendar_upcoming_type']) )?esc_attr($instance['my_calendar_upcoming_type']):'';
 		$widget_order = (isset($instance['my_calendar_upcoming_order']) )?esc_attr($instance['my_calendar_upcoming_order']):'';
 		$widget_linked = (isset($instance['my_calendar_upcoming_linked']) )?esc_attr($instance['my_calendar_upcoming_linked']):'';
-		if ( $widget_linked == 'yes' ) { $default_link = get_option('mc_uri'); } else { $default_link = ''; }
+		if ( $widget_linked == 'yes' ) { $default_link = ( is_numeric( get_option('mc_uri') ) ) ? get_permalink( get_option('mc_uri') ) : get_option('mc_uri'); } else { $default_link = ''; }
 		$widget_link = (!empty($instance['mc_link']))?esc_url($instance['mc_link']):$default_link;
 		$widget_skip = (isset($instance['my_calendar_upcoming_skip']) )?esc_attr($instance['my_calendar_upcoming_skip']):'';	
 		?>
@@ -168,7 +169,7 @@ class my_calendar_upcoming_widget extends WP_Widget {
 		<fieldset>
 		<legend><?php _e('Widget Options','my-calendar'); ?></legend>
 		<?php $config_url = admin_url("admin.php?page=my-calendar-config"); ?>
-		<?php if ( get_option('mc_uri') == '' ) { $disabled = " disabled='disabled'";  _e('Add <a href="'.$config_url.'#mc_uri" target="_blank" title="Opens in new window">calendar URL in settings</a> to use this option.','my-calendar');  } else { $disabled=""; } ?>
+		<?php if ( get_option('mc_uri') == '' && !is_numeric( get_option('mc_uri') ) ) { $disabled = " disabled='disabled'";  _e('Add <a href="'.$config_url.'#mc_uri" target="_blank" title="Opens in new window">calendar URL in settings</a> to use this option.','my-calendar');  } else { $disabled=""; } ?>
 		<p>
 		<label for="<?php echo $this->get_field_id('mc_link'); ?>"><?php _e('Widget title links to:','my-calendar'); ?></label><br />
 		<input class="widefat" type="text" id="<?php echo $this->get_field_id('mc_link'); ?>" name="<?php echo $this->get_field_name('mc_link'); ?>" value="<?php echo $widget_link; ?>" /></textarea>

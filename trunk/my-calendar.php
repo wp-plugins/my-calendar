@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 2.2.12
+Version: 2.2.13
 */
 /*  Copyright 2009-2013  Joe Dolson (email : joe@joedolson.com)
 
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 apply_filters("debug", "MC Started");
 
 global $mc_version, $wpdb;
-$mc_version = '2.2.12';
+$mc_version = '2.2.13';
 
 // Define the tables used in My Calendar
 if ( function_exists('is_multisite') && is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
@@ -393,7 +393,7 @@ function mc_show_event_editing( $status, $args ) {
 		foreach ($input_options as $key=>$value) {
 			$checked = ($value == 'on')?"checked='checked'":'';
 			$allowed = ( $settings_options[$key] == 'on' )?true:false;
-			if ( !current_user_can('manage_options') && !$allowed ) {
+			if ( !( current_user_can('manage_options') && get_option( 'mc_input_options_administrators' ) == 'true' ) && !$allowed ) {
 				// don't display options if this user can't use them.
 				$output .= "<input type='hidden' name='mc_show_on_page[$key]' value='off' />";
 			} else {

@@ -239,6 +239,20 @@ function mc_deal_with_deleted_user( $id ) {
 function my_calendar_add_javascript() { 
 	if ( isset($_GET['page']) && $_GET['page'] == 'my-calendar' ) {
 		wp_enqueue_script('jquery.calendrical',plugins_url( 'js/jquery.calendrical.js', __FILE__ ), array('jquery') );
+		wp_localize_script('jquery.calendrical', 'mc_months', array( 
+			date_i18n( 'F', strtotime( 'January 1' ) ),
+			date_i18n( 'F', strtotime( 'February 1' ) ),
+			date_i18n( 'F', strtotime( 'March 1' ) ),
+			date_i18n( 'F', strtotime( 'April 1' ) ),
+			date_i18n( 'F', strtotime( 'May 1' ) ),			
+			date_i18n( 'F', strtotime( 'June 1' ) ),
+			date_i18n( 'F', strtotime( 'July 1' ) ),
+			date_i18n( 'F', strtotime( 'August 1' ) ),
+			date_i18n( 'F', strtotime( 'September 1' ) ),
+			date_i18n( 'F', strtotime( 'October 1' ) ),
+			date_i18n( 'F', strtotime( 'November 1' ) ),
+			date_i18n( 'F', strtotime( 'December 1' ) )
+		) );
 		wp_enqueue_script('jquery.addfields',plugins_url( 'js/jquery.addfields.js', __FILE__ ), array('jquery') );
 		if ( version_compare( get_bloginfo( 'version' ) , '3.3' , '<' ) ) {
 			wp_enqueue_script('media-upload');
@@ -1170,8 +1184,11 @@ function my_calendar_locations_table() {
 
 // Mail functions (originally by Roland)
 function my_calendar_send_email( $details ) {
-$event = event_as_array($details);
-	if ( get_option( 'mc_html_email' ) == 'true' ) {
+	$event = event_as_array($details);
+	// shift to boolean
+	$send_email_option = ( get_option( 'mc_event_mail' ) == 'true' ) ? true : false;
+	$send_email = apply_filters( 'mc_send_notification', $send_email_option, $event );
+	if ( $send_email == true ) {
 		add_filter('wp_mail_content_type',create_function('', 'return "text/html";'));
 	}
 	if ( get_option('mc_event_mail') == 'true' ) {	
@@ -1385,9 +1402,17 @@ function reverse_array($array, $boolean, $order) {
 	}
 }
 
-if ( !function_exists( 'wp_is_mobile' ) ) {
-	function wp_is_mobile() { return false; }
+// in multi-site, wp_is_mobile() won't be defined yet if plug-in is network activated. 
+if ( !function_exists( 'is_plugin_active_for_network' ) ) {
+    require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 }
+
+if ( !function_exists( 'wp_is_mobile' ) ) {
+	if ( !is_plugin_active_for_network( 'my-calendar/my-calendar.php' ) ) {
+		function wp_is_mobile() { return false; }
+	}
+}	
+
 
 function mc_is_mobile() {
 	return apply_filters( 'mc_is_mobile', wp_is_mobile() );
@@ -1406,9 +1431,10 @@ function mc_guess_calendar() {
 	foreach( $my_guesses as $guess ) {
 		$value = $mcdb->get_var("SELECT id FROM $mcdb->posts WHERE post_title LIKE '%$guess%' AND post_status = 'publish'" );
 		if ( $value && get_option( 'mc_uri' ) == '' ) {
-			update_option( 'mc_uri', $value );
-			_e('Is this your calendar page?','my-calendar'); echo ' <code>'.get_permalink( $value ).'</code>';
-			return;
+			$link = get_permalink( $value );
+			update_option( 'mc_uri', $link );
+			$return = __('Is this your calendar page?','my-calendar'); echo ' <code>'.$link.'</code>';
+			return $return;
 		}
 	}
 }

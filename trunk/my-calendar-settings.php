@@ -475,7 +475,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<legend><?php _e('Calendar Link Targets','my-calendar'); ?></legend>
 	<ul>
 	<li>
-	<?php $guess = mc_guess_calendar();	$mc_uri = get_option('mc_uri'); ?>
+	<?php $guess = mc_guess_calendar();	$mc_uri = get_option( 'mc_uri' ); ?>
 	<label for="mc_uri"><?php _e('Where is your main calendar page?','my-calendar'); ?></label> 
 	<input type="text" name="mc_uri" id="mc_uri" size="60" value="<?php echo esc_url($mc_uri); ?>" /><br /><small><?php _e('Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar'); ?> <?php echo $guess; ?></small>
 	</li>

@@ -2,7 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function jd_draw_template($array,$template,$type='list') {
-	//$mtime = microtime( true); // DEBUG PERFORMANCE
 	//1st argument: array of details
 	//2nd argument: template to print details into
 	$template = stripcslashes($template);	
@@ -12,7 +11,7 @@ function jd_draw_template($array,$template,$type='list') {
 		} else {
 			if ( strpos( $template, "{".$key ) !== false ) {
 				if ($type != 'list') {
-					if ( $key == 'link' && $value == '') { $value = ( get_option('mc_uri') != '' )?get_option('mc_uri'):home_url(); }
+					if ( $key == 'link' && $value == '') { $value = ( get_option('mc_uri') != '' && !is_numeric( get_option('mc_uri') ) )?get_option('mc_uri'):home_url(); }
 					if ( $key != 'guid') { $value = htmlentities($value); }
 				}
 				if ( strpos( $template, "{".$key." " ) !== false ) { // only do preg_match if appropriate
@@ -285,8 +284,8 @@ function event_as_array($event,$type='html') {
 		} else {
 			$details_link = '';
 		}
-	$details['details_link'] = ( get_option( 'mc_uri' ) != '' )?$details_link:'';
-	$details['details'] = ( get_option( 'mc_uri' ) != '' )?"<a href='$details_link' class='mc-details'>$details_label</a>":'';
+	$details['details_link'] = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option('mc_uri') ) )?$details_link:'';
+	$details['details'] = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option('mc_uri') ) )?"<a href='$details_link' class='mc-details'>$details_label</a>":'';
 	$details['linking'] = ( $event->event_url != '' )?$event->event_url:$details_link;
 	$details['dateid'] = $dateid; // unique ID for this date of this event
 	$details['id'] = $id;
@@ -296,14 +295,14 @@ function event_as_array($event,$type='html') {
 	$details['multidate'] = mc_format_date_span( $dates, 'complex', "<span class='fallback-date'>$date</span><span class='separator'>,</span> <span class='fallback-time'>$details[time]</span>&ndash;<span class='fallback-endtime'>$details[endtime]</span>" );
 	// RSS guid
 	$details['region'] = $event->event_region;
-	$details['guid'] =( get_option( 'mc_uri' ) != '')?"<guid isPermaLink='true'>$details_link</guid>":"<guid isPermalink='false'>$details_link</guid>";
+	$details['guid'] =( get_option( 'mc_uri' ) != '' && !is_numeric( get_option('mc_uri') ) )?"<guid isPermaLink='true'>$details_link</guid>":"<guid isPermalink='false'>$details_link</guid>";
 	/* ical format */
 	$details['ical_location'] = $event->event_label .' '. $event->event_street .' '. $event->event_street2 .' '. $event->event_city .' '. $event->event_state .' '. $event->event_postcode;
 	$ical_description = mc_newline_replace(strip_tags($event->event_desc));
 	$details['ical_description'] = str_replace( "\r", "=0D=0A=", $event->event_desc );	
 	$details['ical_desc'] = $ical_description;
 	// get URL, TITLE, LOCATION, DESCRIPTION strings
-		$url = ( get_option( 'mc_uri' ) != '' )?$details_link:$event->event_url;
+		$url = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option('mc_uri') ) )?$details_link:$event->event_url;
 		$title = stripcslashes($event->event_title);
 		$location = mc_maplink( $event, 'gcal' );
 		$description = $ical_description;

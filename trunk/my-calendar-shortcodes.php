@@ -56,7 +56,7 @@ function my_calendar_insert_upcoming($atts) {
 	if ( $host == 'current' ) {
 		$host = apply_filters( 'mc_display_host', $user_ID, 'upcoming' );
 	}	
-	return my_calendar_upcoming_events($before, $after, $type, $category, $template, $fallback, $order, $skip, $show_today, $author );
+	return my_calendar_upcoming_events($before, $after, $type, $category, $template, $fallback, $order, $skip, $show_today, $author, $host );
 }
 
 function my_calendar_insert_today($atts) {
@@ -74,7 +74,7 @@ function my_calendar_insert_today($atts) {
 	if ( $host == 'current' ) {
 		$host = apply_filters( 'mc_display_host', $user_ID, 'today' );
 	}			
-	return my_calendar_todays_events($category, $template, $fallback, $author);
+	return my_calendar_todays_events($category, $template, $fallback, $author, $host);
 }
 
 function my_calendar_locations($atts) {

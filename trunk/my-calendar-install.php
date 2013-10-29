@@ -118,12 +118,12 @@ $initial_caljs = '$(function() {
   $(document).on("click", ".calendar-event .event-title",
      function(e) {
          e.preventDefault(); // remove line if you are using a link in the event title
-	 $(this).parent().children().not(".event-title").toggle();
+		$(this).parent().children().not(".event-title").toggle();
 	 });
   $(document).on("click", ".calendar-event .close",
      function(e) {
          e.preventDefault();
-	 $(this).parent().toggle();
+		$(this).parent().toggle();
 	 });
 	});';  
 
