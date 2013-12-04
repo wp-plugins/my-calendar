@@ -11,7 +11,7 @@ function my_calendar_manage_locations() {
 	$mcdb = $wpdb;
 	// My Calendar must be installed and upgraded before this will work
 	check_my_calendar();
-	$formats = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%d', '%s' )
+	$formats = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%d', '%s', '%s' )
 ?>
 <div class="wrap jd-my-calendar">
 <?php my_calendar_check_db(); 
@@ -34,7 +34,8 @@ function my_calendar_manage_locations() {
 			'location_longitude'=>$_POST['location_longitude'],
 			'location_latitude'=>$_POST['location_latitude'],
 			'location_zoom'=>$_POST['location_zoom'],
-			'location_phone'=>$_POST['location_phone']
+			'location_phone'=>$_POST['location_phone'],
+			'location_access'=>serialize( $_POST['location_access'] )
 		);
 		$results = $mcdb->insert( my_calendar_locations_table(), $add, $formats );
 		do_action( 'mc_save_location', $results, $add );
@@ -69,7 +70,8 @@ function my_calendar_manage_locations() {
 		'location_longitude'=>$_POST['location_longitude'],
 		'location_latitude'=>$_POST['location_latitude'],
 		'location_zoom'=>$_POST['location_zoom'],
-		'location_phone'=>$_POST['location_phone']
+		'location_phone'=>$_POST['location_phone'],
+		'location_access'=>serialize( $_POST['location_access'] )
 		);
 		$where = array(
 		'location_id'=>(int) $_POST['location_id']
@@ -207,6 +209,31 @@ global $wpdb;
 			 <label for="loc_latitude"><?php _e('Latitude','my-calendar'); ?></label> <input type="text" id="loc_latitude" name="location_latitude" class="input" size="10" value="<?php if ( !empty( $cur_loc ) ) { esc_attr_e(stripslashes($cur_loc->location_latitude)); } else { echo '0.000000'; } ?>" />
 			 <label for="loc_longitude"><?php _e('Longitude','my-calendar'); ?></label> <input type="text" id="loc_longitude" name="location_longitude" class="input" size="10" value="<?php if ( !empty( $cur_loc ) ) { esc_attr_e(stripslashes($cur_loc->location_longitude)); } else { echo '0.000000'; } ?>" />
 			</p>			
+			</fieldset>
+			<fieldset>
+			<legend><?php _e('Location Accessibility','my-calendar'); ?></legend>
+			<ul>
+			<?php 
+			$access = apply_filters( 'mc_venue_accessibility', get_option( 'mc_location_access' ) );
+			$access_list = '';
+			if ( !empty( $cur_loc ) ) {			
+				$location_access = unserialize( $cur_loc->location_access );
+			} else {
+				$location_access = array();
+			}
+			foreach ( $access as $k=>$a ) {
+				$id = "loc_access_$k";
+				$label = $a;
+				$checked = '';
+				if ( is_array( $location_access ) ) {
+					$checked = ( in_array( $k, $location_access ) ) ? " checked='checked'" : '';
+				}
+				$item = sprintf( '<li><input type="checkbox" id="%1$s" name="location_access[]" value="%4$s" class="checkbox" %2$s /> <label for="%1$s">%3$s</label></li>', $id, $checked, $label, $k );
+				$access_list .= $item;			
+			}
+			echo $access_list;
+			?>
+			</ul>
 			</fieldset>
 			<p>
                 <input type="submit" name="save" class="button-primary" value="<?php if ($view == 'edit') { _e('Save Changes','my-calendar'); } else { _e('Add Location','my-calendar'); } ?> &raquo;" />

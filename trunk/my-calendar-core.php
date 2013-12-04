@@ -142,6 +142,10 @@ function mc_register_styles() {
 	if ( get_option('mc_calendar_javascript') != 1 || get_option('mc_list_javascript') != 1 || get_option('mc_mini_javascript') != 1 || get_option('mc_ajax_javascript') != 1 ) {
 		if ( @in_array( $id, $js_array ) || get_option( 'mc_show_js' ) == '' ) {
 			wp_enqueue_script( 'jquery' );
+			wp_register_script( 'gmaps', "//maps.google.com/maps/api/js?sensor=true" );
+			wp_register_script( 'gmap3', plugins_url( 'js/gmap3.min.js', __FILE__ ), array( 'jquery' ) );
+			wp_enqueue_script( 'gmaps' );
+			wp_enqueue_script( 'gmap3' );
 		}
 	}
 	if ( get_option('mc_use_styles') != 'true' ) {
@@ -231,8 +235,8 @@ function mc_deal_with_deleted_user( $id ) {
   check_my_calendar();
   // Do the queries
   // This may not work quite right in multi-site. Need to explore further when I have time.
-  $mcdb->get_results( "UPDATE ".my_calendar_table()." SET event_author=".$mcdb->get_var("SELECT MIN(ID) FROM ".$mcdb->prefix."users",0,0)." WHERE event_author=".$id );
-  $mcdb->get_results( "UPDATE ".my_calendar_table()." SET event_host=".$mcdb->get_var("SELECT MIN(ID) FROM ".$mcdb->prefix."users",0,0)." WHERE event_host=".$id );
+  $mcdb->get_results( "UPDATE ".my_calendar_table()." SET event_author=".apply_filters( 'mc_deleted_author', $mcdb->get_var("SELECT MIN(ID) FROM ".$mcdb->prefix."users",0,0 ) )." WHERE event_author=".$id );
+  $mcdb->get_results( "UPDATE ".my_calendar_table()." SET event_host=".apply_filters( 'mc_deleted_host', $mcdb->get_var("SELECT MIN(ID) FROM ".$mcdb->prefix."users",0,0 ) )." WHERE event_host=".$id );
 }
 
 // Function to add the javascript to the admin header
@@ -375,6 +379,7 @@ function my_calendar_add_styles() {
 function mc_get_current_url() {
 	global $wp; 
 	$current_url = add_query_arg( $wp->query_string, '', home_url( $wp->request ) );
+	$current_url = home_url( add_query_arg( array(),$wp->request ) );
 	return $current_url; 
 }
 
@@ -533,7 +538,7 @@ function check_my_calendar() {
     }
 	if ( $my_calendar_exists == true && $current_version == '' ) {
 		// If the table exists, but I don't know what version it is, I have to run the full cycle of upgrades. 
-		$current_version = '1.3.9';
+		$current_version = '1.5.9';
 	}
 	
 	if ( $my_calendar_exists == false ) {
@@ -541,7 +546,6 @@ function check_my_calendar() {
 	} else {	
 		// for each release requiring an upgrade path, add a version compare. 
 		// Loop will run every relevant upgrade cycle.
-		if ( version_compare( $current_version, "1.5.0", "<" ) ) {	$upgrade_path[] = "1.5.0"; } 
 		if ( version_compare( $current_version, "1.6.0", "<" ) ) {	$upgrade_path[] = "1.6.0"; } 
 		if ( version_compare( $current_version, "1.6.2", "<" ) ) {	$upgrade_path[] = "1.6.2"; } 
 		if ( version_compare( $current_version, "1.6.3", "<" ) ) {	$upgrade_path[] = "1.6.3"; } 
@@ -560,7 +564,8 @@ function check_my_calendar() {
 		if ( version_compare( $current_version, "2.1.0", "<" ) ) { $upgrade_path[] = "2.1.0"; }	
 		if ( version_compare( $current_version, "2.2.0", "<" ) ) { $upgrade_path[] = "2.2.0"; }	
 		if ( version_compare( $current_version, "2.2.6", "<" ) ) { $upgrade_path[] = "2.2.6"; }	
-		if ( version_compare( $current_version, "2.2.10", "<" ) ) { $upgrade_path[] = "2.2.10"; }			
+		if ( version_compare( $current_version, "2.2.10", "<" ) ) { $upgrade_path[] = "2.2.10"; }
+		if ( version_compare( $current_version, "2.3.1", "<" ) ) { $upgrade_path[] = "2.3.0"; }		
 	}
 	// having determined upgrade path, assign new version number
 	update_option( 'mc_version' , $mc_version );
@@ -578,6 +583,31 @@ function check_my_calendar() {
 	foreach ($upgrade_path as $upgrade) {
 		switch ($upgrade) {
 		// only upgrade db on most recent version
+			case '2.3.0':
+				add_option( 'mc_location_access', array(
+					'1'=> __('Stair Free Access','my-calendar'),
+					'2'=> __('Automatic Doors','my-calendar'),
+					'3'=> __('Wheelchair Access','my-calendar'),
+					'4'=> __('Ramped Access','my-calendar'),
+					'5'=> __('Accessible Emergency Exit','my-calendar'),
+					'6'=> __('Braille Signage','my-calendar'),
+					'7'=> __('Accessible Restrooms','my-calendar'),
+					'8'=> __('ADA Compliant','my-calendar')
+				) );
+				add_option( 'mc_event_access', array(
+					'1'=> __('ASL Interpretation','my-calendar'),
+					'2'=> __('ASL Interpretation with voicing', 'my-calendar'),
+					'3'=> __('Deaf-Blind ASL','my-calendar'),					
+					'4'=> __('Audio Description','my-calendar'),
+					'5'=> __('Real-time Captioning','my-calendar'),
+					'6'=> __('Assisted Listening Devices Available','my-calendar'),
+					'7'=> __("Services provided for visitors with Alzheimer's and other dementias",'my-calendar')
+				) );
+				$mc_input_options = get_option( 'mc_input_options' );
+				$mc_input_options['event_access'] = 'on';
+				update_option( 'mc_input_options', $mc_input_options );
+				mc_upgrade_db();				
+				break;
 			case '2.2.10':
 				delete_option( 'mc_show_print' );
 				delete_option( 'mc_show_ical' );
@@ -592,7 +622,6 @@ function check_my_calendar() {
 				break;
 			case '2.2.0':
 				add_option('mc_inverse_color','true');
-				mc_upgrade_db();
 				break;
 			case '2.1.0':
 				$templates = get_option( 'mc_templates' );
@@ -908,15 +937,6 @@ function check_my_calendar() {
 				add_option('mc_user_location_type','state');
 				add_option('mc_show_js',get_option('mc_show_css') );   
 			break;
-			case '1.5.0':
-				add_option('mc_event_mail','false');
-				add_option('mc_event_mail_subject','');
-				add_option('mc_event_mail_to','');
-				add_option('mc_event_mail_message','');
-				add_option('mc_event_approve','false');		
-				add_option('mc_event_approve_perms','manage_options');
-				add_option('mc_no_fifth_week','true');				
-			break;
 			default:
 			break;
 		}
@@ -1183,20 +1203,21 @@ function my_calendar_locations_table() {
 }
 
 // Mail functions (originally by Roland)
-function my_calendar_send_email( $details ) {
-	$event = event_as_array($details);
+function my_calendar_send_email( $event ) {
+	$details = event_as_array($event);
 	// shift to boolean
 	$send_email_option = ( get_option( 'mc_event_mail' ) == 'true' ) ? true : false;
-	$send_email = apply_filters( 'mc_send_notification', $send_email_option, $event );
+	$send_email = apply_filters( 'mc_send_notification', $send_email_option, $details );
 	if ( $send_email == true ) {
 		add_filter('wp_mail_content_type',create_function('', 'return "text/html";'));
 	}
 	if ( get_option('mc_event_mail') == 'true' ) {	
-		$to = apply_filters( 'mc_event_mail_to', get_option('mc_event_mail_to'), $event );
+		$to = apply_filters( 'mc_event_mail_to', get_option('mc_event_mail_to'), $details );
 		$from = ( get_option('mc_event_mail_from') == '' )?get_bloginfo('admin_email'):get_option('mc_event_mail_from');
+		$from = apply_filters( 'mc_event_mail_from', $from, $details );		
 		$from = "From: ".__('Event Notifications','my-calendar')." <$from>";
-		$subject = jd_draw_template( $event, get_option('mc_event_mail_subject') );
-		$message = jd_draw_template( $event, get_option('mc_event_mail_message') );
+		$subject = jd_draw_template( $details, get_option('mc_event_mail_subject') );
+		$message = jd_draw_template( $details, get_option('mc_event_mail_message') );
 		$mail = wp_mail($to, $subject, $message, $from);
 	}
 	if ( get_option( 'mc_html_email' ) == 'true' ) {
@@ -1564,7 +1585,7 @@ $plugins_string
 		<input type='checkbox' name='has_purchased' id='has_purchased' value='on' /> <label for='has_purchased'>".__('I have <a href="http://www.joedolson.com/articles/my-calendar/users-guide/">purchased the User\'s Guide</a>, but could not find an answer to this question.','my-calendar')."</label>
 		</p>
 		<p>
-		<label for='support_request'>Support Request:</label><br /><textarea name='support_request' id='support_request' cols='80' rows='10'>".stripslashes($request)."</textarea>
+		<label for='support_request'>Support Request:</label><br /><textarea name='support_request' id='support_request' required aria-required='true' cols='80' rows='10'>".stripslashes($request)."</textarea>
 		</p>
 		<p>
 		<input type='submit' value='".__('Send Support Request','my-calendar')."' name='mc_support' class='button-primary' />

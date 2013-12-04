@@ -224,6 +224,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 		} else {
 			if ( my_calendar_date_xcomp( $event->occur_end,date_i18n('Y-m-d',current_time('timestamp') ) ) ) {
 				$event_link = '';
+				do_action( 'mc_event_expired', $event );
 			} else {
 				$event_link = esc_url($event->event_link);
 			}
@@ -304,7 +305,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 		$referer = urlencode( mc_get_current_url() );
 		if ( $recur == 'S' ) {
 			$edit = "
-			<div class='mc_edit_links'>
+			<div class='mc_edit_liks'>
 			<p>
 			<a href='".admin_url("admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id&amp;ref=$referer")."' class='edit'>".__('Edit','my-calendar')."</a> &bull; <a href='".admin_url("admin.php?page=my-calendar-manage&amp;mode=delete&amp;event_id=$event->event_id&amp;ref=$referer")."' class='delete'>".__('Delete','my-calendar')."</a>$groupedit
 			</p>
@@ -866,14 +867,6 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 		} else {
 			$key = '';
 		}
-		// set up rss feeds
-		if ($format != 'mini') {
-			$ical_m = (isset($_GET['month']))?(int) $_GET['month']:date('n');
-			$ical_y = (isset($_GET['yr']))?(int) $_GET['yr']:date('Y');
-			$feeds = mc_rss_links($ical_y,$ical_m);
-		} else {
-			$feeds = '';
-		}
 		// set up navigation links
 		if ( $shownav == 'yes' || in_array( 'nav', $used ) ) {
 			$pLink = my_calendar_prev_link($c_year,$c_month,$c_day,$format,$time);
@@ -892,6 +885,14 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 		} else {
 			$nav = '';
 		}
+		// set up rss feeds
+		if ($format != 'mini') {
+			$ical_m = (isset($_GET['month']))?(int) $_GET['month']:date('n');
+			$ical_y = (isset($_GET['yr']))?(int) $_GET['yr']:date('Y');
+			$feeds = mc_rss_links( $ical_y,$ical_m, $nLink );
+		} else {
+			$feeds = '';
+		}		
 		// set up date switcher
 		$showjump = ( $showjump == 'yes' )?'yes':get_option('mc_display_jump');
 		$showjump = ( $showjump == 'true' )?'yes':$showjump;
@@ -926,7 +927,7 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 		if ( $time == 'day' ) {
 			$my_calendar_body .= "<div class='mc-main $format $time'>".$mc_topnav;
 			// single day uses independent cycling.
-			$dayclass = strtolower(date_i18n('D',mktime (0,0,0,$c_month,$c_day,$c_year)));	
+			$dayclass = strtolower( date_i18n( 'D', mktime( 0,0,0,$c_month,$c_day,$c_year ) ) );	
 			$from = $to = "$c_year-$c_month-$c_day";
 			//echo "<p>Debug: $from, $to, $category, $ltype, $lvalue, $author</p>";
 			$events = my_calendar_grab_events($from,$to,$category,$ltype,$lvalue,'calendar',$author);
@@ -947,9 +948,10 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 				}
 			} else {
 				$mc_events .= __( 'No events scheduled for today!','my-calendar');
-			}			
+			}
+			$heading_level = apply_filters('mc_heading_level','h3',$format,$time,$template );
 			$my_calendar_body .= "
-				<h3 class='mc-single'>".date_i18n( $date_format,strtotime("$c_year-$c_month-$c_day")).'</h3>	
+				<$heading_level class='mc-single'>".date_i18n( $date_format,strtotime("$c_year-$c_month-$c_day"))."</$heading_level>".'
 				<div id="mc-day" class="'.$dayclass.' '.$dateclass.' '.$events_class.'">'."$mc_events\n</div>
 			</div>";
 		} else {
@@ -1157,13 +1159,14 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 		return $category_key;
 }
 
-function mc_rss_links($y,$m) {
-global $wp_rewrite;
+function mc_rss_links( $y, $m, $next ) {
+	global $wp_rewrite;
 	$feed = mc_feed_base().'my-calendar-rss';
-	$ics_extend = ( $wp_rewrite->using_permalinks() )?"my-calendar-ics/?yr=$y&amp;month=$m":"my-calendar-ics&amp;yr=$y&amp;month=$m";
+	$end = "&amp;nyr=$next[yr]&amp;nmonth=$next[month]";
+	$ics_extend = ( $wp_rewrite->using_permalinks() )?"my-calendar-ics/?yr=$y&amp;month=$m".$end:"my-calendar-ics&amp;yr=$y&amp;month=$m".$end;
 	$ics = mc_feed_base(). $ics_extend;
-	$rss = "	<li class='rss'><a href='".$feed."'>".__('Subscribe by <abbr title="Really Simple Syndication">RSS</abbr>','my-calendar')."</a></li>";
-	$ical = "	<li class='ics'><a href='".$ics."'>".__('Download as <abbr title="iCal Events Export">iCal</abbr>','my-calendar')."</a></li>";
+	$rss = "\n	<li class='rss'><a href='".$feed."'>".__('Subscribe by <abbr title="Really Simple Syndication">RSS</abbr>','my-calendar')."</a></li>";
+	$ical = "\n	<li class='ics'><a href='".$ics."'>".__('Download as <abbr title="iCal Events Export">iCal</abbr>','my-calendar')."</a></li>";
 	$output = "\n
 <ul id='mc-export'>$rss
 $ical

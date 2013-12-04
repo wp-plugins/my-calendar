@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/articles/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 2.2.13
+Version: 2.3.0
 */
 /*  Copyright 2009-2013  Joe Dolson (email : joe@joedolson.com)
 
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 apply_filters("debug", "MC Started");
 
 global $mc_version, $wpdb;
-$mc_version = '2.2.13';
+$mc_version = '2.3.0';
 
 // Define the tables used in My Calendar
 if ( function_exists('is_multisite') && is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
@@ -211,12 +211,6 @@ function jd_show_support_box( $show='', $add=false, $remove=false ) {
 		<dt><code>{date}</code></dt>
 		<dd><?php _e('Date on which the event begins.','my-calendar'); ?></dd>
 
-		<dt><code>{enddate}</code></dt>
-		<dd><?php _e('Date on which the event ends.','my-calendar'); ?></dd>
-
-		<dt><code>{endtime}</code></dt>
-		<dd><?php _e('Time at which the event ends.','my-calendar'); ?></dd>
-
 		<dt><code>{daterange}</code></dt>
 		<dd><?php _e('Beginning date to end date; excludes end date if same as beginning.','my-calendar'); ?></dd>
 
@@ -228,9 +222,6 @@ function jd_show_support_box( $show='', $add=false, $remove=false ) {
 
 		<dt><code>{host}</code></dt>
 		<dd><?php _e('Name of the assigned host for the event.','my-calendar'); ?></dd>
-
-		<dt><code>{host_email}</code></dt>
-		<dd><?php _e('Email for the person assigned as host.','my-calendar'); ?></dd>
 
 		<dt><code>{shortdesc}</code></dt>
 		<dd><?php _e('Short event description.','my-calendar'); ?></dd>
@@ -304,6 +295,9 @@ function jd_show_support_box( $show='', $add=false, $remove=false ) {
 		<dt><code>{cat_id}</code></dt>
 		<dd><?php _e('ID of the category of the event.','my-calendar'); ?></dd>
 		</dl>
+		<p>
+			<a href="<?php admin_url( 'admin.php?page=my-calendar-help#template' ); ?>"><?php _e('All Template Tags &raquo;','my-calendar'); ?></a>
+		</p>
 		</div>
 		</div>
 		</div>
@@ -361,13 +355,6 @@ function my_calendar_menu() {
 		add_submenu_page('my-calendar', __('Event Submissions','my-calendar'), __('Event Submissions','my-calendar'), $permission, 'my-calendar-submissions', 'mcs_settings');
 		add_submenu_page('my-calendar', __('Payments','my-calendar'), __('Payments','my-calendar'), $permission, 'my-calendar-payments', 'mcs_sales_page');
 	}
-	if ( function_exists( 'mcr_registrations' ) ) {
-		$permission = apply_filters( 'mcr_registration_permissions', 'manage_options' );
-		add_action( "admin_head", 'mcr_sub_js' );		
-		add_action( "admin_head", 'mcr_reg_styles' );	
-		add_submenu_page('my-calendar', __('Event Registrations','my-calendar'), __('Event Registrations','my-calendar'), $permission, 'my-calendar-registrations', 'mcr_settings');
-		add_submenu_page('my-calendar', __('Registration Payments','my-calendar'), __('Registration Payments','my-calendar'), $permission, 'mcr-payments', 'mcr_sales_page');
-	}	
 }
 
 function mc_event_editing() {
@@ -388,7 +375,7 @@ function mc_show_event_editing( $status, $args ) {
 		//$data =  "<pre>".print_r( $args, 1 )."THESE:<br />".print_r($input_options, 1 )."</pre>";
 		$settings_options = get_option('mc_input_options');
 		if ( !is_array( $input_options ) ) { $input_options = $settings_options; }
-		$input_labels = array('event_location_dropdown'=>__('Event Location Dropdown Menu','my-calendar'),'event_short'=>__('Event Short Description field','my-calendar'),'event_desc'=>__('Event Description Field','my-calendar'),'event_category'=>__('Event Category field','my-calendar'),'event_image'=>__('Event Image field','my-calendar'),'event_link'=>__('Event Link field','my-calendar'),'event_recurs'=>__('Event Recurrence Options','my-calendar'),'event_open'=>__('Event Registration options','my-calendar'),'event_location'=>__('Event Location fields','my-calendar'),'event_use_editor'=>__('Use HTML Editor in Event Description Field','my-calendar'),'event_specials'=>__('Set Special Scheduling options','my-calendar') );
+		$input_labels = array('event_location_dropdown'=>__('Event Location Dropdown Menu','my-calendar'),'event_short'=>__('Event Short Description field','my-calendar'),'event_desc'=>__('Event Description Field','my-calendar'),'event_category'=>__('Event Category field','my-calendar'),'event_image'=>__('Event Image field','my-calendar'),'event_link'=>__('Event Link field','my-calendar'),'event_recurs'=>__('Event Recurrence Options','my-calendar'),'event_open'=>__('Event Registration options','my-calendar'),'event_location'=>__('Event Location fields','my-calendar'),'event_use_editor'=>__('Use HTML Editor in Event Description Field','my-calendar'),'event_specials'=>__('Set Special Scheduling options','my-calendar'), 'event_access'=>__('Event Accessibility') );
 		$output = '';
 		foreach ($input_options as $key=>$value) {
 			$checked = ($value == 'on')?"checked='checked'":'';
