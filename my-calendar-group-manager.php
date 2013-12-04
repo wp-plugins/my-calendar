@@ -144,7 +144,7 @@ global $wpdb,$event_author;
 			$update = $output[2];
 			$update = apply_filters( 'mc_update_group_data', $update, $event_author, $action, $event_id );
 			$formats = array( 
-						'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
+						'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
 						'%d','%d','%d','%d','%d',
 						'%f','%f'
 						);
@@ -285,6 +285,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 	global $user_ID, $wpdb;
 	$mcdb = $wpdb;
 	get_currentuserinfo();
+	$has_data = ( empty($data) ) ? false : true;	
 	$user = get_userdata($user_ID);		
 	$mc_input_administrator = (get_option('mc_input_options_administrators')=='true' && current_user_can('manage_options'))?true:false;
 	$mc_input = get_option('mc_input_options');
@@ -401,24 +402,19 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 <div class="postbox">
 <h3><?php _e('Event Registration Options','my-calendar'); ?></h3>
 <div class="inside">
+
 			<fieldset>
 			<legend><?php _e('Event Registration Status','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_open' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></legend>
-			<p><em><?php _e('My Calendar does not manage event registrations. Use this for information only.','my-calendar'); ?></em></p>
-			<p>
-			<input type="radio" id="event_open" name="event_open" value="1" <?php if (!empty($data)) { echo jd_option_selected( $data->event_open,'1'); } ?> /> <label for="event_open"><?php _e('Open','my-calendar'); ?></label> 
-			<input type="radio" id="event_closed" name="event_open" value="0" <?php if (!empty($data)) {  echo jd_option_selected( $data->event_open,'0'); } ?> /> <label for="event_closed"><?php _e('Closed','my-calendar'); ?></label>
-			<input type="radio" id="event_none" name="event_open" value="2" <?php if (!empty($data)) { echo jd_option_selected( $data->event_open, '2' ); } else { echo " checked='checked'"; } ?> /> <label for="event_none"><?php _e('Does not apply','my-calendar'); ?></label>	
-			</p>	
-			<p>
-			<input type="checkbox" name="event_group" id="event_group" <?php if (  is_object($data) ) { echo jd_option_selected( $data->event_group,'1'); } ?> /> <label for="event_group"><?php _e('If this event recurs, it can only be registered for as a complete series.','my-calendar'); ?></label>
-			</p>				
+			<?php do_action( 'mc_event_registration', $has_data, $data ); ?>						
 			</fieldset>
 </div>
 </div>	
 </div>		
 			<?php } else { ?>
 			<div>
-			<input type="hidden" name="event_open" value="2" />
+				<input type="hidden" name="event_open" value="<?php echo ( $has_data ) ? $data->event_open : '2'; ?>" />
+				<input type="hidden"  name="event_tickets" value="<?php echo ( $has_data ) ? esc_attr( $data->event_tickets ) : ''; ?>" />
+				<input type="hidden" name="event_registration" value="<?php echo ( $has_data ) ? esc_attr( $data->event_registration ) : ''; ?>" />
 			</div>
 
 			<?php } ?>
@@ -502,7 +498,32 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			<p>
 			<label for="event_latitude"><?php _e('Latitude','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_latitude' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?><?php if ( !mc_compare_group_members( $group_id,'event_longitude' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_latitude" name="event_latitude" class="input" size="10" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_latitude)); ?>" /> <label for="event_longitude"><?php _e('Longitude','my-calendar'); ?></label> <input type="text" id="event_longitude" name="event_longitude" class="input" size="10" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_longitude)); ?>" />
 			</p>
-			</fieldset>	
+			</fieldset>
+			<fieldset>
+			<legend><?php _e('Location Accessibility','my-calendar'); ?></legend>
+			<ul>
+			<?php 
+			$access = apply_filters( 'mc_venue_accessibility', get_option( 'mc_location_access' ) );
+			$access_list = '';
+			if ( !empty( $data ) ) {			
+				$location_access = unserialize( $data->event_access );
+			} else {
+				$location_access = array();
+			}
+			foreach ( $access as $k=>$a ) {
+				$id = "loc_access_$k";
+				$label = $a;
+				$checked = '';
+				if ( is_array( $location_access ) ) {
+					$checked = ( in_array( $k, $location_access ) ) ? " checked='checked'" : '';
+				}
+				$item = sprintf( '<li><input type="checkbox" id="%1$s" name="event_access[]" value="%4$s" class="checkbox" %2$s /> <label for="%1$s">%3$s</label></li>', $id, $checked, $label, $k );
+				$access_list .= $item;			
+			}
+			echo $access_list;
+			?>
+			</ul>
+			</fieldset>				
 			<?php } ?>
 			<?php if ( ( $mc_input['event_location'] == 'on' || $mc_input['event_location_dropdown'] == 'on' ) || $mc_input_administrator ) { ?>
 			</fieldset>
@@ -548,8 +569,12 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
     $expires = !empty($post['event_link_expires']) ? $post['event_link_expires'] : '0';
 	$location_preset = !empty($post['location_preset']) ? $post['location_preset'] : '';
 	$event_open = !empty($post['event_open']) ? $post['event_open'] : '2';
+	$event_tickets = !empty( $post['event_tickets'] ) ? trim( $post['event_tickets'] ) : '';
+	$event_registration = !empty( $post['event_registration'] ) ? trim( $post['event_registration'] ) : '';
 	$event_image = esc_url_raw( $post['event_image'] );
 	$event_span = !empty($post['event_span']) ? 1 : 0;
+	$events_access = !empty($post['events_access'])? $post['events_access'] : array();
+	
 	// set location
 		if ($location_preset != 'none') {
 			$sql = "SELECT * FROM " . my_calendar_locations_table() . " WHERE location_id = $location_preset";
@@ -567,6 +592,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			$event_latitude = $location->location_latitude;
 			$event_zoom = $location->location_zoom;
 			$event_phone = $location->location_phone;
+			$event_access = $location->location_access;
 		} else {
 			$event_label = !empty($post['event_label']) ? $post['event_label'] : '';
 			$event_street = !empty($post['event_street']) ? $post['event_street'] : '';
@@ -581,6 +607,8 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			$event_latitude = !empty($post['event_latitude']) ? $post['event_latitude'] : '';	
 			$event_zoom = !empty($post['event_zoom']) ? $post['event_zoom'] : '';	
 			$event_phone = !empty($post['event_phone']) ? $post['event_phone'] : '';
+			$event_access = !empty($post['event_access']) ? $post['event_access'] : array();
+			$event_access = !empty($post['event_access_hidden']) ? unserialize( $post['event_access_hidden'] ) : $event_access;			
 	    }
 	
 		// We check to make sure the URL is acceptable (blank or starting with http://)                                                        
@@ -619,6 +647,10 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			'event_url'=>$event_url,	
 			'event_image'=>$event_image,
 			'event_phone'=>$event_phone,
+			'event_access'=>serialize($event_access),
+			'events_access'=>serialize($events_access),
+			'event_tickets'=>$event_tickets,
+			'event_registration'=>$event_registration,
 		// integers
 			'event_category'=>$category, 		
 			'event_link_expires'=>$expires, 				
@@ -656,6 +688,10 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 		$users_entries->event_short = $short;
 		$users_entries->event_image = $event_image;
 		$users_entries->event_span = $event_span;
+		$users_entries->event_access = serialize( $event_access );
+		$users_entries->events_access = serialize( $events_access );
+		$users_entries->event_tickets = $event_tickets;
+		$users_entries->event_registration = $event_registration;
 		$proceed = false;
 	}
 	$data = array($proceed, $users_entries, $submit,$errors);
@@ -840,6 +876,3 @@ function jd_groups_display_list() {
 <?php	
 	}
 }
-
-
-?>

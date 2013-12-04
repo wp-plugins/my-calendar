@@ -240,7 +240,7 @@ class my_calendar_upcoming_widget extends WP_Widget {
 }
 
 // Widget upcoming events
-function my_calendar_upcoming_events($before='default',$after='default',$type='default',$category='default',$template='default',$substitute='',$order='asc',$skip=0, $show_today='yes',$author='default',$host='default' ) {
+function my_calendar_upcoming_events( $before='default',$after='default',$type='default',$category='default',$template='default',$substitute='',$order='asc',$skip=0, $show_today='yes',$author='default',$host='default' ) {
 	global $wpdb,$default_template,$defaults;
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
@@ -281,6 +281,9 @@ function my_calendar_upcoming_events($before='default',$after='default',$type='d
 			$from = date( 'Y-1-1' );
 			$to = date( 'Y-12-31' );
 		}
+		$from = apply_filters( 'mc_upcoming_date_from', $from );
+		$to = apply_filters( 'mc_upcoming_date_to', $to );
+
 		$events = my_calendar_grab_events( $from, $to, $category,'','','upcoming',$author, $host );
 		if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
 			$holidays = array();
@@ -397,7 +400,7 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 	$extra = 0;
 	$i = 0; 
 	// create near_events array
-	$last_events = array();
+	$last_events = $last_group = array();
 	if ( is_array( $events ) ) {
 		foreach ( $events as $k=>$event ) {
 			if ( $i < $count ) {
@@ -429,8 +432,9 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 								}
 								// end multi-day reduction
 								if ( !$md ) {
-									// check if this event instance has already been displayed
-									$same_event = ( in_array($e->occur_id ,$last_events ) )?true:false;
+									// check if this event instance or this event group has already been displayed
+									$same_event = ( in_array( $e->occur_id ,$last_events ) )?true:false;
+									$same_group = ( in_array( $e->occur_group_id, $last_group ) )?true:false;
 									if ( $show_today == 'yes' && my_calendar_date_equal( $beginning, $current ) ) {
 										$in_total = 'yes'; // count todays events in total
 										if ( $in_total != 'no' ) {
@@ -439,22 +443,24 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 										} else {
 											$near_events[] = $e;
 										}
-									} else if ( ( $past<=$before && $future<=$after ) ) {
+									} else if ( ( $past <= $before && $future<=$after ) ) {
 										$near_events[] = $e; // if neither limit is reached, split off freely
 									} else if ( $past <= $before && ( my_calendar_date_comp( $beginning,$current ) ) ) {
 										$near_events[] = $e; // split off another past event
 									} else if ( $future <= $after && ( !my_calendar_date_comp( $end,$current ) ) ) {
 										$near_events[] = $e; // split off another future event
 									}
+
 									if ( my_calendar_date_comp( $beginning,$current ) ) { 	
-										if ( !$same_event ) { $past++; } else { $extra++; }
+										if ( !$same_event && !$same_group ) { $past++; } else { $extra++; }
 									} else if ( my_calendar_date_equal( $beginning,$current ) ) {  
 										$present = 1;
 										if ( $show_today == 'yes' ) { $extra++; }
 									} else {
-										if ( !$same_event ) { $future++;  } else { $extra++;}
+										if ( !$same_event && !$same_group ) { $future++;  } else { $extra++;}
 									}
 									$last_events[] = $e->occur_id;
+									$last_group[] = $e->occur_group_id;
 									$last_date = $beginning;
 								}
 								if ( $past > $before && $future > $after && $show_today != 'yes' ) {
@@ -478,7 +484,6 @@ function mc_produce_upcoming_events($events,$template,$type='list',$order='asc',
 			array_pop($events);
 		}
 	}
-
 	if ( is_array( $events ) ) {
 		foreach( array_keys($events) as $key ) {
 			$event =& $events[$key];

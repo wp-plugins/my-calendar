@@ -2,27 +2,28 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function my_calendar_ical() {
+	$p = ( isset( $_GET['span'] ) ) ? 'year' : false;
+	$y = ( isset( $_GET['yr'] ) ) ? $_GET['yr'] : date('Y');
+	$m = ( isset( $_GET['month'] ) ) ? $_GET['month'] : date('n');
+	$ny = ( isset( $_GET['nyr'] ) ) ? $_GET['nyr'] : $m;
+	$nm = ( isset( $_GET['nmonth'] ) ) ? $_GET['nmonth'] : $y;
 
-$p = ( isset($_GET['span']) )?'year':false;
-$y = ( isset($_GET['yr']) )?$_GET['yr']:date('Y');
-$m = ( isset($_GET['month']) )?$_GET['month']:date('n');
+	if ( $p ) {
+		$from = "$y-1-1";
+		$to = "$y-12-31";
+	} else {
+		$d = date( 't',mktime( 0,0,0,$m,1,$y ) );
+		$from = "$y-$m-1";
+		$to = "$ny-$nm-$d";
+	}
 
-if ( $p ) {
-	$from = "$y-1-1";
-	$to = "$y-12-31";
-} else {
-	$d = date( 't',mktime( 0,0,0,$m,1,$y ) );
-	$from = "$y-$m-1";
-	$to = "$y-$m-$d";
-}
+	$from = apply_filters( 'mc_ical_download_from', $from, $p );
+	$to = apply_filters( 'mc_ical_download_to', $to, $p );
+	$atts = array( 'category'=>null, 'ltype'=>'', 'lvalue'=>'', 'source'=>'calendar', 'author'=>null, 'host'=> null );
+	$atts = apply_filters( 'mc_ical_attributes', $atts );
+	extract( $atts );
 
-$from = apply_filters( 'mc_ical_download_from', $from, $p );
-$to = apply_filters( 'mc_ical_download_to', $to, $p );
-$atts = array( 'category'=>null, 'ltype'=>'', 'lvalue'=>'', 'source'=>'calendar', 'author'=>null, 'host'=> null );
-$atts = apply_filters( 'mc_ical_attributes', $atts );
-extract( $atts );
-
-global $mc_version;
+	global $mc_version;
 // establish template
 	$template = "BEGIN:VEVENT
 UID:{dateid}-{id}
@@ -40,7 +41,7 @@ END:VEVENT";
 $output = 'BEGIN:VCALENDAR
 VERSION:2.0
 METHOD:PUBLISH
-PRODID:-//Accessible Web Design//My Calendar//http://www.mywpcal.com//v'.$mc_version.'//EN';
+PRODID:-//Accessible Web Design//My Calendar//http://www.joedolson.com//v'.$mc_version.'//EN';
 
 	$events = my_calendar_grab_events( $from, $to, $category, $ltype, $lvalue, $source, $author, $host );
 	if ( is_array($events) && !empty($events) ) {

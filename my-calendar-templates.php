@@ -49,9 +49,18 @@ function jd_draw_template($array,$template,$type='list') {
 	return stripslashes(trim($template));
 }
 
-function mc_maplink( $event, $request='map', $source='event' ) {
+function mc_map_string( $event, $source='event' ) {
 	if ( $source == 'event' ) {
 		$map_string = $event->event_street.' '.$event->event_street2.' '.$event->event_city.' '.$event->event_state.' '.$event->event_postcode.' '.$event->event_country;	
+	} else {
+		$map_string = $event->location_street.' '.$event->location_street2.' '.$event->location_city.' '.$event->location_state.' '.$event->location_postcode.' '.$event->location_country;	
+	}
+	return $map_string;
+}
+
+function mc_maplink( $event, $request='map', $source='event' ) {
+	$map_string = mc_map_string( $event, $source );
+	if ( $source == 'event' ) {
 		if ( $request == 'gcal' ) { return $map_string; }
 		$zoom = ( $event->event_zoom != 0 )?$event->event_zoom:'15';	
 		$map_string = str_replace(" ","+",$map_string);
@@ -60,7 +69,6 @@ function mc_maplink( $event, $request='map', $source='event' ) {
 			$connector = '';			
 		}
 	} else {
-		$map_string = $event->location_street.' '.$event->location_street2.' '.$event->location_city.' '.$event->location_state.' '.$event->location_postcode.' '.$event->location_country;	
 		$zoom = ( $event->location_zoom != 0 )?$event->location_zoom:'15';	
 		$map_string = str_replace( " ","+",$map_string );
 		if ( $event->location_longitude != '0.000000' && $event->location_latitude != '0.000000' ) {
@@ -150,7 +158,10 @@ function event_as_array($event,$type='html') {
 			$host = get_userdata($event->event_host);
 			$details['author'] = $e->display_name;
 			$details['gravatar'] = get_avatar( $e->user_email );
+			$details['author_email'] = $e->user_email;
+			$details['author_id'] = $event->event_author;
 			$details['host'] = (!$host || $host->display_name == '')?$e->display_name:$host->display_name; 
+			$details['host_id'] = $event->event_host;
 			$details['host_email'] = (!$host || $host->user_email == '')?$e->user_email:$host->user_email;
 			$details['host_gravatar'] = ( !$host || $host->user_email == '' )?$details['gravatar']:get_avatar( $host->user_email );
 		} else {
@@ -166,6 +177,8 @@ function event_as_array($event,$type='html') {
 	$sitelink_html = "<div class='url link'><a href='$event->event_url' class='location-link external'>".sprintf(__('Visit web site<span>: %s</span>','my-calendar'),$event->event_label)."</a></div>";
 	$details['sitelink_html'] = $sitelink_html;
 	$details['sitelink'] = $event->event_url;
+	$details['access'] = mc_expand( $event->events_access, 'mc_event_access' );
+	$details['location_access'] = mc_expand( $event->event_access, 'mc_location_access' );
 	$recurs = str_split( $event->event_recur, 1 );
 	$recur = $recurs[0];
 	$every = ( isset($recurs[1]) )?$recurs[1]:1;	
@@ -233,7 +246,6 @@ function event_as_array($event,$type='html') {
 	$details['category'] = stripslashes($event->category_name);
 	$details['title'] = stripcslashes($event->event_title);
 	$details['skip_holiday'] = ($event->event_holiday == 0)?'false':'true';
-
 		if ( $event->event_link_expires == 0 ) {
 			$details['link'] = $event->event_link;
 		} else {
@@ -266,10 +278,13 @@ function event_as_array($event,$type='html') {
 	$details['hcard'] = stripslashes($hcard);
 	$details['link_map'] = $map;
 	$details['map_url'] = $map_url;
+	$details['map'] = mc_generate_map( $event );
 	$details['shortdesc'] = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',$event->event_short):wpautop(stripslashes($event->event_short));
 	$details['shortdesc_raw'] = stripslashes($event->event_short);
 	$details['shortdesc_stripped'] = strip_tags(stripslashes($event->event_short));
 	$details['event_open'] = $event_open;
+	$details['event_tickets'] = $event->event_tickets;
+	$details['event_registration'] = stripslashes( wp_kses_data( $event->event_registration ) );
 	$details['icon'] = $category_icon;
 	$details['icon_html'] = "<img src='$category_icon' class='mc-category-icon' alt='".__('Category','my-calendar').": ".esc_attr($event->category_name)."' />";
 	$details['color'] = $event->category_color;
@@ -310,6 +325,78 @@ function event_as_array($event,$type='html') {
 	$details['gcal_link'] = "<a href='".mc_google_cal( $dtstart, $dtend, $url, $title, $location, $description )."'>".sprintf( __('<span class="screenreader">Send %1$s to </span>Google Calendar','my-calendar'), $title )."</a>";
 	$details = apply_filters( 'mc_filter_shortcodes',$details,$event );
 	return $details;
+}
+
+function mc_generate_map( $event, $source='event' ) {
+	$id = rand();
+	$maptype = 'roadmap';
+	$zoom = ( $event->event_zoom != 0 )?$event->event_zoom:'15';
+	$address = mc_map_string( $event, $source );
+	$html = apply_filters( 'mc_map_html', '', $event );
+	$html = ( !$html ) ? $address : '';
+	$popup = 'false';
+	$width= apply_filters( 'mc_map_height', '100%', $event );
+	$height = apply_filters( 'mc_map_height', '300px', $event );
+	$styles = " style='width: $width;height: $height'";
+	$value = "
+<script type='text/javascript'>
+	(function ($) { 'use strict';
+		$(function () {
+			$('#mc_gmap_$id').gmap3({
+								  marker:{ 
+										values:[{address: '$address'}], 
+										data:'$html',
+										events:{
+										  click: function(marker, event, context){
+											var map = $(this).gmap3('get'),
+											  infowindow = $(this).gmap3({get:{name:'infowindow'}});
+											if (infowindow){
+											  infowindow.open(map, marker);
+											  infowindow.setContent(context.data);
+											} else {
+											  $(this).gmap3({
+												infowindow:{
+												  anchor:marker, 
+												  options:{content: context.data}
+												}
+											  });
+											}
+										  }
+										}
+								  },
+								  map:{
+										options:{
+										  zoom: $zoom,
+										  mapTypeControl: true,
+										  mapTypeControlOptions: {
+											style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+										  },
+										  navigationControl: true,
+										  scrollwheel: true,
+										  streetViewControl: false
+										}
+								  }
+			});	
+		}); 
+	})(jQuery);
+</script>
+	<div id='mc_gmap_$id' class='mc-gmap-fupup'$styles></div>";
+	return $value;
+}
+
+function mc_expand( $data, $option ) {
+	$array = maybe_unserialize( $data );
+	$option = get_option( $option );
+	$output = '';
+	if ( is_array( $array ) ) {
+		foreach ( $array as $key => $value ) {
+			$class = ( isset( $option[$value] ) ) ? sanitize_title( $option[$value] ) : '';
+			$label = ( isset( $option[$value] ) ) ? $option[$value] : false;
+			if ( !$label ) { continue; }
+			$output .= "<li class='$class'><span>$label</span></li>\n";
+		}
+		return "<ul>".$output."</ul>";
+	}
 }
 
 function mc_event_date_span( $group_id, $event_span, $dates=array() ) {

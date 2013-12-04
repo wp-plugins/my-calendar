@@ -142,7 +142,7 @@ function my_calendar_help() { ?>
 
 <div class="ui-sortable meta-box-sortables" id="templates">
 <div class="postbox">
-<h3 id="template"><?php _e('Widget Templating','my-calendar'); ?></h3>
+<h3 id="template"><?php _e('Template Tags','my-calendar'); ?></h3>
 	<div class="inside">
 		<p>
 		<?php _e('All template tags support two attributes: before="value" and after="value". The values of the attributes will be placed before and after the output value. These attribute values <strong>must</strong> be wrapped in double quotes.','my-calendar'); ?>
@@ -230,6 +230,9 @@ function my_calendar_help() { ?>
 		<dt><code>{description_stripped}</code></dt>
 		<dd><?php _e('Displays description with any HTML stripped out.','my-calendar'); ?></dd>
 
+		<dt><code>{access}</code></dt>
+		<dd><?php _e('Unordered list of accessibility options for this event.','my-calendar'); ?></dd>
+		
 		<dt><code>{image}</code></dt>
 		<dd><?php _e('Image associated with the event. (HTMl)','my-calendar'); ?></dd>
 
@@ -260,9 +263,16 @@ function my_calendar_help() { ?>
 		<dt><code>{event_open}</code></dt>
 		<dd><?php _e('Displays text indicating whether registration for the event is currently open or closed; displays nothing if that choice is selected in the event.','my-calendar'); ?></dd>
 
+		<dt><code>{event_tickets}</code></dt>
+		<dd><?php _e('URL to ticketing for event.','my-calendar'); ?></dd>
+
+		<dt><code>{event_registration}</code></dt>
+		<dd><?php _e('Registration information about this event.','my-calendar'); ?></dd>
+		
 		<dt><code>{event_status}</code></dt>
 		<dd><?php _e('Displays the current status of the event: either "Published" or "Reserved" - primary used in email templates.','my-calendar'); ?></dd>
 		</dl>
+		
 		<h4><?php _e('Location Template Tags','my-calendar'); ?></h4>
 
 		<dl>
@@ -307,6 +317,13 @@ function my_calendar_help() { ?>
 
 		<dt><code>{map_url}</code></dt>
 		<dd><?php _e('Produces the URL for the Google Map for the event location if sufficient address information is available. If not, will be empty.','my-calendar'); ?></dd>
+		
+		<dt><code>{map}</code></dt>
+		<dd><?php _e('Output Google Map if sufficient address information is available. If not, will be empty.','my-calendar'); ?></dd>		
+		
+		<dt><code>{location_access}</code></dt>
+		<dd><?php _e('Unordered list of accessibility options for this location.','my-calendar'); ?></dd>
+		
 		</dl>
 		<h4><?php _e('Category Template Tags','my-calendar'); ?></h4>
 

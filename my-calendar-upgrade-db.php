@@ -13,7 +13,7 @@ function my_calendar_check_db() {
 				<p><?php _e('My Calendar Database is updated.','my-calendar'); ?></p>
 			</div>
 		<?php
-	} else if ( !isset( $row->event_hide_end ) && isset( $row->event_id ) ) {
+	} else if ( !isset( $row->event_tickets ) && isset( $row->event_id ) ) {
 		if ( $_GET['page'] == 'my-calendar-config' ) { ?>
 		<div class='upgrade-db error'>
 			<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-config"); ?>">

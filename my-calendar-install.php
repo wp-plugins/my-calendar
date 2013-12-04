@@ -171,6 +171,8 @@ $initial_db = "CREATE TABLE " . my_calendar_table() . " (
  event_desc TEXT NOT NULL,
  event_short TEXT NOT NULL,
  event_open INT(3) DEFAULT '2',
+ event_registration TEXT NOT NULL,
+ event_tickets VARCHAR(255) NOT NULL,
  event_time TIME,
  event_endtime TIME,
  event_recur CHAR(2),
@@ -194,6 +196,7 @@ $initial_db = "CREATE TABLE " . my_calendar_table() . " (
  event_latitude FLOAT(10,6) NOT NULL DEFAULT '0',
  event_zoom INT(2) NOT NULL DEFAULT '14',
  event_phone VARCHAR(32) NOT NULL,
+ event_access TEXT,
  event_group INT(1) NOT NULL DEFAULT '0',
  event_group_id INT(11) NOT NULL DEFAULT '0',
  event_span INT(1) NOT NULL DEFAULT '0',
@@ -203,6 +206,7 @@ $initial_db = "CREATE TABLE " . my_calendar_table() . " (
  event_holiday INT(1) NOT NULL DEFAULT '$event_holiday',
  event_fifth_week INT(1) NOT NULL DEFAULT '$event_fifth_week',
  event_image TEXT,
+ events_access TEXT,
  event_added TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
  PRIMARY KEY  (event_id),
  KEY event_recur (event_recur)
@@ -242,6 +246,7 @@ $initial_loc_db = "CREATE TABLE " . my_calendar_locations_table() . " (
  location_latitude FLOAT(10,6) NOT NULL DEFAULT '0',
  location_zoom INT(2) NOT NULL DEFAULT '14',
  location_phone VARCHAR(32) NOT NULL,
+ location_access TEXT,
  PRIMARY KEY  (location_id) 
  ) $charset_collate;";
 
@@ -352,6 +357,25 @@ $default_user_settings = array(
 function mc_default_settings( ) {
 global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $default_user_settings,$grid_template,$rss_template, $list_template,$mini_template,$single_template,$mc_version, $defaults;
 // no arguments
+	add_option( 'mc_location_access', array(
+		'1'=> __('Stair Free Access','my-calendar'),
+		'2'=> __('Automatic Doors','my-calendar'),
+		'3'=> __('Wheelchair Access','my-calendar'),
+		'4'=> __('Ramped Access','my-calendar'),
+		'5'=> __('Accessible Emergency Exit','my-calendar'),
+		'6'=> __('Braille Signage','my-calendar'),
+		'7'=> __('Accessible Restrooms','my-calendar'),
+		'8'=> __('ADA Compliant','my-calendar')
+	) );
+	add_option( 'mc_event_access', array(
+		'1'=> __('ASL Interpretation','my-calendar'),
+		'2'=> __('ASL Interpretation with voicing', 'my-calendar'),
+		'3'=> __('Deaf-Blind ASL','my-calendar'),					
+		'4'=> __('Audio Description','my-calendar'),
+		'5'=> __('Real-time Captioning','my-calendar'),
+		'6'=> __('Assisted Listening Devices Available','my-calendar'),
+		'7'=> __("Services provided for visitors with Alzheimer's and other dementias",'my-calendar')
+	) );	
 	add_option('mc_display_author','false');
 	add_option('mc_display_jump','false');
 	add_option('mc_version',$mc_version);
@@ -372,7 +396,7 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option('mc_event_link_expires','no');
 	add_option('mc_apply_color','background');
 	add_option('mc_inverse_color','true');
-	add_option('mc_input_options',array('event_short'=>'off','event_desc'=>'on','event_category'=>'on','event_image'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'off','event_location'=>'on','event_location_dropdown'=>'on','event_use_editor'=>'off','event_specials'=>'on') );
+	add_option('mc_input_options',array( 'event_short'=>'off','event_desc'=>'on','event_category'=>'on','event_image'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'off','event_location'=>'on','event_location_dropdown'=>'on','event_use_editor'=>'off','event_specials'=>'on', 'event_access'=>'on' ) );
 	add_option('mc_input_options_administrators','false');
 	add_site_option('mc_multisite', '0' );
 	add_option('mc_event_mail','false');

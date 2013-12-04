@@ -30,7 +30,7 @@ function my_calendar_generate_vcal( $event_id ) {
 $template = "BEGIN:VCALENDAR
 VERSION:2.0
 METHOD:PUBLISH
-PRODID:-//Accessible Web Design//My Calendar//http://www.mywpcal.com//v$mc_version//EN';
+PRODID:-//Accessible Web Design//My Calendar//http://www.joedolson.com//v$mc_version//EN';
 BEGIN:VEVENT
 UID:{dateid}-{id}
 LOCATION:{ical_location}
