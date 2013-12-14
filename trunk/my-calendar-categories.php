@@ -266,7 +266,7 @@ function mc_manage_categories() {
     // We pull the categories from the database	
     $categories = $mcdb->get_results("SELECT * FROM " . my_calendar_categories_table() . " ORDER BY $cat_order ASC");
 	if ( !empty($categories) ) { ?>
-	<table class="widefat page fixed" id="my-calendar-admin-table">
+	<table class="widefat page fixed mc-categories" id="my-calendar-admin-table">
 	<thead>
 		<tr>
 			<th scope="col"><?php echo ($co==2)?"<a href='".admin_url("admin.php?page=my-calendar-categories&amp;co=1")."'>":''; ?><?php _e('ID','my-calendar') ?><?php echo ($co==2)?'</a>':''; ?></th>

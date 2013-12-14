@@ -61,3 +61,4 @@ strong.label { font-weight: 400; }
 .jd-my-calendar .counter { padding-right: 6px; border-right: 16px solid green; border-radius: 20px; }
 .jd-my-calendar .counter.warning { border-color: orange; }
 .jd-my-calendar .counter.exceeded { border-color: red; }
+.mc-categories th:nth-of-type(5), .mc-categories th:nth-of-type(6), .mc-categories th:nth-of-type(7) { width: 50px; }

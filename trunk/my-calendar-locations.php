@@ -273,22 +273,22 @@ function mc_controlled_field( $this_field ) {
 }
 
 function mc_location_controller( $fieldname, $selected ) {
-		if ( isset($_GET['page']) && $_GET['page'] == 'my-calendar-locations' ) {
-			$fieldname = 'location_'.$fieldname;
-		} else {
-			$fieldname = 'event_'.$fieldname;
-		}
-		$selected = trim($selected);
-		$options = get_option('mc_user_settings');
-		$regions = $options['my_calendar_location_default']['values'];
-		$form .= "<select name='$fieldname' id='$fieldname'>";
-		$form .= "<option value='none'>No preference</option>\n";				
-		foreach ($regions as $key=>$value) {
-			$key = trim($key);
-			$aselected = ($selected==$key)?" selected='selected'":'';
-			$form .= "<option value='$key'$aselected>$value</option>\n";
-		}
-		$form .= "</select>";		
+	if ( isset($_GET['page']) && $_GET['page'] == 'my-calendar-locations' ) {
+		$fieldname = 'location_'.$fieldname;
+	} else {
+		$fieldname = 'event_'.$fieldname;
+	}
+	$selected = trim($selected);
+	$options = get_option('mc_user_settings');
+	$regions = $options['my_calendar_location_default']['values'];
+	$form = "<select name='$fieldname' id='$fieldname'>";
+	$form .= "<option value='none'>No preference</option>\n";				
+	foreach ($regions as $key=>$value) {
+		$key = trim($key);
+		$aselected = ($selected==$key)?" selected='selected'":'';
+		$form .= "<option value='$key'$aselected>$value</option>\n";
+	}
+	$form .= "</select>";		
 	return $form;
 }
 

@@ -89,10 +89,12 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 = 2.3.0 =
 
 * Bug fix: Manage events screen showed no data for users without manage_events permissions.
+* Bug fix: if single event set, could not filter to time period views.
 * New feature: Accessibility features for locations.
 * New feature: Specify accessibility services for events.
 * New feature: ticketing link field
 * New feature: event registration information field
+* New feature: my_calendar_event shortcode can now query templates by keyword (list,mini,single,grid).
 * Improved get current URL function.
 * iCal output in multiple-month view outputs all displayed months.
 * {map} template tag to display a Google Maps using the Google Maps API. (Not available in pop-up displays.)

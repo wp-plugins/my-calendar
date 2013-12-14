@@ -37,6 +37,8 @@ function mc_set_date_array( $events ) {
 }
 
 function my_calendar_draw_events($events, $type, $process_date, $time, $template='') {
+	apply_filters("debug", "my_calendar( $type ) begin draw events");
+
 	if ( $type == 'mini' && ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'listanchor' || get_option('mc_open_day_uri') == 'calendaranchor' ) ) return true;
 	// We need to sort arrays of objects by time
 	if ( is_array($events) ) {
@@ -61,6 +63,14 @@ function my_calendar_draw_events($events, $type, $process_date, $time, $template
 		if ( $type == "mini" && count($events) > 0 ) { $end .= "</div>"; }
 		return $begin . $event_output . $end;
 	}
+	apply_filters("debug", "my_calendar( $name ) end draw events");
+	
+}
+
+function mc_get_template( $template ) {
+	$templates = get_option('mc_templates');
+	$template = $templates[$template];
+	return $template;
 }
 // Used to draw an event to the screen
 function my_calendar_draw_event($event, $type="calendar", $process_date, $time, $template='') {
@@ -76,8 +86,8 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 	$date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
 	$data = event_as_array($event);	
 	$details = apply_filters( 'mc_custom_template', false, $data, $event, $type, $process_date, $time, $template );
+	$templates = get_option('mc_templates');	
 	if ( $details === false ) {
-		$templates = get_option('mc_templates');
 		if ( $template != '' && mc_file_exists( $template ) ) {
 			$template = @file_get_contents( mc_get_file( $template ) );
 			$details = jd_draw_template( $data, $template );
@@ -136,7 +146,6 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 	}
 	// move this div start for custom.
     $header_details .=  "<div id='$uid-$day_id-$type' class='$type-event $category vevent'>\n";
-	$templates = get_option('mc_templates');
 	$title_template = ($templates['title'] == '' )?'{title}':$templates['title'];
 	$mytitle = jd_draw_template($data,$title_template);
 	if ( $mytitle == '' ) { $mytitle = jd_draw_template($data,'{title}'); } //prevent empty titles
@@ -192,8 +201,10 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 					}
 				$body_details .= "</span></p>";
 			}
+			$body_details .= apply_filters( 'mcs_end_time_block', '', $event );
 			$body_details .= "
 			</div>";
+			
 			$subdetails = '';
 			if ($type == "list") {
 				$subdetails .= "<h3 class='event-title summary'>$image".$mytitle."</h3>\n";
@@ -471,22 +482,22 @@ function mc_time_toggle( $format, $time, $toggle, $day, $month ) {
 		$current_url = mc_get_current_url();
 		switch ($time) {
 			case 'week':
-				$url = mc_build_url( array('time'=>'month'), array() );		
+				$url = mc_build_url( array('time'=>'month'), array( 'mc_id' ) );		
 				$toggle .= "<a href='$url'>".__('Month','my-calendar')."</a> ";
 				$toggle .= __('Week','my-calendar');				
-				$url = mc_build_url( array( 'time'=>'day','dy'=>$day ), array('dy') );		
+				$url = mc_build_url( array( 'time'=>'day','dy'=>$day ), array('dy','mc_id') );		
 				$toggle .= " <a href='$url'>".__('Day','my-calendar')."</a>";			
 			break;
 			case 'day':
 				$url = mc_build_url( array('time'=>'month'), array() );		
 				$toggle .= "<a href='$url'>".__('Month','my-calendar')."</a>";	
-				$url = mc_build_url( array('time'=>'week','dy'=>$day,'month'=>$month ), array('dy','month') );	
+				$url = mc_build_url( array('time'=>'week','dy'=>$day,'month'=>$month ), array('dy','month','mc_id') );	
 				$toggle .= " <a href='$url'>".__('Week','my-calendar')."</a> ";			
 				$toggle .= __('Day','my-calendar');			
 			break;			
 			default:
 				$toggle .= __('Month','my-calendar');			
-				$url = mc_build_url( array('time'=>'week','dy'=>$day,'month'=>$month ), array('dy','month') );	
+				$url = mc_build_url( array('time'=>'week','dy'=>$day,'month'=>$month ), array('dy','month','mc_id') );	
 				$toggle .= " <a href='$url'>".__('Week','my-calendar')."</a> ";
 				$url = mc_build_url( array('time'=>'day'), array() );		
 				$toggle .= "<a href='$url'>".__('Day','my-calendar')."</a>";				
@@ -812,7 +823,7 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 		$from = $this_dates['from'];
 		$to = $this_dates['to'];
 		//echo "<pre>$num $from, $to ($c_month,$c_day,$c_year)</pre>";
-
+		apply_filters("debug", "my_calendar( $name ) pre get events");
 		$events = my_calendar_grab_events( $from, $to, $category, $ltype, $lvalue,'calendar',$author );
 		if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
 			$holidays = array();
@@ -820,6 +831,7 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 			$holidays = my_calendar_grab_events( $from, $to, get_option('mc_skip_holidays_category'),$ltype, $lvalue, 'calendar', $author );
 			$holiday_array = mc_set_date_array( $holidays );
 		}
+		apply_filters("debug", "my_calendar( $name ) post get events");
 		// get events into an easily parseable set, keyed by date.
 		if ( is_array( $events ) && !empty($events) ) {
 			$no_events = false;
@@ -830,6 +842,8 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 		} else {
 			$no_events = true;
 		}
+		apply_filters("debug", "my_calendar( $name ) post parse events");
+		
 		// if convert to strings, can iterate using for with +86400 to get each day. 
 		// if use strtotime can do +1 day to get each date.		
 
@@ -925,6 +939,8 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 		if ( $mc_bottomnav != '' ) { $mc_bottomnav = "<div class='mc_bottomnav'>$mc_bottomnav</div>"; }
 		
 		if ( $time == 'day' ) {
+		apply_filters("debug", "my_calendar( $name ) pre single-day parsing");
+		
 			$my_calendar_body .= "<div class='mc-main $format $time'>".$mc_topnav;
 			// single day uses independent cycling.
 			$dayclass = strtolower( date_i18n( 'D', mktime( 0,0,0,$c_month,$c_day,$c_year ) ) );	
@@ -954,7 +970,9 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 				<$heading_level class='mc-single'>".date_i18n( $date_format,strtotime("$c_year-$c_month-$c_day"))."</$heading_level>".'
 				<div id="mc-day" class="'.$dayclass.' '.$dateclass.' '.$events_class.'">'."$mc_events\n</div>
 			</div>";
+		apply_filters("debug", "my_calendar( $name ) post single-day parsing");			
 		} else {
+		apply_filters("debug", "my_calendar( $name ) pre full parsing");
 			// if showing multiple months, figure out how far we're going.
 			$num_months = ($time == 'week')?1:get_option('mc_show_months');
 			$through_date = mktime(0,0,0,$c_month+($num_months-1),$c_day,$c_year);
@@ -1031,7 +1049,7 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 							$week_date_format = date_i18n( $week_format,$start );				
 							$thisday_heading = ($time == 'week')?"<small>$week_date_format</small>":date( 'j',$start );
 							$events = ( isset( $event_array[$date] ) )?$event_array[$date]:array();
-								if ( !empty($events) ) {
+								if ( !empty($events) ) {								
 									$event_output = my_calendar_draw_events($events, $format, $date, $time, $template, $holidays);						
 									if ( $event_output === true ) { $event_output = ' '; }
 									$events_class = ( $event_output != '' )?mc_events_class($events):'no-events';
@@ -1040,13 +1058,13 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 										// yes, this is weird. it's from some old settings...
 											$target = array('yr'=>date('Y',$start),'month'=>date('m',$start),'dy'=>date( 'j',$start ),'time'=>'day' );
 											if ( $category != '' ) { $target['mcat'] = $category; }
-											$day_url = mc_build_url( $target, array('month','dy','yr','ltype','loc','mcat','cid'), apply_filters ( 'mc_modify_day_uri', get_option( 'mc_uri' ) ) );
+											$day_url = mc_build_url( $target, array('month','dy','yr','ltype','loc','mcat','cid','mc_id'), apply_filters ( 'mc_modify_day_uri', get_option( 'mc_uri' ) ) );
 											$link = ( get_option('mc_uri') != '' && !is_numeric( get_option('mc_uri') ) )?$day_url:'#';
 										} else {
 											$atype = str_replace( 'anchor','',get_option('mc_open_day_uri') );
 											$ad = str_pad( date( 'j',$start ), 2, '0', STR_PAD_LEFT ); // need to match format in ID
 											$am = str_pad( $c_month, 2, '0', STR_PAD_LEFT );
-											$date_url = mc_build_url( array('yr'=>$c_year,'month'=>$c_month,'dy'=>date( 'j',$start ) ), array('month','dy','yr','ltype','loc','mcat','cid'), get_option( 'mc_mini_uri' ) );	
+											$date_url = mc_build_url( array('yr'=>$c_year,'month'=>$c_month,'dy'=>date( 'j',$start ) ), array('month','dy','yr','ltype','loc','mcat','cid','mc_id'), get_option( 'mc_mini_uri' ) );	
 											$link = ( get_option('mc_mini_uri') != '' ) ?$date_url.'#'.$atype.'-'.$c_year.'-'.$am.'-'.$ad:'#';
 										}
 										$element = "a href='$link'";
@@ -1121,6 +1139,7 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 				$my_calendar_body .= __("Unrecognized calendar format. Please use one of 'list','calendar', or 'mini'.",'my-calendar')." '<code>$format</code>.'";
 			}
 			$my_calendar_body .= $mc_bottomnav;  
+			apply_filters("debug", "my_calendar( $name ) post full parsing");
 		}
 	}
     // The actual printing is done by the shortcode function.

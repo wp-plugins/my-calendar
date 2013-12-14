@@ -546,7 +546,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
         <fieldset>
 		<legend><?php _e('Enter your Event Information','my-calendar'); ?></legend>
 		<p>
-		<label for="event_title"><?php _e('Event Title','my-calendar'); ?> <span><?php _e('(required)','my-calendar'); ?></span></label><br /><input type="text" id="event_title" name="event_title" class="input" size="60" value="<?php if ( $has_data ) echo apply_filters( 'mc_manage_event_title',stripslashes(esc_attr($data->event_title)), $data ); ?>" />
+		<label for="event_title"><?php _e('Event Title','my-calendar'); ?> <span><?php _e('(required)','my-calendar'); ?></span></label><br /><input type="text" id="event_title" name="event_title" class="input" size="50" value="<?php if ( $has_data ) echo apply_filters( 'mc_manage_event_title',stripslashes(esc_attr($data->event_title)), $data ); ?>" />
 <?php if ( $mode == 'edit' ) { ?>
 			<input type='hidden' name='prev_event_status' value='<?php echo $data->event_approved; ?>' />
 	<?php if ( get_option( 'mc_event_approve' ) == 'true' ) { ?>
@@ -910,7 +910,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 			<?php } ?>
 			<label for="event_state"><?php _e('State/Province','my-calendar'); ?></label> 
 			<?php if ( mc_controlled_field( 'state' ) ) {
-				if ( !empty( $data ) ) $cur_label = ( stripslashes( $data->event_state ) );			
+				if ( !empty( $data ) ) { $cur_label = ( stripslashes( $data->event_state ) ); } else { $cur_label = ''; }			
 				echo mc_location_controller( 'state', $cur_label );
 			} else { ?>
 			<input type="text" id="event_state" name="event_state" class="input" size="10" value="<?php if ( $has_data ) esc_attr_e(stripslashes($data->event_state)); ?>" /> 
@@ -1698,6 +1698,9 @@ function mc_instance_list( $id, $occur=false, $template='<h3>{title}</h3>{descri
 			$event_id = $result->occur_id;
 			$event = mc_get_event( $event_id );
 			$array = event_as_array($event);
+			if ( in_array( $template, array( 'details','grid','list','mini') ) ) {
+				$template = mc_get_template( $template );
+			}
 			if ( $details == '' ) {
 				$details = ( $template != '' )?jd_draw_template( $array, $template ):' ';
 			}
