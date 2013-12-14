@@ -358,23 +358,32 @@ function mc_default_settings( ) {
 global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $default_user_settings,$grid_template,$rss_template, $list_template,$mini_template,$single_template,$mc_version, $defaults;
 // no arguments
 	add_option( 'mc_location_access', array(
-		'1'=> __('Stair Free Access','my-calendar'),
-		'2'=> __('Automatic Doors','my-calendar'),
-		'3'=> __('Wheelchair Access','my-calendar'),
-		'4'=> __('Ramped Access','my-calendar'),
-		'5'=> __('Accessible Emergency Exit','my-calendar'),
-		'6'=> __('Braille Signage','my-calendar'),
-		'7'=> __('Accessible Restrooms','my-calendar'),
-		'8'=> __('ADA Compliant','my-calendar')
+		'1'=> __('Accessible Entrance','my-calendar'),
+		'2'=> __('Accessible Parking Designated','my-calendar'),
+		'3'=> __('Accessible Restrooms','my-calendar'),
+		'4'=> __('Accessible Seating','my-calendar'),
+		'5'=> __('Accessible Transportation Available','my-calendar'),
+		'6'=> __('Wheelchair Accessible','my-calendar'),
+		'7'=> __('Courtesy Wheelchairs','my-calendar'),
+		'8'=> __('Bariatric Seating Available','my-calendar'),
+		'9'=> __('Elevator to all public areas','my-calendar'),
+		'10'=> __('Braille Signage','my-calendar'),
+		'11'=> __('Fragrance-Free Policy','my-calendar'),
+		'12'=> __('Other','my-calendar')
 	) );
 	add_option( 'mc_event_access', array(
-		'1'=> __('ASL Interpretation','my-calendar'),
-		'2'=> __('ASL Interpretation with voicing', 'my-calendar'),
-		'3'=> __('Deaf-Blind ASL','my-calendar'),					
-		'4'=> __('Audio Description','my-calendar'),
+		'1'=> __('Audio Description','my-calendar'),
+		'2'=> __('ASL Interpretation', 'my-calendar'),
+		'3'=> __('ASL Interpretation with voicing','my-calendar'),					
+		'4'=> __('Deaf-Blind ASL','my-calendar'),
 		'5'=> __('Real-time Captioning','my-calendar'),
-		'6'=> __('Assisted Listening Devices Available','my-calendar'),
-		'7'=> __("Services provided for visitors with Alzheimer's and other dementias",'my-calendar')
+		'6'=> __('Scripted Captioning', 'my-calendar' ),
+		'7'=> __('Assisted Listening Devices','my-calendar'),
+		'8'=> __('Tactile/Touch Tour','my-calendar'),
+		'9'=> __('Braille Playbill','my-calendar'),
+		'10'=> __('Large Print Playbill','my-calendar'),
+		'11'=> __( 'Sensory Friendly','my-calendar'),
+		'12'=> __( 'Other','my-calendar' )
 	) );	
 	add_option('mc_display_author','false');
 	add_option('mc_display_jump','false');
