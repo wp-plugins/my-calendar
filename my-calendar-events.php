@@ -127,10 +127,11 @@ function mc_get_event( $id,$type='object' ) {
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
     $event = $mcdb->get_row("SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end FROM " .  MY_CALENDAR_EVENTS_TABLE . " JOIN " . MY_CALENDAR_TABLE . " ON (event_id=occur_event_id) JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) WHERE occur_id=$id");
 	$date = date( 'Y-m-d',strtotime( $event->occur_begin ) );
+	$time = date( 'H:i:s',strtotime( $event->occur_begin ) );
 	if ( $type == 'object' ) {
 	return $event;
 	} else {
-		$value = "	<div id='mc_event'>".my_calendar_draw_event( $event,'single',"$date",'single' )."</div>\n";
+		$value = "	<div id='mc_event'>".my_calendar_draw_event( $event,'single',$date,$time,'single' )."</div>\n";
 		return $value;
 	}
 }

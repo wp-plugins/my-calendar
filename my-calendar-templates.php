@@ -196,10 +196,10 @@ function event_as_array($event,$type='html') {
 	$details['recurs'] = $event_recur;
 	$details['repeats'] = $event->event_repeats;
 	$real_end_date = $event->occur_end;
-	$date = date_i18n( $date_format,strtotime( $event->occur_begin ) );
-	$date_utc = date_i18n( $date_format, $event->ts_occur_begin );
-	$date_end = date_i18n( $date_format,strtotime($real_end_date) );
-	$date_end_utc = date_i18n( $date_format, $event->ts_occur_end );
+	$date = date_i18n( apply_filters( 'mc_date_format', $date_format, 'template_begin' ) ,strtotime( $event->occur_begin ) );
+	$date_utc = date_i18n( apply_filters( 'mc_date_format', $date_format, 'template_begin_ts' ) , $event->ts_occur_begin );
+	$date_end = date_i18n( apply_filters( 'mc_date_format', $date_format, 'template_end' ) ,strtotime($real_end_date) );
+	$date_end_utc = date_i18n( apply_filters( 'mc_date_format', $date_format, 'template_end_ts' ) , $event->ts_occur_end );
 	$details['date_utc'] = $date_utc;
 	$details['date_end_utc'] = $date_end_utc;
 	$details['image_url'] = ( $event->event_image != '' )?$event->event_image:'';
@@ -419,8 +419,8 @@ function mc_format_date_span( $dates, $display='simple',$default='' ) {
 	if ( $display == 'simple' ) {
 		$begin = $dates[0]->occur_begin;
 		$end = $dates[$last]->occur_end;
-		$begin = date_i18n( get_option('mc_date_format'),strtotime( $begin ));
-		$end = date_i18n( get_option('mc_date_format'),strtotime( $end ));
+		$begin = date_i18n( apply_filters( 'mc_date_format', get_option('mc_date_format'), 'date_span_begin' ),strtotime( $begin ));
+		$end = date_i18n( apply_filters( 'mc_date_format', get_option('mc_date_format'), 'date_span_end' ),strtotime( $end ));
 		$return = $begin . ' <span>&ndash;</span> ' . $end;	
 	} else {
 		$return = "<ul class='multidate'>";

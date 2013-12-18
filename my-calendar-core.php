@@ -565,7 +565,7 @@ function check_my_calendar() {
 		if ( version_compare( $current_version, "2.2.0", "<" ) ) { $upgrade_path[] = "2.2.0"; }	
 		if ( version_compare( $current_version, "2.2.6", "<" ) ) { $upgrade_path[] = "2.2.6"; }	
 		if ( version_compare( $current_version, "2.2.10", "<" ) ) { $upgrade_path[] = "2.2.10"; }
-		if ( version_compare( $current_version, "2.3.1", "<" ) ) { $upgrade_path[] = "2.3.0"; }		
+		if ( version_compare( $current_version, "2.2.14", "<" ) ) { $upgrade_path[] = "2.3.0"; }		
 	}
 	// having determined upgrade path, assign new version number
 	update_option( 'mc_version' , $mc_version );

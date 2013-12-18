@@ -246,6 +246,7 @@ function my_calendar_upcoming_events( $before='default',$after='default',$type='
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$output = '';
 	$date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
+	$date_format = apply_filters( 'mc_date_format', $date_format, 'upcoming_events' );
 	// This function cannot be called unless calendar is up to date
 	check_my_calendar();
 	$offset = (60*60*get_option('gmt_offset'));	
@@ -304,7 +305,11 @@ function my_calendar_upcoming_events( $before='default',$after='default',$type='
 				if ( is_array($value) ) {
 					foreach ( $value as $k => $v ) {
 						$event = event_as_array( $v );
-						$temp_array[] = $event;
+						if ( $v->category_private == 1 && !is_user_logged_in() ) {
+							// this event is private.
+						} else {
+							$temp_array[] = $event;
+						}
 					}
 				}
 			}
@@ -571,7 +576,7 @@ function my_calendar_todays_events($category='default',$template='default',$subs
 			} else {
 			if ( !in_array( $event->event_group_id, $groups ) )	{	
 				$event_details = event_as_array($event);
-				$date = date_i18n(get_option('mc_date_format'), current_time( 'timestamp' ) );
+				$date = date_i18n( apply_filters( 'mc_date_format', get_option('mc_date_format'), 'todays_events' ) , current_time( 'timestamp' ) );
 
 				$this_event = '';
 				if ( $event->event_holiday == 0 ) {
