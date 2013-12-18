@@ -83,7 +83,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 	check_my_calendar();
 	if ( $event->category_private == 1 && !is_user_logged_in() ) { return; }
 	$header_details = $body_details = $address = $output = '';
-	$date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');
+	$date_format = ( get_option('mc_date_format') != '' ) ? get_option('mc_date_format') : get_option('date_format');
 	$data = event_as_array($event);	
 	$details = apply_filters( 'mc_custom_template', false, $data, $event, $type, $process_date, $time, $template );
 	$templates = get_option('mc_templates');	
@@ -159,7 +159,7 @@ function my_calendar_draw_event($event, $type="calendar", $process_date, $time, 
 	} else {
 		$wrap = $balance = '';
 	}	
-	$current_date = date_i18n($date_format,strtotime($process_date));
+	$current_date = date_i18n( apply_filters( 'mc_date_format', $date_format, 'details' ), strtotime($process_date) );
 	if ( $event->event_span == 1 ) { $group_class = ' multidate group'.$event->event_group_id; } else { $group_class = ''; }
 	$header_details .= ( $type != 'single' && $type != 'list' )?"<h3 class='event-title summary$group_class'>$wrap$image".$mytitle."$balance</h3>\n":'';
 	$title = ($type == 'single' )?"<h2 class='event-title summary'>$image $mytitle</h2>\n":'';
@@ -967,7 +967,7 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 			}
 			$heading_level = apply_filters('mc_heading_level','h3',$format,$time,$template );
 			$my_calendar_body .= "
-				<$heading_level class='mc-single'>".date_i18n( $date_format,strtotime("$c_year-$c_month-$c_day"))."</$heading_level>".'
+				<$heading_level class='mc-single'>".date_i18n( apply_filters( 'mc_date_format', $date_format, 'grid' ),strtotime("$c_year-$c_month-$c_day"))."</$heading_level>".'
 				<div id="mc-day" class="'.$dayclass.' '.$dateclass.' '.$events_class.'">'."$mc_events\n</div>
 			</div>";
 		apply_filters("debug", "my_calendar( $name ) post single-day parsing");			
@@ -1094,7 +1094,7 @@ function my_calendar( $name, $format, $category, $showkey, $shownav, $showjump, 
 											if ( $event_output != '' ) {
 												$my_calendar_body .= "
 												<li id='$format-$date' class='mc-events $dayclass $dateclass $events_class $odd'>
-													<strong class=\"event-date\">$is_anchor".date_i18n( $date_format, $start )."$is_close_anchor"."$title</strong>".
+													<strong class=\"event-date\">$is_anchor".date_i18n( apply_filters( 'mc_date_format', $date_format, 'list' ), $start )."$is_close_anchor"."$title</strong>".
 													$event_output."
 												</li>";
 												$odd = ( $odd == 'odd' )?'even':'odd';
