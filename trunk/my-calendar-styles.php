@@ -71,8 +71,7 @@ function edit_my_calendar_styles() {
 	$dir = plugin_dir_path( __FILE__ );
 	$mcdb = $wpdb;
 	$wrote_styles = '';
-	// We can't use this page unless My Calendar is installed/upgraded
-	check_my_calendar();
+
 	if ( isset( $_POST['mc_edit_style'] ) ) {
 		$nonce=$_REQUEST['_wpnonce'];
 		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");

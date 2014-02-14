@@ -19,16 +19,16 @@ if ( !is_user_logged_in() || !current_user_can('edit_posts') )
 <?php
 // WordPress styles
 wp_admin_css( 'css/global' );
-wp_admin_css();
 wp_admin_css( 'css/colors' );
 wp_admin_css( 'css/ie' );
 $hook_suffix = '';
-if ( isset($page_hook) )
+if ( isset($page_hook) ) {
 	$hook_suffix = "$page_hook";
-else if ( isset($plugin_page) )
+} else if ( isset($plugin_page) ) {
 	$hook_suffix = "$plugin_page";
-else if ( isset($pagenow) )
+} else if ( isset($pagenow) ) {
 	$hook_suffix = "$pagenow";
+}
 do_action("admin_print_styles-$hook_suffix");
 do_action('admin_print_styles');
 do_action("admin_print_scripts-$hook_suffix");
@@ -43,7 +43,7 @@ do_action('admin_head');
 	<div class="wrap">
 		<h2><?php _e("My Calendar Shortcode Generator",'my-calendar'); ?></h2> 
 		<p>
-			<?php _e("Navigational fields above and below the calendar: Feed links and print view will only display if they are enabled on your settings page. All other fields will appear if specified; the defaults specified in your settings will be used if the attribute is left blank. Use <code>none</code> to hide all navigation elements.",'my-calendar'); ?>
+			<?php _e("For navigational fields above and below the calendar: the defaults specified in your settings will be used if the attribute is left blank. Use <code>none</code> to hide all navigation elements.",'my-calendar'); ?>
 		</p>
 		<form action="#" mode="POST">
 		<fieldset> 
@@ -120,7 +120,6 @@ do_action('admin_head');
 		<p><?php _e('<strong>Note:</strong> If you provide a location filter value, it must be an exact match for that information as saved with your events. (e.g. "Saint Paul" is not equivalent to "saint paul" or "St. Paul")','my-calendar'); ?></p>
 	</form>
 	</div>
-	<?php jd_show_support_box(); ?>
 	<script type="text/javascript" charset="utf-8">
 		// <![CDATA[
 		jQuery(document).ready(function(){

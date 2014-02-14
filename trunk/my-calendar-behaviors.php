@@ -1,17 +1,14 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-// Display the admin configuration page
+// Edit or configure scripts used with My Calendar
 function edit_my_calendar_behaviors() {
   global $wpdb, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs;
 	$mcdb = $wpdb;
   
-  // We can't use this page unless My Calendar is installed/upgraded
-  check_my_calendar();
-
   if ( isset($_POST['mc_caljs'] ) ) {
     $nonce=$_REQUEST['_wpnonce'];
-    if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
+    if (! wp_verify_nonce( $nonce,'my-calendar-nonce' ) ) die( "Security check failed" );
 	$mc_caljs = $_POST['mc_caljs'];
 	$mc_listjs = $_POST['mc_listjs'];
 	$mc_minijs = $_POST['mc_minijs'];

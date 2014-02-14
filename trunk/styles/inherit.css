@@ -29,7 +29,7 @@ padding: 0;
 .mc-main .my-calendar-date-switcher .button {
 font-size: .9em;
 }
-.mc-main table {
+.mc-main table,.mc-main.calendar {
 width:100%;
 line-height:1.2;
 border-collapse:collapse;

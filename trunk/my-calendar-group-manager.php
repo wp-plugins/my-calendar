@@ -21,9 +21,6 @@ if ( isset( $_GET['mode'] ) ) {
 	}
 }
 
-// Lets see if this is first run and create us a table if it is!
-check_my_calendar();
-
 if ( isset( $_POST['event_action'] ) ) {
 	global $mc_output;
 	$nonce=$_REQUEST['_wpnonce'];
@@ -144,7 +141,7 @@ global $wpdb,$event_author;
 			$update = $output[2];
 			$update = apply_filters( 'mc_update_group_data', $update, $event_author, $action, $event_id );
 			$formats = array( 
-						'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
+						'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
 						'%d','%d','%d','%d','%d',
 						'%f','%f'
 						);
@@ -157,6 +154,7 @@ global $wpdb,$event_author;
 					'%d' );
 			//$mcdb->print_error();
 			$url = ( get_option('mc_uri') != '' && !is_numeric( get_option('mc_uri') ) )?' '.sprintf(__('View <a href="%s">your calendar</a>.','my-calendar'),get_option('mc_uri') ):'';
+				do_action( 'mc_save_event', 'edit', $update, $event_id, $result ); // same as action on basic save
 				do_action( 'mc_save_grouped_events', $result, $event_id, $update );
 				if ( $result === false ) {
 					$message = "<div class='error'><p><strong>#$event_id; ".__('Error','my-calendar').":</strong>".__('Your event was not updated.','my-calendar')."$url</p></div>";
@@ -300,6 +298,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 <input type="hidden" name="event_action" value="<?php echo $mode; ?>" />
 <input type="hidden" name="event_id" value="<?php echo $event_id; ?>" />
 <input type="hidden" name="event_author" value="<?php echo $user_ID; ?>" />
+<input type="hidden" name="event_post" value="<?php echo $data->event_post; ?>" />
 <input type="hidden" name="event_nonce_name" value="<?php echo wp_create_nonce('event_nonce'); ?>" />
 </div>
 <div class="ui-sortable meta-box-sortables">
@@ -314,8 +313,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			<?php 
 			$apply = mc_group_form( $group_id, 'apply' ); 
 			echo $apply; 
-			?>		
-		<?php if ( $data->event_repeats == 0 && ( $data->event_recur == 'S1' || $data->event_recur == 'S' ) ) { ?>
+		if ( $data->event_repeats == 0 && ( $data->event_recur == 'S1' || $data->event_recur == 'S' ) ) { ?>
 		<p>
 		<input type="checkbox" value="1" id="event_span" name="event_span"<?php if ( !empty($data) && $data->event_span == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_span == '0' ) { echo ""; } else if ( get_option( 'mc_event_span' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_span"><?php _e('Selected dates are a single multi-day event.','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_span' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label>
 		</p>
@@ -332,27 +330,25 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 		<p>
 		<label for="event_short"><?php _e('Event Short Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_short' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label><br /><textarea id="event_short" name="event_short" class="input" rows="2" cols="80"><?php if ( !empty($data) ) echo stripslashes(esc_attr($data->event_short)); ?></textarea>
 		</p>
-		<?php } ?>
-		<?php 
-		// If the editor is enabled, shouldn't display the image uploader. 
-		// It restricts use of the image uploader to a single image and forces it to be in 
-		// the event image field, rather than the event description.
-		if ( !isset($mc_input['event_image']) ) { $mc_input['event_image'] = 'off'; }	
-		if ( ( $mc_input['event_image'] == 'on' && $mc_input['event_use_editor'] != 'on' ) || ( $mc_input_administrator && $mc_input['event_use_editor'] != 'on' ) ) { ?>
-		<p>
-		<?php if ( !empty($data->event_image) ) { ?>
-		<div class="event_image"><img src="<?php if ( !empty($data) ) echo esc_attr($data->event_image); ?>" alt="" /></div>
-		<?php } ?>
-		<label for="event_image"><?php _e("Add an image:",'my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_image' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" name="event_image" id="event_image" size="60" value="<?php if ( !empty($data) ) echo esc_attr($data->event_image); ?>" placeholder="http://yourdomain.com/image.jpg" /> <input id="upload_image_button" type="button" class="button" value="<?php _e('Upload Image','my-calendar'); ?>" /><br /><?php _e('Include your image URL or upload an image.','my-calendar'); ?>
-		</p>
+		<?php } 
+		if ( mc_show_edit_block( 'event_image') ) { ?>
+		<div class='mc-image-upload field-holder'>
+			<?php if ( !empty($data->event_image) ) { ?>
+			<div class="event_image"><img src="<?php if ( $has_data ) echo esc_attr($data->event_image); ?>" alt="" /></div>
+			<?php } else { ?>
+			<div class="event_image"></div>
+			<?php } ?>
+			<input type="hidden" name="event_image_id" value="" class="textfield" id="event_image_id" />
+			<label for="event_image"><?php _e("Add an image:",'my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_image' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" name="event_image" id="event_image" size="60" value="<?php if ( $has_data ) echo esc_attr($data->event_image); ?>" placeholder="http://yourdomain.com/image.jpg" /> <a href="#" class="button textfield-field"><?php _e("Upload",'my-calendar'); ?></a>
+		</div>
 		<?php } else { ?>
 		<div>
-		<input type="hidden" name="event_image" value="<?php if ( !empty($data) ) echo esc_attr($data->event_image); ?>" />
-		<?php if ( !empty($data->event_image) ) { ?>
-		<div class="event_image"><img src="<?php echo esc_attr($data->event_image); ?>" alt="" /></div>
-		<?php } ?>
+			<input type="hidden" name="event_image" value="<?php if ( $has_data ) echo esc_attr($data->event_image); ?>" />
+			<?php if ( !empty($data->event_image) ) { ?>
+			<div class="event_image"><img src="<?php echo esc_attr($data->event_image); ?>" alt="" /></div>
+			<?php } ?>
 		</div>
-		<?php } ?>			
+		<?php } ?>		
 	<p>
 	<label for="event_host"><?php _e('Event Host','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_host' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label>
 	<select id="event_host" name="event_host">
@@ -405,7 +401,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 
 			<fieldset>
 			<legend><?php _e('Event Registration Status','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_open' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></legend>
-			<?php do_action( 'mc_event_registration', $has_data, $data ); ?>						
+			<?php echo apply_filters( 'mc_event_registration', $has_data, $data ); ?>						
 			</fieldset>
 </div>
 </div>	
@@ -455,9 +451,6 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			<?php } ?>
 			<?php if ($mc_input['event_location'] == 'on' || $mc_input_administrator ) { ?>			
 			<p>
-			<?php _e('All location fields are optional: <em>insufficient information may result in an inaccurate map</em>.','my-calendar'); ?>
-			</p>
-			<p>
 			<label for="event_label"><?php _e('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_label' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label><br /><input type="text" id="event_label" name="event_label" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_label)); ?>" />
 			</p>
 			<p>
@@ -465,9 +458,6 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			</p>
 			<p>
 			<label for="event_street2"><?php _e('Street Address (2)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_street2' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_street2" name="event_street2" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_street2)); ?>" />
-			</p>
-			<p>
-			<label for="event_phone"><?php _e('Phone','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_phone' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_phone" name="event_phone" class="input" size="32" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_phone)); ?>" />
 			</p>			
 			<p>
 			<label for="event_city"><?php _e('City','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_city' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_city" name="event_city" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_city)); ?>" /> <label for="event_state"><?php _e('State/Province','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_state' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_state" name="event_state" class="input" size="10" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_state)); ?>" /> 
@@ -490,6 +480,9 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 				<option value="6"<?php if ( !empty( $data ) && ( $data->event_zoom == 6 ) ) { echo " selected=\"selected\""; } ?>><?php _e('Region','my-calendar'); ?></option>
 				</select>
 			</p>
+			<p>
+			<label for="event_phone"><?php _e('Phone','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_phone' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_phone" name="event_phone" class="input" size="32" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_phone)); ?>" />
+			</p>			
 			<p>
 			<label for="event_url"><?php _e('Location URL','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_url' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_url" name="event_url" class="input" size="40" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_url)); ?>" />
 			</p>
@@ -573,7 +566,6 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 	$event_registration = !empty( $post['event_registration'] ) ? trim( $post['event_registration'] ) : '';
 	$event_image = esc_url_raw( $post['event_image'] );
 	$event_span = !empty($post['event_span']) ? 1 : 0;
-	$events_access = !empty($post['events_access'])? $post['events_access'] : array();
 	
 	// set location
 		if ($location_preset != 'none') {
@@ -648,7 +640,6 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			'event_image'=>$event_image,
 			'event_phone'=>$event_phone,
 			'event_access'=>serialize($event_access),
-			'events_access'=>serialize($events_access),
 			'event_tickets'=>$event_tickets,
 			'event_registration'=>$event_registration,
 		// integers

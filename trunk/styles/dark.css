@@ -33,7 +33,7 @@ border: 1px solid #222;
 #upcoming-events .today {color: #eee; }
 #upcoming-events .future-event {color: #bbb;}
 .mc-main caption {margin: 2px 0;font-weight:700;padding:2px;}
-.mc-main table {width:100%;line-height:1.2;border-collapse:collapse;}
+.mc-main table,.mc-main.calendar {width:100%;line-height:1.2;border-collapse:collapse;}
 .mc-main td {
 vertical-align:top;
 text-align:left;
