@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager, event calendar
 Requires at least: 3.3.0
-Tested up to: 3.7.1
+Tested up to: 3.8.1
 License: GPLv2 or later
 Stable tag: 2.2.13
 
@@ -88,19 +88,51 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 = 2.3.0 =
 
+This is a major revision.
+
 * Bug fix: Manage events screen showed no data for users without manage_events permissions.
 * Bug fix: if single event set, could not filter to time period views.
 * Bug fix: 'single' template ID not passed into template filter.
 * Bug fix: events in private categories appeared in time-based upcoming events lists.
+* Bug fix: RSS feed encoding.
+* Bug fix: Turn-of-year issues with week view.
+* Bug fix: Added new locations multiple times if added with multiple occurrences of an event.
+* Bug fix: In some browsers, time selector added invalid data.
+* Bug fix: List of search results not wrapped in a list element.
+* Bug fix: Trim spaces on above/below navigation strings.
+* Bug fix: If an event ends at midnight, automatically end tomorrow unless set for a later date.
+* Bug fix: Don't show events on both days if they end at midnight.
+
+* New template tag: {runtime} to show human language version of length of event.
 * New feature: Accessibility features for locations.
 * New feature: Specify accessibility services for events.
 * New feature: ticketing link field
 * New feature: event registration information fields
-* New feature: my_calendar_event shortcode can now query templates by keyword (list,mini,single,grid).
+* New feature: my_calendar_event shortcode can query templates by keyword (list,mini,single,grid).
+* New feature: filter events by available accessibility services
+* New feature: Combined filter shortcode to group all filters into a single form. [mc_filters show='locations,categories,access']
+* New feature: new filter feature for adding custom fields to events.
+* New feature: data API to fetch event data in JSON or RSS formats. 
+* New feature: Archive events to hide from admin events list. 
+* New feature: Control input options for multiple types of location input data. 
+
 * New filter: mc_date_format for customizing date formats.
+* New filter: customize search results page: mc_search_page
+* New filter: mc_use_permalinks to enable use of custom post type permalinks for single event pages.
+* New filter: mc_post_template to customize template used in single event shortcode automatically inserted into custom post type pages.
+
+* Updated: added more fields to search on events.
+* Updated: updated image uploader to use add media panel and store attachment ID
+* Updated: title template supports all template tags (but strips HTML.).
+* Updated: Various aspects of UI
+
+* Replaced: Time selector with autocomplete option. 
+* Reorganized default output template code.
+* Removed User settings fields.
 * Improved get current URL function.
 * iCal output in multiple-month view outputs all displayed months.
-* {map} template tag to display a Google Maps using the Google Maps API. (Not available in pop-up displays.)
+* {map} template tag to display a Google Map using the Google Maps API. (Not available in pop-up displays.)
+* Planned removal of showkey, shownav, toggle, and showjump shortcode attributes.
 
 = 2.2.13 =
 
@@ -1156,5 +1188,6 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 == Upgrade Notice ==
 
-= 2.2.12 =
-Believe me, it's frustrating to me, too. Bug fix to jQuery time output.
+= 2.2.13 =
+
+Minor bug fix.

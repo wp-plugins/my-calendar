@@ -31,7 +31,7 @@ global $mc_version, $wpdb;
 $mc_version = '2.2.14';
 
 // Define the tables used in My Calendar
-if ( function_exists('is_multisite') && is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
+if ( is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
 	define('MY_CALENDAR_TABLE', $wpdb->base_prefix . 'my_calendar');
 	define('MY_CALENDAR_EVENTS_TABLE', $wpdb->base_prefix . 'my_calendar_events');	
 	define('MY_CALENDAR_CATEGORIES_TABLE', $wpdb->base_prefix . 'my_calendar_categories');
@@ -43,12 +43,23 @@ if ( function_exists('is_multisite') && is_multisite() && get_site_option('mc_mu
 	define('MY_CALENDAR_LOCATIONS_TABLE', $wpdb->prefix . 'my_calendar_locations');
 }
 
-if ( function_exists('is_multisite') && is_multisite() ) {
+if ( is_multisite() ) {
 	// Define the tables used in My Calendar
 	define('MY_CALENDAR_GLOBAL_TABLE', $wpdb->base_prefix . 'my_calendar');
 	define('MY_CALENDAR_GLOBAL_EVENT_TABLE', $wpdb->base_prefix . 'my_calendar_events');
 	define('MY_CALENDAR_GLOBAL_CATEGORIES_TABLE', $wpdb->base_prefix . 'my_calendar_categories');
 	define('MY_CALENDAR_GLOBAL_LOCATIONS_TABLE', $wpdb->base_prefix . 'my_calendar_locations');
+}
+
+register_activation_hook( __FILE__, 'mc_plugin_activated' );
+register_deactivation_hook( __FILE__, 'mc_plugin_deactivated' );
+function mc_plugin_activated() {
+	flush_rewrite_rules();
+	mc_upgrade_db();
+	check_my_calendar();	
+}
+function mc_plugin_deactivated() {
+	flush_rewrite_rules();
 }
 
 include(dirname(__FILE__).'/my-calendar-core.php' );
@@ -63,10 +74,8 @@ include(dirname(__FILE__).'/my-calendar-behaviors.php' );
 include(dirname(__FILE__).'/my-calendar-widgets.php' );
 include(dirname(__FILE__).'/date-utilities.php' );
 include(dirname(__FILE__).'/my-calendar-upgrade-db.php' );
-include(dirname(__FILE__).'/my-calendar-user.php' );
 include(dirname(__FILE__).'/my-calendar-output.php' );
 include(dirname(__FILE__).'/my-calendar-templates.php' );
-include(dirname(__FILE__).'/my-calendar-rss.php' );
 include(dirname(__FILE__).'/my-calendar-ical.php' );
 include(dirname(__FILE__).'/my-calendar-events.php' );
 include(dirname(__FILE__).'/my-calendar-limits.php' );
@@ -74,9 +83,8 @@ include(dirname(__FILE__).'/my-calendar-shortcodes.php' );
 include(dirname(__FILE__).'/my-calendar-templating.php' );
 include(dirname(__FILE__).'/my-calendar-group-manager.php' );
 include(dirname(__FILE__).'/my-calendar-export.php' );
- 
-// Install on activation
-register_activation_hook( __FILE__, 'check_my_calendar' );
+include(dirname(__FILE__).'/my-calendar-api.php' );
+
 
 // Enable internationalisation
 load_plugin_textdomain( 'my-calendar',false, dirname( plugin_basename( __FILE__ ) ) . '/lang' ); 
@@ -95,17 +103,14 @@ add_action( 'widgets_init', create_function('', 'return register_widget("my_cale
 add_action( 'widgets_init', create_function('', 'return register_widget("my_calendar_upcoming_widget");') );
 add_action( 'widgets_init', create_function('', 'return register_widget("my_calendar_mini_widget");') );
 add_action( 'widgets_init', create_function('', 'return register_widget("my_calendar_simple_search");') );
-add_action( 'show_user_profile', 'mc_user_profile' );
-add_action( 'edit_user_profile', 'mc_user_profile' );
-add_action( 'profile_update', 'mc_user_save_profile');
 add_action( 'init', 'my_calendar_add_feed' );
 add_action( 'admin_menu', 'my_calendar_add_javascript' );
 add_action( 'wp_footer','mc_footer_js' );
 add_action( 'wp_head','my_calendar_fouc' );
-add_action( 'init', 'my_calendar_export_vcal', 200 );
+add_action( 'init', 'mc_export_vcal', 200 );
 // Add filters 
 add_filter( 'widget_text', 'do_shortcode', 9 );
-add_filter('plugin_action_links', 'jd_calendar_plugin_action', -10, 2);
+add_filter( 'plugin_action_links', 'mc_plugin_action', -10, 2 );
 add_filter( 'wp_title','mc_event_filter',10,3 );
 
 function mc_event_filter( $title, $sep, $seplocation ) {
@@ -312,7 +317,6 @@ function jd_show_support_box( $show='', $add=false, $remove=false ) {
 function my_calendar_menu() {
 	global $wpdb;
 	$mcdb = $wpdb;  
-	check_my_calendar();
 	$icon_path = plugins_url('/my-calendar/images');
 	if ( function_exists('add_object_page') ) {
 		if ( get_option( 'mc_remote' ) != 'true' ) {
@@ -338,9 +342,9 @@ function my_calendar_menu() {
 				add_action( "load-$edit", 'mc_event_editing' );	
 			$manage = add_submenu_page('my-calendar', __('Manage Events','my-calendar'), __('Manage Events','my-calendar'), 'mc_add_events', 'my-calendar-manage', 'manage_my_calendar');		
 				add_action( "load-$manage", 'mc_add_screen_option' );
-			add_submenu_page('my-calendar', __('Manage Categories','my-calendar'), __('Manage Categories','my-calendar'), 'mc_edit_cats', 'my-calendar-categories', 'my_calendar_manage_categories');
-			add_submenu_page('my-calendar', __('Manage Locations','my-calendar'), __('Manage Locations','my-calendar'), 'mc_edit_locations', 'my-calendar-locations', 'my_calendar_manage_locations');		
-			add_submenu_page('my-calendar', __('Manage Event Groups','my-calendar'), __('Manage Event Groups','my-calendar'), 'mc_manage_events', 'my-calendar-groups', 'edit_my_calendar_groups');		
+			add_submenu_page('my-calendar', __('Event Categories','my-calendar'), __('Manage Categories','my-calendar'), 'mc_edit_cats', 'my-calendar-categories', 'my_calendar_manage_categories');
+			add_submenu_page('my-calendar', __('Event Locations','my-calendar'), __('Manage Locations','my-calendar'), 'mc_edit_locations', 'my-calendar-locations', 'my_calendar_manage_locations');		
+			add_submenu_page('my-calendar', __('Event Groups','my-calendar'), __('Manage Event Groups','my-calendar'), 'mc_manage_events', 'my-calendar-groups', 'edit_my_calendar_groups');		
 		}
 		add_submenu_page('my-calendar', __('Style Editor','my-calendar'), __('Style Editor','my-calendar'), 'mc_edit_styles', 'my-calendar-styles', 'edit_my_calendar_styles');
 		add_submenu_page('my-calendar', __('Script Editor','my-calendar'), __('Script Editor','my-calendar'), 'mc_edit_behaviors', 'my-calendar-behaviors', 'edit_my_calendar_behaviors');	
@@ -380,7 +384,7 @@ function mc_show_event_editing( $status, $args ) {
 		foreach ($input_options as $key=>$value) {
 			$checked = ($value == 'on')?"checked='checked'":'';
 			$allowed = ( $settings_options[$key] == 'on' )?true:false;
-			if ( !( current_user_can('manage_options') && get_option( 'mc_input_options_administrators' ) == 'true' ) && !$allowed ) {
+			if ( !( current_user_can( 'manage_options' ) && get_option( 'mc_input_options_administrators' ) == 'true' ) && !$allowed ) {
 				// don't display options if this user can't use them.
 				$output .= "<input type='hidden' name='mc_show_on_page[$key]' value='off' />";
 			} else {
@@ -436,24 +440,14 @@ function mc_set_screen_option($status, $option, $value) {
 	return $value;
 }
 
-// return a result for admin_url in 2.9.2
-if ( !function_exists( 'admin_url' ) ) {
-	function admin_url() {
-		return site_url().'/wp-admin/';
-	}
-}
-if ( !function_exists( 'home_url' ) ) {
-	function home_url() {
-		return get_option('home');
-	}
-}
-
 // add shortcode interpreters
 add_shortcode('my_calendar','my_calendar_insert');
 add_shortcode('my_calendar_upcoming','my_calendar_insert_upcoming');
 add_shortcode('my_calendar_today','my_calendar_insert_today');
 add_shortcode('my_calendar_locations','my_calendar_locations');
 add_shortcode('my_calendar_categories','my_calendar_categories');
+add_shortcode('my_calendar_access','my_calendar_access');
+add_shortcode('mc_filters','my_calendar_filters');
 add_shortcode('my_calendar_show_locations','my_calendar_show_locations_list');
 add_shortcode('my_calendar_event','my_calendar_show_event');
 add_shortcode('my_calendar_search','my_calendar_search');

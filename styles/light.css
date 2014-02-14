@@ -51,7 +51,7 @@ margin: 2px 0;
 font-weight:700;
 padding:2px;
 }
-.mc-main table {
+.mc-main table,.mc-main.calendar {
 width:100%;
 line-height:1.2;
 border-collapse:collapse;

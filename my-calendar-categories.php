@@ -9,14 +9,12 @@ if (!function_exists('exif_imagetype') ) {
         if ( !is_dir( $filename ) && ( list($width, $height, $type, $attr) = getimagesize( $filename ) ) !== false ) {
             return $type;
         }
-    return false;
+		return false;
     }
 }
 
 function my_dirlist($directory) {
-    // create an array to hold directory list
     $results = array();
-    // create a handler for the directory
     $handler = opendir($directory);
     // keep going until all files in directory have been read
     while ($file = readdir($handler)) {
@@ -24,24 +22,20 @@ function my_dirlist($directory) {
         // add it to the results array
 		if ( filesize( $directory.'/'.$file ) > 11 ) {
 			if ( $file != '.' && $file != '..' && !is_dir($directory.'/'.$file) && (
-			exif_imagetype($directory.'/'.$file) == IMAGETYPE_GIF || 
-			exif_imagetype($directory.'/'.$file) == IMAGETYPE_PNG ||  
-			exif_imagetype($directory.'/'.$file) == IMAGETYPE_JPEG ) ) {
+				exif_imagetype($directory.'/'.$file) == IMAGETYPE_GIF || 
+				exif_imagetype($directory.'/'.$file) == IMAGETYPE_PNG ||  
+				exif_imagetype($directory.'/'.$file) == IMAGETYPE_JPEG ) ) {
 				$results[] = $file;
 			}
 		}
     }
-    // tidy up: close the handler
     closedir($handler);
-    // done!
 	sort($results,SORT_STRING);
     return $results;
 }
 
 function my_csslist($directory) {
-    // create an array to hold directory list
     $results = array();
-    // create a handler for the directory
     $handler = opendir($directory);
     // keep going until all files in directory have been read
     while ($file = readdir($handler)) {
@@ -51,9 +45,7 @@ function my_csslist($directory) {
             $results[] = $file;
 		}
     }
-    // tidy up: close the handler
     closedir($handler);
-    // done!
 	sort($results,SORT_STRING);
     return $results;
 }
@@ -68,17 +60,15 @@ function is_custom_icon() {
 		} else {
 			return true;
 		}
-	} else {
-		return false;
 	}
+	return false;
 }
 
 function my_calendar_manage_categories() {
 	global $wpdb;
 	$mcdb = $wpdb;  
 	$formats = array( '%s', '%s', '%s' );
-	// My Calendar must be installed and upgraded before this will work
-	check_my_calendar();
+
 ?>
 <div class="wrap jd-my-calendar">
 <?php 
@@ -90,11 +80,13 @@ function my_calendar_manage_categories() {
 	}
   
 	if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
+		$term = wp_insert_term( $_POST['category_name'], 'mc-event-category' );
 		$add = array(
 		'category_name'=>$_POST['category_name'],
 		'category_color'=>$_POST['category_color'],
 		'category_icon'=>$_POST['category_icon'],
-		'category_private'=>( (isset( $_POST['category_private'] ))?1:0 )
+		'category_private'=>( (isset( $_POST['category_private'] ))?1:0 ),
+		'category_term'=>$term['term_id']
 		);
 		// actions and filters
 		$add = apply_filters( 'mc_pre_add_category', $add, $_POST );
@@ -211,10 +203,15 @@ function mc_edit_category_form($view='edit',$catID='') {
 			</div>		
 		<?php } ?>
 			<fieldset>
-			<legend><?php if ($view == 'add') { _e('Add Category','my-calendar'); } else { _e('Edit Category','my-calendar'); } ?></legend>
-				<label for="cat_name"><?php _e('Category Name','my-calendar'); ?>:</label> <input type="text" id="cat_name" name="category_name" class="input" size="30" value="<?php if ( !empty($cur_cat) && is_object($cur_cat) ) echo stripslashes( esc_attr( $cur_cat->category_name ) ); ?>" /><br />
-				<label for="cat_color"><?php _e('Category Color','my-calendar'); ?>:</label> <input type="text" id="cat_color" name="category_color" class="mc-color-input" size="10" maxlength="7" value="<?php if ( !empty($cur_cat) &&  is_object($cur_cat) ) { echo (strpos($cur_cat->category_color,'#') !== 0)?'#':''; echo $cur_cat->category_color; } else { echo '#'; } ?>" /><br />
-				<label for="cat_icon"><?php _e('Category Icon','my-calendar'); ?>:</label> <select name="category_icon" id="cat_icon">
+				<legend><?php if ( $view == 'add' ) { _e( 'Add Category','my-calendar' ); } else { _e( 'Edit Category','my-calendar' ); } ?></legend><?php
+					if ( !empty( $cur_cat ) &&  is_object( $cur_cat ) ) { 
+						$color = ( strpos( $cur_cat->category_color,'#' ) !== 0 ) ? '#' : ''; 
+						$color .= $cur_cat->category_color; 
+					} else { 
+						$color = ''; 
+					} ?>
+				<label for="cat_name"><?php _e('Category Name','my-calendar'); ?>:</label> <input type="text" id="cat_name" name="category_name" class="input" size="30" value="<?php if ( !empty($cur_cat) && is_object( $cur_cat ) ) echo stripslashes( esc_attr( $cur_cat->category_name ) ); ?>" /> <label for="cat_color"><?php _e( 'Color','my-calendar' ); ?>:</label> <input type="text" id="cat_color" name="category_color" class="mc-color-input" size="10" maxlength="7" value="<?php echo $color; ?>" /><br />
+				<label for="cat_icon"><?php _e( 'Category Icon','my-calendar' ); ?>:</label> <select name="category_icon" id="cat_icon">
 		<?php
 		foreach ($iconlist as $value) {
 			$selected =  ( ( !empty($cur_cat) && is_object($cur_cat) ) && $cur_cat->category_icon == $value) ? " selected='selected'" : '';

@@ -62,7 +62,7 @@ $single_template = addslashes('<span class="event-time dtstart" title="{dtstart}
 <p><a href="{link}" class="event-link external">{title}</a></p></div>');
 
 $rss_template = addslashes("\n<item>
-    <title>{title}: {date}, {time}</title>
+    <title>{rss_title}: {date}, {time}</title>
     <link>{link}</link>
 	<pubDate>{rssdate}</pubDate>
 	<dc:creator>{author}</dc:creator>  	
@@ -152,16 +152,18 @@ $initial_minijs = '$(function() {
 });';
 
 $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{time}, {category}</span>";
-$charset_collate = '';
-if ( ! empty($mcdb->charset) ) {
+
+if ( ! empty( $mcdb->charset ) ) {
 	$charset_collate = "DEFAULT CHARACTER SET $mcdb->charset";
+} else {
+	$charset_collate = "DEFAULT CHARACTER SET utf8_general_ci";
 }
-if ( ! empty($mcdb->collate) ) {
+
+if ( ! empty( $mcdb->collate ) ) {
 	$charset_collate .= " COLLATE $mcdb->collate";
 }
 
-$event_holiday = (get_option('mc_skip_holidays') == 'true' )?1:0;
-$event_fifth_week = (get_option('mc_no_fifth_week') == 'true' )?1:0;
+$event_fifth_week = ( get_option('mc_no_fifth_week') == 'true' )?1:0;
 
 $initial_db = "CREATE TABLE " . my_calendar_table() . " ( 
  event_id INT(11) NOT NULL AUTO_INCREMENT,
@@ -182,7 +184,9 @@ $initial_db = "CREATE TABLE " . my_calendar_table() . " (
  event_host BIGINT(20) UNSIGNED, 
  event_category BIGINT(20) UNSIGNED NOT NULL DEFAULT '1',
  event_link TEXT,
+ event_post BIGINT(20) UNSIGNED NOT NULL DEFAULT '0',
  event_link_expires TINYINT(1) NOT NULL,
+ event_location BIGINT(20) UNSIGNED NOT NULL DEFAULT '0',
  event_label VARCHAR(60) NOT NULL,
  event_street VARCHAR(60) NOT NULL,
  event_street2 VARCHAR(60) NOT NULL,
@@ -196,6 +200,7 @@ $initial_db = "CREATE TABLE " . my_calendar_table() . " (
  event_latitude FLOAT(10,6) NOT NULL DEFAULT '0',
  event_zoom INT(2) NOT NULL DEFAULT '14',
  event_phone VARCHAR(32) NOT NULL,
+ event_phone2 VARCHAR(32) NOT NULL, 
  event_access TEXT,
  event_group INT(1) NOT NULL DEFAULT '0',
  event_group_id INT(11) NOT NULL DEFAULT '0',
@@ -203,10 +208,9 @@ $initial_db = "CREATE TABLE " . my_calendar_table() . " (
  event_approved INT(1) NOT NULL DEFAULT '1',
  event_flagged INT(1) NOT NULL DEFAULT '0',
  event_hide_end INT(1) NOT NULL DEFAULT '0',
- event_holiday INT(1) NOT NULL DEFAULT '$event_holiday',
+ event_holiday INT(1) NOT NULL DEFAULT '0',
  event_fifth_week INT(1) NOT NULL DEFAULT '$event_fifth_week',
  event_image TEXT,
- events_access TEXT,
  event_added TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
  PRIMARY KEY  (event_id),
  KEY event_recur (event_recur)
@@ -228,6 +232,7 @@ $initial_cat_db = "CREATE TABLE " . my_calendar_categories_table() . " (
  category_color VARCHAR(7) NOT NULL, 
  category_icon VARCHAR(128) NOT NULL,
  category_private INT(1) NOT NULL DEFAULT '0',
+ category_term INT(11) NOT NULL DEFAULT '0',
  PRIMARY KEY  (category_id) 
  ) $charset_collate;";
  
@@ -246,6 +251,7 @@ $initial_loc_db = "CREATE TABLE " . my_calendar_locations_table() . " (
  location_latitude FLOAT(10,6) NOT NULL DEFAULT '0',
  location_zoom INT(2) NOT NULL DEFAULT '14',
  location_phone VARCHAR(32) NOT NULL,
+ location_phone2 VARCHAR(32) NOT NULL,
  location_access TEXT,
  PRIMARY KEY  (location_id) 
  ) $charset_collate;";
@@ -296,7 +302,7 @@ $default_user_settings = array(
 			"14" => "(GMT +14:00) Line Islands"
 			),
 		),
-		'my_calendar_location_default'=>array(
+	'my_calendar_location_default'=>array(
 		'enabled'=>'off',
 		'label'=>__('My Calendar Default Location','my-calendar'),
 		'values'=>array(
@@ -426,7 +432,6 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option('mc_user_location_type','state');
 	add_option('mc_show_js','' );
 	add_option('mc_show_css','' );
-	add_option( 'mc_location_control','' );
 	add_option('mc_date_format',get_option('date_format') );
 	add_option('mc_templates', array(
 		'title'=>'{title}',
@@ -515,6 +520,96 @@ global $mc_version, $initial_db, $initial_occur_db, $initial_loc_db, $initial_ca
 	dbDelta($initial_cat_db);
 	dbDelta($initial_loc_db);
 	update_option('mc_db_version',$mc_version);	
+}
+
+function mc_check_location_table( $event, $locations ) {
+	$location = array( 
+			'location_label'=>$event['event_label'], 
+			'location_street'=>$event['event_street'],
+			'location_street2'=>$event['event_street2'], 
+			'location_city'=>$event['event_city'],
+			'location_state'=>$event['event_state'],
+			'location_postcode'=>$event['event_postcode'],
+			'location_region'=>$event['event_region'],
+			'location_url'=>$event['event_url'],
+			'location_country'=>$event['event_country'],
+			'location_longitude'=>$event['event_longitude'],
+			'location_latitude'=>$event['event_latitude'],
+			'location_zoom'=>$event['event_zoom'],
+			'location_phone'=>$event['event_phone'],
+			'location_access'=>$event['event_access']
+			);
+	sort( $location );
+	$hash = md5( serialize( $location ) );
+	$keys = array_keys( $locations );
+	if ( in_array( $hash, $keys ) ) {
+		return $locations[$hash];
+	} 
+	return false;
+}
+
+function mc_transition_db() {
+	// copy to post types. Don't do this if referencing remote sites.
+	if ( get_option( 'mc_remote' ) != 'true' ) {
+		global $wpdb;		
+		$results = $wpdb->get_results( 'SELECT * FROM '.my_calendar_locations_table(), ARRAY_A );
+		$locations = array();
+		foreach ( $results as $result ) {
+			$location_id = $result['location_id'];
+			unset( $result['location_id'] );
+			$hash = md5( serialize( $result ) );
+			$locations[$hash] = $location_id;
+		}
+		$results = $wpdb->get_results( 'SELECT * FROM '.my_calendar_categories_table() );
+		foreach ( $results as $category ) {
+			$term = wp_insert_term( $category->category_name, 'mc-event-category' );
+			if ( !is_wp_error( $term ) ) {
+				$term_id = $term['term_id'];
+				mc_update_category( 'category_term', $term_id, $category->category_id );
+			} else {
+				$term_id = $term->error_data['term_exists'];
+				mc_update_category( 'category_term', $term_id, $category->category_id );
+			}
+		}
+		$results = $wpdb->get_results( 'SELECT * FROM '.my_calendar_table(), ARRAY_A );
+		foreach ( $results as $event ) {
+			$post_id = mc_create_event_post( $event, $event['event_id'] );
+			mc_update_event( 'event_post', $post_id, $event['event_id'] );
+			// false if not found, id if found.
+			$location = mc_check_location_table( $event, $locations );
+			if ( $location ) {
+				mc_update_event( 'event_location', $location, $event['event_id'] );
+			} else {
+				if ( $event['event_label'] == '' && 
+					$event['event_street'] == '' && 
+					$event['event_url'] == '' &&
+					$event['event_city'] == '' &&
+					$event['event_state'] == '' &&
+					$event['event_country'] == '' ) {
+					// don't insert the row if location does not have basic data.
+				} else {
+					$add = array(
+						'location_label'=>$event['event_label'],
+						'location_street'=>$event['event_street'],
+						'location_street2'=>$event['event_street2'],
+						'location_city'=>$event['event_city'],
+						'location_state'=>$event['event_state'],
+						'location_postcode'=>$event['event_postcode'],
+						'location_region'=>$event['event_region'],
+						'location_country'=>$event['event_country'],
+						'location_url'=>$event['event_url'],
+						'location_longitude'=>$event['event_longitude'],
+						'location_latitude'=>$event['event_latitude'],
+						'location_zoom'=>$event['event_zoom'],
+						'location_phone'=>$event['event_phone'],
+						'location_access'=>'' // no events in this transition will have access data.
+					);	
+					mc_insert_location( $add );
+				}
+				// could add delete routine to allow user to select what location to use for events using a given location.
+			}
+		}
+	}
 }
 
 function my_calendar_copyr($source, $dest) {

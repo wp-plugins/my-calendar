@@ -105,6 +105,10 @@ function my_calendar_help() { ?>
 <p class="example"><code>[my_calendar_categories show="list"]</code></p>
 <p>
 	<?php _e('List of event categories, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>.','my-calendar'); ?>
+</p>
+<p class="example"><code>[my_calendar_access show="list"]</code></p>
+<p>
+	<?php _e('List of filterable accessibility services, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>.','my-calendar'); ?>
 </p>	
 </div>
 </div>
@@ -237,7 +241,19 @@ function my_calendar_help() { ?>
 		<dd><?php _e('Image associated with the event. (HTMl)','my-calendar'); ?></dd>
 
 		<dt><code>{image_url}</code></dt>
-		<dd><?php _e('Image associated with the event. (image URL only)','my-calendar'); ?></dd>		
+		<dd><?php _e('Image associated with the event. (image URL only)','my-calendar'); ?></dd>
+
+		<dt><code>{full}</code></dt>
+		<dd><?php _e('Event post thumbnail, full size, full HTML','my-calendar'); ?></dd>
+		<?php
+			$sizes = get_intermediate_image_sizes();
+			foreach ( $sizes as $size ) {
+				?>
+					<dt><code>{<?php echo $size; ?>}</code></dt>
+					<dd><?php printf( __('Event post thumbnail, %s size, full HTML','my-calendar'), $size ); ?></dd>
+				<?php
+			}
+		?>
 		
 		<dt><code>{link}</code></dt>
 		<dd><?php _e('Displays the URL provided for the event.','my-calendar'); ?></dd>

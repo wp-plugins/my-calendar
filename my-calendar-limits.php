@@ -196,11 +196,11 @@ global $wpdb;
 	}
 }
 
-function mc_limit_string($type='',$ltype='',$lvalue='') {
-global $user_ID;
-	 $user_settings = get_option('mc_user_settings');
-	 $limit_string = "";
-	 if ( ( get_option('mc_user_settings_enabled') == 'true' && isset( $user_settings['my_calendar_location_default']['enabled'] ) && $user_settings['my_calendar_location_default']['enabled'] == 'on' ) || isset($_GET['loc']) && isset($_GET['ltype']) || ( $ltype !='' && $lvalue != '' )  ) {
+function mc_limit_string( $type='', $ltype='', $lvalue='' ) {
+	global $user_ID;
+	$user_settings = get_option('mc_user_settings');
+	$limit_string = "";
+	if ( ( get_option('mc_user_settings_enabled') == 'true' && isset( $user_settings['my_calendar_location_default']['enabled'] ) && $user_settings['my_calendar_location_default']['enabled'] == 'on' ) || isset($_GET['loc']) && isset($_GET['ltype']) || ( $ltype !='' && $lvalue != '' )  ) {
 		if ( !isset($_GET['loc']) && !isset($_GET['ltype']) ) {
 			if (  $ltype == '' && $lvalue == '' ) {
 				if ( is_user_logged_in() ) {
@@ -217,33 +217,36 @@ global $user_ID;
 			$current_location = urldecode($_GET['loc']);
 			$location = urldecode($_GET['ltype']);
 		}
-				switch ($location) {
-					case "name":$location_type = "event_label";
-					break;
-					case "city":$location_type = "event_city";
-					break;
-					case "state":$location_type = "event_state";
-					break;
-					case "zip":$location_type = "event_postcode";
-					break;
-					case "country":$location_type = "event_country";
-					break;
-					case "region":$location_type = "event_region";
-					break;
-					default:$location_type = $location;
-					break;
-				}			
+		switch ($location) {
+			case "name":$location_type = "event_label";	break;
+			case "city":$location_type = "event_city"; break;
+			case "state":$location_type = "event_state"; break;
+			case "zip":$location_type = "event_postcode"; break;
+			case "country":$location_type = "event_country"; break;
+			case "region":$location_type = "event_region"; break;
+			default:$location_type = $location;
+		}			
 		if ($current_location != 'all' && $current_location != '') {
 				$limit_string = "$location_type='$current_location' AND";
 				//$limit_string .= ($type=='all')?' AND':"";
 		}
-	 }
-	 if ( $limit_string != '' ) {
+	}
+	if ( $limit_string != '' ) {
 		if ( isset($_GET['loc2']) && isset($_GET['ltype2']) ) {
 			$limit_string .= mc_secondary_limit( $_GET['ltype2'],$_GET['loc2'] );
 		}
-	 }
-	 return $limit_string;
+	}
+	if ( isset( $_GET['access'] ) ) {
+		$limit_string .= mc_access_limit( $_GET['access'] );
+	}
+	return $limit_string;
+}
+
+function mc_access_limit( $access ) {
+	$options = get_option( 'mc_event_access' );
+	$format = ( isset( $options[$access] ) )? esc_sql( $options[$access] ) : false ;
+	$limit_string = ( $format ) ? " event_access LIKE '%$format%' AND" : '';
+	return $limit_string;
 }
 
 // set up a secondary limit on location
@@ -252,20 +255,13 @@ function mc_secondary_limit($ltype='',$lvalue='') {
 	$current_location = urldecode( $lvalue );
 	$location = urldecode( $ltype );
 	switch ($location) {
-		case "name":$location_type = "event_label";
-		break;
-		case "city":$location_type = "event_city";
-		break;
-		case "state":$location_type = "event_state";
-		break;
-		case "zip":$location_type = "event_postcode";
-		break;
-		case "country":$location_type = "event_country";
-		break;
-		case "region":$location_type = "event_region";
-		break;
+		case "name":$location_type = "event_label";	break;
+		case "city":$location_type = "event_city";	break;
+		case "state":$location_type = "event_state";break;
+		case "zip":$location_type = "event_postcode";break;
+		case "country":$location_type = "event_country";break;
+		case "region":$location_type = "event_region";break;
 		default:$location_type = "event_label";
-		break;
 	}	
 	if ($current_location != 'all' && $current_location != '') {
 			$limit_string = " $location_type='$current_location' AND ";

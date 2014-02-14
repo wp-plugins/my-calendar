@@ -102,10 +102,16 @@ function mc_get_rss_events( $cat_id=false) {
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	if ( $cat_id ) { $cat = "WHERE event_category = $cat_id AND event_approved = 1"; } else { $cat = 'WHERE event_approved = 1'; }
-	$events = $mcdb->get_results("SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end FROM " .  MY_CALENDAR_EVENTS_TABLE . " JOIN " . MY_CALENDAR_TABLE . " ON (event_id=occur_event_id) JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $cat ORDER BY event_added DESC LIMIT 0,30" );
-	foreach ( array_keys($events) as $key ) {
-		$event =& $events[$key];	
-		$output[] = $event;
+	$events = $mcdb->get_results( "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end FROM " .  MY_CALENDAR_EVENTS_TABLE . " JOIN " . MY_CALENDAR_TABLE . " ON (event_id=occur_event_id) JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " ON (event_category=category_id) $cat ORDER BY event_added DESC LIMIT 0,30" );
+	$groups = array();
+	foreach ( array_keys( $events ) as $key ) {
+		$event =& $events[$key];
+		if ( !in_array( $event->occur_group_id, $groups ) ) {	
+			$output[$event->event_begin][] = $event;
+		}
+		if ( $event->event_span == 1 ) {
+			$groups[] = $event->occur_group_id;
+		}		
 	}
 	return $output;
 }
@@ -136,8 +142,76 @@ function mc_get_event( $id,$type='object' ) {
 	}
 }
 
+
+function mc_get_data( $field, $id ) {
+	global $wpdb;
+	$mcdb = $wpdb;
+    if ( get_option( 'mc_remote') == 'true'&& function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+	$field = esc_sql( $field );
+	$sql = $wpdb->prepare( "SELECT $field FROM ".my_calendar_table()." WHERE event_id = %d", $id );
+	$result = $mcdb->get_var($sql);
+	return $result;
+}
+
+function mc_related_events( $id, $return=false ) {
+	global $wpdb;
+	$id = (int) $id;
+	if ( $id === 0 && $return === false ) { echo "<li>".__('No related events','my-calendar')."</li>"; return; }
+	if ( $id === 0 && $return ) { return array(); }
+	$output = '';
+	$sql = "SELECT * FROM ".my_calendar_event_table()." WHERE occur_group_id=$id";
+	$results = $wpdb->get_results($sql);
+	if ( $return ) return $results;
+	if ( is_array($results) && !empty($results) ) {
+		foreach ( $results as $result ) {
+			$event = $result->occur_event_id;
+			$current = "<a href='".admin_url('admin.php?page=my-calendar')."&amp;mode=edit&amp;event_id=$event'>"; $end = "</a>";
+			$begin = date_i18n( get_option('mc_date_format'),strtotime($result->occur_begin) ) . ''. date( get_option('mc_time_format'),strtotime($result->occur_begin) );
+			$output.= "<li>$current$begin$end</li>";
+		}
+	} else {
+		$output = "<li>".__('No related events','my-calendar')."</li>";
+	}
+	echo $output;
+}
+
+/* 
+* Main My Calendar event fetch
+* @since 2.3.0
+* 
+* Fetch all events according to date parameters and supported limits.
+*
+* @param string $from Date formatted string 2014-2-10 
+* @param string $to Date formatted string 2014-2-17
+* @param string/int $category Category ID or category name.
+* @param string/int $ltype Location filter type. 
+* @param string $lvalue Location data to filter to.
+* @param string $source Source of data request.
+* @param int $author Author ID to filter to.
+* @return array Array of events with dates as keys.
+*/
+function my_calendar_events( $from, $to, $category, $ltype, $lvalue, $source, $author ) {
+	$events = my_calendar_grab_events( $from, $to, $category, $ltype, $lvalue, $source ,$author );
+	if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
+		$holidays = array();
+	} else {
+		$holidays = my_calendar_grab_events( $from, $to, get_option('mc_skip_holidays_category'),$ltype, $lvalue, $source, $author );
+		$holiday_array = mc_set_date_array( $holidays );
+	}
+	// get events into an easily parseable set, keyed by date.
+	if ( is_array( $events ) && !empty($events) ) {
+		$event_array = mc_set_date_array( $events );
+		if ( is_array( $holidays ) && count($holidays) > 0 ) {
+			$event_array = mc_holiday_limit( $event_array, $holiday_array ); // if there are holidays, rejigger.
+		}
+	} else {
+		$event_array = array();
+	}
+	return $event_array;
+}
+
 // Grab all events for the requested date from calendar
-function my_calendar_grab_events($from, $to,$category=null,$ltype='',$lvalue='',$source='calendar',$author=null, $host=null) {
+function my_calendar_grab_events( $from, $to,$category=null,$ltype='',$lvalue='',$source='calendar',$author=null, $host=null ) {
 	if ( isset($_GET['mcat']) ) { $ccategory = $_GET['mcat']; } else { $ccategory = $category; }
 	if ( isset($_GET['ltype']) ) { $cltype = $_GET['ltype']; } else { $cltype = $ltype; }
 	if ( isset($_GET['loc']) ) { $clvalue = $_GET['loc']; } else { $clvalue = $lvalue; }
@@ -289,10 +363,10 @@ function mc_create_cache($arr_events, $hash, $category, $ltype, $lvalue, $author
 		$ret = mc_get_cache("mc_cache");
 		$after = memory_get_usage();
 		$mem_limit = mc_allocated_memory( $before, $after );
-		if ( $mem_limit ) { return false; } // if cache is maxed, don't add additional references. Cache expires every two days.
+		if ( $mem_limit ) { return false; } // if cache is maxed, don't add additional references. Cache expires every 12 hours.
 		$cache = mc_get_cache("mc_cache");		
 		$cache[$hash] = $arr_events;
-		mc_set_cache( "mc_cache",$cache, 60*60*48 );
+		mc_set_cache( "mc_cache",$cache, 60*60*12 );
 		return true;
 	}
 	return false;

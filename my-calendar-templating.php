@@ -5,8 +5,6 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 function edit_mc_templates() {
 	global $wpdb;
 	$mcdb = $wpdb;
-	// We can't use this page unless My Calendar is installed/upgraded
-	check_my_calendar();
 	$templates = get_option( 'mc_templates' );
 
 	if ( isset($_POST['mc_grid_template'] ) ) {

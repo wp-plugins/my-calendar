@@ -6,10 +6,6 @@ function my_calendar_insert($atts,$content=null) {
 				'name' => 'all',
 				'format' => 'calendar',
 				'category' => 'all',
-				'showkey' => '',//deprecated
-				'shownav' => '',//deprecated
-				'showjump'=> '',//deprecated
-				'toggle' => '',//deprecated
 				'time' => 'month',
 				'ltype' => '',
 				'lvalue' => '',
@@ -32,7 +28,7 @@ function my_calendar_insert($atts,$content=null) {
 	if ( $host == 'current' ) {
 		$host = apply_filters( 'mc_display_host', $user_ID, 'main' );
 	}
-	return my_calendar($name, $format, $category, $showkey, $shownav, $showjump, $toggle, $time, $ltype, $lvalue, $id, $template, $content, $author, $host, $above, $below );
+	return my_calendar($name, $format, $category, $time, $ltype, $lvalue, $id, $template, $content, $author, $host, $above, $below );
 }
 
 function my_calendar_insert_upcoming($atts) {
@@ -56,7 +52,7 @@ function my_calendar_insert_upcoming($atts) {
 	if ( $host == 'current' ) {
 		$host = apply_filters( 'mc_display_host', $user_ID, 'upcoming' );
 	}	
-	return my_calendar_upcoming_events($before, $after, $type, $category, $template, $fallback, $order, $skip, $show_today, $author, $host );
+	return my_calendar_upcoming_events( $before, $after, $type, $category, $template, $fallback, $order, $skip, $show_today, $author, $host );
 }
 
 function my_calendar_insert_today($atts) {
@@ -74,7 +70,7 @@ function my_calendar_insert_today($atts) {
 	if ( $host == 'current' ) {
 		$host = apply_filters( 'mc_display_host', $user_ID, 'today' );
 	}			
-	return my_calendar_todays_events($category, $template, $fallback, $author, $host);
+	return my_calendar_todays_events( $category, $template, $fallback, $author, $host );
 }
 
 function my_calendar_locations($atts) {
@@ -101,6 +97,21 @@ function my_calendar_categories($atts) {
 			), $atts, 'my_calendar_categories' ) );
 	return my_calendar_categories_list( $show );
 }
+
+function my_calendar_access($atts) {
+	extract(shortcode_atts(array(
+				'show' => 'list'
+			), $atts, 'my_calendar_access' ) );
+	return mc_access_list( $show );
+}
+
+function my_calendar_filters( $atts ) {
+	extract(shortcode_atts(array(
+				'show' => 'categories,locations'
+			), $atts, 'my_calendar_filters' ) );
+	return mc_filters( $show );
+}
+
 
 function my_calendar_show_event($atts) {
 	extract(shortcode_atts(array(
