@@ -176,9 +176,13 @@ function edit_my_calendar_config() {
 		// management
 		$clear = '';
 		$mc_event_approve = ( !empty($_POST['mc_event_approve']) && $_POST['mc_event_approve']=='on')?'true':'false';
+		$mc_api_enabled = ( !empty($_POST['mc_api_enabled']) && $_POST['mc_api_enabled']=='on')?'true':'false';
+		
 		$mc_remote = ( !empty($_POST['mc_remote']) && $_POST['mc_remote']=='on')?'true':'false';
 		if ( isset($_POST['mc_clear_cache']) && $_POST['mc_clear_cache'] == 'clear' ) { mc_delete_cache(); $clear = __('My Calendar Cache cleared','my-calendar'); }
 		update_option('mc_event_approve',$mc_event_approve);
+		update_option('mc_api_enabled',$mc_api_enabled);
+		
 		update_option('mc_remote',$mc_remote);
 		update_option('mc_default_sort',$_POST['mc_default_sort']);
 		
@@ -418,7 +422,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 <div class="postbox">
 	<h3><?php _e('My Calendar Settings','my-calendar'); ?></h3>
 	<div class="inside">
-	<ul class="mc-settings">
+	<ul class="mc-settings checkboxes">
 		<li><a href="#my-calendar-manage"><?php _e('Management','my-calendar'); ?></a></li>
 		<li><a href="#my-calendar-text"><?php _e('Customizable Text','my-calendar'); ?></a></li>
 		<li><a href="#my-calendar-output"><?php _e('Output','my-calendar'); ?></a></li>
@@ -456,6 +460,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	</li>	
 	<?php } ?>
 	<li><?php mc_settings_field ( 'mc_event_approve', __('Enable approval options.','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+	<li><?php mc_settings_field ( 'mc_api_enabled', __('Enable external API.','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>	
 	<?php
 	if ( apply_filters( 'mc_caching_clear', false ) ) { ?>
 	<li><?php mc_settings_field ( 'mc_clear_cache', __('Clear current cache. (Necessary if you edit shortcodes to change displayed categories, for example.)','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>	

@@ -7,7 +7,7 @@ function mc_event_post( $action, $data, $event_id ) {
 		$post_id = mc_create_event_post( $data, $event_id );
 	}
 	if ( $action == 'edit' ) {
-		if ( $_POST['event_post'] == 0 ) { 
+		if ( $_POST['event_post'] == 0 ) {
 			$post_id = mc_create_event_post( $data, $event_id ); 
 		} else {
 			$post_id = $_POST['event_post'];
@@ -458,7 +458,17 @@ function my_calendar_save( $action,$output,$event_id=false ) {
 				if ( function_exists( 'jd_doTwitterAPIPost') && isset( $_POST['mc_twitter'] ) && trim($_POST['mc_twitter']) != '') {
 					jd_doTwitterAPIPost( stripslashes($_POST['mc_twitter']) );
 				}
-				$message = "<div class='updated notice'><p>". __('Event added. It will now show on the calendar.','my-calendar') . "</p></div>";
+				if ( get_option( 'mc_uri' ) != '' ) { 
+					$event_ids = mc_get_occurrences( $event_id );
+					$event_link = mc_build_url( array( 'mc_id'=>$event_ids[0]->occur_event_id ), array( 'page' ), get_option( 'mc_uri' ) ); 
+				} else {
+					$event_link = false;
+				}
+				$message = "<div class='updated notice'><p>".__('Event added. It will now show on the calendar.','my-calendar');
+				if ( $event_link !== false ) { 
+					$message .= sprintf( __(' <a href="%s">View Event</a>', 'my-calendar' ), $event_link );
+				}
+				$message .= "</p></div>";
 			}
 			mc_delete_cache();
 		}
@@ -816,7 +826,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 		<?php } ?>
 		<?php if ( mc_show_edit_block( 'event_link' ) ) { ?>
 		<p>
-		<label for="event_link"><?php _e( 'URL','my-calendar' ); ?></label> <input type="text" id="event_link" name="event_link" class="input" size="40" value="<?php if ( $has_data ) { echo esc_url( $data->event_link ); } ?>" /> <input type="checkbox" value="1" id="event_link_expires" name="event_link_expires"<?php if ( $has_data && $data->event_link_expires == '1' ) { echo " checked=\"checked\""; } else if ( $has_data && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_link_expires') == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_link_expires"><?php _e('Link will expire after event','my-calendar'); ?></label>
+		<label for="event_link"><?php _e( 'URL','my-calendar' ); ?></label> <input type="text" id="event_link" name="event_link" class="input" size="40" value="<?php if ( $has_data ) { echo esc_url( $data->event_link ); } ?>" /> <input type="checkbox" value="1" id="event_link_expires" name="event_link_expires"<?php if ( $has_data && $data->event_link_expires == '1' ) { echo " checked=\"checked\""; } else if ( $has_data && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_link_expires') == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_link_expires" class=><?php _e('Link will expire after event','my-calendar'); ?></label>
 		</p>
 	<?php } ?>
 		<?php echo apply_filters( 'mc_event_details', $has_data, $data, 'admin' ); ?>							
@@ -904,10 +914,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 			</div>				
 			<?php } ?>
 			</div>
-			</fieldset>
-		<p>
-			<input type="submit" name="save" class="button-primary" value="<?php _e('Save Event','my-calendar'); ?>" />
-		</p>			
+			</fieldset>			
 		</div>
 		</div>
 		</div>
@@ -1176,7 +1183,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 				</div>
 			<?php } ?>
 		<p>
-			<input type="submit" name="save" class="button-secondary" value="<?php _e('Save Event','my-calendar'); ?>" />
+			<input type="submit" name="save" class="button-primary" value="<?php _e('Save Event','my-calendar'); ?>" />
 		</p>
 </form>	
 </div>

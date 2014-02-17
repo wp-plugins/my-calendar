@@ -296,6 +296,7 @@ global $wpdb;
 function mc_controlled_field( $this_field ) {
 	$this_field = trim($this_field);
 	$controls = get_option( 'mc_location_controls' );
+	if ( !is_array( $controls ) || empty( $controls ) ) { return false; }
 	$controlled = array_keys( $controls );
 	if ( in_array( 'event_'.$this_field, $controlled ) && !empty( $controls['event_'.$this_field] ) ) {
 		return true;
