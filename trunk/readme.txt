@@ -111,7 +111,7 @@ This is a major revision.
 * New feature: my_calendar_event shortcode can query templates by keyword (list,mini,single,grid).
 * New feature: filter events by available accessibility services
 * New feature: Combined filter shortcode to group all filters into a single form. [mc_filters show='locations,categories,access']
-* New feature: new filter feature for adding custom fields to events.
+* New feature: new API for adding custom fields to events.
 * New feature: data API to fetch event data in JSON or RSS formats. 
 * New feature: Archive events to hide from admin events list. 
 * New feature: Control input options for multiple types of location input data. 
@@ -132,7 +132,7 @@ This is a major revision.
 * Improved get current URL function.
 * iCal output in multiple-month view outputs all displayed months.
 * {map} template tag to display a Google Map using the Google Maps API. (Not available in pop-up displays.)
-* Planned removal of showkey, shownav, toggle, and showjump shortcode attributes.
+* Scheduled removal of showkey, shownav, toggle, and showjump shortcode attributes.
 
 = 2.2.13 =
 
@@ -1167,7 +1167,7 @@ Because the majority of users end up on my web site asking for help anyway -- an
 
 = This plug-in is really complicated. Why can't you personally help me figure out how to use it? =
 
-I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/articles/my-calendar/users-guide/) for $23. ($19 if you're not interested in getting updates.) This helps defray the thousand plus hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
+I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/articles/my-calendar/users-guide/) for $25. This helps defray the thousand plus hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
 
 = How can my site visitors or members submit events? =
 

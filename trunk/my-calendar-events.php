@@ -135,7 +135,7 @@ function mc_get_event( $id,$type='object' ) {
 	$date = date( 'Y-m-d',strtotime( $event->occur_begin ) );
 	$time = date( 'H:i:s',strtotime( $event->occur_begin ) );
 	if ( $type == 'object' ) {
-	return $event;
+		return $event;
 	} else {
 		$value = "	<div id='mc_event'>".my_calendar_draw_event( $event,'single',$date,$time,'single' )."</div>\n";
 		return $value;
@@ -151,6 +151,15 @@ function mc_get_data( $field, $id ) {
 	$sql = $wpdb->prepare( "SELECT $field FROM ".my_calendar_table()." WHERE event_id = %d", $id );
 	$result = $mcdb->get_var($sql);
 	return $result;
+}
+
+function mc_get_occurrences( $id ) {
+	global $wpdb;
+	$id = (int) $id;
+	if ( $id === 0 ) { return array(); }
+	$sql = "SELECT * FROM ".my_calendar_event_table()." WHERE occur_event_id=$id";
+	$results = $wpdb->get_results( $sql );
+	return $results;
 }
 
 function mc_related_events( $id, $return=false ) {
