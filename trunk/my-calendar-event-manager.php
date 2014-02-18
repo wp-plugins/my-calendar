@@ -1487,7 +1487,7 @@ function jd_events_display_list( $type='normal') {
 		<?php if ( !( isset($_GET['restrict']) && $_GET['restrict'] == 'archived' ) ) { ?>
 			<a class='mc_filter' href='<?php echo admin_url("admin.php?page=my-calendar-manage&amp;restrict=archived"); ?>'><?php _e('View Archived Events','my-calendar'); ?></a>
 		<?php } else { ?>
-			<a class='mc_filter' href='<?php echo admin_url("admin.php?page=my-calendar-manage"); ?>'><?php _e('Return to Manage Events','my-calendar'); ?></a>		
+			<a class='mc_filter' href='<?php echo admin_url("admin.php?page=my-calendar-manage"); ?>'><?php _e('Return to Manage Events','my-calendar'); ?></a>		
 		<?php } ?>
 		</p>
 		</form>
