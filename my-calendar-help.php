@@ -357,8 +357,7 @@ function my_calendar_help() { ?>
 		<dd><?php _e('Produces the hex code for the current event\'s category color.','my-calendar'); ?></dd>
 
 		<dt><code>{cat_id}</code></dt>
-		<dd><?php _e('Displays the ID for
-		 the category the event is in.','my-calendar'); ?></dd>
+		<dd><?php _e('Displays the ID for the category the event is in.','my-calendar'); ?></dd>
 		</dl>
 
 		<h4><?php _e('Special use Template Tags','my-calendar'); ?></h4>
