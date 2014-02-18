@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: My Calendar 2.2.14\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/my-calendar\n"
-"POT-Creation-Date: 2014-02-18 16:31:52+00:00\n"
+"POT-Creation-Date: 2014-02-18 16:46:12+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -772,10 +772,10 @@ msgstr ""
 #: my-calendar-event-manager.php:242 my-calendar-event-manager.php:267
 #: my-calendar-event-manager.php:294 my-calendar-event-manager.php:462
 #: my-calendar-event-manager.php:549 my-calendar-event-manager.php:564
-#: my-calendar-event-manager.php:584 my-calendar-event-manager.php:1650
-#: my-calendar-event-manager.php:1653 my-calendar-event-manager.php:1668
-#: my-calendar-event-manager.php:1673 my-calendar-event-manager.php:1686
-#: my-calendar-event-manager.php:1692 my-calendar-event-manager.php:1697
+#: my-calendar-event-manager.php:584 my-calendar-event-manager.php:1649
+#: my-calendar-event-manager.php:1652 my-calendar-event-manager.php:1667
+#: my-calendar-event-manager.php:1672 my-calendar-event-manager.php:1685
+#: my-calendar-event-manager.php:1691 my-calendar-event-manager.php:1696
 #: my-calendar-group-manager.php:53 my-calendar-group-manager.php:79
 #: my-calendar-group-manager.php:160 my-calendar-group-manager.php:620
 msgid "Error"
@@ -1426,73 +1426,73 @@ msgid "View Archived Events"
 msgstr ""
 
 #: my-calendar-event-manager.php:1490
-msgid "Return to \rManage Events"
+msgid "Return to Manage Events"
 msgstr ""
 
-#: my-calendar-event-manager.php:1497
+#: my-calendar-event-manager.php:1496
 msgid "There are no events in the database meeting your current criteria."
 msgstr ""
 
-#: my-calendar-event-manager.php:1650
+#: my-calendar-event-manager.php:1649
 msgid ""
 "Your event end date must be either after or the same as your event begin date"
 msgstr ""
 
-#: my-calendar-event-manager.php:1653
+#: my-calendar-event-manager.php:1652
 msgid ""
 "Your date formatting is correct but one or more of your dates is invalid. "
 "Check for number of days in month and leap year related errors."
 msgstr ""
 
-#: my-calendar-event-manager.php:1668
+#: my-calendar-event-manager.php:1667
 msgid ""
 "The time field must either be blank or be entered in the format hh:mm am/pm"
 msgstr ""
 
-#: my-calendar-event-manager.php:1673
+#: my-calendar-event-manager.php:1672
 msgid ""
 "The end time field must either be blank or be entered in the format hh:mm am/"
 "pm"
 msgstr ""
 
-#: my-calendar-event-manager.php:1686
+#: my-calendar-event-manager.php:1685
 msgid "An event title is required."
 msgstr ""
 
-#: my-calendar-event-manager.php:1692
+#: my-calendar-event-manager.php:1691
 msgid "The repetition value must be 0 unless a type of recurrence is selected."
 msgstr ""
 
-#: my-calendar-event-manager.php:1697
+#: my-calendar-event-manager.php:1696
 msgid "That event conflicts with a previously scheduled event."
 msgstr ""
 
-#: my-calendar-event-manager.php:1892
+#: my-calendar-event-manager.php:1891
 msgid "Editing: "
 msgstr ""
 
-#: my-calendar-event-manager.php:1953
+#: my-calendar-event-manager.php:1952
 msgid "Open"
 msgstr ""
 
-#: my-calendar-event-manager.php:1954
+#: my-calendar-event-manager.php:1953
 msgid "Closed"
 msgstr ""
 
-#: my-calendar-event-manager.php:1955
+#: my-calendar-event-manager.php:1954
 msgid "Does not apply"
 msgstr ""
 
-#: my-calendar-event-manager.php:1958
+#: my-calendar-event-manager.php:1957
 msgid ""
 "If this event recurs, it can only be registered for as a complete series."
 msgstr ""
 
-#: my-calendar-event-manager.php:1964
+#: my-calendar-event-manager.php:1963
 msgid "Tickets URL"
 msgstr ""
 
-#: my-calendar-event-manager.php:1967
+#: my-calendar-event-manager.php:1966
 msgid "Registration Information"
 msgstr ""
 
@@ -1712,7 +1712,7 @@ msgstr ""
 msgid "Support Form"
 msgstr ""
 
-#: my-calendar-help.php:22 my-calendar-help.php:393
+#: my-calendar-help.php:22 my-calendar-help.php:392
 msgid "Helpful Information"
 msgstr ""
 
@@ -2263,33 +2263,31 @@ msgid "Produces the hex code for the current event's category color."
 msgstr ""
 
 #: my-calendar-help.php:360
-msgid ""
-"Displays the ID for\r\n"
-"\t\t the category the event is in."
+msgid "Displays the ID for the category the event is in."
 msgstr ""
 
-#: my-calendar-help.php:364
+#: my-calendar-help.php:363
 msgid "Special use Template Tags"
 msgstr ""
 
-#: my-calendar-help.php:368
+#: my-calendar-help.php:367
 msgid "A unique ID for the current instance of an event."
 msgstr ""
 
-#: my-calendar-help.php:371
+#: my-calendar-help.php:370
 msgid ""
 "The ID for the event record associated with the current instance of an event."
 msgstr ""
 
-#: my-calendar-help.php:381
+#: my-calendar-help.php:380
 msgid "Get Plug-in Support"
 msgstr ""
 
-#: my-calendar-help.php:386
+#: my-calendar-help.php:385
 msgid "My Calendar support requests can only be sent by administrators."
 msgstr ""
 
-#: my-calendar-help.php:396
+#: my-calendar-help.php:395
 msgid ""
 "<strong>Uninstalling the plugin</strong>: Although the WordPress standard "
 "and expectation is for plug-ins to delete any custom database tables when "
@@ -2303,7 +2301,7 @@ msgid ""
 "however."
 msgstr ""
 
-#: my-calendar-help.php:399
+#: my-calendar-help.php:398
 msgid ""
 "<strong>Donations</strong>: I appreciate anything you can give. $2 may not "
 "seem like much, but it can really add up when thousands of people are using "
