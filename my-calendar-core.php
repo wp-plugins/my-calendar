@@ -279,7 +279,7 @@ function my_calendar_add_javascript() {
 }
 
 function my_calendar_write_js() {
-	if ( isset($_GET['page']) && $_GET['page']=='my-calendar' || $_GET['page'] == 'my-calendar-locations' ) {
+	if ( isset( $_GET['page'] ) && ( $_GET['page']=='my-calendar' || $_GET['page'] == 'my-calendar-locations' ) ) {
 	?>
 	<script type="text/javascript">
 	//<![CDATA[
@@ -1886,7 +1886,7 @@ function mc_get_details_link( $event ) {
 add_action( 'init', 'mc_register_actions' );
 function mc_register_actions() {
 	apply_filters( "debug", 'my_calendar add actions/filters' );
-	add_filter( 'mc_event_registration', 'mc_standard_event_registration', 10, 3 );
+	add_filter( 'mc_event_registration', 'mc_standard_event_registration', 10, 4 );
 	add_action( 'mc_transition_event', 'mc_tweet_approval', 10, 2 );
 	add_action( 'mc_save_event', 'mc_event_post', 10, 3 );
 	add_action( 'mc_delete_event', 'mc_event_delete_post', 10, 2 );

@@ -77,12 +77,12 @@ my_calendar_check_db();
 	<label for="mc_show_js"><?php _e('Insert scripts on these pages (comma separated post IDs)','my-calendar'); ?></label> <input type="text" id="mc_show_js" name="mc_show_js" value="<?php echo $mc_show_js; ?>" />
 	</p>  
 	<fieldset>
-	<legend><?php _e('Calendar Behaviors: Calendar View','my-calendar'); ?></legend>
+	<legend><?php _e('Calendar Behaviors: Grid View','my-calendar'); ?></legend>
 	<p>
-	<input type="checkbox" id="reset_caljs" name="reset_caljs" /> <label for="reset_caljs"><?php _e('Update/Reset the My Calendar Calendar Javascript','my-calendar'); ?></label> <input type="checkbox" id="calendar_javascript" name="calendar_javascript" value="1"  <?php mc_is_checked('mc_calendar_javascript',1); ?>/> <label for="calendar_javascript"><?php _e('Disable Calendar Javascript Effects','my-calendar'); ?></label>
+	<input type="checkbox" id="reset_caljs" name="reset_caljs" /> <label for="reset_caljs"><?php _e('Update Grid View JavaScript','my-calendar'); ?></label> <input type="checkbox" id="calendar_javascript" name="calendar_javascript" value="1"  <?php mc_is_checked('mc_calendar_javascript',1); ?>/> <label for="calendar_javascript"><?php _e('Disable Grid Javascript','my-calendar'); ?></label>
 	</p>
 	<p>
-	<label for="calendar-javascript"><?php _e('Edit the jQuery scripts for My Calendar in Calendar format','my-calendar'); ?></label><br /><textarea id="calendar-javascript" name="mc_caljs" rows="8" cols="80"><?php echo $mc_caljs; ?></textarea>
+	<label for="calendar-javascript"><?php _e('Edit jQuery scripts for My Calendar in Grid View','my-calendar'); ?></label><br /><textarea id="calendar-javascript" name="mc_caljs" rows="8" cols="80"><?php echo $mc_caljs; ?></textarea>
 	</p>
 	<?php
 	$left_string  = normalize_whitespace($mc_caljs);
@@ -111,7 +111,7 @@ my_calendar_check_db();
     <fieldset id="ldiff">
 	<legend><?php _e('Calendar Behaviors: List View','my-calendar'); ?></legend>
 	<p>
-	<input type="checkbox" id="reset_listjs" name="reset_listjs" /> <label for="reset_listjs"><?php _e('Update/Reset the My Calendar List Javascript','my-calendar'); ?></label> <input type="checkbox" id="list_javascript" name="list_javascript" value="1" <?php mc_is_checked('mc_list_javascript',1); ?> /> <label for="list_javascript"><?php _e('Disable List Javascript Effects','my-calendar'); ?></label> 
+	<input type="checkbox" id="reset_listjs" name="reset_listjs" /> <label for="reset_listjs"><?php _e('Update List JavaScript','my-calendar'); ?></label> <input type="checkbox" id="list_javascript" name="list_javascript" value="1" <?php mc_is_checked('mc_list_javascript',1); ?> /> <label for="list_javascript"><?php _e('Disable List JavaScript','my-calendar'); ?></label> 
 	</p>
 	<p>
 	<label for="list-javascript"><?php _e('Edit the jQuery scripts for My Calendar in List format','my-calendar'); ?></label><br /><textarea id="list-javascript" name="mc_listjs" rows="8" cols="80"><?php echo $mc_listjs; ?></textarea>
@@ -142,10 +142,10 @@ my_calendar_check_db();
    <fieldset id="mdiff">
 	<legend><?php _e('Calendar Behaviors: Mini Calendar View','my-calendar'); ?></legend>
 	<p>
-	<input type="checkbox" id="reset_minijs" name="reset_minijs" /> <label for="reset_minijs"><?php _e('Update/Reset the My Calendar Mini Format Javascript','my-calendar'); ?></label> <input type="checkbox" id="mini_javascript" name="mini_javascript" value="1" <?php mc_is_checked('mc_mini_javascript',1); ?> /> <label for="mini_javascript"><?php _e('Disable Mini Javascript Effects','my-calendar'); ?></label> 
+	<input type="checkbox" id="reset_minijs" name="reset_minijs" /> <label for="reset_minijs"><?php _e('Update Mini View JavaScript','my-calendar'); ?></label> <input type="checkbox" id="mini_javascript" name="mini_javascript" value="1" <?php mc_is_checked('mc_mini_javascript',1); ?> /> <label for="mini_javascript"><?php _e('Disable Mini JavaScript','my-calendar'); ?></label> 
 	</p>
 	<p>
-	<label for="mini-javascript"><?php _e('Edit the jQuery scripts for My Calendar in Mini Calendar format','my-calendar'); ?></label><br /><textarea id="mini-javascript" name="mc_minijs" rows="8" cols="80"><?php echo $mc_minijs; ?></textarea>
+	<label for="mini-javascript"><?php _e('Edit jQuery scripts in Mini view','my-calendar'); ?></label><br /><textarea id="mini-javascript" name="mc_minijs" rows="8" cols="80"><?php echo $mc_minijs; ?></textarea>
 	</p>
 	<?php
 	$left_string  = normalize_whitespace($mc_minijs);
@@ -172,12 +172,12 @@ my_calendar_check_db();
 
 	
     <fieldset id="adiff">
-	<legend><?php _e('Calendar Behaviors: AJAX Navigation','my-calendar'); ?></legend>
+	<legend><?php _e('Calendar Behaviors: AJAX','my-calendar'); ?></legend>
 	<p>
-	<input type="checkbox" id="reset_ajaxjs" name="reset_ajaxjs" /> <label for="reset_ajaxjs"><?php _e('Update/Reset the My Calendar AJAX Javascript','my-calendar'); ?></label> <input type="checkbox" id="ajax_javascript" name="ajax_javascript" value="1" <?php mc_is_checked('mc_ajax_javascript',1); ?> /> <label for="ajax_javascript"><?php _e('Disable AJAX Effects','my-calendar'); ?></label> 
+	<input type="checkbox" id="reset_ajaxjs" name="reset_ajaxjs" /> <label for="reset_ajaxjs"><?php _e('Update AJAX JavaScript','my-calendar'); ?></label> <input type="checkbox" id="ajax_javascript" name="ajax_javascript" value="1" <?php mc_is_checked('mc_ajax_javascript',1); ?> /> <label for="ajax_javascript"><?php _e('Disable AJAX Navigation','my-calendar'); ?></label> 
 	</p>
 	<p>
-	<label for="ajax-javascript"><?php _e('Edit the jQuery scripts for My Calendar AJAX navigation','my-calendar'); ?></label><br /><textarea id="ajax-javascript" name="mc_ajaxjs" rows="8" cols="80"><?php echo $mc_ajaxjs; ?></textarea>
+	<label for="ajax-javascript"><?php _e('Edit jQuery scripts for AJAX navigation','my-calendar'); ?></label><br /><textarea id="ajax-javascript" name="mc_ajaxjs" rows="8" cols="80"><?php echo $mc_ajaxjs; ?></textarea>
 	</p>
 	<?php
 	$left_string  = normalize_whitespace($mc_ajaxjs);

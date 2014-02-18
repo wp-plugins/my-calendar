@@ -448,11 +448,11 @@ function mc_produce_upcoming_events( $events, $template, $type='list', $order='a
 
 									if ( my_calendar_date_comp( $beginning,$current ) ) { 	
 										if ( !$same_event && !$same_group ) { $past++; } else { $extra++; }
-									} else if ( my_calendar_date_equal( $beginning,$current ) ) {  
+									} else if ( my_calendar_date_equal( $beginning, $current ) ) {  
 										$present = 1;
 										if ( $show_today == 'yes' ) { $extra++; }
-									} else {
-										if ( !$same_event && !$same_group ) { $future++;  } else { $extra++;}
+									} else if ( !my_calendar_date_comp( $end,$current ) ) {
+										if ( !$same_event && !$same_group ) { $future++;  } // else { $extra++; } // why was this here?
 									}
 									$last_events[] = $e->occur_id;
 									$last_group[] = $e->occur_group_id;
