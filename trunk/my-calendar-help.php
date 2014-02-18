@@ -13,7 +13,7 @@ function my_calendar_help() { ?>
 	<h3><?php _e('My Calendar Help','my-calendar'); ?></h3>
 	<div class="inside">
 	<?php do_action( 'mc_before_help' ); ?>
-	<ul class="mc-settings">
+	<ul class="mc-settings checkboxes">
 		<li><a href="#mc-shortcodes"><?php _e('Shortcodes','my-calendar'); ?></a></li>
 		<li><a href="#icons"><?php _e('Icons','my-calendar'); ?></a></li>
 		<li><a href="#mc-styles"><?php _e('Styles','my-calendar'); ?></a></li>
@@ -29,16 +29,13 @@ function my_calendar_help() { ?>
 <div class="postbox">
 <h3 id="help"><?php _e('Getting Started','my-calendar'); ?></h3>
 	<div class="inside">
-	<p>
-	<?php _e('Although the My Calendar plug-in is very complicated in terms of what can be customized, the basic usage is quite simple.','my-calendar'); ?>
-	</p>
 	<ul>
-		<li> - <?php _e('Add the My Calendar shortcode (<code>[my_calendar]</code>) to a page.','my-calendar'); ?></li>
-		<li> - <?php _e('Add events by clicking on the Add/Edit Events link in the admin sidebar or on "Add Events" in the admin toolbar.','my-calendar'); ?></li>
-		<li> - <?php _e('Select your preferred stylesheet in the Styles Editor','my-calendar'); ?></li>
+		<li><?php _e('Add the My Calendar shortcode (<code>[my_calendar]</code>) to a page.','my-calendar'); ?></li>
+		<li><?php _e('Add events by clicking on the Add/Edit Events link in the admin or on "Add Events" in the toolbar.','my-calendar'); ?></li>
+		<li><?php _e('Select your preferred stylesheet in the Styles Editor','my-calendar'); ?></li>
 	</ul>
 	<p>
-	<?php _e('Read more of the basic help documentation on this page or purchase the My Calendar User\'s Guide to customize further -- but the above is all that you need to do to begin using the calendar.','my-calendar'); ?>
+	<?php printf( __('Read more help documentation below or <a href="%s">purchase the My Calendar User\'s Guide</a> to learn more -- but the above is all that you need to do to begin using the calendar.','my-calendar'), 'https://www.joedolson.com/articles/my-calendar/users-guide/' ); ?>
 	</p>
 	</div>
 </div>
@@ -48,60 +45,55 @@ function my_calendar_help() { ?>
 <div class="postbox" id="mc-shortcodes">
 	<h3><?php _e('Shortcode Syntax','my-calendar'); ?></h3>
 	<div class="inside">	
-<p>
-<?php _e('These shortcodes can be used in Posts, Pages, or in text widgets.','my-calendar'); ?>
-</p>
+
 <h4><?php _e('Main Calendar Shortcode (List or Grid, Weekly or Monthly view)','my-calendar'); ?></h4>
 <p class="example"><code>[my_calendar]</code></p>
-<p>
-<?php _e('This basic shortcode will show the one-week view of the calendar on a post or page including all categories and the category key, in a list format. The standard previous/next navigation will be included above the calendar, the link to the print format (if enabled) will be shown below.','my-calendar'); ?>
-</p>
+<h4><?php _e('Example Customized Shortcode','my-calendar'); ?></h4>
 <p class="example"><code>[my_calendar format="list" above="nav" below="print" time="week"]</code></p>
 <p>
-<?php _e('The shortcode supports these attributes:','my-calendar'); ?>
+<?php _e('This shortcode shows the one-week view of the calendar on a post or page including all categories and the category key, in a list format. The standard previous/next navigation will be included above the calendar, the link to the print format (if enabled) will be shown below.','my-calendar'); ?>
+</p>
+<p>
+<?php _e('Shortcode attributes:','my-calendar'); ?>
 </p>
 	<ul>
-	<li><code>category</code>: <?php _e('Names or IDs of categories included in this calendar, comma or pipe separated.','my-calendar'); ?></li>
-	<li><code>format</code>: <?php _e('Either "list" or "mini" to show the list view or the mini calendar; exclude or any other value to show the main grid calendar.','my-calendar'); ?></li>
-	<li><code>above</code>, <code>below</code>: <?php _e("Comma-separated list of navigational features to display above or below the calendar. Available: <strong>nav, toggle, jump, print, key, feeds, timeframe</strong>. Order listed determines the order displayed. Feed links and print view will only display if they are enabled on the settings page. All other fields will appear if specified; the defaults specified in settings will be used if the attribute is left blank. Use <em>none</em> to hide all navigation elements.",'my-calendar'); ?></li>
-	<li><code>time</code>: <?php _e('Set to "week" to show a one week view or to "day" to show a single day view. Any other value will show a month view. (Day view shows as a list regardless of format setting.)','my-calendar'); ?></li>
-	<li><code>ltype</code>: <?php _e('The type of location data to restrict by.','my-calendar'); ?></li>
-	<li><code>lvalue</code>: <?php _e('The specific location information to filter to.','my-calendar'); ?></li>
-	<li><code>author</code>: <?php _e('Author or comma-separated list of authors (usernames or IDs) to show events from.','my-calendar'); ?></li>
-	<li><code>host</code>: <?php _e('Host or comma-separated list of hosts (WordPress usernames or IDs) to show events from.','my-calendar'); ?></li>
-	<li><code>id</code>: <?php _e('String to give this specific calendar shortcode a unique ID. Use when showing multiple calendars in a Page or post.','my-calendar'); ?></li>
+	<li><code>category</code>: <?php _e('Names or IDs of categories in the calendar, comma or pipe separated.','my-calendar'); ?></li>
+	<li><code>format</code>: <?php _e('"list" or "mini"; exclude or any other value to show a calendar grid.','my-calendar'); ?></li>
+	<li><code>above</code>, <code>below</code>: <?php _e("Comma-separated list of navigation to display above or below the calendar. Available: <strong>nav, toggle, jump, print, key, feeds, timeframe</strong>. Order listed determines the order displayed. Defaults in settings will be used if the attribute is blank. Use <em>none</em> to hide all navigation.",'my-calendar'); ?></li>
+	<li><code>time</code>: <?php _e('Set to "week" to show a one week view or to "day" to show a single day view. Any other value will show a month view. (Day view always shows as a list.)','my-calendar'); ?></li>
+	<li><code>ltype</code>: <?php _e('Type of location data to restrict by.','my-calendar'); ?></li>
+	<li><code>lvalue</code>: <?php _e('Specific location information to filter to.','my-calendar'); ?></li>
+	<li><code>author</code>: <?php _e('Author or comma-separated list (usernames or IDs) to show events from.','my-calendar'); ?></li>
+	<li><code>host</code>: <?php _e('Host or comma-separated list (usernames or IDs) to show events from.','my-calendar'); ?></li>
+	<li><code>id</code>: <?php _e('String to give shortcode a unique ID.','my-calendar'); ?></li>
 	</ul>
 <p>
 <em><?php _e('The main My Calendar shortcode can be generated from a button in your post and page editor. The mini calendar can also be accessed and configured as a widget.','my-calendar'); ?></em>
 </p>
-<h4><?php _e('Additional Calendar Views (Upcoming events, today\'s events)','my-calendar'); ?></h4>
+<h4><?php _e('Additional Views (Upcoming events, today\'s events)','my-calendar'); ?></h4>
 <p class="example"><code>[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" author="1" host="1" template="{title} {date}" order="asc" show_today="yes" skip="0"]</code></p>
 <p>
-	<?php _e('Displays the output of the Upcoming Events widget. The <code>before</code> and <code>after</code> attributes should be numbers; the <code>type</code> attribute can be either "event" or "days", and the <code>category</code> and <code>author</code> attributes work the same way as on the main calendar shortcode. Templates work using the template codes listed below. <code>fallback</code> provides text in case there are no events meeting your criteria. Order provides a sort order for the events list &ndash; either ascending (<code>asc</code>) or descending (<code>desc</code>). <code>show_today</code> is an indicator whether or not to include today\'s events in the list. <code>Skip</code> is the number of events to skip in the upcoming events.','my-calendar'); ?>
+	<?php _e('Displays the output of the Upcoming Events widget. <code>before</code> and <code>after</code> are numbers; <code>type</code> is either "event" or "days", and <code>category</code> and <code>author</code> work the same as in the main calendar shortcode. Templates use the template codes listed below. <code>fallback</code> provides text if no events meet your criteria. Order sets sort order for the list &ndash; ascending (<code>asc</code>) or descending (<code>desc</code>). <code>show_today</code> indicates whether to include today\'s events in the list. <code>Skip</code> is how many events to skip in the list.','my-calendar'); ?>
 </p>
 <p class="example"><code>[my_calendar_today category="" author="1" host="1" fallback="Nothing today!" template="{title} {date}"]</code></p>
 <p>
 	<?php _e('Displays the output of the Today\'s Events widget, with four configurable attributes: category, author, template and fallback text.','my-calendar'); ?>
 </p>
 <p>
-<em><?php _e('Both Upcoming Events and Today\'s Events can also be configured using widgets.','my-calendar'); ?></em>
+<em><?php _e('Upcoming Events and Today\'s Events can also be configured as widgets.','my-calendar'); ?></em>
 </p>
 <p class="example"><code>[my_calendar_event event="" template="&lt;h3&gt;{title}&lt;/h3&gt;{description}" list="&lt;li&gt;{date}, {time}&lt;/li&gt;" before="&lt;ul&gt;" after="&lt;/ul&gt;"]</code></p>
 <p>
 	<?php _e('Displays a single event and/or all dates for that event. If template is set to a blank value, will only display the list of occurrences. If the list attribute is set blank, will only show the event template','my-calendar'); ?>
 </p>
 
-<h4><?php _e('Supplement Features (Locations filter, Categories filter)','my-calendar'); ?></h4>
+
+<h4><?php _e( 'Calendar Filter Shortcodes', 'my-calendar' ); ?></h4>
 
 <p class="example"><code>[my_calendar_locations show="list" type="saved" datatype="name"]</code></p>
 <p>
-	<?php _e('List of event locations, either as a list of links or as a select form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>, <code>type</code> is either <code>saved</code> (to show items from your stored locations), or <code>custom</code> (to show the options configured in your user settings). <code>datatype</code> must be the type of data your limits are choosing from: <code>name</code> (business name), <code>city</code>, <code>state</code>, <code>country</code>, <code>zip</code> (postal code), or <code>region</code>.','my-calendar'); ?>
+	<?php _e('List of event locations, as a list of links or as a select form. <code>show</code> is either <code>list</code> or <code>form</code>, <code>type</code> is <code>saved</code> (to show items from stored locations), or <code>custom</code> (to show options configured in location settings). <code>datatype</code> must be the type of data your limits are using: <code>name</code> (business name), <code>city</code>, <code>state</code>, <code>country</code>, <code>zip</code> (postal code), or <code>region</code>.','my-calendar'); ?>
 </p>
-<p class="example"><code>[my_calendar_show_locations datatype="" template=""]</code></p>
-<p>
-	<?php _e('Display a list of locations. The <code>datatype</code> is the type of data displayed; all lists will include a link to the map of that location. In addition to basic location information as in the above shortcode, you can also use "hcard" to display all available location information.','my-calendar'); ?>
-	<?php _e('Use the <code>template</code> attribute to show your customized set of data. Sorted by the <code>datatype</code> value.','my-calendar'); ?>
-	</p>
 <p class="example"><code>[my_calendar_categories show="list"]</code></p>
 <p>
 	<?php _e('List of event categories, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>.','my-calendar'); ?>
@@ -109,7 +101,15 @@ function my_calendar_help() { ?>
 <p class="example"><code>[my_calendar_access show="list"]</code></p>
 <p>
 	<?php _e('List of filterable accessibility services, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>.','my-calendar'); ?>
-</p>	
+</p>
+<h4><?php _e( 'Information Listing Shortcodes', 'my-calendar' ); ?></h4>
+
+<p class="example"><code>[my_calendar_show_locations datatype="" template=""]</code></p>
+<p>
+	<?php _e('List of locations. <code>datatype</code> is the type of data displayed; all lists include a link to the map to that location. In addition to basic location information as in the above shortcode, you can also use "hcard" to display all available location information.','my-calendar'); ?>
+	<?php _e('Use <code>template</code> to show customized data, sorted by the <code>datatype</code> value.','my-calendar'); ?>
+	</p>
+	
 </div>
 </div>
 

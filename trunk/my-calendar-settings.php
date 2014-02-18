@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function mc_settings_field( $name, $label, $default='', $note='', $atts=array( 'size'=>'30' ), $type='text' ) {
-	$options = '';
+	$options = $attributes = '';
 	if ( is_array( $atts ) && !empty( $atts ) ) {
 		foreach ( $atts as $key => $value ) {
 			$attributes .= " $key='$value'";
@@ -561,9 +561,11 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 		echo "<ul id='mc-sortable'>";
 		foreach ( $order as $k) {
 			$k = trim($k);
-			$v = $nav_elements[$k];
-			$inserted[$k] = $v;
-			echo "<li class='ui-state-default mc-$k'><button class='up'><i class='dashicons dashicons-arrow-up'></i><span class='screen-reader-text'>Up</span></button> <button class='down'><i class='dashicons dashicons-arrow-down'></i><span class='screen-reader-text'>Down</span></button> <code>$k</code> $v <input type='hidden' name='mc_nav[]' value='$k' /></li>";
+			$v = ( isset( $nav_elements[$k] ) ) ? $nav_elements[$k] : false;
+			if ( $v !== false ) {
+				$inserted[$k] = $v;
+				echo "<li class='ui-state-default mc-$k'><button class='up'><i class='dashicons dashicons-arrow-up'></i><span class='screen-reader-text'>Up</span></button> <button class='down'><i class='dashicons dashicons-arrow-down'></i><span class='screen-reader-text'>Down</span></button> <code>$k</code> $v <input type='hidden' name='mc_nav[]' value='$k' /></li>";
+			}
 		}
 		$missed = array_diff( $nav_elements, $inserted );
 		foreach ( $missed as $k=>$v ) {

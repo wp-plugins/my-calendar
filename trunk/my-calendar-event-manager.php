@@ -1,6 +1,21 @@
 <?php
 if ( ! defined( 'ABSPATH') ) exit; // Exit if accessed directly
 
+function mc_switch_sites() {
+	if ( function_exists('is_multisite') && is_multisite() ) {
+		if ( get_site_option('mc_multisite') == 2 && MY_CALENDAR_TABLE != MY_CALENDAR_GLOBAL_TABLE ) {
+			if ( get_option( 'mc_current_table' ) == '1' ) {
+				// can post to either, but is currently set to post to central table
+				return true;
+			}
+		} else if ( get_site_option('mc_multisite') == 1 && MY_CALENDAR_TABLE != MY_CALENDAR_GLOBAL_TABLE ) {
+			// can only post to central table
+			return true;
+		}
+	}
+	return false;
+}
+
 function mc_event_post( $action, $data, $event_id ) {
 	// if the event save was successful.
 	if ( $action == 'add' ) {
@@ -33,7 +48,8 @@ function mc_event_post( $action, $data, $event_id ) {
 			'post_type'=> $type,
 			'post_excerpt'=> $excerpt
 		);
-		$post_id = wp_update_post( $my_post );
+		if ( mc_switch_sites() ) { switch_to_blog( BLOG_ID_CURRENT_SITE ); }
+		$post_id = wp_update_post( $my_post ); 
 		wp_set_object_terms( $post_id, (int) $term, 'mc-event-category');
 		if ( $data['event_image'] == '' ) {
 			delete_post_thumbnail( $post_id );
@@ -45,6 +61,7 @@ function mc_event_post( $action, $data, $event_id ) {
 		$access_terms = implode( ',', array_values( $_POST['events_access'] ) );
 		mc_update_event( 'event_access', $access_terms, $event_id, '%s' );
 		do_action( 'mc_update_event_post', $post_id, $_POST, $data, $event_id );
+		if ( mc_switch_sites() ) { restore_current_blog(); }
 	}
 }
 
@@ -829,7 +846,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 		<label for="event_link"><?php _e( 'URL','my-calendar' ); ?></label> <input type="text" id="event_link" name="event_link" class="input" size="40" value="<?php if ( $has_data ) { echo esc_url( $data->event_link ); } ?>" /> <input type="checkbox" value="1" id="event_link_expires" name="event_link_expires"<?php if ( $has_data && $data->event_link_expires == '1' ) { echo " checked=\"checked\""; } else if ( $has_data && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_link_expires') == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_link_expires" class=><?php _e('Link will expire after event','my-calendar'); ?></label>
 		</p>
 	<?php } ?>
-		<?php echo apply_filters( 'mc_event_details', $has_data, $data, 'admin' ); ?>							
+		<?php echo apply_filters( 'mc_event_details', '', $has_data, $data, 'admin' ); ?>							
 	</fieldset>
 </div>
 </div>
@@ -967,7 +984,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 		<h3><?php $label = __('Event Access','my-calendar'); echo $label; ?></h3>
 		<div class="inside">		
 			<?php echo mc_event_accessibility( $data, $label );	?>
-			<?php echo apply_filters( 'mc_event_accessibility', $has_data, $data ); ?>							
+			<?php echo apply_filters( 'mc_event_accessibility', '', $has_data, $data ); ?>							
 		</div>
 		</div>
 		</div>	
@@ -979,7 +996,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 		<div class="inside">
 			<fieldset>
 			<legend><?php _e('Event Registration','my-calendar'); ?></legend>
-			<?php echo apply_filters( 'mc_event_registration', $has_data, $data, 'admin' ); ?>		
+			<?php echo apply_filters( 'mc_event_registration', '', $has_data, $data, 'admin' ); ?>		
 			</fieldset>
 		</div>
 		</div>	
@@ -1192,6 +1209,7 @@ function my_calendar_print_form_fields( $data,$mode,$event_id ) {
 <?php }
 
 function mc_event_accessibility( $data, $label ) {
+	$note_value = '';
 	$access_list = "
 		<fieldset>
 			<legend>$label</legend>
@@ -1916,7 +1934,7 @@ function mc_event_is_grouped( $group_id ) {
 	}
 }
 
-function mc_standard_event_registration( $has_data, $data, $context='admin' ) {
+function mc_standard_event_registration( $form, $has_data, $data, $context='admin' ) {
 	if ( $has_data ) {
 		$event_open = jd_option_selected( $data->event_open,'1' );
 		$not_open = jd_option_selected( $data->event_open,'0' );
@@ -1929,7 +1947,7 @@ function mc_standard_event_registration( $has_data, $data, $context='admin' ) {
 		$default = 'checked="checked"';
 	}
 	if ( $context == 'admin' ) {
-	$form = "
+	$form .= "
 			<p>
 				<input type='radio' id='event_open' name='event_open' value='1' $event_open /> <label for='event_open'>".__('Open','my-calendar')."</label>
 				<input type='radio' id='event_closed' name='event_open' value='0' $not_open /> <label for='event_closed'>".__('Closed','my-calendar')."</label>
@@ -1939,7 +1957,7 @@ function mc_standard_event_registration( $has_data, $data, $context='admin' ) {
 				<input type='checkbox' name='event_group' id='event_group' $group /> <label for='event_group'>".__('If this event recurs, it can only be registered for as a complete series.','my-calendar')."</label>
 			</p>";
 	} else {
-		$form = '<input type="hidden" name="event_open" value="2" />';
+		$form .= '<input type="hidden" name="event_open" value="2" />';
 	}
 	$form .= "<p>
 				<label for='event_tickets'>".__('Tickets URL','my-calendar')."</label> <input type='url' name='event_tickets' id='event_tickets' value='$tickets' />
