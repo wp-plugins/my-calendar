@@ -14,7 +14,7 @@ function mc_update_location_controls() {
 			$mc_location_controls[$key] = mc_csv_to_array( $value[0] );
 		}
 		update_option( 'mc_location_controls', $mc_location_controls );
-		echo "<div class='notice update'><p>".__( 'Location Controls Updated','my-calendar' )."</p></div>";		
+		echo "<div class='notice updated'><p>".__( 'Location Controls Updated','my-calendar' )."</p></div>";		
 	}
 }
 
@@ -135,7 +135,7 @@ global $wpdb;
 <?php } else { ?>
 <h2><?php _e( 'Edit Location','my-calendar' ); ?></h2>
 <?php } ?>
-<div class="postbox-container" style="width: 70%">
+<div class="postbox-container jcd-wide">
 <div class="metabox-holder">
 
 <div class="ui-sortable meta-box-sortables">   

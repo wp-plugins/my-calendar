@@ -2,19 +2,20 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 // used to generate upcoming events lists
-function mc_get_all_events( $category, $before, $after, $today, $author, $host ) {
-global $wpdb;
+function mc_get_all_events( $category, $before, $after, $today, $author, $host, $ltype='', $lvalue='' ) {
+	global $wpdb;
 	$mcdb = $wpdb;
-if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$select_category = ( $category!='default' )?mc_select_category($category):'';
 	$limit_string = mc_limit_string();
 	$select_author = ( $author != 'default' )?mc_select_author($author):'';
 	$select_host = ( $host != 'default' )?mc_select_host($host):'';
+	$select_location = mc_limit_string( 'grab', $ltype, $lvalue );
 	
 	$date = date('Y', current_time('timestamp')).'-'.date('m', current_time('timestamp')).'-'.date('d', current_time('timestamp'));
 	// if a value is non-zero, I'll grab a handful of extra events so I can throw out holidays and others like that.
 	if ( $before > 0 ) {
-		$before = $before + 5;
+		$before = $before + 10;
 		$events1 = $mcdb->get_results("SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
 		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 		JOIN " . MY_CALENDAR_TABLE . " 
@@ -35,7 +36,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 		$events3 = array();
 	}
 	if ( $after > 0 ) {
-		$after = $after + 5;
+		$after = $after + 10;
 		$events2 = $mcdb->get_results("SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
 		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 		JOIN " . MY_CALENDAR_TABLE . " 
@@ -126,7 +127,7 @@ function mc_get_event_core( $id ) {
 }
 
 // get event instance (object or html)
-function mc_get_event( $id,$type='object' ) {
+function mc_get_event( $id, $type='object' ) {
 // indicates whether you want a specific instance, or a general event
 	global $wpdb;
 	$mcdb = $wpdb;

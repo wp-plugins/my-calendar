@@ -82,11 +82,10 @@ function edit_mc_templates() {
 <?php my_calendar_check_db(); ?>
     <h2><?php _e('My Calendar Information Templates','my-calendar'); ?></h2>
 	
-<div class="postbox-container" style="width: 70%">
+<div class="postbox-container jcd-wide">
 <div class="metabox-holder">
 	
 	<p><?php _e('Advanced users may customize the HTML template for each event. This page lets you create a customized view of your events in each context. All available template tags are documented on the Help page. These default templates are based on the default views with all output enabled. <strong>Custom templates will override any other output rules in your settings.</strong>','my-calendar'); ?> <a href="<?php echo admin_url("admin.php?page=my-calendar-help#templates"); ?>"><?php _e("Templates Help",'my-calendar'); ?></a> &raquo;</p>
-
 
 	<div class="ui-sortable meta-box-sortables">   
 	<div class="postbox">
@@ -95,10 +94,10 @@ function edit_mc_templates() {
 		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-templates"); ?>">
 		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 		<p>
-		<input type="checkbox" id="mc_use_grid_template" name="mc_use_grid_template" value="1"  <?php mc_is_checked('mc_use_grid_template',1); ?>/> <label for="mc_use_grid_template"><?php _e('Use this grid event template','my-calendar'); ?></label>
+		<input type="checkbox" id="mc_use_grid_template" name="mc_use_grid_template" value="1" <?php mc_is_checked('mc_use_grid_template',1); ?>/> <label for="mc_use_grid_template"><?php _e('Use this grid event template','my-calendar'); ?></label>
 		</p>
 		<p>
-		<label for="mc_grid_template"><?php _e('Your custom template for events in the calendar grid output.','my-calendar'); ?></label><br /><textarea id="mc_grid_template" name="mc_grid_template" class="template-editor" rows="12" cols="76"><?php echo $mc_grid_template; ?></textarea>
+		<label for="mc_grid_template"><?php _e('Your custom template for events in the calendar grid output.','my-calendar'); ?></label><br /><textarea id="mc_grid_template" name="mc_grid_template" class="template-editor" rows="16" cols="76"><?php echo $mc_grid_template; ?></textarea>
 		</p>
 		<p>
 			<input type="submit" name="save" class="button-primary" value="<?php _e('Save Grid Template','my-calendar'); ?>" />
@@ -115,10 +114,10 @@ function edit_mc_templates() {
 		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-templates"); ?>">
 		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 		<p>
-		<input type="checkbox" id="mc_use_list_template" name="mc_use_list_template" value="1"  <?php mc_is_checked('mc_use_list_template',1); ?>/> <label for="mc_use_list_template"><?php _e('Use this list event template','my-calendar'); ?></label>
+		<input type="checkbox" id="mc_use_list_template" name="mc_use_list_template" value="1" <?php mc_is_checked('mc_use_list_template',1); ?>/> <label for="mc_use_list_template"><?php _e('Use this list event template','my-calendar'); ?></label>
 		</p>
 		<p>
-		<label for="mc_list_template"><?php _e('Your custom template for events in calendar list output.','my-calendar'); ?></label><br /><textarea id="mc_list_template" name="mc_list_template" class="template-editor" rows="12" cols="76"><?php echo $mc_list_template; ?></textarea>
+		<label for="mc_list_template"><?php _e('Your custom template for events in calendar list output.','my-calendar'); ?></label><br /><textarea id="mc_list_template" name="mc_list_template" class="template-editor" rows="16" cols="76"><?php echo $mc_list_template; ?></textarea>
 		</p>
 		<p>
 			<input type="submit" name="save" class="button-primary" value="<?php _e('Save List Template','my-calendar'); ?>" />
@@ -135,10 +134,10 @@ function edit_mc_templates() {
 		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-templates"); ?>">
 		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 		<p>
-		<input type="checkbox" id="mc_use_mini_template" name="mc_use_mini_template" value="1"  <?php mc_is_checked('mc_use_mini_template',1); ?>/> <label for="mc_use_mini_template"><?php _e('Use this mini event template','my-calendar'); ?></label>
+		<input type="checkbox" id="mc_use_mini_template" name="mc_use_mini_template" value="1" <?php mc_is_checked('mc_use_mini_template',1); ?>/> <label for="mc_use_mini_template"><?php _e('Use this mini event template','my-calendar'); ?></label>
 		</p>
 		<p>
-		<label for="mc_mini_template"><?php _e('Your custom template for events in sidebar/mini calendar output.','my-calendar'); ?></label><br /><textarea id="mc_mini_template" name="mc_mini_template" rows="12" cols="76" class="template-editor"><?php echo $mc_mini_template; ?></textarea>
+		<label for="mc_mini_template"><?php _e('Your custom template for events in sidebar/mini calendar output.','my-calendar'); ?></label><br /><textarea id="mc_mini_template" name="mc_mini_template" rows="16" cols="76" class="template-editor"><?php echo $mc_mini_template; ?></textarea>
 		</p>
 		<p>
 			<input type="submit" name="save" class="button-primary" value="<?php _e('Save Mini Template','my-calendar'); ?>" />
@@ -155,10 +154,10 @@ function edit_mc_templates() {
 		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-templates"); ?>">
 		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 		<p>
-		<input type="checkbox" id="mc_use_details_template" name="mc_use_details_template" value="1"  <?php mc_is_checked('mc_use_details_template',1); ?>/> <label for="mc_use_details_template"><?php _e('Use this details template','my-calendar'); ?></label>
+		<input type="checkbox" id="mc_use_details_template" name="mc_use_details_template" value="1" <?php mc_is_checked('mc_use_details_template',1); ?>/> <label for="mc_use_details_template"><?php _e('Use this details template','my-calendar'); ?></label>
 		</p>
 		<p>
-		<label for="mc_details_template"><?php _e('Your custom template for events on the event details page.','my-calendar'); ?></label><br /><textarea id="mc_details_template" name="mc_details_template" rows="12" cols="76" class="template-editor"><?php echo $mc_details_template; ?></textarea>
+		<label for="mc_details_template"><?php _e('Your custom template for events on the event details page.','my-calendar'); ?></label><br /><textarea id="mc_details_template" name="mc_details_template" rows="16" cols="76" class="template-editor"><?php echo $mc_details_template; ?></textarea>
 		</p>
 		<p>
 			<input type="submit" name="save" class="button-primary" value="<?php _e('Save Details Template','my-calendar'); ?>" />
@@ -176,10 +175,10 @@ function edit_mc_templates() {
 		<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-templates"); ?>">
 		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 		<p>
-		<input type="checkbox" id="mc_use_rss_template" name="mc_use_rss_template" value="1"  <?php mc_is_checked('mc_use_rss_template',1); ?>/> <label for="mc_use_grid_template"><?php _e('Use this custom RSS event template','my-calendar'); ?></label>
+		<input type="checkbox" id="mc_use_rss_template" name="mc_use_rss_template" value="1" <?php mc_is_checked('mc_use_rss_template',1); ?>/> <label for="mc_use_grid_template"><?php _e('Use this custom RSS event template','my-calendar'); ?></label>
 		</p>
 		<p>
-		<label for="mc_rss_template"><?php _e('Your custom template for events in the RSS feed.','my-calendar'); ?></label><br /><textarea id="mc_rss_template" name="mc_rss_template" class="template-editor" rows="12" cols="76"><?php echo $mc_rss_template; ?></textarea>
+		<label for="mc_rss_template"><?php _e('Your custom template for events in the RSS feed.','my-calendar'); ?></label><br /><textarea id="mc_rss_template" name="mc_rss_template" class="template-editor" rows="16" cols="76"><?php echo $mc_rss_template; ?></textarea>
 		</p>
 		<p>
 			<input type="submit" name="save" class="button-primary" value="<?php _e('Save RSS Template','my-calendar'); ?>" />
@@ -187,13 +186,8 @@ function edit_mc_templates() {
 		</form>
 		</div>
 	</div>
-	</div>	
-	
+	</div>
 </div>
 </div>
-
-	<?php jd_show_support_box('templates'); ?>
-
-<?php
+	<?php jd_show_support_box('templates');
 }
-?>

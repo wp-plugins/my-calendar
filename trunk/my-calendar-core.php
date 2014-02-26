@@ -127,7 +127,7 @@ function mc_register_styles() {
 	global $wp_query;
 	$stylesheet = mc_get_style_path( get_option( 'mc_css_file' ),'url' );
 	wp_register_style( 'my-calendar-style', $stylesheet );
-	$admin_stylesheet = plugins_url( 'mc-admin.css', __FILE__ );
+	$admin_stylesheet = plugins_url( 'css/mc-admin.css', __FILE__ );
 	wp_register_style( 'my-calendar-admin-style', $admin_stylesheet );
 	if ( current_user_can( 'mc_manage_events' ) ) {
 		wp_enqueue_style( 'my-calendar-admin-style' );
@@ -264,14 +264,18 @@ function my_calendar_add_javascript() {
 		wp_enqueue_script( 'mc-upload' );	
 		wp_localize_script( 'mc-upload', 'thumbHeight', get_option( 'thumbnail_size_h' ) );		
 	}
-	if ( isset($_GET['page']) && $_GET['page'] == 'my-calendar-config' ) {
+	if ( isset($_GET['page']) && ( $_GET['page'] == 'my-calendar-config' || $_GET['page'] == 'my-calendar-help' ) ) {
 		wp_register_script( 'mc.tabs', plugins_url( 'js/tabs.js', __FILE__ ), array( 'jquery' ) );
 		wp_register_script( 'mc.sortable', plugins_url( 'js/sortable.js', __FILE__ ), array( 'jquery','jquery-ui-sortable' ) );
 		
 		wp_enqueue_script( 'mc.tabs' );
 		wp_enqueue_script( 'mc.sortable' );
-		
-		wp_localize_script( 'mc.tabs', 'firstItem', 'mc_editor' );		
+		if ( $_GET['page'] == 'my-calendar-config' ) {
+			$firstItem = 'mc_editor';
+		} else if ( $_GET['page'] == 'my-calendar-help' ) {
+			$firstItem = 'mc_main';
+		}
+		wp_localize_script( 'mc.tabs', 'firstItem', $firstItem );		
 	}
 	if ( isset($_GET['page']) && ( $_GET['page'] == 'my-calendar-groups' || $_GET['page'] == 'my-calendar-manage' ) ) {
 		wp_enqueue_script('jquery.checkall',plugins_url( 'js/jquery.checkall.js', __FILE__ ), array('jquery') );
@@ -380,7 +384,7 @@ function mc_footer_js() {
 function my_calendar_add_styles() {
 	if ( !empty($_GET['page']) ) {
 		if (  isset($_GET['page']) && ($_GET['page'] == 'my-calendar' || $_GET['page'] == 'my-calendar-manage' || $_GET['page'] == 'my-calendar-groups' || $_GET['page'] == 'my-calendar-categories' || $_GET['page'] == 'my-calendar-locations' || $_GET['page'] == 'my-calendar-config' || $_GET['page'] == 'my-calendar-styles' || $_GET['page'] == 'my-calendar-help' || $_GET['page'] == 'my-calendar-behaviors' ) || $_GET['page'] == 'my-calendar-templates' ) {
-			echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'mc-styles.css', __FILE__ ).'" />';
+			echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'css/mc-styles.css', __FILE__ ).'" />';
 		}
 		if ( isset($_GET['page']) && $_GET['page'] == 'my-calendar') {
 			echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'js/calendrical.css', __FILE__ ).'" />';		
@@ -1356,60 +1360,10 @@ function mc_external_link( $link, $type='event' ) {
 	return false;
 }
 
-// Adding button to the MCE toolbar (Visual Mode) 
-add_action('init', 'mc_addbuttons');
-
-// Add button hooks to the Tiny MCE 
-function mc_addbuttons() {
-	global $mc_version;
-	if ( !current_user_can('edit_posts') && !current_user_can('edit_pages') ) { return; }
-	if ( get_user_option('rich_editing') == 'true') {
-		add_filter( 'tiny_mce_version', 'mc_tiny_mce_version', 0 );
-		add_filter( 'mce_external_plugins', 'mc_plugin', 0 );
-		add_filter( 'mce_buttons', 'mc_button', 0 );
-	}
-	// Register Hooks
-	if (is_admin()) {
-		// Add Quicktag
-		add_action( 'edit_form_advanced', 'mc_add_quicktags' );
-		add_action( 'edit_page_form', 'mc_add_quicktags' );
-
-		// Queue Embed JS
-		add_action( 'admin_head', 'mc_admin_js_vars');
-		wp_enqueue_script( 'mcqt', plugins_url('button/mcb.js',__FILE__), array(), $mc_version );
-	} 
-}
-
-// Break the browser cache of TinyMCE
-function mc_tiny_mce_version( ) {
-	global $mc_version;
-	return 'mcb-' . $mc_version;
-}
-
-// Load the custom TinyMCE plugin
-function mc_plugin( $plugins ) {
-	$plugins['mcqt'] = plugins_url('button/tinymce3/editor_plugin.js', __FILE__ );
-	return $plugins;
-}
-
-// Add the buttons: separator, custom
-function mc_button( $buttons ) {
-	array_push( $buttons, 'separator', 'myCalendar' );
-	return $buttons;
-}
-
-
 add_action('admin_enqueue_scripts', 'mc_scripts');
 function mc_scripts( $hook ) {
-	if ( $hook == 'edit.php' || $hook == 'post.php' ) {
-		wp_enqueue_script(
-			'mc_quicktags',
-			plugin_dir_url(__FILE__) . 'js/mc-quicktags.js',
-			array('quicktags')
-		);
-	}
 	global $current_screen;
-	if ( $current_screen->id == 'toplevel_page_my-calendar' ) {
+	if ( $current_screen->id == 'toplevel_page_my-calendar' && function_exists( 'jd_doTwitterAPIPost' ) ) {
 		// later.
 		wp_enqueue_script(  'charCount', plugins_url( 'wp-to-twitter/js/jquery.charcount.js'), array('jquery') );
 	}
@@ -1419,45 +1373,13 @@ function mc_scripts( $hook ) {
 	}
 }
 
-// Add a button to the quicktag view (HTML Mode) >>>
-function mc_add_quicktags(){
-?>
-<script type="text/javascript">
-// <![CDATA[
-(function(){
-	if (typeof jQuery === 'undefined') {
-		return;
-	}
-	jQuery(document).ready(function($){
-		// Add the buttons to the HTML view
-		$("#ed_toolbar").append('<input type="button" class="ed_button" onclick="myCalQT.Tag.embed.apply(myCalQT.Tag); return false;" title="Insert My Calendar" value="My Calendar" />');
-	});
-}());
-// ]]>
-</script>
-<?php	
-}
-
 function mc_newline_replace($string) {
   return (string)str_replace(array("\r", "\r\n", "\n"), '', $string);
 }
 
-// Set URL for the generator page
-function mc_admin_js_vars(){
-?>
-<script type="text/javascript">
-// <![CDATA[
-	if (typeof myCalQT !== 'undefined' && typeof myCalQT.Tag !== 'undefined') {
-		myCalQT.Tag.configUrl = "<?php echo plugins_url( 'button/generator.php',__FILE__ ); ?>";
-	}
-// ]]>	
-</script>
-<?php
-}
-
-function reverse_array($array, $boolean, $order) {
+function reverse_array( $array, $boolean, $order ) {
 	if ( $order == 'desc' ) {
-		return array_reverse($array, $boolean);
+		return array_reverse( $array, $boolean );
 	} else {
 		return $array;
 	}
@@ -1472,8 +1394,7 @@ if ( !function_exists( 'wp_is_mobile' ) ) {
 	if ( !is_plugin_active_for_network( 'my-calendar/my-calendar.php' ) ) {
 		function wp_is_mobile() { return false; }
 	}
-}	
-
+}
 
 function mc_is_mobile() {
 	return apply_filters( 'mc_is_mobile', wp_is_mobile() );
@@ -1732,7 +1653,7 @@ function mc_change_instances( $id, $repeats, $begin=false ) {
 	return true;
 }
 
-/* indiscriminately deletes all instances of an event without deleting the event details. Sets stage for rebuilding event instances. */
+/* deletes all instances of an event without deleting the event details. Sets stage for rebuilding event instances. */
 function mc_delete_instances( $id ) { 
 	global $wpdb;
 	$id = (int) $id;

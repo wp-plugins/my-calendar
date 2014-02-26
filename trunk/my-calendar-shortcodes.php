@@ -43,7 +43,9 @@ function my_calendar_insert_upcoming($atts) {
 				'skip' => '0',
 				'show_today' => 'yes',
 				'author' => 'default',
-				'host' => 'default'
+				'host' => 'default',
+				'ltype' => '',
+				'lvalue' => ''
 			), $atts, 'my_calendar_upcoming' ) );
 	global $user_ID;			
 	if ( $author == 'current' ) {

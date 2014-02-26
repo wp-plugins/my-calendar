@@ -14,7 +14,6 @@ function my_calendar_api() {
 			$host = ( isset( $_GET['host'] ) ) ? $_GET['host'] : '' ;
 			
 			$data = my_calendar_events( $from, $to, $category, $ltype, $lvalue, 'api', $author, $host );
-
 			$output = mc_format_api( $data, $format );
 			// if json, encode as json
 			// if xml, encode as xml

@@ -131,123 +131,106 @@ function edit_my_calendar_styles() {
 	} else {
 		$my_calendar_style = __('Sorry. The file you are looking for doesn\'t appear to exist. Please check your file name and location!', 'my-calendar');
 	}
-	
 ?>
 <div class="wrap jd-my-calendar">
-<?php 
-my_calendar_check_db();
-?>
+<?php my_calendar_check_db(); ?>
 <h2><?php _e('My Calendar Styles','my-calendar'); ?></h2>
-<div class="postbox-container" style="width: 70%">
-<div class="metabox-holder">
-
-<div class="ui-sortable meta-box-sortables">   
-<div class="postbox">
-	<h3><?php _e('Calendar Style Settings','my-calendar'); ?></h3>
-	<div class="inside">	
-	
-    <form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-styles"); ?>">
-	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
-	<div><input type="hidden" value="true" name="mc_choose_style" /></div>
-	<fieldset>	
-	<p>
-	<label for="mc_css_file"><?php _e('Select My Calendar Theme','my-calendar'); ?></label>
-	<select name="mc_css_file" id="mc_css_file">
-<?php
-	$custom_directory = str_replace('/my-calendar/','',$dir) . '/my-calendar-custom/styles/';
-	$directory = dirname(__FILE__).'/styles/';
-	
-	$files = @my_csslist($custom_directory);
-	if (!empty($files)) {
-	echo "<optgroup label='".__('Your Custom Stylesheets','my-calendar')."'>\n";
-	foreach ($files as $value) {
-		$test = "mc_custom_".$value;
-		$selected = (get_option('mc_css_file') == $test )?" selected='selected'":"";
-		echo "<option value='mc_custom_$value'$selected>$value</option>\n";
-	}	
-	echo "</optgroup>";
-	} 
-	$files = my_csslist($directory);
-	echo "<optgroup label='".__('Installed Stylesheets','my-calendar')."'>\n";
-	foreach ($files as $value) {
-		$selected = (get_option('mc_css_file') == $value )?" selected='selected'":"";
-		echo "<option value='$value'$selected>$value</option>\n";
-	}
-	echo "</optgroup>";
-?>
-	</select>
-	<input type="submit" name="save" class="button-secondary" value="<?php _e('Choose Style','my-calendar'); ?>" />
-	</p>	
-	</fieldset>
-	</form>
-	<hr />
-    <form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-styles"); ?>">
-	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
-	<div><input type="hidden" value="true" name="mc_edit_style" />
-	<input type="hidden" name="mc_css_file" value="<?php echo get_option('mc_css_file'); ?>" />
+<div class="postbox-container jcd-wide">
+	<div class="metabox-holder">
+		<div class="ui-sortable meta-box-sortables">   
+			<div class="postbox">
+				<h3><?php _e('Calendar Style Settings','my-calendar'); ?></h3>
+				<div class="inside">	
+				
+				<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-styles"); ?>">
+				<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
+				<div><input type="hidden" value="true" name="mc_choose_style" /></div>
+				<fieldset>	
+				<p>
+				<label for="mc_css_file"><?php _e('Select My Calendar Theme','my-calendar'); ?></label>
+				<select name="mc_css_file" id="mc_css_file"><?php
+				$custom_directory = str_replace('/my-calendar/','',$dir) . '/my-calendar-custom/styles/';
+				$directory = dirname(__FILE__).'/styles/';
+				
+				$files = @my_csslist($custom_directory);
+				if (!empty($files)) {
+				echo "<optgroup label='".__('Your Custom Stylesheets','my-calendar')."'>\n";
+				foreach ($files as $value) {
+					$test = "mc_custom_".$value;
+					$selected = (get_option('mc_css_file') == $test )?" selected='selected'":"";
+					echo "<option value='mc_custom_$value'$selected>$value</option>\n";
+				}	
+				echo "</optgroup>";
+				} 
+				$files = my_csslist($directory);
+				echo "<optgroup label='".__( 'Installed Stylesheets','my-calendar' )."'>\n";
+				foreach ( $files as $value ) {
+					$selected = (get_option('mc_css_file') == $value )?" selected='selected'":"";
+					echo "<option value='$value'$selected>$value</option>\n";
+				}
+				echo "</optgroup>"; ?>
+				</select>
+				<input type="submit" name="save" class="button-secondary" value="<?php _e('Choose Style','my-calendar'); ?>" />
+				</p>	
+				</fieldset>
+				</form>
+				<hr />
+				<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-styles"); ?>">
+				<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
+				<div><input type="hidden" value="true" name="mc_edit_style" />
+				<input type="hidden" name="mc_css_file" value="<?php echo get_option('mc_css_file'); ?>" />
+				</div>
+				<?php 
+				if ( get_option('mc_file_permissions') == 'false' ) {
+					echo "<div id='my_calendar_old_styles'>
+					<p>".__('My Calendar was unable to update your CSS files during the upgrade. Please check your file permissions if you wish to edit your My Calendar styles. Your previously stored styles are below. This message and these styles will be deleted from the database when you successfully update your stylesheet.','my-calendar')."</p><pre>";
+					echo stripcslashes(get_option('mc_style')); 
+					echo get_option('mc_file_permission');
+					echo "</pre>
+					</div>";
+				}
+				?>
+				<fieldset style="position:relative;">
+				<legend><?php _e('CSS Style Options','my-calendar'); ?></legend>
+				<p>
+				<label for="mc_show_css"><?php _e('Apply CSS on these pages (comma separated IDs)','my-calendar'); ?></label> <input type="text" id="mc_show_css" name="mc_show_css" value="<?php echo $mc_show_css; ?>" />
+				</p> 	
+				<p>
+				<input type="checkbox" id="reset_styles" name="reset_styles" <?php if ( mc_is_custom_style( get_option('mc_css_file') ) ) { echo "disabled='disabled'"; } ?> /> <label for="reset_styles"><?php _e('Restore My Calendar stylesheet','my-calendar'); ?></label> <input type="checkbox" id="use_styles" name="use_styles" <?php mc_is_checked('mc_use_styles','true'); ?> /> <label for="use_styles"><?php _e('Disable My Calendar Stylesheet','my-calendar'); ?></label>
+				</p>	
+				<p>
+				<label for="style"><?php _e('Edit the stylesheet for My Calendar','my-calendar'); ?></label><br /><textarea class="style-editor" id="style" name="style" rows="30" cols="80"<?php if ( get_option('mc_use_styles') == 'true' ) { echo "disabled='disabled'"; } ?>><?php echo $my_calendar_style; ?></textarea>
+				</p>	
+				<p>
+					<input type="submit" name="save" class="button-primary button-adjust" value="<?php _e('Save Changes','my-calendar'); ?>" />
+				</p>	
+				</fieldset>
+				</form>
+				<?php
+				$left_string  = normalize_whitespace($my_calendar_style);
+				$right_string = normalize_whitespace($mc_current_style);
+				if ( $right_string ) { // if right string is blank, there is no default
+					if ( isset( $_GET['diff'] ) ) {
+						echo '<div class="wrap jd-my-calendar" id="diff">';
+						echo wp_text_diff( $left_string,$right_string, array( 'title' => __('Comparing Your Style with latest installed version of My Calendar','my-calendar'), 'title_right' => __('Latest (from plugin)','my-calendar'), 'title_left' => __('Current (in use)','my-calendar') ) );
+						echo '</div>';
+					} else if ( trim( $left_string )!=trim( $right_string ) ) {
+						echo '<div class="wrap jd-my-calendar">';
+						echo '<div class="updated"><p>'.__('There have been updates to the stylesheet.','my-calendar').' <a href="'.admin_url("admin.php?page=my-calendar-styles&amp;diff#diff").'">'.__('Compare Your Stylesheet with latest installed version of My Calendar.','my-calendar').'</a></p></div>';
+						echo '</div>';
+					} else {
+						echo '
+						<div class="wrap jd-my-calendar">
+							<p>'.__('Your stylesheet matches that included with My Calendar.','my-calendar').'</p>
+						</div>';
+					}
+				} ?>
+			</div>
+			</div>
+			<p><?php _e('Resetting your stylesheet will set your stylesheet to the version of that style currently distributed with the plug-in.','my-calendar'); ?></p>
+		</div>
 	</div>
-	<?php 
-	if ( get_option('mc_file_permissions') == 'false' ) {
-		echo "<div id='my_calendar_old_styles'>
-		<p>".__('My Calendar was unable to update your CSS files during the upgrade. Please check your file permissions if you wish to edit your My Calendar styles. Your previously stored styles are below. This message and these styles will be deleted from the database when you successfully update your stylesheet.','my-calendar')."</p><pre>";
-		echo stripcslashes(get_option('mc_style')); 
-		echo get_option('mc_file_permission');
-		echo "</pre>
-		</div>";
-	}
-	?>
-	<fieldset style="position:relative;">
-    <legend><?php _e('CSS Style Options','my-calendar'); ?></legend>
-	<p>
-	<label for="mc_show_css"><?php _e('Apply CSS on these pages (comma separated IDs)','my-calendar'); ?></label> <input type="text" id="mc_show_css" name="mc_show_css" value="<?php echo $mc_show_css; ?>" />
-	</p> 	
-	<p>
-	<input type="checkbox" id="reset_styles" name="reset_styles" <?php if ( mc_is_custom_style( get_option('mc_css_file') ) ) { echo "disabled='disabled'"; } ?> /> <label for="reset_styles"><?php _e('Restore My Calendar stylesheet','my-calendar'); ?></label> <input type="checkbox" id="use_styles" name="use_styles" <?php mc_is_checked('mc_use_styles','true'); ?> /> <label for="use_styles"><?php _e('Disable My Calendar Stylesheet','my-calendar'); ?></label>
-	</p>	
-	<p>
-	<label for="style"><?php _e('Edit the stylesheet for My Calendar','my-calendar'); ?></label><br /><textarea class="style-editor" id="style" name="style" rows="30" cols="80"<?php if ( get_option('mc_use_styles') == 'true' ) { echo "disabled='disabled'"; } ?>><?php echo $my_calendar_style; ?></textarea>
-	</p>	
-	<p>
-		<input type="submit" name="save" class="button-primary button-adjust" value="<?php _e('Save Changes','my-calendar'); ?>" />
-	</p>	
-	</fieldset>
-  </form>
-  
-	<?php
-	$left_string  = normalize_whitespace($my_calendar_style);
-	$right_string = normalize_whitespace($mc_current_style);
-	if ( $right_string ) { // if right string is blank, there is no default
-		if ( isset( $_GET['diff'] ) ) {
-			echo '<div class="wrap jd-my-calendar" id="diff">';
-			echo wp_text_diff( $left_string,$right_string, array( 'title' => __('Comparing Your Style with latest installed version of My Calendar','my-calendar'), 'title_right' => __('Latest (from plugin)','my-calendar'), 'title_left' => __('Current (in use)','my-calendar') ) );
-			echo '</div>';
-		} else if ( trim( $left_string )!=trim( $right_string ) ) {
-			echo '<div class="wrap jd-my-calendar">';
-			echo '<div class="updated"><p>'.__('There have been updates to the stylesheet.','my-calendar').' <a href="'.admin_url("admin.php?page=my-calendar-styles&amp;diff#diff").'">'.__('Compare Your Stylesheet with latest installed version of My Calendar.','my-calendar').'</a></p></div>';
-			echo '</div>';
-		} else {
-			echo '
-			<div class="wrap jd-my-calendar">
-				<p>'.__('Your stylesheet matches that included with My Calendar.','my-calendar').'</p>
-			</div>';
-		}
-	}
-
-	?>  
-  
-  </div>
- </div>
-<p><?php _e('Resetting your stylesheet will set your stylesheet to the version of that style currently distributed with the plug-in.','my-calendar'); ?></p>
- </div>
- </div>
- </div>
- 
+	</div>
  	<?php jd_show_support_box(); ?>
-
- </div>
-  <?php
-
-
+	</div><?php
 }
-
-?>

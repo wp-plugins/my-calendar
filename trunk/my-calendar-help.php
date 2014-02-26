@@ -5,7 +5,7 @@ function my_calendar_help() { ?>
 
 <div class="wrap jd-my-calendar">
 <h2><?php _e('How to use My Calendar','my-calendar'); ?></h2>
-<div class="postbox-container" style="width: 70%">
+<div class="postbox-container jcd-wide">
 <div class="metabox-holder">
 
 <div class="ui-sortable meta-box-sortables">   
@@ -14,6 +14,7 @@ function my_calendar_help() { ?>
 	<div class="inside">
 	<?php do_action( 'mc_before_help' ); ?>
 	<ul class="mc-settings checkboxes">
+		<li><a href="#mc-generator"><?php _e('Shortcode Generator','my-calendar'); ?></a></li>	
 		<li><a href="#mc-shortcodes"><?php _e('Shortcodes','my-calendar'); ?></a></li>
 		<li><a href="#icons"><?php _e('Icons','my-calendar'); ?></a></li>
 		<li><a href="#mc-styles"><?php _e('Styles','my-calendar'); ?></a></li>
@@ -40,6 +41,30 @@ function my_calendar_help() { ?>
 	</div>
 </div>
 </div>
+
+<div class="ui-sortable meta-box-sortables" id="mc-generator">
+<div class="postbox">
+<h3 id="help"><?php _e("My Calendar Shortcode Generator",'my-calendar'); ?></h3>
+	<div class="inside mc-tabs">
+		<?php mc_generate(); ?>
+		<ul class='tabs'>
+			<li><a href='#mc_main'><?php _e( 'Main','my-calendar' ); ?></a></li>
+			<li><a href='#mc_upcoming'><?php _e( 'Upcoming','my-calendar' ); ?></a></li>
+			<li><a href='#mc_today'><?php _e( 'Today','my-calendar' ); ?></a></li>
+		</ul>
+		<div class='wptab mc_main' id='mc_main' aria-live='polite'>	
+			<?php mc_generator( 'main' ); ?>
+		</div>
+		<div class='wptab mc_upcoming' id='mc_upcoming' aria-live='polite'>
+			<?php mc_generator( 'upcoming' ); ?>
+		</div>
+		<div class='wptab mc_today' id='mc_today' aria-live='polite'>
+			<?php mc_generator( 'today' ); ?>
+		</div>
+	</div>
+</div>
+</div>
+
 
 <div class="ui-sortable meta-box-sortables">
 <div class="postbox" id="mc-shortcodes">
@@ -71,7 +96,7 @@ function my_calendar_help() { ?>
 <em><?php _e('The main My Calendar shortcode can be generated from a button in your post and page editor. The mini calendar can also be accessed and configured as a widget.','my-calendar'); ?></em>
 </p>
 <h4><?php _e('Additional Views (Upcoming events, today\'s events)','my-calendar'); ?></h4>
-<p class="example"><code>[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" author="1" host="1" template="{title} {date}" order="asc" show_today="yes" skip="0"]</code></p>
+<p class="example"><code>[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" author="1" host="1" template="{title} {date}" order="asc" show_today="yes" skip="0" ltype="" lvalue=""]</code></p>
 <p>
 	<?php _e('Displays the output of the Upcoming Events widget. <code>before</code> and <code>after</code> are numbers; <code>type</code> is either "event" or "days", and <code>category</code> and <code>author</code> work the same as in the main calendar shortcode. Templates use the template codes listed below. <code>fallback</code> provides text if no events meet your criteria. Order sets sort order for the list &ndash; ascending (<code>asc</code>) or descending (<code>desc</code>). <code>show_today</code> indicates whether to include today\'s events in the list. <code>Skip</code> is how many events to skip in the list.','my-calendar'); ?>
 </p>
@@ -90,6 +115,10 @@ function my_calendar_help() { ?>
 
 <h4><?php _e( 'Calendar Filter Shortcodes', 'my-calendar' ); ?></h4>
 
+<p class="example"><code>[mc_filters show="categories,locations"]</code></p>
+<p>
+	<?php _e('Displays all available filters as a single form. The <code>show</code> attribute takes three keywords: categories, locations, and access, to indicate which filters to show and in what order.','my-calendar'); ?>
+</p>
 <p class="example"><code>[my_calendar_locations show="list" type="saved" datatype="name"]</code></p>
 <p>
 	<?php _e('List of event locations, as a list of links or as a select form. <code>show</code> is either <code>list</code> or <code>form</code>, <code>type</code> is <code>saved</code> (to show items from stored locations), or <code>custom</code> (to show options configured in location settings). <code>datatype</code> must be the type of data your limits are using: <code>name</code> (business name), <code>city</code>, <code>state</code>, <code>country</code>, <code>zip</code> (postal code), or <code>region</code>.','my-calendar'); ?>
@@ -167,6 +196,9 @@ function my_calendar_help() { ?>
 
 		<dt><code>{time}</code></dt>
 		<dd><?php _e('Displays the start time for the event.','my-calendar'); ?></dd>
+
+		<dt><code>{runtime}</code></dt>
+		<dd><?php _e('Human language estimate of how long an event will run.','my-calendar'); ?></dd>
 
 		<dt><code>{usertime}</code></dt>
 		<dd><?php _e('Displays the start time for the event adjusted to the current user\'s time zone settings. Returns <code>{time}</code> if user settings are disabled or if the user has not selected a preferred time zone.','my-calendar'); ?></dd>
