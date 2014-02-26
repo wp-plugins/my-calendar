@@ -257,7 +257,7 @@ function edit_my_calendar_config() {
 		update_option( 'mc_topnav', implode( ',' ,$top ) );
 		update_option('mc_show_map',( !empty($_POST['mc_show_map']) && $_POST['mc_show_map']=='on')?'true':'false');
 		update_option('mc_show_address',( !empty($_POST['mc_show_address']) && $_POST['mc_show_address']=='on')?'true':'false'); 
-		update_option('mc_hide_icons',( !empty($_POST['mc_hide_icons']) && $_POST['mc_hide_icons']=='on')?'false':'true');
+		update_option('mc_hide_icons',( !empty($_POST['mc_hide_icons']) && $_POST['mc_hide_icons']=='on')?'true':'false');
 		update_option('mc_event_link_expires',( !empty($_POST['mc_event_link_expires']) && $_POST['mc_event_link_expires']=='on')?'true':'false');
 		update_option('mc_apply_color',$_POST['mc_apply_color']);
 		update_option('mc_event_registration',( !empty($_POST['mc_event_registration']) && $_POST['mc_event_registration']=='on')?'true':'false');
@@ -389,7 +389,7 @@ function edit_my_calendar_config() {
 <?php my_calendar_check_db();?>
     <div id="icon-options-general" class="icon32"><br /></div>
 	<h2><?php _e('My Calendar Options','my-calendar'); ?></h2>
-<div class="postbox-container" style="width: 70%">
+<div class="postbox-container jcd-wide">
 <div class="metabox-holder">
   <?php
 //update_option( 'ko_calendar_imported','false' ); // for testing importing.
@@ -504,7 +504,8 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<li><?php mc_settings_field ( 'mc_event_closed', __('If events are closed','my-calendar'), __('Registration is closed','my-calendar') ); ?></li>	
 	<li><?php mc_settings_field ( 'mc_week_caption', __('Week view caption:','my-calendar'), '', __( 'Available tag: <code>{date format=""}</code>','my-calendar' ) ); ?></li>
 	<li><?php mc_settings_field ( 'my_calendar_caption', __('Extended caption:','my-calendar'), '', __( 'Follows month/year in list views.','my-calendar' ) ); ?></li>
-	<li><?php mc_settings_field ( 'mc_title_template', __('Event title template','my-calendar'), '', "<a href='".admin_url("admin.php?page=my-calendar-help#templates")."'>".__( "Templating Help",'my-calendar' ).'</a>' ); ?></li>
+	<?php $templates = get_option('mc_templates'); $title_template = $templates['title']; ?>
+	<li><?php mc_settings_field ( 'mc_title_template', __('Event title template','my-calendar'), $title_template, "<a href='".admin_url("admin.php?page=my-calendar-help#templates")."'>".__( "Templating Help",'my-calendar' ).'</a>' ); ?></li>
 	<li><?php mc_settings_field ( 'mc_details_label', __('Event details link text','my-calendar'), '', __('Tags: <code>{title}</code>, <code>{location}</code>, <code>{color}</code>, <code>{icon}</code>, <code>{date}</code>, <code>{time}</code>.','my-calendar') ); ?></li>
 	<li><?php mc_settings_field ( 'mc_link_label', __('Event URL link text','my-calendar'), '', "<a href='".admin_url("admin.php?page=my-calendar-help#templates")."'>".__( "Templating Help",'my-calendar' ).'</a>' ); ?></li>
 	<li><?php mc_settings_field ( 'mc_event_title_template', __('Title element template','my-calendar'), '{title} &raquo; {date}', __('Current: %s', 'my-calendar' ) ); ?></li>		
@@ -596,38 +597,38 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 
 	<fieldset>
 	<legend><?php _e('Event Details Pop-up','my-calendar'); ?></legend>
-	<p><?php _e('The checked items will be shown in your event details view. Does not apply if you are using a custom template','my-calendar'); ?>
-	<ul class="columns">
-	<li><?php mc_settings_field ( 'mc_display_author', __('Author\'s name','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
-	<li><?php mc_settings_field ( 'mc_show_event_vcal', __('Link to single event iCal download','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
-	<li><?php mc_settings_field ( 'mc_show_gcal', __('Link to submit event to Google Calendar','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>		
-	<li><?php mc_settings_field ( 'mc_hide_icons', __('Category icons','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
-	<li><?php mc_settings_field ( 'mc_show_map', __('Link to Google Map','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
-	<li><?php mc_settings_field ( 'mc_show_address', __('Event Address','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
-	<li><?php mc_settings_field ( 'mc_short', __('Short description','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
-	<li><?php mc_settings_field ( 'mc_desc', __('Full description','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
-	<li><?php mc_settings_field ( 'mc_process_shortcodes', __('Process WordPress shortcodes in descriptions','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>	
-	<li><?php mc_settings_field ( 'mc_details', __('Link to event details (requires <a href=\'#mc_uri\'>URL</a>)','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
-	<li><?php mc_settings_field ( 'mc_event_link', __('External link','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
-	<li><?php mc_settings_field ( 'mc_event_registration', __('Registration info','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
-	</ul>
+		<p><?php _e('The checked items will be shown in your event details view. Does not apply if you are using a custom template','my-calendar'); ?>
+		<ul class="checkboxes">
+			<li><?php mc_settings_field ( 'mc_display_author', __('Author\'s name','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+			<li><?php mc_settings_field ( 'mc_show_event_vcal', __('Link to single event iCal download','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+			<li><?php mc_settings_field ( 'mc_show_gcal', __('Link to submit event to Google Calendar','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>		
+			<li><?php mc_settings_field ( 'mc_hide_icons', __('Hide Category icons','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+			<li><?php mc_settings_field ( 'mc_show_map', __('Link to Google Map','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+			<li><?php mc_settings_field ( 'mc_show_address', __('Event Address','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+			<li><?php mc_settings_field ( 'mc_short', __('Short description','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+			<li><?php mc_settings_field ( 'mc_desc', __('Full description','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+			<li><?php mc_settings_field ( 'mc_process_shortcodes', __('Process WordPress shortcodes in descriptions','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>	
+			<li><?php mc_settings_field ( 'mc_details', __('Link to event details (requires <a href=\'#mc_uri\'>URL</a>)','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+			<li><?php mc_settings_field ( 'mc_event_link', __('External link','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+			<li><?php mc_settings_field ( 'mc_event_registration', __('Registration info','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+		</ul>
 	</fieldset>
 	<fieldset>
 	<legend><?php _e('Event Category Display','my-calendar'); ?></legend>
-	<ul class='checkboxes'>
-	<?php mc_settings_field ( 'mc_apply_color', array( 'default'=> __('No category colors with titles.','my-calendar'), 'font'=>__('Titles are in category colors.','my-calendar'), 'background'=>__('Titles have category color as background.','my-calendar') ), 'default', '', array(), 'radio' ); ?>
-	<li><?php mc_settings_field ( 'mc_inverse_color', __('Optimize contrast for category colors.','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
-	</ul>	
+		<ul class='checkboxes'>
+			<?php mc_settings_field ( 'mc_apply_color', array( 'default'=> __('No category colors with titles.','my-calendar'), 'font'=>__('Titles are in category colors.','my-calendar'), 'background'=>__('Titles have category color as background.','my-calendar') ), 'default', '', array(), 'radio' ); ?>
+			<li><?php mc_settings_field ( 'mc_inverse_color', __('Optimize contrast for category colors.','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+		</ul>	
 	<?php // End Event Options // ?>
 	</fieldset>
 	<fieldset>
 	<legend><?php _e('Event Scheduling Defaults','my-calendar'); ?></legend>
-	<ul>
-	<li><?php mc_settings_field ( 'mc_event_link_expires', __('Event links expire after event passes.','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>	
-	<li><?php mc_settings_field ( 'mc_no_fifth_week', __('If a recurring event falls on a date that doesn\'t exist (like the 5th Wednesday in February), move it back one week.','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
-	<li>
-	<label for="mc_shc"><?php _e('Holiday Category','my-calendar'); ?></label>
-	<select id="mc_shc" name="mc_skip_holidays_category">
+		<ul>
+			<li><?php mc_settings_field ( 'mc_event_link_expires', __('Event links expire after event passes.','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>	
+			<li><?php mc_settings_field ( 'mc_no_fifth_week', __('If a recurring event falls on a date that doesn\'t exist (like the 5th Wednesday in February), move it back one week.','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+			<li>
+			<label for="mc_shc"><?php _e('Holiday Category','my-calendar'); ?></label>
+			<select id="mc_shc" name="mc_skip_holidays_category">
 			<option value=''> -- <?php _e('None','my-calendar'); ?> -- </option>
 			<?php
 			// Grab all the categories and list them
@@ -642,9 +643,9 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 				}
 			?>
 			</select>
-    </li>
-	<li><?php mc_settings_field ( 'mc_skip_holidays', __('If an event coincides with an event in the designated "Holiday" category, do not show the event.','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
-	</ul>	
+			</li>
+			<li><?php mc_settings_field ( 'mc_skip_holidays', __('If an event coincides with an event in the designated "Holiday" category, do not show the event.','my-calendar'), '', '', array(), 'checkbox-single' ); ?></li>
+		</ul>	
 	<?php // End Scheduling Options // ?>
 	</fieldset>
 	<p><input type="submit" name="save" class="button-primary" value="<?php _e('Save Output Settings','my-calendar'); ?>" /></p>
@@ -697,7 +698,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<fieldset>
 	<legend><?php _e('Select which input fields will be available when adding or editing events.','my-calendar'); ?></legend>
 	<div><input type='hidden' name='mc_input' value='true' /></div>
-	<ul class="columns">
+	<ul class="checkboxes">
 	<?php 
 		$input_options = get_option('mc_input_options');
 		$input_labels = array('event_location_dropdown'=>__('Event Location Dropdown Menu','my-calendar'),'event_short'=>__('Event Short Description field','my-calendar'),'event_desc'=>__('Event Description Field','my-calendar'),'event_category'=>__('Event Category field','my-calendar'),'event_image'=>__('Event Image field','my-calendar'),'event_link'=>__('Event Link field','my-calendar'),'event_recurs'=>__('Event Recurrence Options','my-calendar'),'event_open'=>__('Event Registration options','my-calendar'),'event_location'=>__('Event Location fields','my-calendar'),'event_use_editor'=>__('Use HTML Editor in Event Description Field','my-calendar'),'event_specials'=>__('Set Special Scheduling options','my-calendar'), 'event_access'=>__("Event Accessibility", 'my-calendar' ) );
@@ -757,7 +758,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 <div class="ui-sortable meta-box-sortables">   
 <div class="postbox" id="my-calendar-permissions">
 	<h3><?php _e('My Calendar Permissions','my-calendar'); ?></h3>
-	<div class="inside">	
+	<div class="inside mc-tabs">	
 	<?php if ( current_user_can('administrator') ) { ?>
 
     <form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-config"); ?>">

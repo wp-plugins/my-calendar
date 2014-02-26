@@ -467,36 +467,36 @@ function mc_migrate_db() {
 	global $wpdb, $initial_occur_db;
 	// this function migrates the DB from version 1.10.x to version 2.0.
 	$tables = $wpdb->get_results("show tables;");
-		foreach ( $tables as $table ) {
-			foreach ( $table as $value )  {
-				if ( $value == my_calendar_event_table() ) {
-					$count = $wpdb->get_var( 'SELECT count(1) from '.my_calendar_event_table() );
-					$count2 = $wpdb->get_var( 'SELECT count(1) from '.my_calendar_table() );
-					if ( $count2 > 0 && $count > 0 ) {
-						$migrated = true; // both tables have event data
-						return;
-					}
-					if ( $count2 == 0 && $count == 0 ) {
-						return; // no events, migration unnecessary
-					}
-					break 2;
+	foreach ( $tables as $table ) {
+		foreach ( $table as $value )  {
+			if ( $value == my_calendar_event_table() ) {
+				$count = $wpdb->get_var( 'SELECT count(1) from '.my_calendar_event_table() );
+				$count2 = $wpdb->get_var( 'SELECT count(1) from '.my_calendar_table() );
+				if ( $count2 > 0 && $count > 0 ) {
+					$migrated = true; // both tables have event data
+					return;
 				}
+				if ( $count2 == 0 && $count == 0 ) {
+					return; // no events, migration unnecessary
+				}
+				break 2;
 			}
 		}
-		// 2) create new occurrences database, if necessary
-		//dbDelta($initial_occur_db);
-		// 3) migrate events
-		$sql = "SELECT event_id, event_begin, event_time, event_end, event_endtime FROM ".my_calendar_table();
-		$events = $wpdb->get_results($sql);
-		foreach ( $events as $event ) {
-			// assign endtimes to all events
-			if ( $event->event_endtime == '00:00:00' && $event->event_time != '00:00:00' ) {
-				$event->event_endtime = date('H:i:s',strtotime( "$event->event_time +1 hour" ) );
-				mc_flag_event( $event->event_id, $event->event_endtime );
-			}
-			$dates = array( 'event_begin'=>$event->event_begin,'event_end'=>$event->event_end,'event_time'=>$event->event_time,'event_endtime'=>$event->event_endtime );
-			$event = mc_increment_event( $event->event_id, $dates );
+	}
+	// 2) create new occurrences database, if necessary
+	//dbDelta($initial_occur_db);
+	// 3) migrate events
+	$sql = "SELECT event_id, event_begin, event_time, event_end, event_endtime FROM ".my_calendar_table();
+	$events = $wpdb->get_results($sql);
+	foreach ( $events as $event ) {
+		// assign endtimes to all events
+		if ( $event->event_endtime == '00:00:00' && $event->event_time != '00:00:00' ) {
+			$event->event_endtime = date('H:i:s',strtotime( "$event->event_time +1 hour" ) );
+			mc_flag_event( $event->event_id, $event->event_endtime );
 		}
+		$dates = array( 'event_begin'=>$event->event_begin,'event_end'=>$event->event_end,'event_time'=>$event->event_time,'event_endtime'=>$event->event_endtime );
+		$event = mc_increment_event( $event->event_id, $dates );
+	}
 }
 
 function mc_flag_event( $id,$time ) {

@@ -2,7 +2,7 @@
 Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager, event calendar
-Requires at least: 3.3.0
+Requires at least: 3.4.2
 Tested up to: 3.8.1
 License: GPLv2 or later
 Stable tag: 2.2.13
@@ -102,6 +102,7 @@ This is a major revision.
 * Bug fix: Trim spaces on above/below navigation strings.
 * Bug fix: If an event ends at midnight, automatically end tomorrow unless set for a later date.
 * Bug fix: Don't show events on both days if they end at midnight.
+* Bug fix: Don't attempt to enqueue jquery.charcount.js if WP to Twitter not installed.
 
 * New template tag: {runtime} to show human language version of length of event.
 * New feature: Accessibility features for locations.
@@ -115,6 +116,7 @@ This is a major revision.
 * New feature: data API to fetch event data in JSON or RSS formats. 
 * New feature: Archive events to hide from admin events list. 
 * New feature: Control input options for multiple types of location input data. 
+* New feature: Shortcode generator for primary, upcoming, and today's events shortcodes.
 
 * New filter: mc_date_format for customizing date formats.
 * New filter: customize search results page: mc_search_page

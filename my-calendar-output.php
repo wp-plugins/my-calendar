@@ -459,8 +459,8 @@ echo '<!DOCTYPE html>
 <title>'.get_bloginfo('name').' - '.__('Calendar: Print View','my-calendar').'</title>
 <meta name="generator" content="My Calendar for WordPress" />
 <meta name="robots" content="noindex,nofollow" />';
-if ( mc_file_exists( 'mc-print.css' ) ) {
-	$stylesheet = mc_get_file( 'mc-print.css', 'url' );
+if ( mc_file_exists( 'css/mc-print.css' ) ) {
+	$stylesheet = mc_get_file( 'css/mc-print.css', 'url' );
 } else {
 	$stylesheet = $url."mc-print.css";
 }
@@ -1287,27 +1287,26 @@ function mc_filters( $args ) {
 	$form = "
 	<div id='mc-filters'>
 		<form action='".$current_url."' method='get'>\n";
-		
-	$qsa = array();
-	parse_str($_SERVER['QUERY_STRING'],$qsa);
-	if ( !isset( $_GET['cid'] ) ) { $form .= '<input type="hidden" name="cid" value="all" />'; }	
-	foreach ($qsa as $name => $argument) {
-		$name = esc_attr(strip_tags($name));
-		$argument = esc_attr(strip_tags($argument));
-		if ( $name == 'access' || $name == 'mcat' || $name == 'ltype' || $name == 'lvalue' && in_array( $name, $args ) ) {
-		} else {
-			$form .= '		<input type="hidden" name="'.$name.'" value="'.$argument.'" />'."\n";
+		$qsa = array();
+		parse_str($_SERVER['QUERY_STRING'],$qsa);
+		if ( !isset( $_GET['cid'] ) ) { $form .= '<input type="hidden" name="cid" value="all" />'; }	
+		foreach ($qsa as $name => $argument) {
+			$name = esc_attr(strip_tags($name));
+			$argument = esc_attr(strip_tags($argument));
+			if ( $name == 'access' || $name == 'mcat' || $name == 'ltype' || $name == 'lvalue' && in_array( $name, $args ) ) {
+			} else {
+				$form .= '		<input type="hidden" name="'.$name.'" value="'.$argument.'" />'."\n";
+			}
 		}
-	}
-			
-	foreach ( $fields as $show ) {
-		$show = trim($show);
-		switch ( $show ) {
-			case 'categories': $form .= my_calendar_categories_list( 'form','public','group' ); $return = true; break;
-			case 'locations': $form .= my_calendar_locations_list( 'form','saved','name','group' ); $return = true; break;
-			case 'access': $form .= mc_access_list( 'form','group' ); $return = true; break;
+				
+		foreach ( $fields as $show ) {
+			$show = trim($show);
+			switch ( $show ) {
+				case 'categories': $form .= my_calendar_categories_list( 'form','public','group' ); $return = true; break;
+				case 'locations': $form .= my_calendar_locations_list( 'form','saved','name','group' ); $return = true; break;
+				case 'access': $form .= mc_access_list( 'form','group' ); $return = true; break;
+			}
 		}
-	}
 	$form .= "<p><input type='submit' value='".esc_attr( __( 'Filter Events','my-calendar' ) )."' /></p>
 	</form></div>";
 	if ( $return ) {
@@ -1323,7 +1322,8 @@ function my_calendar_categories_list( $show='list',$context='public',$group='sin
 	$output = '';
 	$current_url = mc_get_current_url();
 	
-	$admin_fields = ($context == 'public')?' ':' multiple="multiple" size="5" ';
+	$name = ($context == 'public')?'mcat':'category';
+	$admin_fields = ($context == 'public')?' name="'.$name.'"':' multiple="multiple" size="5" name="'.$name.'[]"  ';
 	$admin_label = ($context == 'public')?'':__('(select to include)','my-calendar');
 	$form = ( $group == 'single' ) ? "<form action='".$current_url."' method='get'>
 				<div>" : '';
@@ -1342,7 +1342,6 @@ function my_calendar_categories_list( $show='list',$context='public',$group='sin
 		$form .= ($show == 'list' || $group == 'group' )?'':'
 		</div><p>';
 	$public_form = ($context == 'public')?$form:'';
-	$name = ($context == 'public')?'mcat':'category';
 		
     $categories = $mcdb->get_results( "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " ORDER BY category_id ASC" );
 	if ( !empty( $categories ) && count( $categories ) >= 1 ) {
@@ -1352,7 +1351,7 @@ function my_calendar_categories_list( $show='list',$context='public',$group='sin
 		<ul>
 			<li><a href='$url'>".__('All Categories','my-calendar')."</a></li>":$public_form.'
 			<label for="category">'.__('Categories','my-calendar').' '.$admin_label.'</label>
-			<select'.$admin_fields.' name="'.$name.'" id="category">
+			<select'.$admin_fields.' id="category">
 			<option value="all" selected="selected">'.__('All Categories','my-calendar').'</option>'."\n";
 		
 		foreach ($categories as $category) {
@@ -1375,7 +1374,7 @@ function my_calendar_categories_list( $show='list',$context='public',$group='sin
 		}
 		$output .= "\n</div>";
 	}
-	$output = apply_filters('mc_category_selector',$output,$categories);
+	$output = apply_filters( 'mc_category_selector',$output,$categories );
 	return $output;
 }
 
@@ -1477,7 +1476,7 @@ function my_calendar_show_locations( $show='list',$datatype='name',$template='' 
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	switch ( $datatype ) {
-		case "name":$data = "location_label";break;
+		case "name": case "location": $data = "location_label";break;
 		case "city":$data = "location_city";break;
 		case "state":$data = "location_state";break;
 		case "zip":$data = "location_postcode";break;

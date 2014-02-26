@@ -182,7 +182,7 @@ function mc_edit_category_form($view='edit',$catID='') {
 	<h2><?php _e('Edit Category','my-calendar'); ?></h2>
 	<?php } ?>
 
-<div class="postbox-container" style="width: 70%">
+<div class="postbox-container jcd-wide">
 <div class="metabox-holder">
 
 <div class="ui-sortable meta-box-sortables">

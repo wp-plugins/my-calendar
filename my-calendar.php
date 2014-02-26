@@ -86,7 +86,7 @@ include(dirname(__FILE__).'/my-calendar-templating.php' );
 include(dirname(__FILE__).'/my-calendar-group-manager.php' );
 include(dirname(__FILE__).'/my-calendar-export.php' );
 include(dirname(__FILE__).'/my-calendar-api.php' );
-
+include(dirname(__FILE__).'/my-calendar-generator.php' );
 
 // Enable internationalisation
 load_plugin_textdomain( 'my-calendar',false, dirname( plugin_basename( __FILE__ ) ) . '/lang' ); 
@@ -132,7 +132,7 @@ function mc_event_filter( $title, $sep, $seplocation ) {
 // produce admin support box
 function jd_show_support_box( $show='', $add=false, $remove=false ) {
 	if ( current_user_can('mc_view_help') ) { ?>
-	<div class="postbox-container" style="width:20%">
+	<div class="postbox-container jcd-narrow">
 	<div class="metabox-holder">
 		<?php if ( !$remove ) { ?>
 		<?php if ( !function_exists('mcs_submit_exists') ) { ?>
@@ -140,7 +140,7 @@ function jd_show_support_box( $show='', $add=false, $remove=false ) {
 			<div class="postbox support">
 			<h3><strong><?php _e('My Calendar: Submissions','my-calendar'); ?></strong></h3>
 			<div class="inside resources">
-				<p class="mcsbuy"><img src="<?php echo plugins_url('my-calendar/images/submissions.png'); ?>" alt="My Calendar: Submissions" class="alignleft" /><?php _e("Buy the <a href='http://www.joedolson.com/articles/my-calendar/submissions/' rel='external'>My Calendar: Submissions add-on</a> &mdash; let your site's visitors help build your calendar.",'my-calendar'); ?></p>
+				<p class="mcsbuy"><?php _e("Buy the <a href='http://www.joedolson.com/articles/my-calendar/submissions/' rel='external'>My Calendar Submissions add-on</a> &mdash; let your audience build your calendar.",'my-calendar'); ?></p>
 				<p class="mc-button"><a href="http://www.joedolson.com/articles/my-calendar/submissions/" rel="external"><?php _e('Learn more!','my-calendar'); ?></a></p>
 			</div>
 			</div>
@@ -151,10 +151,10 @@ function jd_show_support_box( $show='', $add=false, $remove=false ) {
 			<h3><strong><?php _e('Support This Plug-in','my-calendar'); ?></strong></h3>
 			<div class="inside resources">
 				<p>
-				<a href="https://twitter.com/intent/tweet?screen_name=joedolson&text=My%20Calendar%20is%20great%20-%20Thanks!" class="twitter-mention-button" data-size="large" data-related="joedolson">Tweet to @joedolson</a>
+				<a href="https://twitter.com/intent/follow?screen_name=joedolson" class="twitter-follow-button" data-size="small" data-related="joedolson">Follow @joedolson</a>
 				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 				</p>
-				<p class="mcbuy"><img src="<?php echo plugins_url('my-calendar/images/guide.png'); ?>" alt="My Calendar User's Guide" class="alignleft" /><?php _e('Help me help you:','my-calendar'); ?> <a href="http://www.joedolson.com/articles/my-calendar/users-guide/" rel="external"><?php _e("Buy the My Calendar User's Guide",'my-calendar'); ?></a></p>
+				<p class="mcbuy"><?php _e('Help me help you:','my-calendar'); ?> <a href="http://www.joedolson.com/articles/my-calendar/users-guide/" rel="external"><?php _e("Buy the My Calendar User's Guide",'my-calendar'); ?></a></p>
 				<p><?php _e('<strong>Or make a donation today!</strong> Every donation counts - donate $5, $20, or $100 and help me keep this plug-in running!','my-calendar'); ?></p>
 				<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 				<p class="mcd">
@@ -212,9 +212,6 @@ function jd_show_support_box( $show='', $add=false, $remove=false ) {
 		<dt><code>{time}</code></dt>
 		<dd><?php _e('Start time for the event.','my-calendar'); ?></dd>
 
-		<dt><code>{usertime}</code>/<code>{endusertime}</code></dt>
-		<dd><?php _e('Event times adjusted to the current user\'s time zone if set.','my-calendar'); ?></dd>
-
 		<dt><code>{date}</code></dt>
 		<dd><?php _e('Date on which the event begins.','my-calendar'); ?></dd>
 
@@ -251,8 +248,8 @@ function jd_show_support_box( $show='', $add=false, $remove=false ) {
 		<dt><code>{event_status}</code></dt>
 		<dd><?php _e('Current status of event: either "Published" or "Reserved."','my-calendar'); ?></dd>
 		</dl>
+		
 		<h4><?php _e('Location Template Tags','my-calendar'); ?></h4>
-
 		<dl>
 		<dt><code>{location}</code></dt>
 		<dd><?php _e('Name of the location of the event.','my-calendar'); ?></dd>
@@ -346,7 +343,9 @@ function my_calendar_menu() {
 				add_action( "load-$manage", 'mc_add_screen_option' );
 			add_submenu_page('my-calendar', __('Event Categories','my-calendar'), __('Manage Categories','my-calendar'), 'mc_edit_cats', 'my-calendar-categories', 'my_calendar_manage_categories');
 			add_submenu_page('my-calendar', __('Event Locations','my-calendar'), __('Manage Locations','my-calendar'), 'mc_edit_locations', 'my-calendar-locations', 'my_calendar_manage_locations');		
-			add_submenu_page('my-calendar', __('Event Groups','my-calendar'), __('Manage Event Groups','my-calendar'), 'mc_manage_events', 'my-calendar-groups', 'edit_my_calendar_groups');		
+			$groups = add_submenu_page('my-calendar', __('Event Groups','my-calendar'), __('Manage Event Groups','my-calendar'), 'mc_manage_events', 'my-calendar-groups', 'edit_my_calendar_groups');
+				add_action( "load-$groups", 'mc_add_screen_option' );
+			
 		}
 		add_submenu_page('my-calendar', __('Style Editor','my-calendar'), __('Style Editor','my-calendar'), 'mc_edit_styles', 'my-calendar-styles', 'edit_my_calendar_styles');
 		add_submenu_page('my-calendar', __('Script Editor','my-calendar'), __('Script Editor','my-calendar'), 'mc_edit_behaviors', 'my-calendar-behaviors', 'edit_my_calendar_behaviors');	
