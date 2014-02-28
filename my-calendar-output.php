@@ -222,8 +222,9 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 	}	
 	$current_date = date_i18n( apply_filters( 'mc_date_format', $date_format, 'details' ), strtotime( $process_date ) );
 	$group_class = ( $event->event_span == 1 ) ? ' multidate group'.$event->event_group_id : '' ;
-	$heading_level = apply_filters('mc_heading_level_table','h3',$format,$time,$template );	
+	$heading_level = apply_filters( 'mc_heading_level_table','h3',$type,$time,$template );
 	$header .= ( $type != 'single' && $type != 'list' ) ? "<$heading_level class='event-title summary$group_class'>$wrap$image$event_title$balance</$heading_level>\n" : '';
+	$event_title = ( $type == 'single' ) ? apply_filters( 'mc_single_event_title', $event_title, $event ) : $event_title ;
 	$title = ( $type == 'single' && !is_singular( 'mc-events' ) )?"<h2 class='event-title summary'>$image $event_title</h2>\n":'';
 	$title = apply_filters( 'mc_event_title', $title, $event, $event_title, $image );
 	$header .= $title;
@@ -1037,7 +1038,7 @@ function my_calendar( $name, $format, $category, $time='month', $ltype='', $lval
 							$thisday_heading = ($time == 'week')?"<small>$week_date_format</small>":date( 'j',$start );
 							$events = ( isset( $event_array[$date] ) )?$event_array[$date]:array();
 								if ( !empty($events) ) {								
-									$event_output = my_calendar_draw_events($events, $format, $date, $time, $template, $holidays);						
+									$event_output = my_calendar_draw_events( $events, $format, $date, $time, $template );
 									if ( $event_output === true ) { $event_output = ' '; }
 									$events_class = ( $event_output != '' )?mc_events_class($events):'no-events';
 									if ($format == 'mini' && $event_output != '' ) {

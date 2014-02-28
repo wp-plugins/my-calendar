@@ -82,6 +82,7 @@ function edit_my_calendar_styles() {
 		$stylefile = mc_get_style_path($mc_css_file);
 		$wrote_styles = ( $my_calendar_style !== false )?mc_write_styles($stylefile, $my_calendar_style):'disabled';
 		if ( $wrote_styles == true ) {
+			// updates from pre version 1.7.0
 			delete_option('mc_file_permissions');
 			delete_option('mc_style');
 		}
@@ -181,6 +182,7 @@ function edit_my_calendar_styles() {
 				<input type="hidden" name="mc_css_file" value="<?php echo get_option('mc_css_file'); ?>" />
 				</div>
 				<?php 
+				// update from pre version 1.7.0
 				if ( get_option('mc_file_permissions') == 'false' ) {
 					echo "<div id='my_calendar_old_styles'>
 					<p>".__('My Calendar was unable to update your CSS files during the upgrade. Please check your file permissions if you wish to edit your My Calendar styles. Your previously stored styles are below. This message and these styles will be deleted from the database when you successfully update your stylesheet.','my-calendar')."</p><pre>";

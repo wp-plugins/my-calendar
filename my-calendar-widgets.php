@@ -574,7 +574,7 @@ function my_calendar_todays_events($category='default',$template='default',$subs
 				}
 			}
         }
-		$todays_events = apply_filters( 'mc_event_today',$todays_events,$event );
+		$todays_events = apply_filters( 'mc_event_today',$todays_events, $events );
 		foreach ( $todays_events as $k => $t ) {
 			foreach ( $t as $now ) {
 				$output .= $now;

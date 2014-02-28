@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 // define global variables;
-global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $default_template,$default_user_settings, $mcdb,$grid_template,$list_template,$rss_template,$mini_template,$single_template, $defaults;
+global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $default_template,$default_user_settings,$wpdb,$grid_template,$list_template,$rss_template,$mini_template,$single_template, $defaults;
 
 $defaults = array(
 	'upcoming'=>array(	
@@ -153,14 +153,14 @@ $initial_minijs = '$(function() {
 
 $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{time}, {category}</span>";
 
-if ( ! empty( $mcdb->charset ) ) {
-	$charset_collate = "DEFAULT CHARACTER SET $mcdb->charset";
+if ( ! empty( $wpdb->charset ) ) {
+	$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
 } else {
-	$charset_collate = "DEFAULT CHARACTER SET utf8_general_ci";
+	$charset_collate = "DEFAULT CHARACTER SET $wpdb->collate";
 }
 
-if ( ! empty( $mcdb->collate ) ) {
-	$charset_collate .= " COLLATE $mcdb->collate";
+if ( ! empty( $wpdb->collate ) ) {
+	$charset_collate .= " COLLATE $wpdb->collate";
 }
 
 $event_fifth_week = ( get_option('mc_no_fifth_week') == 'true' )?1:0;

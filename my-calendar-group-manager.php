@@ -297,14 +297,14 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
         <fieldset>
 		<legend><?php _e('Enter your Event Information','my-calendar'); ?></legend>
 		<p>
-		<label for="event_title"><?php _e('Event Title','my-calendar'); ?> <span><?php _e('(required)','my-calendar'); ?></span><?php if ( !mc_compare_group_members( $group_id,'event_title' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label><br /><input type="text" id="event_title" name="event_title" class="input" size="60" value="<?php if ( !empty($data) ) echo stripslashes(esc_attr($data->event_title)); ?>" />
+		<label for="e_title"><?php _e('Event Title','my-calendar'); ?> <span><?php _e('(required)','my-calendar'); ?></span><?php if ( !mc_compare_group_members( $group_id,'event_title' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label><br /><input type="text" id="e_title" name="event_title" size="60" value="<?php if ( !empty($data) ) echo stripslashes(esc_attr($data->event_title)); ?>" />
 		</p>
 			<?php 
 			$apply = mc_group_form( $group_id, 'apply' ); 
 			echo $apply; 
 		if ( $data->event_repeats == 0 && ( $data->event_recur == 'S1' || $data->event_recur == 'S' ) ) { ?>
 		<p>
-		<input type="checkbox" value="1" id="event_span" name="event_span"<?php if ( !empty($data) && $data->event_span == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_span == '0' ) { echo ""; } else if ( get_option( 'mc_event_span' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_span"><?php _e('Selected dates are a single multi-day event.','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_span' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label>
+		<input type="checkbox" value="1" id="e_span" name="event_span"<?php if ( !empty($data) && $data->event_span == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_span == '0' ) { echo ""; } else if ( get_option( 'mc_event_span' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="e_span"><?php _e('Selected dates are a single multi-day event.','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_span' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label>
 		</p>
 		<?php } else { ?>
 			<div><input type='hidden' name='event_span' value='<?php echo $data->event_span; ?>' /></div>
@@ -317,7 +317,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 		<?php } ?>
 		<?php if ($mc_input['event_short'] == 'on' || $mc_input_administrator ) { ?>
 		<p>
-		<label for="event_short"><?php _e('Event Short Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_short' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label><br /><textarea id="event_short" name="event_short" class="input" rows="2" cols="80"><?php if ( !empty($data) ) echo stripslashes(esc_attr($data->event_short)); ?></textarea>
+		<label for="e_short"><?php _e('Event Short Description (<abbr title="hypertext markup language">HTML</abbr> allowed)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_short' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label><br /><textarea id="e_short" name="event_short" rows="2" cols="80"><?php if ( !empty($data) ) echo stripslashes(esc_attr($data->event_short)); ?></textarea>
 		</p>
 		<?php } 
 		if ( mc_show_edit_block( 'event_image') ) { ?>
@@ -327,8 +327,8 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			<?php } else { ?>
 			<div class="event_image"></div>
 			<?php } ?>
-			<input type="hidden" name="event_image_id" value="" class="textfield" id="event_image_id" />
-			<label for="event_image"><?php _e("Add an image:",'my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_image' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" name="event_image" id="event_image" size="60" value="<?php if ( $has_data ) echo esc_attr($data->event_image); ?>" placeholder="http://yourdomain.com/image.jpg" /> <a href="#" class="button textfield-field"><?php _e("Upload",'my-calendar'); ?></a>
+			<input type="hidden" name="event_image_id" value="" class="textfield" id="e_image_id" />
+			<label for="e_image"><?php _e("Add an image:",'my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_image' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" name="event_image" id="e_image" size="60" value="<?php if ( $has_data ) echo esc_attr($data->event_image); ?>" placeholder="http://yourdomain.com/image.jpg" /> <a href="#" class="button textfield-field"><?php _e("Upload",'my-calendar'); ?></a>
 		</div>
 		<?php } else { ?>
 		<div>
@@ -339,8 +339,8 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 		</div>
 		<?php } ?>		
 	<p>
-	<label for="event_host"><?php _e('Event Host','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_host' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label>
-	<select id="event_host" name="event_host">
+	<label for="e_host"><?php _e('Event Host','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_host' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label>
+	<select id="e_host" name="event_host">
 		<?php 
 			 // Grab all the categories and list them
 			$userList = my_calendar_getUsers();				 
@@ -359,8 +359,8 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 	</p>		
 		<?php if ($mc_input['event_category'] == 'on' || $mc_input_administrator ) { ?>
         <p>
-		<label for="event_category"><?php _e('Event Category','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_category' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label>
-		<select id="event_category" name="event_category">
+		<label for="e_category"><?php _e('Event Category','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_category' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label>
+		<select id="e_category" name="event_category">
 			<?php echo mc_category_select( $data ); ?>
 		</select>
             </p>
@@ -371,7 +371,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			<?php } ?>
 			<?php if ($mc_input['event_link'] == 'on' || $mc_input_administrator ) { ?>
 			<p>
-			<label for="event_link"><?php _e('Event Link (Optional)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_link' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_link" name="event_link" class="input" size="40" value="<?php if ( !empty($data) ) { echo esc_url($data->event_link); } ?>" /> <input type="checkbox" value="1" id="event_link_expires" name="event_link_expires"<?php if ( !empty($data) && $data->event_link_expires == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_link_expires' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="event_link_expires"><?php _e('Link will expire after event.','my-calendar'); ?></label>
+			<label for="e_link"><?php _e('Event Link (Optional)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_link' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="e_link" name="event_link" size="40" value="<?php if ( !empty($data) ) { echo esc_url($data->event_link); } ?>" /> <input type="checkbox" value="1" id="e_link_expires" name="event_link_expires"<?php if ( !empty($data) && $data->event_link_expires == '1' ) { echo " checked=\"checked\""; } else if ( !empty($data) && $data->event_link_expires == '0' ) { echo ""; } else if ( get_option( 'mc_event_link_expires' ) == 'true' ) { echo " checked=\"checked\""; } ?> /> <label for="e_link_expires"><?php _e('Link will expire after event.','my-calendar'); ?></label>
 			</p>
 			<?php } ?>
 			</fieldset>
@@ -384,16 +384,15 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 <?php if ($mc_input['event_open'] == 'on' || $mc_input_administrator ) { 
 // add a "don't change" option here ?>		
 <div class="ui-sortable meta-box-sortables">
-<div class="postbox">
-<h3><?php _e('Event Registration Options','my-calendar'); ?></h3>
-<div class="inside">
-
+	<div class="postbox">
+	<h3><?php _e('Event Registration Options','my-calendar'); ?></h3>
+		<div class="inside">
 			<fieldset>
 			<legend><?php _e('Event Registration Status','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_open' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></legend>
-			<?php echo apply_filters( 'mc_event_registration', $has_data, $data ); ?>						
+			<?php echo apply_filters( 'mc_event_registration', '', $has_data, $data, 'admin' ); ?>						
 			</fieldset>
-</div>
-</div>	
+		</div>
+	</div>	
 </div>		
 			<?php } else { ?>
 			<div>
@@ -440,27 +439,27 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			<?php } ?>
 			<?php if ($mc_input['event_location'] == 'on' || $mc_input_administrator ) { ?>			
 			<p>
-			<label for="event_label"><?php _e('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_label' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label><br /><input type="text" id="event_label" name="event_label" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_label)); ?>" />
+			<label for="e_label"><?php _e('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_label' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label><br /><input type="text" id="e_label" name="event_label" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_label)); ?>" />
 			</p>
 			<p>
-			<label for="event_street"><?php _e('Street Address','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_street' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_street" name="event_street" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_street)); ?>" />
+			<label for="e_street"><?php _e('Street Address','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_street' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="e_street" name="event_street" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_street)); ?>" />
 			</p>
 			<p>
-			<label for="event_street2"><?php _e('Street Address (2)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_street2' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_street2" name="event_street2" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_street2)); ?>" />
+			<label for="e_street2"><?php _e('Street Address (2)','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_street2' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="e_street2" name="event_street2" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_street2)); ?>" />
 			</p>			
 			<p>
-			<label for="event_city"><?php _e('City','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_city' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_city" name="event_city" class="input" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_city)); ?>" /> <label for="event_state"><?php _e('State/Province','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_state' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_state" name="event_state" class="input" size="10" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_state)); ?>" /> 
+			<label for="e_city"><?php _e('City','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_city' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="e_city" name="event_city" size="40" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_city)); ?>" /> <label for="e_state"><?php _e('State/Province','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_state' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="e_state" name="event_state" size="10" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_state)); ?>" /> 
 			</p>
 			<p>
-			<label for="event_postcode"><?php _e('Postal Code','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_postcode' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_postcode" name="event_postcode" class="input" size="10" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_postcode)); ?>" />
-			<label for="event_region"><?php _e('Region','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_region' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_region" name="event_region" class="input" size="40" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_region)); ?>" />
+			<label for="e_postcode"><?php _e('Postal Code','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_postcode' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="e_postcode" name="event_postcode" size="10" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_postcode)); ?>" />
+			<label for="e_region"><?php _e('Region','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_region' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="e_region" name="event_region" size="40" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_region)); ?>" />
 			</p>
 			<p>
-			<label for="event_country"><?php _e('Country','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_country' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_country" name="event_country" class="input" size="10" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_country)); ?>" />
+			<label for="e_country"><?php _e('Country','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_country' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="e_country" name="event_country" size="10" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_country)); ?>" />
 			</p>
 			<p>
-			<label for="event_zoom"><?php _e('Initial Zoom','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_zoom' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> 
-				<select name="event_zoom" id="event_zoom">
+			<label for="e_zoom"><?php _e('Initial Zoom','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_zoom' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> 
+				<select name="event_zoom" id="e_zoom">
 				<option value="16"<?php if ( !empty( $data ) && ( $data->event_zoom == 16 ) ) { echo " selected=\"selected\""; } ?>><?php _e('Neighborhood','my-calendar'); ?></option>
 				<option value="14"<?php if ( !empty( $data ) && ( $data->event_zoom == 14 ) ) { echo " selected=\"selected\""; } ?>><?php _e('Small City','my-calendar'); ?></option>
 				<option value="12"<?php if ( !empty( $data ) && ( $data->event_zoom == 12 ) ) { echo " selected=\"selected\""; } ?>><?php _e('Large City','my-calendar'); ?></option>
@@ -470,20 +469,20 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 				</select>
 			</p>
 			<p>
-			<label for="event_phone"><?php _e('Phone','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_phone' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_phone" name="event_phone" class="input" size="32" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_phone)); ?>" />
+			<label for="e_phone"><?php _e('Phone','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_phone' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="e_phone" name="event_phone" size="32" value="<?php if ( !empty($data) ) esc_attr_e(stripslashes($data->event_phone)); ?>" />
 			</p>			
 			<p>
-			<label for="event_url"><?php _e('Location URL','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_url' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_url" name="event_url" class="input" size="40" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_url)); ?>" />
+			<label for="e_url"><?php _e('Location URL','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_url' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="e_url" name="event_url" size="40" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_url)); ?>" />
 			</p>
 			<fieldset>
 			<legend><?php _e('GPS Coordinates (optional)','my-calendar'); ?></legend>
 			<p>
-			<label for="event_latitude"><?php _e('Latitude','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_latitude' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?><?php if ( !mc_compare_group_members( $group_id,'event_longitude' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="event_latitude" name="event_latitude" class="input" size="10" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_latitude)); ?>" /> <label for="event_longitude"><?php _e('Longitude','my-calendar'); ?></label> <input type="text" id="event_longitude" name="event_longitude" class="input" size="10" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_longitude)); ?>" />
+			<label for="e_latitude"><?php _e('Latitude','my-calendar'); ?><?php if ( !mc_compare_group_members( $group_id,'event_latitude' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?><?php if ( !mc_compare_group_members( $group_id,'event_longitude' ) ) { echo " <span>".__('Fields do not match','my-calendar')."</span>"; } ?></label> <input type="text" id="e_latitude" name="event_latitude" size="10" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_latitude)); ?>" /> <label for="e_longitude"><?php _e('Longitude','my-calendar'); ?></label> <input type="text" id="e_longitude" name="event_longitude" size="10" value="<?php if ( !empty( $data ) ) esc_attr_e(stripslashes($data->event_longitude)); ?>" />
 			</p>
 			</fieldset>
 			<fieldset>
 			<legend><?php _e('Location Accessibility','my-calendar'); ?></legend>
-			<ul>
+			<ul class='checkboxes'>
 			<?php 
 			$access = apply_filters( 'mc_venue_accessibility', get_option( 'mc_location_access' ) );
 			$access_list = '';

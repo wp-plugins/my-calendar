@@ -212,7 +212,6 @@ function event_as_array( $event ) {
 	$details['description'] = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',$event->event_desc):wpautop(stripslashes($event->event_desc));
 	$details['description_raw'] = stripslashes($event->event_desc);
 	$details['description_stripped'] = strip_tags(stripslashes($event->event_desc));
-	$details['link_title'] = ($details['link'] != '')?"<a href='".$event->event_link."'>".stripslashes($event->event_title)."</a>":stripslashes($event->event_title);
 	$details['shortdesc'] = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',$event->event_short):wpautop(stripslashes($event->event_short));
 	$details['shortdesc_raw'] = stripslashes($event->event_short);
 	$details['shortdesc_stripped'] = strip_tags(stripslashes($event->event_short));
@@ -223,14 +222,15 @@ function event_as_array( $event ) {
 	$details['event_registration'] = stripslashes( wp_kses_data( $event->event_registration ) );
 
 	// links
-		$templates = get_option('mc_templates');
-		$details_template = ( !empty($templates['label']) )? stripcslashes($templates['label']):__('Details about','my-calendar').' {title}';
-		$tags = array( "{title}","{location}","{color}","{icon}","{date}","{time}" );
-		$replacements = array( stripslashes($event->event_title), stripslashes($event->event_label), $event->category_color, $event->category_icon, $details['date'], $details['time'] );
-		$details_label = str_replace($tags,$replacements,$details_template );
+	$templates = get_option('mc_templates');
+	$details_template = ( !empty($templates['label']) )? stripcslashes($templates['label']):__('Details about','my-calendar').' {title}';
+	$tags = array( "{title}","{location}","{color}","{icon}","{date}","{time}" );
+	$replacements = array( stripslashes($event->event_title), stripslashes($event->event_label), $event->category_color, $event->category_icon, $details['date'], $details['time'] );
+	$details_label = str_replace($tags,$replacements,$details_template );
 	//$details_label = mc_get_details_label( $event, $details ); // recursive...hmmmm.
 	$details_link = mc_get_details_link( $event );
 	$details['link'] = mc_event_link( $event );
+	$details['link_title'] = ($details['link'] != '')?"<a href='".$event->event_link."'>".stripslashes($event->event_title)."</a>":stripslashes($event->event_title);	
 	$details['details_link'] = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option('mc_uri') ) )?$details_link:'';
 	$details['details'] = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option('mc_uri') ) )?"<a href='$details_link' class='mc-details'>$details_label</a>":'';
 	$details['linking'] = ( $details['link'] != '' )?$event->event_url:$details_link;
@@ -303,13 +303,13 @@ function mc_runtime( $start, $end, $event ) {
 
 function mc_event_link( $event ) {
 	if ( $event->event_link_expires == 0 ) {
-		$event_link = esc_url( $event->event_link );
+		$link = esc_url( $event->event_link );
 	} else {
 		if ( my_calendar_date_xcomp( $event->occur_end, date('Y-m-d',current_time('timestamp') ) ) ) {
-			$event_link = '';
+			$link = '';
 			do_action( 'mc_event_expired', $event );
 		} else {
-			$event_link = esc_url( $event->event_link );
+			$link = esc_url( $event->event_link );
 		}
 	}	
 	return $link;
