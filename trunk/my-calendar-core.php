@@ -285,34 +285,32 @@ function my_calendar_add_javascript() {
 function my_calendar_write_js() {
 	if ( isset( $_GET['page'] ) && ( $_GET['page']=='my-calendar' || $_GET['page'] == 'my-calendar-locations' ) ) {
 	?>
-	<script type="text/javascript">
-	//<![CDATA[
-	jQuery(document).ready(function($) {
-	    $('#event_begin,' + '#event_end').calendricalDateRange();
-		$('#mc-accordion').accordion({ collapsible:true, active:false });
-		<?php if ( !isset($_GET['mode']) ) { ?>
-		$('#event_time').timeAutocomplete({
-			increment: 15,
-			blur_empty_populate: false,
-			formatter: '<?php echo apply_filters( 'mc_time_format', 'ampm' ); ?>',
-			value: ''
-		});
-
-		$('#event_endtime').timeAutocomplete({
-			increment: 15,
-			from_selector: '#event_time',
-			blur_empty_populate: false,
-			formatter: '<?php echo apply_filters( 'mc_time_format', 'ampm' ); ?>',
-			value: ''
-		});
-		<?php } ?>
-		<?php if ( function_exists( 'jd_doTwitterAPIPost' ) ) { ?>
-		$('#mc_twitter').charCount( { allowed: 140, counterText: '<?php _e('Characters left: ','my-calendar') ?>' } );
-		<?php } ?>
+<script type="text/javascript">
+//<![CDATA[
+jQuery(document).ready(function($) {
+    $('#e_begin,' + '#e_end').calendricalDateRange();
+	$('#mc-accordion').accordion({ collapsible:true, active:false });
+<?php if ( !isset($_GET['mode']) ) { ?>
+	$('#e_time').timeAutocomplete({
+		increment: 15,
+		blur_empty_populate: false,
+		formatter: '<?php echo apply_filters( 'mc_time_format', 'ampm' ); ?>',
+		value: ''
 	});
-	//]]>
-	</script>
-	<?php
+	$('#e_endtime').timeAutocomplete({
+		increment: 15,
+		from_selector: '#e_time',
+		blur_empty_populate: false,
+		formatter: '<?php echo apply_filters( 'mc_time_format', 'ampm' ); ?>',
+		value: ''
+	});<?php 
+	} 
+	if ( function_exists( 'jd_doTwitterAPIPost' ) ) { ?>
+	$('#mc_twitter').charCount( { allowed: 140, counterText: '<?php _e('Characters left: ','my-calendar') ?>' } );
+	<?php } ?>
+});
+//]]>
+</script><?php
 	}
 	if ( isset($_GET['page']) && $_GET['page']=='my-calendar-help') {
 	?>
@@ -604,6 +602,7 @@ function check_my_calendar() {
 				$user_data = get_option( 'mc_user_settings' );
 				$loc_type = ( get_option( 'mc_location_type' ) == '' ) ? 'event_state' : get_option( 'mc_location_type' );
 				$locations[$loc_type] = $user_data['my_calendar_location_default']['values'];
+				add_option( 'mc_use_permalinks', false );
 				add_option( 'mc_location_controls', $locations );
 				add_option( 'mc_location_access', array(
 					'1'=> __('Accessible Entrance','my-calendar'),
@@ -1791,7 +1790,7 @@ function mc_increment_event( $id, $post=array(), $test=false ) {
 
 function mc_get_details_link( $event ) {
 	// if available, and not querying remotely, use permalink.
-	$permalinks = apply_filters( 'mc_use_permalinks', false );
+	$permalinks = apply_filters( 'mc_use_permalinks', get_option( 'mc_use_permalinks' ) );
 	$details_link = $event->event_link;
 	if ( $event->event_post != 0 && get_option( 'mc_remote' ) != 'true' && $permalinks ) {
 		$details_link = add_query_arg( 'mc_id', $event->occur_id, get_permalink( $event->event_post ) );

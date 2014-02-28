@@ -4,11 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 function mc_settings_field( $name, $label, $default='', $note='', $atts=array( 'size'=>'30' ), $type='text' ) {
 	$options = $attributes = '';
 	if ( is_array( $atts ) && !empty( $atts ) ) {
-		foreach ( $atts as $key => $value ) {
-			$attributes .= " $key='$value'";
-		}
-	} else {
-		$attributes = '';
+		foreach ( $atts as $key => $value ) { $attributes .= " $key='$value'"; }
 	}
 	switch ( $type ) {
 		case 'text':
@@ -81,19 +77,15 @@ function mc_settings_field( $name, $label, $default='', $note='', $atts=array( '
 
 // Display the admin configuration page
 function my_calendar_import() {
-	if ( get_option('ko_calendar_imported') != 'true' ) {
+	if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 		global $wpdb;
 		$mcdb = $wpdb;
-		define('KO_CALENDAR_TABLE', $mcdb->prefix . 'calendar');
-		define('KO_CALENDAR_CATS', $mcdb->prefix . 'calendar_categories');
+		define( 'KO_CALENDAR_TABLE', $mcdb->prefix . 'calendar' );
+		define( 'KO_CALENDAR_CATS', $mcdb->prefix . 'calendar_categories' );
 		$events = $mcdb->get_results("SELECT * FROM " . KO_CALENDAR_TABLE, 'ARRAY_A');
 		$event_ids = array();
-		foreach ($events as $key) {
-			if ( $key['event_time'] == '00:00:00' ) {
-				$endtime = '00:00:00';
-			} else {
-				$endtime = date('H:i:s',strtotime( "$key[event_time] +1 hour" ) );
-			}
+		foreach ( $events as $key ) {
+			$endtime = ( $key['event_time'] == '00:00:00' ) ? '00:00:00' : date( 'H:i:s',strtotime( "$key[event_time] +1 hour" ) );
 			$data = array(
 				'event_title'=>$key['event_title'],
 				'event_desc'=>$key['event_desc'], 
@@ -112,17 +104,16 @@ function my_calendar_import() {
 			$events_results = ( $update ) ? true : false; 
 			$event_ids[] = $mcdb->insert_id;
 		}
-
 		foreach ( $event_ids as $value ) { // propagate event instances.
-				$sql = "SELECT event_begin, event_time, event_end, event_endtime FROM ".my_calendar_table()." WHERE event_id = $value";				
-				$event = $wpdb->get_results($sql);
-				$event = $event[0];
-				$dates = array( 'event_begin'=>$event->event_begin,'event_end'=>$event->event_end,'event_time'=>$event->event_time,'event_endtime'=>$event->event_endtime );
-				$event = mc_increment_event( $value, $dates );				
+			$sql = "SELECT event_begin, event_time, event_end, event_endtime FROM ".my_calendar_table()." WHERE event_id = $value";
+			$event = $wpdb->get_results($sql);
+			$event = $event[0];
+			$dates = array( 'event_begin'=>$event->event_begin,'event_end'=>$event->event_end,'event_time'=>$event->event_time,'event_endtime'=>$event->event_endtime );
+			$event = mc_increment_event( $value, $dates );				
 		}
 		$cats = $mcdb->get_results("SELECT * FROM " . KO_CALENDAR_CATS, 'ARRAY_A');	
 		$catsql = "";
-		foreach ($cats as $key) {
+		foreach ( $cats as $key ) {
 			$name = mysql_real_escape_string($key['category_name']);
 			$color = mysql_real_escape_string($key['category_colour']);
 			$id = (int) $key['category_id'];
@@ -135,7 +126,6 @@ function my_calendar_import() {
 				category_color='".$color."';
 				";	
 			$cats_results = $mcdb->query($catsql);
-			//$mcdb->print_error(); 			
 		}			
 		$message = ( $cats_results !== false )?__('Categories imported successfully.','my-calendar'):__('Categories not imported.','my-calendar');
 		$e_message = ( $events_results !== false )?__('Events imported successfully.','my-calendar'):__('Events not imported.','my-calendar');
@@ -157,8 +147,8 @@ function edit_my_calendar_config() {
 	global $wpdb,$default_user_settings;
 	$mcdb = $wpdb;
 	check_my_calendar();
-	if (!empty($_POST)) {
-		$nonce=$_REQUEST['_wpnonce'];
+	if ( !empty( $_POST ) ) {
+		$nonce = $_REQUEST['_wpnonce'];
 		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed"); 
 		if ( isset($_POST['remigrate']) ) { 
 			echo "<div class='updated fade'><ol>";
@@ -177,15 +167,12 @@ function edit_my_calendar_config() {
 		$clear = '';
 		$mc_event_approve = ( !empty($_POST['mc_event_approve']) && $_POST['mc_event_approve']=='on')?'true':'false';
 		$mc_api_enabled = ( !empty($_POST['mc_api_enabled']) && $_POST['mc_api_enabled']=='on')?'true':'false';
-		
 		$mc_remote = ( !empty($_POST['mc_remote']) && $_POST['mc_remote']=='on')?'true':'false';
 		if ( isset($_POST['mc_clear_cache']) && $_POST['mc_clear_cache'] == 'clear' ) { mc_delete_cache(); $clear = __('My Calendar Cache cleared','my-calendar'); }
 		update_option('mc_event_approve',$mc_event_approve);
 		update_option('mc_api_enabled',$mc_api_enabled);
-		
 		update_option('mc_remote',$mc_remote);
 		update_option('mc_default_sort',$_POST['mc_default_sort']);
-		
 		if ( get_site_option('mc_multisite') == 2 ) {
 			$mc_current_table = (int) $_POST['mc_current_table'];
 			update_option('mc_current_table',$mc_current_table);
@@ -222,7 +209,6 @@ function edit_my_calendar_config() {
 	}
 	// output
 	if (isset($_POST['mc_show_months']) ) {
-
 		$mc_open_day_uri = ( !empty($_POST['mc_open_day_uri']) )?$_POST['mc_open_day_uri']:'';
 		update_option('mc_uri',$_POST['mc_uri'] );
 		update_option('mc_open_uri',( !empty($_POST['mc_open_uri']) && $_POST['mc_open_uri']=='on' && get_option('mc_uri') != '')?'true':'false');
@@ -236,7 +222,7 @@ function edit_my_calendar_config() {
 		update_option('mc_display_jump',( !empty($_POST['mc_display_jump']) && $_POST['mc_display_jump']=='on')?'true':'false');
 		update_option('mc_show_list_info',( !empty($_POST['mc_show_list_info']) && $_POST['mc_show_list_info']=='on')?'true':'false');		
 		update_option('mc_show_months',(int) $_POST['mc_show_months']);
-		
+		// calculate sequence for navigation elements
 		$top = $bottom = array();
 		$nav = $_POST['mc_nav'];
 		$set = 'top';
@@ -252,7 +238,6 @@ function edit_my_calendar_config() {
 			}
 			if ( $n == 'stop' ) { break; }			
 		}
-		
 		update_option( 'mc_bottomnav', implode( ',' ,$bottom ) );
 		update_option( 'mc_topnav', implode( ',' ,$top ) );
 		update_option('mc_show_map',( !empty($_POST['mc_show_map']) && $_POST['mc_show_map']=='on')?'true':'false');
@@ -302,13 +287,13 @@ function edit_my_calendar_config() {
 		update_option('mc_input_options_administrators',$mc_input_options_administrators);	
 		echo "<div class=\"updated\"><p><strong>".__('Input Settings saved','my-calendar').".</strong></p></div>";
 	}
-	if ( current_user_can('manage_network') ) {
-		if ( isset($_POST['mc_network']) ) {
+	if ( current_user_can( 'manage_network' ) ) {
+		if ( isset( $_POST['mc_network'] ) ) {
 			$mc_multisite = (int) $_POST['mc_multisite'];
-			update_site_option('mc_multisite',$mc_multisite );
+			update_site_option( 'mc_multisite',$mc_multisite );
 			$mc_multisite_show = (int) $_POST['mc_multisite_show'];
-			update_site_option('mc_multisite_show',$mc_multisite_show );			
-			echo "<div class=\"updated\"><p><strong>".__('Multisite settings saved','my-calendar').".</strong></p></div>";
+			update_site_option( 'mc_multisite_show',$mc_multisite_show );			
+			echo "<div class=\"updated\"><p><strong>".__( 'Multisite settings saved','my-calendar' ).".</strong></p></div>";
 		}
 	}
 	// custom text
@@ -328,16 +313,16 @@ function edit_my_calendar_config() {
 		$templates['title'] = $mc_title_template;
 		$templates['label'] = $mc_details_label;
 		$templates['link'] = $mc_link_label;	
-		update_option('mc_templates',$templates);
+		update_option( 'mc_templates',$templates);
 		update_option( 'mc_event_title_template', $mc_event_title_template );
-		update_option('mc_notime_text',$mc_notime_text);
-		update_option('mc_week_caption',$mc_week_caption);
-		update_option('mc_next_events',$mc_next_events);
-		update_option('mc_previous_events',$mc_previous_events);	
-		update_option('mc_caption',$my_calendar_caption);
-		update_option('mc_event_open',$mc_event_open);
-		update_option('mc_event_closed',$mc_event_closed);
-		echo "<div class=\"updated\"><p><strong>".__('Custom text settings saved','my-calendar').".</strong></p></div>";	 
+		update_option( 'mc_notime_text',$mc_notime_text );
+		update_option( 'mc_week_caption',$mc_week_caption );
+		update_option( 'mc_next_events',$mc_next_events );
+		update_option( 'mc_previous_events',$mc_previous_events );
+		update_option( 'mc_caption',$my_calendar_caption );
+		update_option( 'mc_event_open',$mc_event_open );
+		update_option( 'mc_event_closed',$mc_event_closed );
+		echo "<div class=\"updated\"><p><strong>".__( 'Custom text settings saved','my-calendar' ).".</strong></p></div>";	 
 	}
 	// Mail function by Roland
 	if (isset($_POST['mc_email']) ) {
@@ -359,30 +344,11 @@ function edit_my_calendar_config() {
 	
 	apply_filters('mc_save_settings','', $_POST );
 	
-	// Pull known values out of the options table
-	$allowed_group = get_option('mc_can_manage_events');
-	$mc_show_months = get_option('mc_show_months');
-	$mc_bottomnav = get_option('mc_bottomnav');
-	$mc_topnav = get_option('mc_topnav');
-	$mc_show_map = get_option('mc_show_map');
-	$mc_show_address = get_option('mc_show_address');
-	$disp_author = get_option('mc_display_author');
-	$mc_event_link_expires = get_option('mc_event_link_expires');
-	$mc_event_mail = get_option('mc_event_mail');
-	$mc_event_mail_to = get_option('mc_event_mail_to');
-	$mc_event_mail_from = get_option('mc_event_mail_from');
-	$mc_event_mail_subject = get_option('mc_event_mail_subject');
-	$mc_event_mail_message = get_option('mc_event_mail_message');
-	$mc_event_approve = get_option('mc_event_approve');
-	$mc_event_approve_perms = get_option('mc_event_approve_perms');
-	$disp_jump = get_option('mc_display_jump');
-	$mc_no_fifth_week = get_option('mc_no_fifth_week');
+	// pull templates for passing into functions.
 	$templates = get_option('mc_templates');
 	$mc_title_template = $templates['title'];
 	$mc_details_label = $templates['label'];
 	$mc_link_label = $templates['link'];
-	$mc_event_title_template = get_option('mc_event_title_template');
-	$mc_mini_uri = get_option('mc_mini_uri');
 ?> 
 
 <div class="wrap jd-my-calendar mc-settings-page" id="mc_settings">
@@ -504,10 +470,9 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<li><?php mc_settings_field ( 'mc_event_closed', __('If events are closed','my-calendar'), __('Registration is closed','my-calendar') ); ?></li>	
 	<li><?php mc_settings_field ( 'mc_week_caption', __('Week view caption:','my-calendar'), '', __( 'Available tag: <code>{date format=""}</code>','my-calendar' ) ); ?></li>
 	<li><?php mc_settings_field ( 'my_calendar_caption', __('Extended caption:','my-calendar'), '', __( 'Follows month/year in list views.','my-calendar' ) ); ?></li>
-	<?php $templates = get_option('mc_templates'); $title_template = $templates['title']; ?>
-	<li><?php mc_settings_field ( 'mc_title_template', __('Event title template','my-calendar'), $title_template, "<a href='".admin_url("admin.php?page=my-calendar-help#templates")."'>".__( "Templating Help",'my-calendar' ).'</a>' ); ?></li>
-	<li><?php mc_settings_field ( 'mc_details_label', __('Event details link text','my-calendar'), '', __('Tags: <code>{title}</code>, <code>{location}</code>, <code>{color}</code>, <code>{icon}</code>, <code>{date}</code>, <code>{time}</code>.','my-calendar') ); ?></li>
-	<li><?php mc_settings_field ( 'mc_link_label', __('Event URL link text','my-calendar'), '', "<a href='".admin_url("admin.php?page=my-calendar-help#templates")."'>".__( "Templating Help",'my-calendar' ).'</a>' ); ?></li>
+	<li><?php mc_settings_field ( 'mc_title_template', __('Event title template','my-calendar'), $mc_title_template, "<a href='".admin_url("admin.php?page=my-calendar-help#templates")."'>".__( "Templating Help",'my-calendar' ).'</a>' ); ?></li>
+	<li><?php mc_settings_field ( 'mc_details_label', __('Event details link text','my-calendar'), $mc_details_label, __('Tags: <code>{title}</code>, <code>{location}</code>, <code>{color}</code>, <code>{icon}</code>, <code>{date}</code>, <code>{time}</code>.','my-calendar') ); ?></li>
+	<li><?php mc_settings_field ( 'mc_link_label', __('Event URL link text','my-calendar'), $mc_link_label, "<a href='".admin_url("admin.php?page=my-calendar-help#templates")."'>".__( "Templating Help",'my-calendar' ).'</a>' ); ?></li>
 	<li><?php mc_settings_field ( 'mc_event_title_template', __('Title element template','my-calendar'), '{title} &raquo; {date}', __('Current: %s', 'my-calendar' ) ); ?></li>		
 	</ul>
 	</fieldset>	

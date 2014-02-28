@@ -174,7 +174,8 @@ function jd_show_support_box( $show='', $add=false, $remove=false ) {
 			<h3><?php _e('Get Help','my-calendar'); ?></h3>
 			<div class="inside">
 				<ul>
-					<li><strong><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>#get-started"><?php _e("Getting Started",'my-calendar'); ?></strong></a></li>								
+					<li><strong><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>#get-started"><?php _e("Getting Started",'my-calendar'); ?></strong></a></li>
+					<li><strong><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>#mc-generator"><?php _e("Shortcode Generator",'my-calendar'); ?></strong></a></li>						
 					<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>#get-support"><?php _e("Get Support",'my-calendar'); ?></a></li>
 					<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>"><?php _e("My Calendar Help",'my-calendar'); ?></a></li>
 					<li><a href="http://profiles.wordpress.org/users/joedolson/"><?php _e('Check out my other plug-ins','my-calendar'); ?></a></li>

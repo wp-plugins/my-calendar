@@ -54,7 +54,7 @@ function edit_mc_templates() {
 		echo "<div class=\"updated\"><p><strong>".__('Mini Output Template saved','my-calendar').".</strong></p></div>";
 	}
 
-	if ( isset($_POST['mc_details_template'] ) ) {
+	if ( isset( $_POST['mc_details_template'] ) ) {
 		$nonce=$_REQUEST['_wpnonce'];
 		if ( !wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
 
