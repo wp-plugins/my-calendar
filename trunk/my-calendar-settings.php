@@ -208,6 +208,7 @@ function edit_my_calendar_config() {
 	if ( isset( $_POST['mc_show_months'] ) ) {
 		$mc_open_day_uri = ( !empty( $_POST['mc_open_day_uri'] ) ) ? $_POST['mc_open_day_uri'] : '';
 		update_option('mc_uri',$_POST['mc_uri'] );
+		update_option('mc_use_permalinks', ( !empty( $_POST['mc_use_permalinks'] ) ) ? true : false );
 		update_option('mc_open_uri',( !empty($_POST['mc_open_uri']) && $_POST['mc_open_uri']=='on' && get_option('mc_uri') != '')?'true':'false');
 		update_option('mc_mini_uri',$_POST['mc_mini_uri'] );
 		update_option('mc_open_day_uri', $mc_open_day_uri );
@@ -490,6 +491,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<fieldset>
 	<legend><?php _e('Calendar Link Targets','my-calendar' ); ?></legend>
 	<ul>
+	<li><?php mc_settings_field( 'mc_use_permalinks', __( 'Use Pretty Permalinks for Events','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>	
 	<?php $guess = mc_guess_calendar();	?>
 	<li><?php mc_settings_field( 'mc_uri', __( 'Where is your main calendar page?','my-calendar' ), '', "<br /><small>".__( 'Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar' )."$guess</small>", array( 'size'=>'60' ), 'url' ); ?></li>
 	<li><?php mc_settings_field( 'mc_mini_uri', __( 'Target <abbr title="Uniform resource locator">URL</abbr> for mini calendar date links:','my-calendar' ), '', "<br /><small>".__( 'Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar' )."</small>", array( 'size'=>'60' ), 'url' ); ?></li>
