@@ -288,7 +288,7 @@ function my_calendar_upcoming_events( $before='default',$after='default',$type='
 			foreach( $event_array as $key=>$value) {
 				if ( is_array($value) ) {
 					foreach ( $value as $k => $v ) {
-						$event = event_as_array( $v );
+						$event = mc_create_tags( $v );
 						if ( $v->category_private == 1 && !is_user_logged_in() ) {
 							// this event is private.
 						} else {
@@ -356,7 +356,11 @@ function my_calendar_upcoming_events( $before='default',$after='default',$type='
 				$event_array = mc_holiday_limit( $event_array, $holiday_array ); // if there are holidays, rejigger.
 			}
 		}
-		$output .= mc_produce_upcoming_events( $event_array,$template,'list',$order,$skip,$before, $after, $show_today );
+		if ( !empty( $event_array ) ) {
+			$output .= mc_produce_upcoming_events( $event_array,$template,'list',$order,$skip,$before, $after, $show_today );
+		} else {
+			$output = '';
+		}
 	}
 	if ($output != '') {
 		$output = $header.$output.$footer;
@@ -484,7 +488,7 @@ function mc_produce_upcoming_events( $events, $template, $type='list', $order='a
 		foreach( array_keys($events) as $key ) {
 			$event =& $events[$key];
 			//echo $event->event_title . " " . $event->event_group_id."<br />";
-			$event_details = event_as_array( $event );
+			$event_details = mc_create_tags( $event );
 				if ( get_option( 'mc_event_approve' ) == 'true' ) {
 					if ( $event->event_approved != 0 ) { $temp_array[] = $event_details; }
 				} else {
@@ -560,7 +564,7 @@ function my_calendar_todays_events($category='default',$template='default',$subs
 				if ( $e->category_private == 1 && !is_user_logged_in() ) {
 				} else {
 					if ( !in_array( $e->event_group_id, $groups ) )	{
-						$event_details = event_as_array($e);
+						$event_details = mc_create_tags($e);
 						$ts = $e->ts_occur_begin;
 						$date = date_i18n( apply_filters( 'mc_date_format', get_option('mc_date_format'), 'todays_events' ) , current_time( 'timestamp' ) );
 						if ( get_option( 'mc_event_approve' ) == 'true' ) {
@@ -603,27 +607,26 @@ function my_calendar_mini_widget() {
 
 function widget($args, $instance) {
 	extract($args);
+	$name = $format = 'mini';	
 	if ( !empty($instance) ) {
 		$the_title = apply_filters('widget_title',$instance['my_calendar_mini_title'], $instance, $args );
-		$name = $format = 'mini';
 		$category = ($instance['my_calendar_mini_category']=='')?'all':esc_attr($instance['my_calendar_mini_category']);
 		$time = ($instance['my_calendar_mini_time']=='')?'month':esc_attr($instance['my_calendar_mini_time']);
 		$widget_link = ( !isset($instance['mc_link']) || $instance['mc_link']=='')?'':esc_url($instance['mc_link']);
-		$above = (empty($instance['above']))?'none':esc_attr($instance['above']);
-		$below = (empty($instance['below']))?'none':esc_attr($instance['below']);
-		$author = ($instance['author']=='')?null:esc_attr($instance['author']);
-		$host = ($instance['host']=='')?null:esc_attr($instance['host']);
+		$above = ( empty($instance['above'] ) )?'none':esc_attr( $instance['above'] );
+		$below = ( empty($instance['below'] ) )?'none':esc_attr( $instance['below'] );
+		$author = ( $instance['author']=='' )?null:esc_attr( $instance['author'] );
+		$host = ( $instance['host']=='')?null:esc_attr( $instance['host'] );
 	} else {
 		$the_title = $category = $time = $widget_link = $above = $below = '';
-		$name = 'mini';
 	}
 	$title = empty($the_title) ? __('Calendar','my-calendar') : $the_title;
 	$title = ($widget_link!='') ? "<a href='$widget_link'>$title</a>" : $title;
-	$title = ($title!='') ? $before_title . $title . $after_title : '';
+	$title = ( $title!='' ) ? $before_title . $title . $after_title : '';
 	$the_events = my_calendar( $name, $format, $category, $time,'','','jd-calendar','','',$author, $host, $above, $below );
-		if ($the_events != '') {
-			echo $before_widget . $title . $the_events . $after_widget;
-		}
+	if ( $the_events != '' ) {
+		echo $before_widget . $title . $the_events . $after_widget;
+	}
 }
 
 function form($instance) {

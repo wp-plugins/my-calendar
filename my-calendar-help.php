@@ -437,7 +437,7 @@ function my_calendar_help() { ?>
 </div>
 </div>
 </div>
-	<?php jd_show_support_box(); ?>
+	<?php mc_show_sidebar(); ?>
 
 </div>
 <?php } ?>

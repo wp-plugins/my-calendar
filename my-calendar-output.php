@@ -114,7 +114,7 @@ function mc_category_icon( $event,$html='html' ) {
 		$image = "";
 	} else {
 	    if ($event->category_icon != "") {
-			$path = ( is_custom_icon() ) ? str_replace( 'my-calendar','my-calendar-custom',$url ) : plugins_url( 'icons', __FILE__ ).'/';
+			$path = ( is_custom_icon() ) ? str_replace( 'my-calendar','my-calendar-custom',$url ) : plugins_url( 'images/icons', __FILE__ ).'/';
 			$hex = ( strpos( $event->category_color,'#' ) !== 0 )?'#':'';
 			if ( $html == 'html' ) {
 				$image = '<img src="'.$path.$event->category_icon.'" alt="'.__( 'Category','my-calendar' ).': '.esc_attr( $event->category_name ).'" class="category-icon" style="background:'.$hex.$event->category_color.'" />';
@@ -145,7 +145,7 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 		return;
 	}
 	// if event ends at midnight today (e.g., very first thing of the day), exit without re-drawing
-	if ( $event->event_endtime == '00:00:00' && $event->event_time != '00:00:00' && $event->event_end == $process_date && $event->event_allday !== 1 ) {
+	if ( $event->event_endtime == '00:00:00' && $event->event_time != '00:00:00' && $event->event_end == $process_date && $event->event_begin != $process_date ) {
 		return;
 	}
 	global $wpdb;
@@ -156,7 +156,7 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 	// assign empty values to template sections
 	$header  = $address = $more = $author = $list_title = $title = $output = $container = $short = $description = $link = $vcal = $gcal = '';
 	$date_format = ( get_option('mc_date_format') != '' ) ? get_option('mc_date_format') : get_option('date_format');
-	$data = event_as_array($event);	
+	$data = mc_create_tags($event);	
 	$details = apply_filters( 'mc_custom_template', false, $data, $event, $type, $process_date, $time, $template );
 	$templates = get_option('mc_templates');	
 	if ( $details === false ) {
@@ -235,7 +235,7 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 			$address = mc_hcard( $event, $display_address, $display_map );
 		}
 		// end vcard
-		$close = ( $type == 'calendar' || $type == 'mini' ) ? "<span class='close'><a href=\"#$uid-$day_id-$type\" class='mc-toggle mc-close close'><img src='".plugin_dir_url(__FILE__)."images/event-close.png' alt='".__('Close','my-calendar')."' /></a></span>" : '' ;
+		$close = ( $type == 'calendar' || $type == 'mini' ) ? "<a href=\"#$uid-$day_id-$type\" class='mc-toggle mc-close close'><img src=\"".plugin_dir_url(__FILE__)."images/event-close.png\" alt='".__('Close','my-calendar')."' /></a>" : '' ;
 		$time = mc_time_html( $event, $type, $current_date );
 		if ($type == "list") {
 			$heading_level = apply_filters('mc_heading_level_list','h3',$format,$time,$template );	
@@ -340,7 +340,7 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 	} else {
 		$custom = true; 
 		// if a custom template is in use
-		$toggle = ( $type == 'calendar' || $type == 'mini' )?"<a href=\"#$uid-$day_id-$type\" class='mc-toggle mc-close close'><img src='".plugin_dir_url(__FILE__)."images/event-close.png' alt='".__('Close','my-calendar')."' /></a>":'';	
+		$toggle = ( $type == 'calendar' || $type == 'mini' )?"<a href=\"#$uid-$day_id-$type\" class='mc-toggle mc-close close'><img src=\"".plugin_dir_url(__FILE__)."images/event-close.png\" alt='".__('Close','my-calendar')."' /></a>":'';	
 		$details = $toggle.$details."\n";
 	}
 	$container = "<div id='$uid-$day_id-$type-details' class='details'>\n"; 
@@ -697,8 +697,8 @@ function my_calendar( $name, $format, $category, $time='month', $ltype='', $lval
 	$mc_toporder = array( 'nav','toggle','jump','print','timeframe' );
 	$mc_bottomorder = array( 'key','feeds' );
 	if ( $above != '' || $below != '' ) {
-		$aboves = ( $above == 'none' )?array():array_map( 'trim', explode(',',$above) );
-		$belows = ( $below == 'none' )?array():array_map( 'trim', explode(',',$below) );
+		$aboves = ( $above == 'none' ) ? array() : array_map( 'trim', explode( ',',$above ) );
+		$belows = ( $below == 'none' ) ? array() : array_map( 'trim', explode( ',',$below ) );
 	} else {
 		$aboves = $mc_toporder;
 		$belows = $mc_bottomorder;
@@ -716,7 +716,7 @@ function my_calendar( $name, $format, $category, $time='month', $ltype='', $lval
 	$my_calendar_body = '';
 	/* filter */
 	if ( $time == 'day' ) { $format = 'list'; }
-	$args = array( 'name'=>$name,'format'=>$format,'category'=>$category,'above'=>$above,'below'=>$below,'time'=>$time,'ltype'=>$ltype,'lvalue'=>$lvalue, 'author'=>$author );
+	$args = array( 'name'=>$name,'format'=>$format,'category'=>$category,'above'=>$above,'below'=>$below,'time'=>$time,'ltype'=>$ltype,'lvalue'=>$lvalue, 'author'=>$author, 'id'=>$id );
 	$my_calendar_body .= apply_filters('mc_before_calendar','',$args);
 	
 	//echo "<p>Debug:<br /><pre>".print_r( $args, 1 )."</pre></p>";
@@ -1149,7 +1149,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 			$cat_details = $mcdb->get_results($sql);
 			$category_key .= '<div class="category-key">
 			<h3>'.__('Category Key','my-calendar')."</h3>\n<ul>\n";
-				$subpath = (is_custom_icon())?'my-calendar-custom/':'my-calendar/icons/';
+				$subpath = (is_custom_icon())?'my-calendar-custom/':'my-calendar/images/icons/';
 				$path = str_replace( basename( $dir ) . '/','',$url) . $subpath;
 			foreach($cat_details as $cat_detail) {
 				$hex = ( strpos( $cat_detail->category_color,'#' ) !== 0 )?'#':'';

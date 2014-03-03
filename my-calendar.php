@@ -63,30 +63,29 @@ function mc_plugin_activated() {
 function mc_plugin_deactivated() {
 	flush_rewrite_rules();
 }
-
-include(dirname(__FILE__).'/my-calendar-core.php' );
-include(dirname(__FILE__).'/my-calendar-install.php' );
-include(dirname(__FILE__).'/my-calendar-settings.php' );
-include(dirname(__FILE__).'/my-calendar-categories.php' );
-include(dirname(__FILE__).'/my-calendar-locations.php' );
-include(dirname(__FILE__).'/my-calendar-help.php' );
-include(dirname(__FILE__).'/my-calendar-event-manager.php' );
-include(dirname(__FILE__).'/my-calendar-styles.php' );
-include(dirname(__FILE__).'/my-calendar-behaviors.php' );
-include(dirname(__FILE__).'/my-calendar-widgets.php' );
-include(dirname(__FILE__).'/date-utilities.php' );
-include(dirname(__FILE__).'/my-calendar-upgrade-db.php' );
-include(dirname(__FILE__).'/my-calendar-output.php' );
-include(dirname(__FILE__).'/my-calendar-templates.php' );
-include(dirname(__FILE__).'/my-calendar-ical.php' );
-include(dirname(__FILE__).'/my-calendar-events.php' );
-include(dirname(__FILE__).'/my-calendar-limits.php' );
-include(dirname(__FILE__).'/my-calendar-shortcodes.php' );
-include(dirname(__FILE__).'/my-calendar-templating.php' );
-include(dirname(__FILE__).'/my-calendar-group-manager.php' );
-include(dirname(__FILE__).'/my-calendar-export.php' );
-include(dirname(__FILE__).'/my-calendar-api.php' );
-include(dirname(__FILE__).'/my-calendar-generator.php' );
+include( dirname(__FILE__).'/includes/date-utilities.php' );
+include( dirname(__FILE__).'/my-calendar-core.php' );
+include( dirname(__FILE__).'/my-calendar-install.php' );
+include( dirname(__FILE__).'/my-calendar-settings.php' );
+include( dirname(__FILE__).'/my-calendar-categories.php' );
+include( dirname(__FILE__).'/my-calendar-locations.php' );
+include( dirname(__FILE__).'/my-calendar-help.php' );
+include( dirname(__FILE__).'/my-calendar-event-manager.php' );
+include( dirname(__FILE__).'/my-calendar-styles.php' );
+include( dirname(__FILE__).'/my-calendar-behaviors.php' );
+include( dirname(__FILE__).'/my-calendar-events.php' );
+include( dirname(__FILE__).'/my-calendar-widgets.php' );
+include( dirname(__FILE__).'/my-calendar-upgrade-db.php' );
+include( dirname(__FILE__).'/my-calendar-output.php' );
+include( dirname(__FILE__).'/my-calendar-templates.php' );
+include( dirname(__FILE__).'/my-calendar-ical.php' );
+include( dirname(__FILE__).'/my-calendar-limits.php' );
+include( dirname(__FILE__).'/my-calendar-shortcodes.php' );
+include( dirname(__FILE__).'/my-calendar-templating.php' );
+include( dirname(__FILE__).'/my-calendar-group-manager.php' );
+include( dirname(__FILE__).'/my-calendar-export.php' );
+include( dirname(__FILE__).'/my-calendar-api.php' );
+include( dirname(__FILE__).'/my-calendar-generator.php' );
 
 // Enable internationalisation
 load_plugin_textdomain( 'my-calendar',false, dirname( plugin_basename( __FILE__ ) ) . '/lang' ); 
@@ -119,7 +118,7 @@ function mc_event_filter( $title, $sep, $seplocation ) {
 	if ( isset($_GET['mc_id']) ) {
 		$id = (int) $_GET['mc_id'];
 		$event = mc_get_event( $id );
-		$array = event_as_array( $event );
+		$array = mc_create_tags( $event );
 		$left_sep = ( $seplocation != 'right' ? ' ' . $sep . ' ' : '' );
 		$right_sep = ( $seplocation != 'right' ? '' : ' ' . $sep . ' ' );		
 		$template = ( get_option( 'mc_event_title_template' ) != '' )? stripslashes( get_option( 'mc_event_title_template' ) ):"$left_sep {title} $sep {date} $right_sep ";		
@@ -130,7 +129,7 @@ function mc_event_filter( $title, $sep, $seplocation ) {
 }
 
 // produce admin support box
-function jd_show_support_box( $show='', $add=false, $remove=false ) {
+function mc_show_sidebar( $show='', $add=false, $remove=false ) {
 	if ( current_user_can('mc_view_help') ) { ?>
 	<div class="postbox-container jcd-narrow">
 	<div class="metabox-holder">
@@ -301,7 +300,7 @@ function jd_show_support_box( $show='', $add=false, $remove=false ) {
 		<dd><?php _e('ID of the category of the event.','my-calendar'); ?></dd>
 		</dl>
 		<p>
-			<a href="<?php admin_url( 'admin.php?page=my-calendar-help#template' ); ?>"><?php _e('All Template Tags &raquo;','my-calendar'); ?></a>
+			<a href="<?php echo admin_url( 'admin.php?page=my-calendar-help#templates' ); ?>"><?php _e('All Template Tags &raquo;','my-calendar'); ?></a>
 		</p>
 		</div>
 		</div>
