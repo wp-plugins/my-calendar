@@ -233,6 +233,6 @@ function edit_my_calendar_styles() {
 		</div>
 	</div>
 	</div>
- 	<?php jd_show_support_box(); ?>
+ 	<?php mc_show_sidebar(); ?>
 	</div><?php
 }

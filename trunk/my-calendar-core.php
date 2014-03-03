@@ -236,7 +236,7 @@ function mc_deal_with_deleted_user( $id ) {
 }
 
 // Function to add the javascript to the admin header
-function my_calendar_add_javascript() { 
+function my_calendar_add_javascript() {
 	if ( isset( $_GET['page'] ) && ( $_GET['page'] == 'my-calendar' || $_GET['page'] == 'my-calendar-groups' || $_GET['page'] == 'my-calendar-locations' ) ) {
 		wp_enqueue_script('jquery-ui-autocomplete');
 		wp_enqueue_script('jquery-ui-accordion');
@@ -247,7 +247,7 @@ function my_calendar_add_javascript() {
 			date_i18n( 'F', strtotime( 'February 1' ) ),
 			date_i18n( 'F', strtotime( 'March 1' ) ),
 			date_i18n( 'F', strtotime( 'April 1' ) ),
-			date_i18n( 'F', strtotime( 'May 1' ) ),			
+			date_i18n( 'F', strtotime( 'May 1' ) ),
 			date_i18n( 'F', strtotime( 'June 1' ) ),
 			date_i18n( 'F', strtotime( 'July 1' ) ),
 			date_i18n( 'F', strtotime( 'August 1' ) ),
@@ -267,18 +267,13 @@ function my_calendar_add_javascript() {
 	if ( isset($_GET['page']) && ( $_GET['page'] == 'my-calendar-config' || $_GET['page'] == 'my-calendar-help' ) ) {
 		wp_register_script( 'mc.tabs', plugins_url( 'js/tabs.js', __FILE__ ), array( 'jquery' ) );
 		wp_register_script( 'mc.sortable', plugins_url( 'js/sortable.js', __FILE__ ), array( 'jquery','jquery-ui-sortable' ) );
-		
 		wp_enqueue_script( 'mc.tabs' );
 		wp_enqueue_script( 'mc.sortable' );
-		if ( $_GET['page'] == 'my-calendar-config' ) {
-			$firstItem = 'mc_editor';
-		} else if ( $_GET['page'] == 'my-calendar-help' ) {
-			$firstItem = 'mc_main';
-		}
+		$firstItem = ( $_GET['page'] == 'my-calendar-config' ) ? 'mc_editor' : 'mc_main' ;
 		wp_localize_script( 'mc.tabs', 'firstItem', $firstItem );		
 	}
 	if ( isset($_GET['page']) && ( $_GET['page'] == 'my-calendar-groups' || $_GET['page'] == 'my-calendar-manage' ) ) {
-		wp_enqueue_script('jquery.checkall',plugins_url( 'js/jquery.checkall.js', __FILE__ ), array('jquery') );
+		wp_enqueue_script( 'jquery.checkall', plugins_url( 'js/jquery.checkall.js', __FILE__ ), array( 'jquery' ) );
 	}
 }
 
@@ -290,7 +285,7 @@ function my_calendar_write_js() {
 jQuery(document).ready(function($) {
     $('#e_begin,' + '#e_end').calendricalDateRange();
 	$('#mc-accordion').accordion({ collapsible:true, active:false });
-<?php if ( !isset($_GET['mode']) ) { ?>
+<?php if ( !isset( $_GET['mode'] ) ) { ?>
 	$('#e_time').timeAutocomplete({
 		increment: 15,
 		blur_empty_populate: false,
@@ -312,16 +307,8 @@ jQuery(document).ready(function($) {
 //]]>
 </script><?php
 	}
-	if ( isset($_GET['page']) && $_GET['page']=='my-calendar-help') {
-	?>
-	<script type="text/javascript">
-	jQuery(document).ready( function($) {
-		$('dd:even').css('background','#f6f6f6');
-	});
-	</script>
-	<?php
-	}
 }
+
 add_action( 'in_plugin_update_message-my-calendar/my-calendar.php', 'mc_plugin_update_message' );
 function mc_plugin_update_message() {
 	global $mc_version;
@@ -340,9 +327,7 @@ function mc_footer_js() {
 	if ( mc_is_mobile() && get_option('mc_convert') == 'true' ) {
 		return;
 	} else {
-		$scripting_top = $scripting_bottom = $inner_scripting = '';
-		global $wpdb, $wp_query;
-		$mcdb = $wpdb;
+		$top = $bottom = $inner = '';
 		$list_js = stripcslashes( get_option( 'mc_listjs' ) );
 		$cal_js = stripcslashes( get_option( 'mc_caljs' ) );
 		if ( get_option('mc_open_uri') == 'true') { // remove sections of javascript if necessary.
@@ -350,32 +335,33 @@ function mc_footer_js() {
 			$cal_js = str_replace($replacements,'',$cal_js); 
 		}
 		$mini_js = stripcslashes( get_option( 'mc_minijs' ) );
-		if ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'listanchor'  || get_option('mc_open_day_uri') == 'calendaranchor') { $mini_js = str_replace('e.preventDefault();','',$mini_js); }
+		if ( get_option( 'mc_open_day_uri' ) == 'true' || get_option( 'mc_open_day_uri' ) == 'listanchor'  || get_option( 'mc_open_day_uri' ) == 'calendaranchor' ) { 
+			$mini_js = str_replace( 'e.preventDefault();','',$mini_js ); 
+		}
 		$ajax_js = stripcslashes( get_option( 'mc_ajaxjs' ) );
-
-			if ( is_object($wp_query) && isset($wp_query->post) ) {
-				$id = $wp_query->post->ID;
-			} 
-			if ( get_option( 'mc_show_js' ) != '' ) {
-			$array = explode( ",",get_option( 'mc_show_js' ) );
-				if (!is_array($array)) {
-					$array = array();
-				}
+		if ( is_object($wp_query) && isset($wp_query->post) ) {
+			$id = $wp_query->post->ID;
+		} 
+		if ( get_option( 'mc_show_js' ) != '' ) {
+		$array = explode( ",",get_option( 'mc_show_js' ) );
+			if ( !is_array( $array ) ) {
+				$array = array();
 			}
-			if ( @in_array( $id, $array ) || get_option( 'mc_show_js' ) == '' ) {
-				$scripting_top = "
+		}
+		if ( @in_array( $id, $array ) || get_option( 'mc_show_js' ) == '' ) {
+			$top = "
 <script type='text/javascript'>
-	(function( $ ) { 'use strict'; \n";
-				if ( get_option('mc_calendar_javascript') != 1 ) {	$inner_scripting .= "\n".$cal_js; }
-				if ( get_option('mc_list_javascript') != 1 ) {	$inner_scripting .= "\n".$list_js; }
-				if ( get_option('mc_mini_javascript') != 1 ) {	$inner_scripting .= "\n".$mini_js; }
-				if ( get_option('mc_ajax_javascript') != 1 ) { $inner_scripting .= "\n".$ajax_js; }
-				$scripting_bottom .= "
-	}(jQuery));
+(function( $ ) { 'use strict'; \n";
+	if ( get_option( 'mc_calendar_javascript' ) != 1 ) {	$inner .= "\n".$cal_js; }
+	if ( get_option( 'mc_list_javascript' ) != 1 ) {	$inner .= "\n".$list_js; }
+	if ( get_option( 'mc_mini_javascript' ) != 1 ) {	$inner .= "\n".$mini_js; }
+	if ( get_option( 'mc_ajax_javascript' ) != 1 ) { $inner .= "\n".$ajax_js; }
+	$bottom .= "
+}(jQuery));
 </script>";
-			}
-		$inner_scripting = apply_filters( 'mc_filter_javascript_footer',$inner_scripting );
-		echo ( $inner_scripting != '' )?$scripting_top.$inner_scripting.$scripting_bottom:'';
+		}
+		$inner = apply_filters( 'mc_filter_javascript_footer',$inner );
+		echo ( $inner != '' )?$top.$inner.$bottom:'';
 	}
 }
 
@@ -410,11 +396,11 @@ function mc_csv_to_array( $csv, $delimiter = ',', $enclosure = '"', $escape = '\
 }
 
 function mc_if_needs_permissions() {
-	// this prevents administrators from losing privileges to edit my calendar
+	// prevent administrators from losing privileges to edit my calendar
 	$role = get_role( 'administrator' );
 	if ( is_object( $role ) ) {
 		$caps = $role->capabilities;
-		if ( isset($caps['mc_add_events']) ) {
+		if ( isset( $caps['mc_add_events'] ) ) {
 			return; 
 		} else {
 			$role->add_cap( 'mc_add_events' );
@@ -448,7 +434,6 @@ function mc_add_roles( $add=false, $manage=false, $approve=false ) {
 	$role->add_cap( 'mc_view_help' );
 	
 	// depending on permissions settings, grant other permissions
-	
 	if ( $add && $manage && $approve ) {
 	// this is an upgrade;
 		// Get Roles
@@ -460,7 +445,6 @@ function mc_add_roles( $add=false, $manage=false, $approve=false ) {
 		$contributor->add_cap( 'mc_view_help' );
 		$author->add_cap( 'mc_view_help' );
 		$editor->add_cap( 'mc_view_help' );
-
 		switch( $add ) {
 			case 'read':
 				$subscriber->add_cap( 'mc_add_events' );
@@ -531,7 +515,7 @@ function check_my_calendar() {
 	mc_if_needs_permissions();
 	$current_version = ( get_option('mc_version') == '') ? get_option('my_calendar_version') : get_option('mc_version');
 	// If current version matches, don't bother running this.
-	if ($current_version == $mc_version) {
+	if ( $current_version == $mc_version ) {
 		return true;
 	}
   // Lets see if this is first run and create a table if it is!
@@ -560,9 +544,6 @@ function check_my_calendar() {
 	} else {	
 		// for each release requiring an upgrade path, add a version compare. 
 		// Loop will run every relevant upgrade cycle.
-		if ( version_compare( $current_version, "1.6.0", "<" ) ) {	$upgrade_path[] = "1.6.0"; } 
-		if ( version_compare( $current_version, "1.6.2", "<" ) ) {	$upgrade_path[] = "1.6.2"; } 
-		if ( version_compare( $current_version, "1.6.3", "<" ) ) {	$upgrade_path[] = "1.6.3"; } 
 		if ( version_compare( $current_version, "1.7.0", "<" ) ) { 	$upgrade_path[] = "1.7.0"; } 
 		if ( version_compare( $current_version, "1.7.1", "<" ) ) { 	$upgrade_path[] = "1.7.1"; } 
 		if ( version_compare( $current_version, "1.8.0", "<" ) ) {	$upgrade_path[] = "1.8.0"; } 
@@ -815,7 +796,6 @@ function check_my_calendar() {
 				$today_title = get_option('mc_today_title');
 				$today_text = get_option('mc_no_events_text');
 				$upcoming_title = get_option('mc_upcoming_title');
-
 				$defaults = array(
 					'upcoming'=>array(	
 						'type'=>$type,
@@ -848,124 +828,6 @@ function check_my_calendar() {
 				delete_option('mc_today_title');
 				delete_option('my_calendar_no_events_text');
 				delete_option('mc_upcoming_title');			
-			break;		
-			case '1.6.3':
-				add_option( 'mc_ajaxjs',$initial_ajaxjs );
-				add_option( 'mc_ajax_javascript', 1 );
-			break;
-			case '1.6.2':
-				$mc_user_settings = array(
-				'my_calendar_tz_default'=>array(
-					'enabled'=>'off',
-					'label'=>'My Calendar Default Timezone',
-					'values'=>array(
-							"-12" => "(GMT -12:00) Eniwetok, Kwajalein",
-							"-11" => "(GMT -11:00) Midway Island, Samoa",
-							"-10" => "(GMT -10:00) Hawaii",
-							"-9.5" => "(GMT -9:30) Marquesas Islands",
-							"-9" => "(GMT -9:00) Alaska",
-							"-8" => "(GMT -8:00) Pacific Time (US &amp; Canada)",
-							"-7" => "(GMT -7:00) Mountain Time (US &amp; Canada)",
-							"-6" => "(GMT -6:00) Central Time (US &amp; Canada), Mexico City",
-							"-5" => "(GMT -5:00) Eastern Time (US &amp; Canada), Bogota, Lima",
-							"-4.5" => "(GMT -4:30) Venezuela",
-							"-4" => "(GMT -4:00) Atlantic Time (Canada), Caracas, La Paz",
-							"-3.5" => "(GMT -3:30) Newfoundland",
-							"-3" => "(GMT -3:00) Brazil, Buenos Aires, Georgetown",
-							"-2" => "(GMT -2:00) Mid-Atlantic",
-							"-1" => "(GMT -1:00 hour) Azores, Cape Verde Islands",
-							"0" => "(GMT) Western Europe Time, London, Lisbon, Casablanca",
-							"1" => "(GMT +1:00 hour) Brussels, Copenhagen, Madrid, Paris",
-							"2" => "(GMT +2:00) Kaliningrad, South Africa",
-							"3" => "(GMT +3:00) Baghdad, Riyadh, Moscow, St. Petersburg",
-							"3.5" => "(GMT +3:30) Tehran",
-							"4" => "(GMT +4:00) Abu Dhabi, Muscat, Baku, Tbilisi",
-							"4.5" => "(GMT +4:30) Afghanistan",
-							"5" => "(GMT +5:00) Ekaterinburg, Islamabad, Karachi, Tashkent",
-							"5.5" => "(GMT +5:30) Bombay, Calcutta, Madras, New Delhi",
-							"5.75" => "(GMT +5:45) Nepal",
-							"6" => "(GMT +6:00) Almaty, Dhaka, Colombo",
-							"6.5" => "(GMT +6:30) Myanmar, Cocos Islands",
-							"7" => "(GMT +7:00) Bangkok, Hanoi, Jakarta",
-							"8" => "(GMT +8:00) Beijing, Perth, Singapore, Hong Kong",
-							"9" => "(GMT +9:00) Tokyo, Seoul, Osaka, Sapporo, Yakutsk",
-							"9.5" => "(GMT +9:30) Adelaide, Darwin",
-							"10" => "(GMT +10:00) Eastern Australia, Guam, Vladivostok",
-							"10.5" => "(GMT +10:30) Lord Howe Island",
-							"11" => "(GMT +11:00) Magadan, Solomon Islands, New Caledonia",
-							"11.5" => "(GMT +11:30) Norfolk Island",
-							"12" => "(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka",
-							"12.75" => "(GMT +12:45) Chatham Islands",
-							"13" => "(GMT +13:00) Tonga",
-							"14" => "(GMT +14:00) Line Islands"
-							),
-					),
-				'my_calendar_location_default'=>array(
-					'enabled'=>'off',
-					'label'=>'My Calendar Default Location',
-					'values'=>array(
-								'AL'=>"Alabama",
-								'AK'=>"Alaska", 
-								'AZ'=>"Arizona", 
-								'AR'=>"Arkansas", 
-								'CA'=>"California", 
-								'CO'=>"Colorado", 
-								'CT'=>"Connecticut", 
-								'DE'=>"Delaware", 
-								'DC'=>"District Of Columbia", 
-								'FL'=>"Florida", 
-								'GA'=>"Georgia", 
-								'HI'=>"Hawaii", 
-								'ID'=>"Idaho", 
-								'IL'=>"Illinois", 
-								'IN'=>"Indiana", 
-								'IA'=>"Iowa", 
-								'KS'=>"Kansas", 
-								'KY'=>"Kentucky", 
-								'LA'=>"Louisiana", 
-								'ME'=>"Maine", 
-								'MD'=>"Maryland", 
-								'MA'=>"Massachusetts", 
-								'MI'=>"Michigan", 
-								'MN'=>"Minnesota", 
-								'MS'=>"Mississippi", 
-								'MO'=>"Missouri", 
-								'MT'=>"Montana",
-								'NE'=>"Nebraska",
-								'NV'=>"Nevada",
-								'NH'=>"New Hampshire",
-								'NJ'=>"New Jersey",
-								'NM'=>"New Mexico",
-								'NY'=>"New York",
-								'NC'=>"North Carolina",
-								'ND'=>"North Dakota",
-								'OH'=>"Ohio", 
-								'OK'=>"Oklahoma", 
-								'OR'=>"Oregon", 
-								'PA'=>"Pennsylvania", 
-								'RI'=>"Rhode Island", 
-								'SC'=>"South Carolina", 
-								'SD'=>"South Dakota",
-								'TN'=>"Tennessee", 
-								'TX'=>"Texas", 
-								'UT'=>"Utah", 
-								'VT'=>"Vermont", 
-								'VA'=>"Virginia", 
-								'WA'=>"Washington", 
-								'WV'=>"West Virginia", 
-								'WI'=>"Wisconsin", 
-								'WY'=>"Wyoming"),
-					)
-				);
-				$check = get_option('mc_user_settings');
-				if ( !is_array( $check['my_calendar_location_default'] ) ) {
-					update_option('mc_user_settings',$mc_user_settings);
-				}				
-			break;
-			case '1.6.0':
-				add_option('mc_user_settings_enabled',false);
-				add_option('mc_user_location_type','state');
-				add_option('mc_show_js',get_option('mc_show_css') );   
 			break;
 			default:
 			break;
@@ -989,27 +851,27 @@ function mc_category_select( $data=false, $option=true ) {
 	// Grab all the categories and list them
 	$list = $default = '';
 	$sql = "SELECT * FROM " . my_calendar_categories_table() . " ORDER BY category_name ASC";
-		$cats = $mcdb->get_results($sql);
-		foreach($cats as $cat) {
-			$c = '<option value="'.$cat->category_id.'"';
-			if ( !empty($data) ) {
-				if ( !is_object($data) ) { $category = $data; } else { $category = $data->event_category; }				
-				if ($category == $cat->category_id){
-					$c .= ' selected="selected"';
-				}
-			}
-			$c .= '>'.stripslashes($cat->category_name).'</option>';
-			if ( $cat->category_id != get_option('mc_default_category') ) {
-				$list .= $c;
-			} else {
-				$default = $c;
+	$cats = $mcdb->get_results($sql);
+	foreach($cats as $cat) {
+		$c = '<option value="'.$cat->category_id.'"';
+		if ( !empty($data) ) {
+			if ( !is_object($data) ) { $category = $data; } else { $category = $data->event_category; }				
+			if ($category == $cat->category_id){
+				$c .= ' selected="selected"';
 			}
 		}
-		if ( !$option ) {
-			$default = ( get_option( 'mc_default_category' ) ) ? get_option( 'mc_default_category' ) : 1 ;
-			return ( is_object( $data ) ) ? $data->event_category : $default;
+		$c .= '>'.stripslashes($cat->category_name).'</option>';
+		if ( $cat->category_id != get_option('mc_default_category') ) {
+			$list .= $c;
+		} else {
+			$default = $c;
 		}
-		return $default.$list;
+	}
+	if ( !$option ) {
+		$default = ( get_option( 'mc_default_category' ) ) ? get_option( 'mc_default_category' ) : 1 ;
+		return ( is_object( $data ) ) ? $data->event_category : $default;
+	}
+	return $default.$list;
 }
 
 // @data object with event_location value
@@ -1250,7 +1112,7 @@ function my_calendar_locations_table() {
 
 // Mail functions (originally by Roland)
 function my_calendar_send_email( $event ) {
-	$details = event_as_array($event);
+	$details = mc_create_tags($event);
 	// shift to boolean
 	$send_email_option = ( get_option( 'mc_event_mail' ) == 'true' ) ? true : false;
 	$send_email = apply_filters( 'mc_send_notification', $send_email_option, $details );
@@ -1807,6 +1669,7 @@ add_action( 'init', 'mc_register_actions' );
 function mc_register_actions() {
 	apply_filters( "debug", 'my_calendar add actions/filters' );
 	add_filter( 'mc_event_registration', 'mc_standard_event_registration', 10, 4 );
+	add_filter( 'mc_datetime_inputs', 'mc_standard_datetime_input', 10, 4 );
 	add_action( 'mc_transition_event', 'mc_tweet_approval', 10, 2 );
 	add_action( 'mc_save_event', 'mc_event_post', 10, 3 );
 	add_action( 'mc_delete_event', 'mc_event_delete_post', 10, 2 );

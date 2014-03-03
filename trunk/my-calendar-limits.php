@@ -18,7 +18,7 @@ global $wpdb;
 		} else {
 			$categories = explode( ",", $category );		
 		}
-		$numcat = count($categories);
+		$numcat = count( $categories );
 		$i = 1;
 		foreach ($categories as $key) {
 			if ( is_numeric($key) ) {

@@ -1,17 +1,37 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+function mc_private_categories() {
+	$cats = array(); 
+	if ( !is_user_logged_in() ) {
+		global $wpdb;
+		$mcdb = $wpdb;
+		if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+		$query = "SELECT category_id FROM ".MY_CALENDAR_CATEGORIES_TABLE." WHERE category_private = 1";
+		$results = $mcdb->get_results( $query );
+		foreach ( $results as $result ) {
+			$cats[] = $result->category_id;
+		}
+		$cats = implode( ',',$cats );
+		if ( $cats != '' ) {
+			$cats = " AND category_id NOT IN ($cats)";
+			return $cats;			
+		}
+	}
+	return;
+}
+
 // used to generate upcoming events lists
 function mc_get_all_events( $category, $before, $after, $today, $author, $host, $ltype='', $lvalue='' ) {
 	global $wpdb;
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
-	$select_category = ( $category!='default' )?mc_select_category($category):'';
+	$exclude_categories = mc_private_categories(); 
+	$select_category = ( $category != 'default' ) ? mc_select_category( $category ) : '';
 	$limit_string = mc_limit_string();
 	$select_author = ( $author != 'default' )?mc_select_author($author):'';
 	$select_host = ( $host != 'default' )?mc_select_host($host):'';
 	$select_location = mc_limit_string( 'grab', $ltype, $lvalue );
-	
 	$date = date('Y', current_time('timestamp')).'-'.date('m', current_time('timestamp')).'-'.date('d', current_time('timestamp'));
 	// if a value is non-zero, I'll grab a handful of extra events so I can throw out holidays and others like that.
 	if ( $before > 0 ) {
@@ -21,16 +41,23 @@ function mc_get_all_events( $category, $before, $after, $today, $author, $host, 
 		JOIN " . MY_CALENDAR_TABLE . " 
 		ON (event_id=occur_event_id) 
 		JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
-		ON (event_category=category_id) WHERE $select_category $select_author $select_host $limit_string event_approved = 1 AND event_flagged <> 1 
-		AND DATE(occur_begin) < '$date' ORDER BY occur_begin DESC LIMIT 0,$before");
-	} else { $events1 = array(); }
+		ON (event_category=category_id) WHERE $select_category $select_author $select_host $limit_string event_approved = 1 
+		AND event_flagged <> 1 
+		AND DATE(occur_begin) < '$date' 
+		$exclude_categories 
+		ORDER BY occur_begin DESC LIMIT 0,$before");
+	} else { 
+		$events1 = array(); 
+	}
 	if ( $today == 'yes' ) {
 		$events3 = $mcdb->get_results("SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
 		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 		JOIN " . MY_CALENDAR_TABLE . " 
 		ON (event_id=occur_event_id) 
 		JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
-		ON (event_category=category_id) WHERE $select_category $select_author $select_host $limit_string event_approved = 1 AND event_flagged <> 1 
+		ON (event_category=category_id) WHERE $select_category $select_author $select_host $limit_string event_approved = 1 
+		AND event_flagged <> 1 
+		$exclude_categories 
 		AND ( ( DATE(occur_begin) < '$date' AND DATE(occur_end) > '$date' ) OR DATE(occur_begin) = '$date' )");	// event crosses or equals
 	} else {
 		$events3 = array();
@@ -42,9 +69,13 @@ function mc_get_all_events( $category, $before, $after, $today, $author, $host, 
 		JOIN " . MY_CALENDAR_TABLE . " 
 		ON (event_id=occur_event_id) 
 		JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
-		ON (event_category=category_id) WHERE $select_category $select_author $select_host $limit_string event_approved = 1 AND event_flagged <> 1 
+		ON (event_category=category_id) WHERE $select_category $select_author $select_host $limit_string event_approved = 1 
+		AND event_flagged <> 1 
+		$exclude_categories 		
 		AND DATE(occur_begin) > '$date' ORDER BY occur_begin ASC LIMIT 0,$after");
-	} else { $events2 = array(); }
+	} else { 
+		$events2 = array(); 
+	}
 	$arr_events = array();
     if (!empty($events1) || !empty($events2) || !empty($events3) ) {
 		$arr_events = array_merge( $events1, $events3, $events2);
@@ -143,7 +174,7 @@ function mc_get_event( $id, $type='object' ) {
 	}
 }
 
-
+// get a specific field with an event ID
 function mc_get_data( $field, $id ) {
 	global $wpdb;
 	$mcdb = $wpdb;
@@ -154,6 +185,7 @@ function mc_get_data( $field, $id ) {
 	return $result;
 }
 
+// get all occurrences associated with an event.
 function mc_get_occurrences( $id ) {
 	global $wpdb;
 	$id = (int) $id;
@@ -163,6 +195,7 @@ function mc_get_occurrences( $id ) {
 	return $results;
 }
 
+// get all events related to an event ID (group IDs)
 function mc_related_events( $id, $return=false ) {
 	global $wpdb;
 	$id = (int) $id;
@@ -265,11 +298,11 @@ function my_calendar_grab_events( $from, $to,$category=null,$ltype='',$lvalue=''
 					ON (event_id=occur_event_id) 					
 					JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
 					ON (event_category=category_id) 
-					WHERE $select_category $select_location $select_author $select_host $limit_string 
+					WHERE $select_category $select_location $select_author $select_host $limit_string  
 					AND ( DATE(occur_begin) BETWEEN '$from 00:00:00' AND '$to 23:59:59' 
 						OR DATE(occur_end) BETWEEN '$from 00:00:00' and '$to 23:59:59' 
 						OR ( DATE('$from') BETWEEN DATE(occur_begin) AND DATE(occur_end) ) 
-						OR ( DATE('$to') BETWEEN DATE(occur_begin) AND DATE(occur_end) )) 
+						OR ( DATE('$to') BETWEEN DATE(occur_begin) AND DATE(occur_end) ) ) 
 						ORDER BY occur_begin";
 	$events = $mcdb->get_results( $event_query );
 	if (!empty($events)) {
@@ -315,49 +348,46 @@ global $wpdb;
 	$type = ($ltype != 'all')?"event_$ltype":"event_state";
 	$return = false;
 	if ( is_array($cache) ) {
-			if ( strpos( $category, ',' ) !== false ) {
-				$cats = explode(',',$category);
-			} else if ( strpos( $category, '|' ) !== false ) {
-				$cats = explode('|',$category);
-			} else {
-				$cats = array( $category );
+		$cats = array( $category );	
+		if ( strpos( $category, ',' ) !== false ) {
+			$cats = explode( ',',$category );
+		} else if ( strpos( $category, '|' ) !== false ) {
+			$cats = explode( '|',$category );
+		}
+		$authors = array($auth);		
+		if ( strpos( $auth, ',' ) !== false ) {
+			$authors = explode( ',',$auth );
+		} else if ( strpos( $auth, '|' ) !== false ) {
+			$authors = explode( '|',$auth );
+		}
+		$hosts = array($host);		
+		if ( strpos( $host, ',' ) !== false ) {
+			$authors = explode( ',',$host );
+		} else if ( strpos( $host, '|' ) !== false ) {
+			$authors = explode( '|',$host );
+		}			
+		foreach ( $authors as $k=>$v ) {
+			if ( !is_numeric($v) && $v != 'all' ) { 
+				$u = get_user_by('login',$v);
+				$id = $u->ID;
+				$authors[$k]= $id;
 			}
-			if ( strpos( $auth, ',' ) !== false ) {
-				$authors = explode(',',$auth);
-			} else if ( strpos( $auth, '|' ) !== false ) {
-				$authors = explode('|',$auth);
-			} else {
-				$authors = array($auth);
+		}
+		foreach ( $hosts as $k=>$v ) {
+			if ( !is_numeric($v) && $v != 'all' ) { 
+				$u = get_user_by('login',$v);
+				$id = $u->ID;
+				$hosts[$k]= $id;
 			}
-			if ( strpos( $host, ',' ) !== false ) {
-				$authors = explode(',',$host);
-			} else if ( strpos( $host, '|' ) !== false ) {
-				$authors = explode('|',$host);
-			} else {
-				$hosts = array($host);
-			}			
-			foreach ( $authors as $k=>$v ) {
-				if ( !is_numeric($v) && $v != 'all' ) { 
-					$u = get_user_by('login',$v);
-					$id = $u->ID;
-					$authors[$k]= $id;
-				}
-			}
-			foreach ( $hosts as $k=>$v ) {
-				if ( !is_numeric($v) && $v != 'all' ) { 
-					$u = get_user_by('login',$v);
-					$id = $u->ID;
-					$hosts[$k]= $id;
-				}
-			}
-		foreach ( $cache as $key=>$value ) {
+		}
+		foreach ( $cache as $k=>$v ) {
 			foreach ( $cats as $cat ) {
 				if ( is_numeric($cat) ) { $cat = (int) $cat; }
-				if ( ( $value->event_category == $cat || $category == 'all' || $value->category_name == $cat ) 
-						&& ( $value->event_author == $auth || $auth == 'all' || in_array( $value->event_author,$authors ) )
-						&& ( $value->event_host == $host || $host == 'all' || in_array( $value->event_host,$hosts ) )
-						&& ( $value->{$type} == urldecode($lvalue) || ( $ltype == 'all' && $lvalue == 'all' ) ) ) {
-					$return[$key]=$value;
+				if ( ( $v->event_category == $cat || $category == 'all' || $v->category_name == $cat ) 
+						&& ( $v->event_author == $auth || $auth == 'all' || in_array( $v->event_author,$authors ) )
+						&& ( $v->event_host == $host || $host == 'all' || in_array( $v->event_host,$hosts ) )
+						&& ( $v->{$type} == urldecode($lvalue) || ( $ltype == 'all' && $lvalue == 'all' ) ) ) {
+					$return[$k]=$v;
 				}
 			}
 		}
@@ -365,7 +395,7 @@ global $wpdb;
 	}
 }
 
-function mc_create_cache($arr_events, $hash, $category, $ltype, $lvalue, $author, $host  ) {
+function mc_create_cache( $arr_events, $hash, $category, $ltype, $lvalue, $author, $host ) {
 	$caching = apply_filters( 'mc_caching_enabled', false, $category, $ltype, $lvalue, $author, $host ); 
 	if ( $arr_events == false ) { $arr_events = 'empty'; }
 	if ( $caching == true ) {
@@ -405,32 +435,3 @@ function mc_set_cache( $cache, $time ) {
 function mc_remove_cache( $cache ) {
 	delete_transient( $cache );
 }
-
-/* Implement for 2.3.
-// Notes: switch to file-based caching. 
-// $cache will need to become the data array/object, not the cache name
-mc_get_cache( $cache ) {
-	$file = plugin_dir_path(__FILE__).'.mc_cache';
-    if (is_file($file)) {
-      $cache = file_get_contents($file);
-      $cache = maybe_unserialize($cache,true);
-      
-      if (!isset($cache)) {
-        unlink($file);
-        return false;
-      }
-	}
-}
-mc_set_cache( $cache ) {
-	$file = plugin_dir_path(__FILE__).'.mc_cache';
-	if (!isset($cache)) {
-		unset( $cache );
-		file_put_contents($file, serialize( $cache ) );
-		return false;
-	}
-}
-mc_remove_cache( $cache ) {
-	$file = plugin_dir_path(__FILE__).'.mc_cache';
-	unlink($file);
-}
-*/

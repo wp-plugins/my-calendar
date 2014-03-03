@@ -25,7 +25,7 @@ function my_calendar_generate_vcal( $event_id ) {
 		$mc_id = (int) str_replace( 'mc_','',$_GET['vcal']);
 		$event = mc_get_event( $mc_id,'object' );
 		// need to modify date values to match real values using date above
-	$array = event_as_array( $event );
+	$array = mc_create_tags( $event );
 
 $template = "BEGIN:VCALENDAR
 VERSION:2.0
@@ -48,7 +48,6 @@ END:VCALENDAR";
 	$output = jd_draw_template($array, $template);
 	return $output;
 }
-
 
 function my_calendar_rss( $events=array() ) {
 	// establish template
@@ -100,7 +99,7 @@ function my_calendar_rss( $events=array() ) {
 		foreach ( $events as $date ) {
 			foreach ( array_keys( $date ) as $key ) {
 				$event =& $date[$key];
-				$array = event_as_array( $event );
+				$array = mc_create_tags( $event );
 				$output .= jd_draw_template( $array, $template, 'rss' );
 			}
 		}
@@ -116,10 +115,9 @@ function my_calendar_rss( $events=array() ) {
 function mc_strip_to_xml($value) {
     $ret = "";
     $current;
-    if (empty($value)) {
+    if ( empty( $value ) ) {
         return $ret;
     }
-
     $length = strlen($value);
     for ($i=0; $i < $length; $i++) {
         $current = ord($value{$i});

@@ -646,18 +646,18 @@ function my_calendar_copyr($source, $dest) {
 function my_calendar_rmdirr($dirname) {
 	// Sanity check
 	if (!file_exists($dirname)) {
-	return false;
+		return false;
 	}
 	// Simple delete for a file
 	if (is_file($dirname)) {
-	return unlink($dirname);
+		return unlink($dirname);
 	}
 	// Loop through the folder
 	$dir = dir($dirname);
 	while (false !== $entry = $dir->read()) {
 	// Skip pointers
 		if ($entry == '.' || $entry == '..') {
-		continue;
+			continue;
 		}
 		// Recurse
 		my_calendar_rmdirr("$dirname/$entry");
@@ -673,7 +673,7 @@ function my_calendar_backup( $process, $plugin ) {
 		my_calendar_copyr($from, $to);
 		
 		$to = dirname(__FILE__)."/../icons_backup/";
-		$from = dirname(__FILE__)."/icons/";
+		$from = dirname(__FILE__)."/images/icons/";
 		my_calendar_copyr($from, $to);
 	}	
 }
@@ -686,7 +686,7 @@ function my_calendar_recover( $process, $plugin ) {
 			my_calendar_rmdirr($from);
 		}
 		$from = dirname(__FILE__)."/../icons_backup/";
-		$to = dirname(__FILE__)."/icons/";
+		$to = dirname(__FILE__)."/images/icons/";
 		my_calendar_copyr($from, $to);
 		if (is_dir($from)) {
 			my_calendar_rmdirr($from);

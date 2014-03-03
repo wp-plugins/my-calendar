@@ -7,46 +7,36 @@ function edit_mc_templates() {
 	$mcdb = $wpdb;
 	$templates = get_option( 'mc_templates' );
 
+	if ( !empty( $_POST ) ) {
+		$nonce = $_REQUEST['_wpnonce'];
+		if ( !wp_verify_nonce( $nonce,'my-calendar-nonce' ) ) die( "Security check failed" );	
+	}
+	
 	if ( isset($_POST['mc_grid_template'] ) ) {
-		$nonce=$_REQUEST['_wpnonce'];
-		if ( !wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
-
 		$mc_grid_template = $_POST['mc_grid_template'];
 		$templates['grid'] = $mc_grid_template;
 		update_option( 'mc_templates', $templates );
 		update_option( 'mc_use_grid_template',( empty($_POST['mc_use_grid_template'])?0:1 ) );
-
 		echo "<div class=\"updated\"><p><strong>".__('Grid Output Template saved','my-calendar').".</strong></p></div>";
 	}
 	
 	if ( isset($_POST['mc_rss_template'] ) ) {
-		$nonce=$_REQUEST['_wpnonce'];
-		if ( !wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
-
 		$mc_rss_template = $_POST['mc_rss_template'];
 		$templates['rss'] = $mc_rss_template;
 		update_option( 'mc_templates', $templates );
 		update_option( 'mc_use_rss_template',( empty($_POST['mc_use_rss_template'])?0:1 ) );
-
 		echo "<div class=\"updated\"><p><strong>".__('RSS Feed Output Template saved','my-calendar').".</strong></p></div>";
 	}	
 	
 	if ( isset($_POST['mc_list_template'] ) ) {
-		$nonce=$_REQUEST['_wpnonce'];
-		if ( !wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
-
 		$mc_list_template = $_POST['mc_list_template'];
 		$templates['list'] = $mc_list_template;
 		update_option( 'mc_templates', $templates );
 		update_option( 'mc_use_list_template',( empty($_POST['mc_use_list_template'])?0:1 ) );
-
 		echo "<div class=\"updated\"><p><strong>".__('List Output Template saved','my-calendar').".</strong></p></div>";
 	}
 
 	if ( isset($_POST['mc_mini_template'] ) ) {
-		$nonce=$_REQUEST['_wpnonce'];
-		if ( !wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
-
 		$mc_mini_template = $_POST['mc_mini_template'];
 		$templates['mini'] = $mc_mini_template;
 		update_option( 'mc_templates', $templates );
@@ -55,31 +45,26 @@ function edit_mc_templates() {
 	}
 
 	if ( isset( $_POST['mc_details_template'] ) ) {
-		$nonce=$_REQUEST['_wpnonce'];
-		if ( !wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
-
 		$mc_details_template = $_POST['mc_details_template'];
 		$templates['details'] = $mc_details_template;
 		update_option( 'mc_templates', $templates );
 		update_option( 'mc_use_details_template',( empty($_POST['mc_use_details_template'])?0:1 ) );
 		echo "<div class=\"updated\"><p><strong>".__('Event Details Template saved','my-calendar').".</strong></p></div>";
-	}	
+	}
+	
 	global $grid_template, $list_template, $mini_template, $single_template, $rss_template;
-	$mc_grid_template = stripslashes( ($templates['grid']!='')?$templates['grid']:$grid_template );
-	$mc_use_grid_template = get_option('mc_use_grid_template');
-	$mc_rss_template = stripslashes( ($templates['rss']!='')?$templates['rss']:$rss_template );
+	$mc_grid_template = stripslashes( ( $templates['grid']!='' ) ? $templates['grid'] : $grid_template );
+	$mc_use_grid_template = get_option( 'mc_use_grid_template' );
+	$mc_rss_template = stripslashes( ( $templates['rss']!='' ) ? $templates['rss'] : $rss_template );
 	$mc_use_rss_template = get_option('mc_use_rss_template');	
-	$mc_list_template = stripslashes( ($templates['list']!='')?$templates['list']:$list_template );
-	$mc_use_list_template = get_option('mc_use_list_template');
-	$mc_mini_template = stripslashes( ($templates['mini']!='')?$templates['mini']:$mini_template );
-	$mc_use_mini_template = get_option('mc_use_mini_template');
-	$mc_details_template = stripslashes( ($templates['details']!='')?$templates['details']:$single_template );
-	$mc_use_details_template = get_option('mc_use_details_template');	
-?>
+	$mc_list_template = stripslashes( ( $templates['list']!='' ) ? $templates['list'] : $list_template );
+	$mc_use_list_template = get_option( 'mc_use_list_template' );
+	$mc_mini_template = stripslashes( ( $templates['mini']!='' ) ? $templates['mini'] : $mini_template );
+	$mc_use_mini_template = get_option( 'mc_use_mini_template' );
+	$mc_details_template = stripslashes( ( $templates['details']!='' ) ? $templates['details'] : $single_template );
+	$mc_use_details_template = get_option( 'mc_use_details_template' );	?>
     <div class="wrap jd-my-calendar">
-	
-	
-<?php my_calendar_check_db(); ?>
+	<?php my_calendar_check_db(); ?>
     <h2><?php _e('My Calendar Information Templates','my-calendar'); ?></h2>
 	
 <div class="postbox-container jcd-wide">
@@ -189,5 +174,5 @@ function edit_mc_templates() {
 	</div>
 </div>
 </div>
-	<?php jd_show_support_box('templates');
+	<?php mc_show_sidebar('templates');
 }

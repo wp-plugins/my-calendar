@@ -49,7 +49,7 @@ PRODID:-//Accessible Web Design//My Calendar//http://www.joedolson.com//v'.$mc_v
 			$event =& $events[$key];
 			if ( is_object($event) ) {
 				if ( !( $event->category_private == 1 && !is_user_logged_in() ) ) {
-				$array = event_as_array($event);
+				$array = mc_create_tags($event);
 				$output .= "\n".jd_draw_template($array,$template,'ical');
 				}
 			}

@@ -93,7 +93,7 @@ function edit_my_calendar_groups() {
 			if ( empty($event_id) || empty($group_id) ) {
 				echo "<div class=\"error\"><p>".__("You must provide an event group id in order to edit it",'my-calendar')."</p></div>";
 			} else {
-				jd_groups_edit_form('edit', $event_id, $group_id );
+				mc_edit_groups('edit', $event_id, $group_id );
 			}	
 	} else { ?>	
 		<div id="icon-edit" class="icon32"></div>
@@ -115,13 +115,13 @@ function edit_my_calendar_groups() {
 			<div class="ui-sortable meta-box-sortables">
 				<div class="postbox">	
 					<h3><?php _e('Create/Modify Groups','my-calendar'); ?></h3>
-					<?php jd_groups_display_list(); ?>
+					<?php mc_list_groups(); ?>
 				</div>
 			</div>
 		</div>
 		</div><?php 
 	}
-	jd_show_support_box(); ?>
+	mc_show_sidebar(); ?>
 	</div><?php
 } 
 
@@ -167,7 +167,7 @@ function my_calendar_save_group( $action,$output,$event_id=false ) {
 	return $message;
 }
 
-function jd_acquire_group_data($event_id=false) {
+function mc_group_data($event_id=false) {
 	global $wpdb,$users_entries;
 	$mcdb = $wpdb;
 	if ( $event_id !== false ) {
@@ -250,12 +250,12 @@ function mc_group_form( $group_id, $type='break' ) {
 }
 
 // The event edit form for the manage events admin page
-function jd_groups_edit_form( $mode='edit', $event_id=false, $group_id=false ) {
+function mc_edit_groups( $mode='edit', $event_id=false, $group_id=false ) {
 	global $wpdb,$users_entries,$user_ID, $output;
 	$mcdb = $wpdb;
 	$message = '';
 	if ($event_id != false) {
-		$data = jd_acquire_group_data( $event_id );
+		$data = mc_group_data( $event_id );
 	} else {
 		$data = $users_entries;
 	}
@@ -515,8 +515,7 @@ function my_calendar_print_group_fields( $data,$mode,$event_id,$group_id='' ) {
 			<p>
                 <input type="submit" name="save" class="button-secondary" value="<?php _e('Edit Event Group','my-calendar'); ?>" />
 			</p>
-	</form>		
-
+	</form>
 </div>
 </div>
 <?php }
@@ -525,37 +524,32 @@ function mc_check_group_data( $action,$post ) {
 	$post = apply_filters( 'mc_groups_pre_checkdata', $post, $action );
 	global $wpdb, $current_user, $users_entries;
 	$mcdb = $wpdb;
-
 	$url_ok = 0;
 	$title_ok = 0;
 	$submit=array();
-
 	if ( get_magic_quotes_gpc() ) {
 		$post = array_map( 'stripslashes_deep', $post );
 	}
-
 	if (!wp_verify_nonce($post['event_nonce_name'],'event_nonce')) {
 		return;
 	}
-
-$errors = "";
-if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
-	$title = !empty($post['event_title']) ? trim($post['event_title']) : '';
-	$desc = !empty($post['content']) ? trim($post['content']) : '';
-	$short = !empty($post['event_short']) ? trim($post['event_short']) : '';
-	$repeats = ( empty($post['event_repeats']) || trim($post['event_repeats'])=='' ) ? 0 : trim($post['event_repeats']);
-	$host = !empty($post['event_host']) ? $post['event_host'] : $current_user->ID;
-	$category = !empty($post['event_category']) ? $post['event_category'] : '';
-    $event_link = !empty($post['event_link']) ? trim($post['event_link']) : '';
-    $expires = !empty($post['event_link_expires']) ? $post['event_link_expires'] : '0';
-	$location_preset = !empty($post['location_preset']) ? $post['location_preset'] : '';
-	$event_open = !empty($post['event_open']) ? $post['event_open'] : '2';
-	$event_tickets = !empty( $post['event_tickets'] ) ? trim( $post['event_tickets'] ) : '';
-	$event_registration = !empty( $post['event_registration'] ) ? trim( $post['event_registration'] ) : '';
-	$event_image = esc_url_raw( $post['event_image'] );
-	$event_span = !empty($post['event_span']) ? 1 : 0;
-	
-	// set location
+	$errors = "";
+	if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
+		$title = !empty($post['event_title']) ? trim($post['event_title']) : '';
+		$desc = !empty($post['content']) ? trim($post['content']) : '';
+		$short = !empty($post['event_short']) ? trim($post['event_short']) : '';
+		$repeats = ( empty($post['event_repeats']) || trim($post['event_repeats'])=='' ) ? 0 : trim($post['event_repeats']);
+		$host = !empty($post['event_host']) ? $post['event_host'] : $current_user->ID;
+		$category = !empty($post['event_category']) ? $post['event_category'] : '';
+		$event_link = !empty($post['event_link']) ? trim($post['event_link']) : '';
+		$expires = !empty($post['event_link_expires']) ? $post['event_link_expires'] : '0';
+		$location_preset = !empty($post['location_preset']) ? $post['location_preset'] : '';
+		$event_open = !empty($post['event_open']) ? $post['event_open'] : '2';
+		$event_tickets = !empty( $post['event_tickets'] ) ? trim( $post['event_tickets'] ) : '';
+		$event_registration = !empty( $post['event_registration'] ) ? trim( $post['event_registration'] ) : '';
+		$event_image = esc_url_raw( $post['event_image'] );
+		$event_span = !empty($post['event_span']) ? 1 : 0;
+		// set location
 		if ($location_preset != 'none') {
 			$sql = "SELECT * FROM " . my_calendar_locations_table() . " WHERE location_id = $location_preset";
 			$location = $mcdb->get_row($sql);
@@ -590,8 +584,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 			$event_access = !empty($post['event_access']) ? $post['event_access'] : array();
 			$event_access = !empty($post['event_access_hidden']) ? unserialize( $post['event_access_hidden'] ) : $event_access;			
 	    }
-	
-		// We check to make sure the URL is acceptable (blank or starting with http://)                                                        
+		// We check to make sure the URL is acceptable (blank or starting with http://)
 		if ( $event_link == '' ) {
 			$url_ok = 1;
 		} else if ( preg_match('/^(http)(s?)(:)\/\//',$event_link) ) {
@@ -679,7 +672,7 @@ if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 
 
 // Used on the manage events admin page to display a list of events
-function jd_groups_display_list() {
+function mc_list_groups() {
 	global $wpdb;
 	$mcdb = $wpdb;
 	$sortby = ( isset( $_GET['sort'] ) )?(int) $_GET['sort']:get_option('mc_default_sort');
@@ -688,7 +681,6 @@ function jd_groups_display_list() {
 	} else {
 		$sortdir = 'default';
 	}
-
 	if ( empty($sortby) ) {
 		$sortbyvalue = 'event_begin';
 	} else {
@@ -704,17 +696,8 @@ function jd_groups_display_list() {
 			default:$sortbyvalue = 'event_begin';
 		}
 	}
-	if ($sortdir == 'default') {
-		$sortbydirection = 'DESC';
-	} else {
-		$sortbydirection = $sortdir;
-	}
-	
-	if ($sortbydirection == 'DESC') {
-		$sorting = "&amp;order=ASC";
-	} else {
-		$sorting = '';
-	}
+	$sortbydirection = ( $sortdir == 'default' ) ? 'DESC' : $sortdir;
+	$sorting = ( $sortbydirection == 'DESC' ) ? "&amp;order=ASC" : '';
 	
 	$current = empty($_GET['paged']) ? 1 : intval($_GET['paged']);
 	$user = get_current_user_id();
@@ -733,7 +716,7 @@ function jd_groups_display_list() {
 	}
 	$events = $mcdb->get_results( "SELECT SQL_CALC_FOUND_ROWS * FROM " . my_calendar_table() . " $limit ORDER BY $sortbyvalue $sortbydirection LIMIT ".(($current-1)*$items_per_page).", ".$items_per_page );
 	$found_rows = $wpdb->get_col("SELECT FOUND_ROWS();");
-	$items = $found_rows[0];	
+	$items = $found_rows[0];
 	?><div class='inside'><?php
 	if ( get_option('mc_event_approve') == 'true' ) { ?>
 		<ul class="links">
@@ -742,10 +725,7 @@ function jd_groups_display_list() {
 		<li><a <?php echo ( isset($_GET['limit']) && $_GET['limit']=='all' || !isset($_GET['limit']))?' class="active-link"':''; ?>  href="<?php echo admin_url('admin.php?page=my-calendar-groups#my-calendar-admin-table'); ?>"><?php _e('All','my-calendar'); ?></a></li>
 		</ul>
 	<?php } ?>
-	
-	<p><?php _e('Check a set of events to group them for mass editing.','my-calendar'); ?></p>
-	
-		<?php
+	<p><?php _e('Check a set of events to group them for mass editing.','my-calendar'); ?></p><?php
 		$num_pages = ceil($items / $items_per_page);
 		if ( $num_pages > 1 ) {
 			$page_links = paginate_links( array(
@@ -763,10 +743,7 @@ function jd_groups_display_list() {
 			echo "</div>";
 			echo "</div>";
 		}
-		?>		
-	<?php
-	if ( !empty($events) ) {
-		?>
+		if ( !empty($events) ) { ?>
 		<form action="<?php echo admin_url("admin.php?page=my-calendar-groups"); ?>" method="post">
 		<div>
 		<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" />
@@ -776,7 +753,7 @@ function jd_groups_display_list() {
 		<input type="submit" class="button-primary group" value="<?php _e('Group checked events for mass editing','my-calendar'); ?>" />
 		</p>
 	</div>
-<table class="widefat wp-list-table" id="my-calendar-admin-table">
+	<table class="widefat wp-list-table" id="my-calendar-admin-table">
 	<thead>
 	<tr>
 		<th  scope="col" style="width: 50px;"><a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;sort=1$sorting"); ?>"><?php _e('ID','my-calendar') ?></a></th>
@@ -803,16 +780,15 @@ function jd_groups_display_list() {
 				$title = "<a href='".esc_attr($event->event_link)."'>$event->event_title</a>";
 			} else {
 				$title = $event->event_title;
-			}
-			?>
+			} ?>
 			<tr class="<?php echo $class; echo $spam; ?>" id="event<?php echo $event->event_id; ?>">
 				<th scope="row"><input type="checkbox" value="<?php echo $event->event_id; ?>" name="group[]" id="mc<?php echo $event->event_id; ?>" <?php echo (mc_event_is_grouped( $event->event_group_id ))?' disabled="disabled"':''; ?> /> <label for="mc<?php echo $event->event_id; ?>"><?php echo $event->event_id; ?></label></th>
 				<th scope="row"><?php echo ($event->event_group_id == 0)?'-':$event->event_group_id; ?></th>
-	<td title="<?php echo esc_attr(substr(strip_tags(stripslashes($event->event_desc)),0,240)); ?>">
+				<td title="<?php echo esc_attr(substr(strip_tags(stripslashes($event->event_desc)),0,240)); ?>">
 					<strong><?php if ( mc_can_edit_event( $event->event_author ) ) { ?>
 						<a href="<?php echo admin_url("admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id"); ?>" class='edit'>
-					<?php } ?>
-					<?php echo $spam_label; echo stripslashes($title); ?>
+					<?php } 
+					echo $spam_label; echo stripslashes($title); ?>
 					<?php if (  mc_can_edit_event( $event->event_author ) ) { echo "</a>"; } ?></strong>
 				<div class='row-actions' style="visibility:visible;">
 				<?php if ( mc_can_edit_event( $event->event_author ) ) { ?>
@@ -821,8 +797,8 @@ function jd_groups_display_list() {
 					<a href="<?php echo admin_url("admin.php?page=my-calendar-groups&amp;mode=edit&amp;event_id=$event->event_id&amp;group_id=$event->event_group_id"); ?>" class='edit group'><?php _e('Edit Group','my-calendar'); ?></a>
 					<?php } else { ?>
 					<em><?php _e('Ungrouped','my-calendar'); ?></em>
-					<?php } ?>
-				<?php } else { _e("Not editable.",'my-calendar'); } ?>		
+					<?php } 
+					} else { _e("Not editable.",'my-calendar'); } ?>		
 				</div>
 				</td>
 				<td><?php echo stripslashes( $event->event_label ); ?></td>
@@ -834,7 +810,7 @@ function jd_groups_display_list() {
 					$recur = $recurs[0];
 					$every = ( isset($recurs[1]) )?$recurs[1]:1;
 					// Interpret the DB values into something human readable
-					if ($recur == 'S') { _e('Never','my-calendar'); } 
+					if ($recur == 'S') { _e('Never','my-calendar'); }
 					else if ($recur == 'D') { _e('Daily','my-calendar'); }
 					else if ($recur == 'E') { _e('Weekdays','my-calendar'); }
 					else if ($recur == 'W') { _e('Weekly','my-calendar'); }
@@ -843,20 +819,24 @@ function jd_groups_display_list() {
 					else if ($recur == 'U') { _e('Monthly (by day)','my-calendar'); }
 					else if ($recur == 'Y') { _e('Yearly','my-calendar'); }
 				?>&ndash;<?php
-					if ($recur == 'S') { _e('N/A','my-calendar'); }
-					else if ( mc_event_repeats_forever( $recur, $event->event_repeats ) ) { _e('Forever','my-calendar'); }
-					else if ( $event->event_repeats > 0 ) { printf(__('%d Times','my-calendar'),$event->event_repeats ); }					
+					if ( $recur == 'S' ) { 
+						_e('N/A','my-calendar'); 
+					} else if ( mc_event_repeats_forever( $recur, $event->event_repeats ) ) { 
+						_e('Forever','my-calendar'); 
+					} else if ( $event->event_repeats > 0 ) { 
+						printf(__('%d Times','my-calendar'),$event->event_repeats ); 
+					}					
 				?>				
 				</td>
 				<td><?php echo ( is_object($author) )?$author->display_name:$author; ?></td>
-                                <?php
-								$this_category = $event->event_category;
-								foreach ($categories as $key=>$value) {
-									if ($value->category_id == $this_category) {
-										$this_cat = $categories[$key];
-									} 
-								}
-                                ?>
+					<?php
+					$this_category = $event->event_category;
+					foreach ( $categories as $key=>$value ) {
+						if ($value->category_id == $this_category) {
+							$this_cat = $categories[$key];
+						} 
+					}
+					?>
 				<td><div class="category-color" style="background-color:<?php echo (strpos($this_cat->category_color,'#') !== 0)?'#':''; echo $this_cat->category_color;?>;"> </div> <?php echo stripslashes($this_cat->category_name); ?></td>
 				<?php unset($this_cat); ?>
 			</tr><?php
