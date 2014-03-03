@@ -1653,6 +1653,7 @@ function mc_increment_event( $id, $post=array(), $test=false ) {
 function mc_get_details_link( $event ) {
 	// if available, and not querying remotely, use permalink.
 	$permalinks = apply_filters( 'mc_use_permalinks', get_option( 'mc_use_permalinks' ) );
+	$permalinks = ( $permalinks = 1 || $permalinks = true || $permalinks = 'true' ) ? true : false;
 	$details_link = $event->event_link;
 	if ( $event->event_post != 0 && get_option( 'mc_remote' ) != 'true' && $permalinks ) {
 		$details_link = add_query_arg( 'mc_id', $event->occur_id, get_permalink( $event->event_post ) );
