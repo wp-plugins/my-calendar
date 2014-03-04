@@ -1058,70 +1058,68 @@ function mc_form_fields( $data,$mode,$event_id ) {
 
 		if ( mc_show_edit_block( 'event_location') || mc_show_edit_block( 'event_location_dropdown') ) { ?>
 
-		<div class="ui-sortable meta-box-sortables">
-		<div class="postbox">
-		<h3><?php _e('Event Location','my-calendar'); ?></h3>
-		<div class="inside location_form">
-			<fieldset>
-			<legend><?php _e('Event Location','my-calendar'); ?></legend>
-			<?php } ?>
-			<?php if ( mc_show_edit_block( 'event_location_dropdown') ) { ?>
-			<?php $locations = $mcdb->get_results("SELECT location_id,location_label FROM " . my_calendar_locations_table() . " ORDER BY location_label ASC");
-				if ( !empty($locations) ) {
-			?>				
-			<p>
-			<label for="location_preset"><?php _e('Choose a preset location:','my-calendar'); ?></label> <select name="location_preset" id="location_preset">
-				<option value="none"> -- </option>
-				<?php foreach ( $locations as $location ) {
-					echo "<option value=\"".$location->location_id."\">".stripslashes($location->location_label)."</option>";
-				} ?>
-			</select>
-			</p>
-				<?php } else { ?>
+			<div class="ui-sortable meta-box-sortables">
+			<div class="postbox">
+			<h3><?php _e('Event Location','my-calendar'); ?></h3>
+			<div class="inside location_form">
+				<fieldset>
+				<legend><?php _e('Event Location','my-calendar'); ?></legend><?php
+		} 
+		if ( mc_show_edit_block( 'event_location_dropdown') ) {
+			$locs = $mcdb->get_results( "SELECT location_id,location_label FROM " . my_calendar_locations_table() . " ORDER BY location_label ASC" );
+			if ( !empty($locs) ) {	?>				
+				<p>
+					<label for="l_preset"><?php _e('Choose a preset location:','my-calendar'); ?></label> <select name="location_preset" id="l_preset">
+					<option value="none"> -- </option><?php 
+					foreach ( $locs as $loc ) {
+						echo "<option value=\"".$loc->location_id."\">".stripslashes( $loc->location_label )."</option>";
+					} ?>
+				</select>
+				</p><?php 
+			} else { ?>
 				<input type="hidden" name="location_preset" value="none" />
 				<p><a href="<?php echo admin_url('admin.php?page=my-calendar-locations'); ?>"><?php _e('Add recurring locations for later use.','my-calendar'); ?></a></p><?php 
-				} 
+			}
+		} else { ?>
+			<input type="hidden" name="location_preset" value="none" /><?php 
+		} 
+		mc_show_block( 'event_location', $has_data, $data );
+		if ( mc_show_edit_block( 'event_location') || mc_show_edit_block( 'event_location_dropdown') ) { ?>
+					</fieldset>
+				</div>
+			</div>
+			</div><?php 
+		}
+		if ( mc_show_edit_block( 'event_specials') ) { ?>			
+			<div class="ui-sortable meta-box-sortables">
+				<div class="postbox">
+				<h3><?php _e('Special scheduling options','my-calendar'); ?></h3>
+					<div class="inside">		
+						<fieldset>
+						<legend><?php _e('Special Options','my-calendar'); ?></legend>
+						<p>
+						<label for="e_holiday"><?php _e('Cancel this event if it occurs on a date with an event in the Holidays category','my-calendar'); ?></label> <input type="checkbox" value="true" id="e_holiday" name="event_holiday"<?php if ( $has_data && $data->event_holiday == '1') { echo " checked=\"checked\""; } else if ( $has_data && $data->event_holiday == '0') { echo ""; } else if ( get_option( 'mc_skip_holidays') == 'true') { echo " checked=\"checked\""; } ?> />
+						</p>
+						<p>
+						<label for="e_fifth_week"><?php _e('If this event recurs, and falls on the 5th week of the month in a month with only four weeks, move it back one week.','my-calendar'); ?></label> <input type="checkbox" value="true" id="e_fifth_week" name="event_fifth_week"<?php if ( $has_data && $data->event_fifth_week == '1') { echo " checked=\"checked\""; } else if ( $has_data && $data->event_fifth_week == '0') { echo ""; } else if ( get_option( 'mc_no_fifth_week') == 'true') { echo " checked=\"checked\""; } ?> />
+						</p>
+						</fieldset>
+					</div>
+				</div>
+			</div><?php 
 			} else { ?>
-				<input type="hidden" name="location_preset" value="none" />			
-			<?php } 
-			mc_show_block( 'event_location', $has_data, $data );
-			if ( mc_show_edit_block( 'event_location') || mc_show_edit_block( 'event_location_dropdown') ) { ?>
-			</fieldset>
-		</div>
-		</div>
-	</div>
-			<?php } ?>
-			<?php if ( mc_show_edit_block( 'event_specials') ) { ?>			
-<div class="ui-sortable meta-box-sortables">
-	<div class="postbox">
-	<h3><?php _e('Special scheduling options','my-calendar'); ?></h3>
-		<div class="inside">		
-			<fieldset>
-			<legend><?php _e('Special Options','my-calendar'); ?></legend>
-			<p>
-			<label for="e_holiday"><?php _e('Cancel this event if it occurs on a date with an event in the Holidays category','my-calendar'); ?></label> <input type="checkbox" value="true" id="e_holiday" name="event_holiday"<?php if ( $has_data && $data->event_holiday == '1') { echo " checked=\"checked\""; } else if ( $has_data && $data->event_holiday == '0') { echo ""; } else if ( get_option( 'mc_skip_holidays') == 'true') { echo " checked=\"checked\""; } ?> />
-			</p>
-			<p>
-			<label for="e_fifth_week"><?php _e('If this event recurs, and falls on the 5th week of the month in a month with only four weeks, move it back one week.','my-calendar'); ?></label> <input type="checkbox" value="true" id="e_fifth_week" name="event_fifth_week"<?php if ( $has_data && $data->event_fifth_week == '1') { echo " checked=\"checked\""; } else if ( $has_data && $data->event_fifth_week == '0') { echo ""; } else if ( get_option( 'mc_no_fifth_week') == 'true') { echo " checked=\"checked\""; } ?> />
-			</p>
-			</fieldset>
-		</div>
-	</div>
-</div>
-			<?php } else { ?>
 				<div>
 				<input type="hidden" name="event_holiday" value="true"<?php if ( get_option( 'mc_skip_holidays') == 'true') { echo " checked=\"checked\""; } ?> />
 				<input type="hidden" name="event_fifth_week" value="true"<?php if ( get_option( 'mc_no_fifth_week') == 'true') { echo " checked=\"checked\""; } ?>/>
-				</div>
-			<?php } ?>
+				</div><?php 
+			} ?>
 		<p>
 			<input type="submit" name="save" class="button-primary" value="<?php _e('Save Event','my-calendar'); ?>" />
 		</p>
-</form>	
-</div>
-</div>
-
-<?php }
+	</form>	
+	</div>
+	</div><?php 
+}
 
 function mc_event_accessibility( $form, $data, $label ) {
 	$note_value = '';
@@ -1163,104 +1161,101 @@ function mc_list_events( $type='normal') {
 		} else {
 			$sortdir = 'default';
 		}
-	
-	if ( empty($sortby) ) {
-		$sortbyvalue = 'event_begin';
-	} else {
-		switch ($sortby) {
-		    case 1:$sortbyvalue = 'event_ID';break;
-			case 2:$sortbyvalue = 'event_title';break;
-			case 3:$sortbyvalue = 'event_desc';break;
-			case 4:$sortbyvalue = 'event_begin';break;
-			case 5:$sortbyvalue = 'event_author';break;
-			case 6:$sortbyvalue = 'event_category';break;
-			case 7:$sortbyvalue = 'event_label';break;
-			default:$sortbyvalue = 'event_begin';
+		if ( empty($sortby) ) {
+			$sortbyvalue = 'event_begin';
+		} else {
+			switch ($sortby) {
+				case 1:$sortbyvalue = 'event_ID';break;
+				case 2:$sortbyvalue = 'event_title';break;
+				case 3:$sortbyvalue = 'event_desc';break;
+				case 4:$sortbyvalue = 'event_begin';break;
+				case 5:$sortbyvalue = 'event_author';break;
+				case 6:$sortbyvalue = 'event_category';break;
+				case 7:$sortbyvalue = 'event_label';break;
+				default:$sortbyvalue = 'event_begin';
+			}
 		}
-	}
-	$sortbydirection = ($sortdir == 'default')?'DESC':$sortdir;
-	$sorting = ($sortbydirection == 'DESC')?"&amp;order=ASC":'';
-	
-	$allow_filters = true;	
-	$status = ( isset($_GET['limit']) )?$_GET['limit']:'all';
-	$restrict = ( isset( $_GET['restrict'] ) )?$_GET['restrict']:'all';
-	switch ($status) {
-		case 'all':$limit = '';break;
-		case 'reserved':$limit = 'WHERE event_approved <> 1';break;
-		case 'published':$limit = 'WHERE event_approved = 1';break;
-		default:$limit = '';
-	}
-	switch ( $restrict ) {
-		case 'all':$filter='';break;
-		case 'where':$filter =( isset( $_GET['filter'] ) )?$_GET['filter']:''; $restrict = "event_label"; break;
-		case 'author':$filter =( isset( $_GET['filter'] ) )?(int) $_GET['filter']:''; $restrict = "event_author"; break;
-		case 'category':$filter =( isset( $_GET['filter'] ) )?(int) $_GET['filter']:''; $restrict = "event_category"; break;
-		case 'flagged':$filter = ( isset( $_GET['filter'] ) )?(int) $_GET['filter']:''; $restrict = "event_flagged"; break;
-		default:$filter='';
-	}
-	if ( !current_user_can( 'mc_manage_events') && !current_user_can( 'mc_approve_events') ) { 
-		$restrict = 'event_author'; $filter = get_current_user_id(); 
-		$allow_filters = false;
-	}		
-	$filter = esc_sql(urldecode($filter));
-	if ( $restrict == "event_label" ) { $filter = "'$filter'"; }	
-	if ( $limit == '' && $filter != '') {
-		$limit = "WHERE $restrict = $filter";
-	} else if ( $limit != ''&& $filter != '') {
-		$limit .= "AND $restrict = $filter";
-	}
-	if ( $filter == ''|| !$allow_filters ) { $filtered = ""; } else { $filtered = "<a href='".admin_url('admin.php?page=my-calendar-manage')."'>".__('Clear filters','my-calendar')."</a>"; }
-	$current = empty($_GET['paged']) ? 1 : intval($_GET['paged']);
-	
-	$user = get_current_user_id();
-	$screen = get_current_screen();
-	$option = $screen->get_option('per_page', 'option');
-	$items_per_page = get_user_meta($user, $option, true);
-	if ( empty( $items_per_page ) || $items_per_page < 1 ) {
-		$items_per_page = $screen->get_option( 'per_page', 'default');
-	}
-	// default limits
-	if ( $limit == '' ) {
-		$limit .= ( $restrict != 'event_flagged')?" WHERE event_flagged = 0":'';
-	} else {
-		$limit .= ( $restrict != 'event_flagged')?" AND event_flagged = 0":'';
-	}
-	$limit .= ( $restrict != 'archived' ) ? " AND event_status = 1" : ' AND event_status = 0';		
-	$events = $mcdb->get_results("SELECT SQL_CALC_FOUND_ROWS * FROM " . my_calendar_table() . " $limit ORDER BY $sortbyvalue $sortbydirection LIMIT ".(($current-1)*$items_per_page).", ".$items_per_page );
-	$found_rows = $wpdb->get_col("SELECT FOUND_ROWS();");
-	$items = $found_rows[0];
-	if ( ( function_exists( 'akismet_http_post') || function_exists( 'bs_checker') ) && $allow_filters ) { ?>
-		<ul class="links">
-			<li><a <?php echo ( isset($_GET['restrict']) && $_GET['restrict']=='flagged')?'class="active-link"':''; ?>  href="<?php echo admin_url('admin.php?page=my-calendar-manage&amp;restrict=flagged&amp;filter=1'); ?>"><?php _e('Spam','my-calendar'); ?></a></li>
-		</ul><?php 
-	} 
-	if ( get_option('mc_event_approve') == 'true' ) { ?>
-		<ul class="links">
-			<li><a <?php echo ( isset($_GET['limit']) && $_GET['limit']=='published')?'class="active-link"':''; ?> href="<?php echo admin_url('admin.php?page=my-calendar-manage&amp;limit=published'); ?>"><?php _e('Published','my-calendar'); ?></a></li>
-			<li><a <?php echo ( isset($_GET['limit']) && $_GET['limit']=='reserved')?'class="active-link"':''; ?>  href="<?php echo admin_url('admin.php?page=my-calendar-manage&amp;limit=reserved'); ?>"><?php _e('Reserved','my-calendar'); ?></a></li> 
-			<li><a <?php echo ( isset($_GET['limit']) && $_GET['limit']=='all'|| !isset($_GET['limit']))?'class="active-link"':''; ?>  href="<?php echo admin_url('admin.php?page=my-calendar-manage&amp;limit=archived'); ?>"><?php _e('Archived','my-calendar'); ?></a></li>
-			<li><a <?php echo ( isset($_GET['limit']) && $_GET['limit']=='all'|| !isset($_GET['limit']))?'class="active-link"':''; ?>  href="<?php echo admin_url('admin.php?page=my-calendar-manage&amp;limit=all'); ?>"><?php _e('All','my-calendar'); ?></a></li>
-		</ul><?php 
-	}
-	echo $filtered;
-	$num_pages = ceil($items / $items_per_page);
-	if ( $num_pages > 1 ) {
-		$page_links = paginate_links( array(
-			'base'=> add_query_arg( 'paged', '%#%'),
-			'format'=> '',
-			'prev_text'=> __( '&laquo; Previous<span class="screen-reader-text"> Events</span>','my-calendar' ),
-			'next_text'=> __( 'Next<span class="screen-reader-text"> Events</span> &raquo;','my-calendar' ),
-			'total'=> $num_pages,
-			'current'=> $current,
-			'mid_size'=> 1
-		));
-		echo "<div class='tablenav'>";
-		echo "<div class='tablenav-pages'>";
-		echo $page_links; 
-		echo "</div>";
-		echo "</div>";
-	}
-	if ( !empty($events) ) {
+		$sortbydirection = ($sortdir == 'default')?'DESC':$sortdir;
+		$sorting = ($sortbydirection == 'DESC')?"&amp;order=ASC":'';
+		$allow_filters = true;	
+		$status = ( isset($_GET['limit']) )?$_GET['limit']:'all';
+		$restrict = ( isset( $_GET['restrict'] ) )?$_GET['restrict']:'all';
+		switch ($status) {
+			case 'all':$limit = '';break;
+			case 'reserved':$limit = 'WHERE event_approved <> 1';break;
+			case 'published':$limit = 'WHERE event_approved = 1';break;
+			default:$limit = '';
+		}
+		switch ( $restrict ) {
+			case 'all':$filter='';break;
+			case 'where':$filter =( isset( $_GET['filter'] ) )?$_GET['filter']:''; $restrict = "event_label"; break;
+			case 'author':$filter =( isset( $_GET['filter'] ) )?(int) $_GET['filter']:''; $restrict = "event_author"; break;
+			case 'category':$filter =( isset( $_GET['filter'] ) )?(int) $_GET['filter']:''; $restrict = "event_category"; break;
+			case 'flagged':$filter = ( isset( $_GET['filter'] ) )?(int) $_GET['filter']:''; $restrict = "event_flagged"; break;
+			default:$filter='';
+		}
+		if ( !current_user_can( 'mc_manage_events') && !current_user_can( 'mc_approve_events') ) { 
+			$restrict = 'event_author'; $filter = get_current_user_id(); 
+			$allow_filters = false;
+		}		
+		$filter = esc_sql( urldecode( $filter ) );
+		if ( $restrict == "event_label" ) { $filter = "'$filter'"; }	
+		if ( $limit == '' && $filter != '' ) {
+			$limit = "WHERE $restrict = $filter";
+		} else if ( $limit != ''&& $filter != '' ) {
+			$limit .= "AND $restrict = $filter";
+		}
+		if ( $filter == '' || !$allow_filters ) { 
+			$filtered = ""; 
+		} else { 
+			$filtered = "<span class='dashicons dashicons-no'></span><a href='".admin_url('admin.php?page=my-calendar-manage')."'>".__('Clear filters','my-calendar')."</a>"; 
+		}
+		$current = empty( $_GET['paged'] ) ? 1 : intval( $_GET['paged'] );
+		$user = get_current_user_id();
+		$screen = get_current_screen();
+		$option = $screen->get_option( 'per_page', 'option' );
+		$items_per_page = get_user_meta( $user, $option, true );
+		if ( empty( $items_per_page ) || $items_per_page < 1 ) {
+			$items_per_page = $screen->get_option( 'per_page', 'default');
+		}
+		// default limits
+		if ( $limit == '' ) {
+			$limit .= ( $restrict != 'event_flagged' ) ? " WHERE event_flagged = 0" : '';
+		} else {
+			$limit .= ( $restrict != 'event_flagged' ) ? " AND event_flagged = 0" : '';
+		}
+		$limit .= ( $restrict != 'archived' ) ? " AND event_status = 1" : ' AND event_status = 0';		
+		$events = $mcdb->get_results( "SELECT SQL_CALC_FOUND_ROWS * FROM " . my_calendar_table() . " $limit ORDER BY $sortbyvalue $sortbydirection LIMIT ".( ( $current-1 )*$items_per_page ).", ".$items_per_page );
+		$found_rows = $wpdb->get_col("SELECT FOUND_ROWS();");
+		$items = $found_rows[0];
+		if ( ( function_exists( 'akismet_http_post') || function_exists( 'bs_checker') ) && $allow_filters ) { ?>
+			<ul class="links">
+				<li><a <?php echo ( isset($_GET['restrict']) && $_GET['restrict']=='flagged')?'class="active-link"':''; ?>  href="<?php echo admin_url('admin.php?page=my-calendar-manage&amp;restrict=flagged&amp;filter=1'); ?>"><?php _e('Spam','my-calendar'); ?></a></li>
+			</ul><?php 
+		} 
+		if ( get_option('mc_event_approve') == 'true' ) { ?>
+			<ul class="links">
+				<li><a <?php echo ( isset($_GET['limit']) && $_GET['limit']=='published')?'class="active-link"':''; ?> href="<?php echo admin_url('admin.php?page=my-calendar-manage&amp;limit=published'); ?>"><?php _e('Published','my-calendar'); ?></a></li>
+				<li><a <?php echo ( isset($_GET['limit']) && $_GET['limit']=='reserved')?'class="active-link"':''; ?>  href="<?php echo admin_url('admin.php?page=my-calendar-manage&amp;limit=reserved'); ?>"><?php _e('Reserved','my-calendar'); ?></a></li> 
+				<li><a <?php echo ( isset($_GET['limit']) && $_GET['limit']=='all'|| !isset($_GET['limit']))?'class="active-link"':''; ?>  href="<?php echo admin_url('admin.php?page=my-calendar-manage&amp;limit=archived'); ?>"><?php _e('Archived','my-calendar'); ?></a></li>
+				<li><a <?php echo ( isset($_GET['limit']) && $_GET['limit']=='all'|| !isset($_GET['limit']))?'class="active-link"':''; ?>  href="<?php echo admin_url('admin.php?page=my-calendar-manage&amp;limit=all'); ?>"><?php _e('All','my-calendar'); ?></a></li>
+			</ul><?php 
+		}
+		echo $filtered;
+		$num_pages = ceil($items / $items_per_page);
+		if ( $num_pages > 1 ) {
+			$page_links = paginate_links( array(
+				'base'=> add_query_arg( 'paged', '%#%'),
+				'format'=> '',
+				'prev_text'=> __( '&laquo; Previous<span class="screen-reader-text"> Events</span>','my-calendar' ),
+				'next_text'=> __( 'Next<span class="screen-reader-text"> Events</span> &raquo;','my-calendar' ),
+				'total'=> $num_pages,
+				'current'=> $current,
+				'mid_size'=> 1
+			));
+			printf( "<div class='tablenav'><div class='tablenav-pages'>%s</div></div>", $page_links );
+		}
+		if ( !empty($events) ) {
 		?>
 		<form action="<?php echo admin_url('admin.php?page=my-calendar-manage'); ?>" method="post">
 		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>		

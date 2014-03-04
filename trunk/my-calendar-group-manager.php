@@ -737,11 +737,7 @@ function mc_list_groups() {
 				'current'=> $current,
 				'mid_size'=> 1				
 			));
-			echo "<div class='tablenav'>";
-			echo "<div class='tablenav-pages'>";
-			echo $page_links; 
-			echo "</div>";
-			echo "</div>";
+			printf( "<div class='tablenav'><div class='tablenav-pages'>%s</div></div>", $page_links );
 		}
 		if ( !empty($events) ) { ?>
 		<form action="<?php echo admin_url("admin.php?page=my-calendar-groups"); ?>" method="post">
