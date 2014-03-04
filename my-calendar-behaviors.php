@@ -3,71 +3,54 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 // Edit or configure scripts used with My Calendar
 function edit_my_calendar_behaviors() {
-  global $wpdb, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs;
+	global $wpdb, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs;
 	$mcdb = $wpdb;
-  
-  if ( isset($_POST['mc_caljs'] ) ) {
-    $nonce=$_REQUEST['_wpnonce'];
-    if (! wp_verify_nonce( $nonce,'my-calendar-nonce' ) ) die( "Security check failed" );
-	$mc_caljs = $_POST['mc_caljs'];
-	$mc_listjs = $_POST['mc_listjs'];
-	$mc_minijs = $_POST['mc_minijs'];
-	$mc_ajaxjs = $_POST['mc_ajaxjs'];
-	
-	  update_option('mc_calendar_javascript', ( empty($_POST['calendar_javascript']) )?0:1);
-	  update_option('mc_list_javascript', ( empty($_POST['list_javascript']) )?0:1 );
-	  update_option('mc_mini_javascript', ( empty($_POST['mini_javascript']) )?0:1 );
-	  update_option('mc_ajax_javascript', ( empty($_POST['ajax_javascript']) )?0:1 );
-	  // set js
-	  update_option('mc_listjs',$mc_listjs);
-	  update_option('mc_minijs',$mc_minijs);
-	  update_option('mc_caljs',$mc_caljs);
-	  update_option('mc_ajaxjs',$mc_ajaxjs);
 	  
-	$mc_show_js = ($_POST['mc_show_js']=='')?'':$_POST['mc_show_js'];
-	update_option('mc_show_js',$mc_show_js);   
-	
-		if ( !empty($_POST['reset_caljs']) ) {
-			update_option('mc_caljs',$initial_caljs);
-		}
-		if ( !empty($_POST['reset_listjs']) ) {
-			update_option('mc_listjs',$initial_listjs);
-		}
-		if ( !empty($_POST['reset_minijs']) ) {
-			update_option('mc_minijs',$initial_minijs);
-		}	
-		if ( !empty($_POST['reset_ajaxjs']) ) {
-			update_option('mc_ajaxjs',$initial_ajaxjs);
-		}
+	if ( isset($_POST['mc_caljs'] ) ) {
+		$nonce=$_REQUEST['_wpnonce'];
+		if ( !wp_verify_nonce( $nonce,'my-calendar-nonce' ) ) die( "Security check failed" );
+		$mc_caljs = $_POST['mc_caljs'];
+		$mc_listjs = $_POST['mc_listjs'];
+		$mc_minijs = $_POST['mc_minijs'];
+		$mc_ajaxjs = $_POST['mc_ajaxjs'];
+		
+		update_option('mc_calendar_javascript', ( empty($_POST['calendar_javascript']) )?0:1);
+		update_option('mc_list_javascript', ( empty($_POST['list_javascript']) )?0:1 );
+		update_option('mc_mini_javascript', ( empty($_POST['mini_javascript']) )?0:1 );
+		update_option('mc_ajax_javascript', ( empty($_POST['ajax_javascript']) )?0:1 );
+		// set js
+		update_option('mc_listjs',$mc_listjs);
+		update_option('mc_minijs',$mc_minijs);
+		update_option('mc_caljs',$mc_caljs);
+		update_option('mc_ajaxjs',$mc_ajaxjs);
+		  
+		$mc_show_js = ($_POST['mc_show_js']=='')?'':$_POST['mc_show_js'];
+		update_option('mc_show_js',$mc_show_js);   
+		if ( !empty($_POST['reset_caljs']) ) { update_option('mc_caljs',$initial_caljs); }
+		if ( !empty($_POST['reset_listjs']) ) { update_option('mc_listjs',$initial_listjs); }
+		if ( !empty($_POST['reset_minijs']) ) { update_option('mc_minijs',$initial_minijs); }
+		if ( !empty($_POST['reset_ajaxjs']) ) { update_option('mc_ajaxjs',$initial_ajaxjs); }
 		echo "<div class=\"updated\"><p><strong>".__('Behavior Settings saved','my-calendar').".</strong></p></div>";
-    }
+	}
 
 	$mc_listjs = stripcslashes(get_option('mc_listjs'));
 	$list_javascript = get_option('mc_list_javascript');
-
 	$mc_caljs = stripcslashes(get_option('mc_caljs'));
 	$calendar_javascript = get_option('mc_calendar_javascript');
-
 	$mc_minijs = stripcslashes(get_option('mc_minijs'));
 	$mini_javascript = get_option('mc_mini_javascript'); 
-
 	$mc_ajaxjs = stripcslashes(get_option('mc_ajaxjs'));
 	$ajax_javascript = get_option('mc_ajax_javascript'); 
-	
 	$mc_show_js = stripcslashes(get_option('mc_show_js'));
-
-  // Now we render the form
-  ?>
-    <div class="wrap jd-my-calendar">
-<?php 
-my_calendar_check_db();
-?>
+	// Now we render the form ?>
+<div class="wrap jd-my-calendar">
+	<?php my_calendar_check_db(); ?>
     <h2><?php _e('My Calendar Behaviors','my-calendar'); ?></h2>
-<div class="postbox-container" style="width: 70%">
-<div class="metabox-holder">
+	<div class="postbox-container jcd-wide">
+	<div class="metabox-holder">
 
-<div class="ui-sortable meta-box-sortables">
-<div class="postbox" id="cdiff">
+	<div class="ui-sortable meta-box-sortables">
+	<div class="postbox" id="cdiff">
 	
 	<h3><?php _e('Calendar Behavior Settings','my-calendar'); ?></h3>
 	<div class="inside">	
@@ -105,9 +88,7 @@ my_calendar_check_db();
 		<input type="submit" name="save" class="button-secondary" value="<?php _e('Save','my-calendar'); ?>" />
 	</p>	
 	</fieldset>
-	
 
-	
     <fieldset id="ldiff">
 	<legend><?php _e('Calendar Behaviors: List View','my-calendar'); ?></legend>
 	<p>
@@ -138,7 +119,6 @@ my_calendar_check_db();
 	</p>	
 	</fieldset>
 
-	
    <fieldset id="mdiff">
 	<legend><?php _e('Calendar Behaviors: Mini Calendar View','my-calendar'); ?></legend>
 	<p>
@@ -168,8 +148,6 @@ my_calendar_check_db();
 		<input type="submit" name="save" class="button-secondary" value="<?php _e('Save','my-calendar'); ?>" />
 	</p>	
 	</fieldset>
-	
-
 	
     <fieldset id="adiff">
 	<legend><?php _e('Calendar Behaviors: AJAX','my-calendar'); ?></legend>
@@ -207,7 +185,7 @@ my_calendar_check_db();
 <p><?php _e('Resetting JavaScript will set that script to the version currently distributed with the plug-in.','my-calendar'); ?></p>
  </div>
  </div>
- <?php jd_show_support_box(); ?>
+ <?php mc_show_sidebar(); ?>
  </div>
 <?php 
 }

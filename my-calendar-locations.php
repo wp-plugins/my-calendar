@@ -216,8 +216,27 @@ function mc_manage_locations() {
 	global $wpdb;
 	$mcdb = $wpdb;
 	// pull the locations from the database	
-	$locations = $mcdb->get_results("SELECT * FROM " . my_calendar_locations_table() . " ORDER BY location_label ASC");
-	if ( !empty($locations) ) { ?>
+	$items_per_page = 50;
+	$current = empty( $_GET['paged'] ) ? 1 : intval( $_GET['paged'] );
+	$locations = $mcdb->get_results("SELECT SQL_CALC_FOUND_ROWS * FROM " . my_calendar_locations_table() . " ORDER BY location_label ASC LIMIT ".( ( $current-1 )*$items_per_page ).", ".$items_per_page );
+	$found_rows = $wpdb->get_col( "SELECT FOUND_ROWS();" );
+	$items = $found_rows[0];		
+
+	$num_pages = ceil( $items / $items_per_page );
+	if ( $num_pages > 1 ) {
+		$page_links = paginate_links( array(
+			'base'=> add_query_arg( 'paged', '%#%'),
+			'format'=> '',
+			'prev_text'=> __( '&laquo; Previous<span class="screen-reader-text"> Locations</span>','my-calendar' ),
+			'next_text'=> __( 'Next<span class="screen-reader-text"> Locations</span> &raquo;','my-calendar' ),
+			'total'=> $num_pages,
+			'current'=> $current,
+			'mid_size'=> 1
+		) );
+		printf( "<div class='tablenav'><div class='tablenav-pages'>%s</div></div>", $page_links );
+	}
+
+	if ( !empty( $locations ) ) { ?>
 	<table class="widefat page" id="my-calendar-admin-table">
 	<thead> 
 	<tr>
@@ -280,13 +299,13 @@ function mc_manage_locations() {
 }
 
 function mc_locations_fields( $has_data, $data, $context = 'location' ) {
-	$return = '';
+	$return = '<div class="mc-locations">';
 	if ( current_user_can( 'mc_edit_locations') && $context == 'event' ) {
 		$return .= '<p><input type="checkbox" value="on" name="mc_copy_location" id="mc_copy_location" /> <label for="mc_copy_location">'.__('Copy this location into the locations table','my-calendar').'</label></p>';
 	}
 	$return .= '
 	<p>
-	<label for="e_label">'.__('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar').'</label><br />';
+	<label for="e_label">'.__('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar').'</label>';
 	$cur_label = ( !empty( $data ) ) ? ( stripslashes( $data->{$context.'_label'} ) ):'';	
 	if ( mc_controlled_field( 'label' ) ) {
 		$return .= mc_location_controller( 'label', $cur_label, $context );
@@ -311,6 +330,8 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	} else {
 		$return .= '<input type="text" id="e_city" name="'.$context.'_city" size="40" value="'.esc_attr( $cur_city ).'" />';
 	}
+	$return .= "</p>
+	<p>";
 	$return .= '<label for="e_state">'.__('State/Province','my-calendar').'</label> ';
 	$cur_state = ( !empty( $data ) )?( stripslashes( $data->{$context.'_state'} ) ):'';	
 	if ( mc_controlled_field( 'state' ) ) {
@@ -327,6 +348,8 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	} else {
 		$return .= '<input type="text" id="e_postcode" name="'.$context.'_postcode" size="40" value="'.esc_attr( $cur_postcode ).'" />';
 	}
+	$return .= "</p>
+	<p>";
 	$return .= '<label for="e_region">'.__('Region','my-calendar').'</label> ';
 	$cur_region = ( !empty( $data ) )?( stripslashes( $data->{$context.'_region'} ) ):'';	
 	if ( mc_controlled_field( 'region' ) ) {
@@ -384,10 +407,14 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	<ul class="accessibility-features checkboxes">';
 	$access = apply_filters( 'mc_venue_accessibility', get_option( 'mc_location_access') );
 	$access_list = '';
-	if ( $context == 'location' ) {
-		$location_access = ( $has_data ) ? unserialize( $data->{$context.'_access'} ) : array();
+	if ( $has_data ) {
+		if ( $context == 'location' ) {
+			$location_access = unserialize( $data->{$context.'_access'} );
+		} else {
+			$location_access = unserialize( mc_location_data( 'location_access', $data->event_location ) );
+		}
 	} else {
-		$location_access = unserialize( mc_location_data( 'location_access', $data->event_location ) );
+		$location_access = array();
 	}
 	foreach ( $access as $k=>$a ) {
 		$id = "loc_access_$k";
@@ -401,7 +428,7 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	}
 	$return  .= $access_list;
 	$return .= '</ul>
-	</fieldset>';
+	</fieldset></div>';
 	return $return;
 }
 
