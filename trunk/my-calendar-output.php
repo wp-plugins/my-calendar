@@ -110,10 +110,9 @@ function mc_time_html( $event, $type, $current_date ) {
 
 function mc_category_icon( $event,$html='html' ) {
 	$url = plugin_dir_url( __FILE__ );
-	if ( get_option('mc_hide_icons')=='true' ) {
-		$image = "";
-	} else {
-	    if ($event->category_icon != "") {
+	$image = '';	
+	if ( get_option( 'mc_hide_icons' ) != 'true' ) {
+	    if ( $event->category_icon != '' ) {
 			$path = ( is_custom_icon() ) ? str_replace( 'my-calendar','my-calendar-custom',$url ) : plugins_url( 'images/icons', __FILE__ ).'/';
 			$hex = ( strpos( $event->category_color,'#' ) !== 0 )?'#':'';
 			if ( $html == 'html' ) {
@@ -121,8 +120,6 @@ function mc_category_icon( $event,$html='html' ) {
 			} else {
 				$image = $path.$event->category_icon;
 			}
-		} else {
-			$image = "";
 		}
 	}
 	return $image;
@@ -244,7 +241,7 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 		if ($mc_display_author == 'true') {
 			if ( $event->event_author != 0 ) {
 				$e = get_userdata( $event->event_author );
-				$author = '<span class="event-author">'.__('Posted by', 'my-calendar').' <span class="author-name">'.$e->display_name."</span></span><br />\n";
+				$author = '<p class="event-author">'.__('Posted by', 'my-calendar').' <span class="author-name">'.$e->display_name."</span></p>\n";
 			}
 		}
 		if ( $display_details == 'true' && !isset( $_GET['mc_id'] ) ) {
@@ -291,8 +288,9 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 			$status = '';
 		}
 		
+		// JCD TODO - this is really wonky. What was I thinking?
 		// if the event is a member of a group of events, but not the first, note that.
-		if ($event->event_group == 1 ) {
+		if ( $event->event_group == 1 ) {
 			$info = array();
 			$info[] = $event->event_id;
 			update_option( 'mc_event_groups' , $info );
@@ -300,7 +298,7 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 		
 		if ( is_array( get_option( 'mc_event_groups' ) ) ) {
 			if ( in_array ( $event->event_id , get_option( 'mc_event_groups') ) ) {
-				if ( $process_date != $event->event_original_begin ) {
+				if ( $process_date != $event->event_begin ) {
 					$status = __( "This event is in a series. Register for the first event in this series to attend.",'my-calendar' );
 				}
 			}
@@ -326,16 +324,20 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 			. $time
 			. $list_title
 			. $image
+			."<div class='location'>"
+			. $map
+			. $address
+			. "</div>"			
 			. $description 
 			. $short 
 			. $link 
 			. $status
-			. $map
-			. $address
 			. $author
+			. "<div class='sharing'>"
 			. $vcal
 			. $gcal
 			. $more
+			. "</div>"
 			. $return;
 	} else {
 		$custom = true; 
@@ -442,9 +444,6 @@ $ltype=(isset($_GET['ltype']))?$_GET['ltype']:'';
 $lvalue=(isset($_GET['lvalue']))?$_GET['lvalue']:'';
 header('Content-Type: '.get_bloginfo('html_type').'; charset='.get_bloginfo('charset'));
 echo '<!DOCTYPE html>
-<!--[if IE 6]>
-<html id="ie6" dir="'.get_bloginfo('text_direction').'" lang="'.get_bloginfo('language').'">
-<![endif]-->
 <!--[if IE 7]>
 <html id="ie7" dir="'.get_bloginfo('text_direction').'" lang="'.get_bloginfo('language').'">
 <![endif]-->
@@ -463,7 +462,7 @@ echo '<!DOCTYPE html>
 if ( mc_file_exists( 'css/mc-print.css' ) ) {
 	$stylesheet = mc_get_file( 'css/mc-print.css', 'url' );
 } else {
-	$stylesheet = $url."mc-print.css";
+	$stylesheet = $url."css/mc-print.css";
 }
 echo "
 <!-- Copy mc-print.css to your theme directory if you wish to replace the default print styles -->
@@ -919,7 +918,7 @@ function my_calendar( $name, $format, $category, $time='month', $ltype='', $lval
 		if ( get_option('mc_bottomnav') != '' ) { $mc_bottomorder = explode( ',', get_option('mc_bottomnav') ); }
 		if ( $below != '' ) { $mc_bottomorder = explode( ',', $below ); }
 		foreach ( $mc_bottomorder as $value ) {
-			if ( $value != 'none' ) {
+			if ( $value != 'none' && $value !='stop' ) {
 				$value = trim($value);
 				$mc_bottomnav .= ${$value};
 			}
@@ -978,7 +977,8 @@ function my_calendar( $name, $format, $category, $time='month', $ltype='', $lval
 					if ($format == "calendar" || $format == "mini" ) {
 						$my_calendar_body .= "\n<table class=\"my-calendar-table\">\n";
 							$values = array( 'date'=>date('Y-m-d',$current_date) );
-						$week_caption = jd_draw_template( $values, stripslashes(get_option('mc_week_caption')) );
+						$week_template = ( get_option( 'mc_week_caption' ) != '' ) ? get_option( 'mc_week_caption' ) : 'Week of {date format="M jS"}';
+						$week_caption = jd_draw_template( $values, stripslashes( $week_template ) );
 						$caption_heading = ($time != 'week')?$current_date_header.$caption_text:$week_caption.$caption_text;
 						$my_calendar_body .= "<caption class=\"my-calendar-$time\">".$caption_heading."</caption>\n";
 					} else {
@@ -1175,9 +1175,9 @@ function mc_rss_links( $y, $m, $next ) {
 	$rss = "\n	<li class='rss'><a href='".$feed."'>".__('Subscribe by <abbr title="Really Simple Syndication">RSS</abbr>','my-calendar')."</a></li>";
 	$ical = "\n	<li class='ics'><a href='".$ics."'>".__('Download as <abbr title="iCal Events Export">iCal</abbr>','my-calendar')."</a></li>";
 	$output = "\n
-<ul id='mc-export'>$rss
-$ical
-</ul>\n";	
+<div class='mc-export'>
+	<ul>$rss$ical</ul>
+</div>\n";	
 	return $output;
 }
 
@@ -1565,7 +1565,7 @@ global $wpdb;
 			$output .= "<ul id='mc-locations-list'>
 			<li><a href='$url'>".__('Show all','my-calendar')."</a></li>\n";
 		} else {
-			$ltype = (!isset($_GET['ltype']))?$datatype:$_GET['ltype'];
+			$ltype = ( !isset( $_GET['ltype'] ) ) ? $datatype : $_GET['ltype'];
 			$output .= "<div id='mc_locations'>";
 			$output .= ( $group == 'single' ) ? "
 		<form action='".$current_url."' method='get'>
@@ -1593,6 +1593,7 @@ global $wpdb;
 				foreach ( $location as $key=>$value ) {
 					$vt = urlencode(trim($value));
 					$value = stripcslashes($value);
+					if ( $value == '' ) continue;
 					if ( empty($_GET['loc']) ) {
 						$loc = '';
 					} else {
@@ -1612,6 +1613,7 @@ global $wpdb;
 			} else {
 				$vk = urlencode(trim($key));
 				$location = trim($location);
+				if ( $location == '' ) continue;
 				if ($show == 'list') {
 					$selected = ($vk == $_GET['loc'])?" class='selected'":'';
 					$this_url = mc_build_url( array('loc'=>$vk,'ltype'=>$datatype),array() );					

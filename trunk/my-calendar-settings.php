@@ -207,9 +207,9 @@ function edit_my_calendar_config() {
 	// output
 	if ( isset( $_POST['mc_show_months'] ) ) {
 		$mc_open_day_uri = ( !empty( $_POST['mc_open_day_uri'] ) ) ? $_POST['mc_open_day_uri'] : '';
-		update_option('mc_uri',$_POST['mc_uri'] );
-		update_option('mc_use_permalinks', ( !empty( $_POST['mc_use_permalinks'] ) ) ? true : false );
-		update_option('mc_open_uri',( !empty($_POST['mc_open_uri']) && $_POST['mc_open_uri']=='on' && get_option('mc_uri') != '')?'true':'false');
+		update_option( 'mc_uri',$_POST['mc_uri'] );
+		update_option( 'mc_use_permalinks', ( !empty( $_POST['mc_use_permalinks'] ) ) ? true : false );
+		update_option( 'mc_open_uri',( !empty($_POST['mc_open_uri']) && $_POST['mc_open_uri']=='on' && get_option('mc_uri') != '')?'true':'false' );
 		update_option('mc_mini_uri',$_POST['mc_mini_uri'] );
 		update_option('mc_open_day_uri', $mc_open_day_uri );
 		update_option('mc_skip_holidays_category',(int) $_POST['mc_skip_holidays_category']);
@@ -277,7 +277,6 @@ function edit_my_calendar_config() {
 			'event_open'=>( !empty($_POST['mci_event_open']) && $_POST['mci_event_open'])?'on':'',
 			'event_location'=>( !empty($_POST['mci_event_location']) && $_POST['mci_event_location'])?'on':'',
 			'event_location_dropdown'=>( !empty($_POST['mci_event_location_dropdown']) && $_POST['mci_event_location_dropdown'])?'on':'',
-			'event_use_editor'=>( !empty($_POST['mci_event_use_editor']) && $_POST['mci_event_use_editor'])?'on':'',
 			'event_specials'=>( !empty($_POST['mci_event_specials']) && $_POST['mci_event_specials'])?'on':'',
 			'event_access'=>( !empty($_POST['mci_event_access']) && $_POST['mci_event_access'])?'on':''
 			);
@@ -493,7 +492,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<ul>
 	<li><?php mc_settings_field( 'mc_use_permalinks', __( 'Use Pretty Permalinks for Events','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>	
 	<?php $guess = mc_guess_calendar();	?>
-	<li><?php mc_settings_field( 'mc_uri', __( 'Where is your main calendar page?','my-calendar' ), '', "<br /><small>".__( 'Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar' )."$guess</small>", array( 'size'=>'60' ), 'url' ); ?></li>
+	<li><?php mc_settings_field( 'mc_uri', __( 'Where is your main calendar page?','my-calendar' ), '', "<br /><small>".__( 'Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar' )." $guess</small>", array( 'size'=>'60' ), 'url' ); ?></li>
 	<li><?php mc_settings_field( 'mc_mini_uri', __( 'Target <abbr title="Uniform resource locator">URL</abbr> for mini calendar date links:','my-calendar' ), '', "<br /><small>".__( 'Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar' )."</small>", array( 'size'=>'60' ), 'url' ); ?></li>
 	<li><?php mc_settings_field( 'mc_open_uri', __( 'Open calendar links to event details URL','my-calendar' ), '', "<br /><small>".__( 'Replaces pop-up in grid view.','my-calendar' )."</small>", array(), 'checkbox-single' ); ?></li>
 	<?php 
@@ -665,11 +664,11 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<ul class="checkboxes">
 	<?php 
 		$input_options = get_option('mc_input_options');
-		$input_labels = array('event_location_dropdown'=>__( 'Event Location Dropdown Menu','my-calendar' ),'event_short'=>__( 'Event Short Description field','my-calendar' ),'event_desc'=>__( 'Event Description Field','my-calendar' ),'event_category'=>__( 'Event Category field','my-calendar' ),'event_image'=>__( 'Event Image field','my-calendar' ),'event_link'=>__( 'Event Link field','my-calendar' ),'event_recurs'=>__( 'Event Recurrence Options','my-calendar' ),'event_open'=>__( 'Event Registration options','my-calendar' ),'event_location'=>__( 'Event Location fields','my-calendar' ),'event_use_editor'=>__( 'Use HTML Editor in Event Description Field','my-calendar' ),'event_specials'=>__( 'Set Special Scheduling options','my-calendar' ), 'event_access'=>__("Event Accessibility", 'my-calendar' ) );
+		$input_labels = array('event_location_dropdown'=>__( 'Event Location Dropdown Menu','my-calendar' ),'event_short'=>__( 'Event Short Description field','my-calendar' ),'event_desc'=>__( 'Event Description Field','my-calendar' ),'event_category'=>__( 'Event Category field','my-calendar' ),'event_image'=>__( 'Event Image field','my-calendar' ),'event_link'=>__( 'Event Link field','my-calendar' ),'event_recurs'=>__( 'Event Recurrence Options','my-calendar' ),'event_open'=>__( 'Event Registration options','my-calendar' ),'event_location'=>__( 'Event Location fields','my-calendar' ), 'event_specials'=>__( 'Set Special Scheduling options','my-calendar' ), 'event_access'=>__("Event Accessibility", 'my-calendar' ) );
 		$output = '';
 		// if input options isn't an array, we'll assume that this plugin wasn't upgraded properly, and reset them to the default.
 		if ( !is_array($input_options) ) {
-			update_option( 'mc_input_options',array('event_short'=>'on','event_desc'=>'on','event_category'=>'on','event_image'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'on','event_location'=>'on','event_location_dropdown'=>'on','event_use_editor'=>'on','event_specials'=>'on', 'event_access'=>'on' ) );	
+			update_option( 'mc_input_options',array('event_short'=>'on','event_desc'=>'on','event_category'=>'on','event_image'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'on','event_location'=>'on','event_location_dropdown'=>'on','event_specials'=>'on', 'event_access'=>'on' ) );	
 		}
 		foreach ($input_options as $key=>$value) {
 			$checked = ($value == 'on')?"checked='checked'":'';

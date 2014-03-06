@@ -272,4 +272,4 @@ float: right;
 clear: right;
 width: 120px;
 }
-.screenreader { position: absolute; left: -999em; }
+.screen-reader-text { position: absolute; left: -999em; }

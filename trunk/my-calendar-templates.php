@@ -109,14 +109,11 @@ function mc_hcard( $event, $address='true', $map='true', $source='event', $conte
 	$country = stripslashes( ( $source=='event' ) ? $event->event_country : $event->location_country );
 	$phone = stripslashes( ( $source=='event' ) ? $event->event_phone : $event->location_phone );
 	if ( !$url && !$label && !$street && !$street2 && !$city && !$state && !$zip && !$country && !$phone ) return;
-	$sitelink_html = "
-	<div class='url link'>
-		<a href='$url' class='location-link external'>".sprintf(__('Visit web site<span>: %s</span>','my-calendar'),$label)."</a>
-	</div>";
+	$sitelink_html = ( $url != '' ) ? "<a href='$url' class='location-link external'>$label</a>" : $label;
 	$hcard = "<div class=\"address vcard\">";
 	if ( $address == 'true' ) {
 		$hcard .= "<div class=\"adr\">";
-		if ( $label != "" ) { $hcard .= "<strong class=\"org\">".$label."</strong><br />";	}
+		if ( $label != "" ) { $hcard .= "<strong class=\"org\">".$sitelink_html."</strong><br />";	}
 		$hcard .= ( $street.$street2.$city.$state.$zip.$country.$phone == '' ) ? '' : "<div class='sub-address'>";
 		if ( $street != "" ) { $hcard .= "<div class=\"street-address\">".$street."</div>"; }
 		if ( $street2 != "" ) {	$hcard .= "<div class=\"street-address\">".$street2."</div>";	}
@@ -129,11 +126,8 @@ function mc_hcard( $event, $address='true', $map='true', $source='event', $conte
 		$hcard .= "</div>";
 	}
 	if ( $map == 'true' ) {
-		$the_map = "<a href='$the_map' class='external'>$label</a>";
+		$the_map = "<a href='$the_map' class='external'>".__('Map','my-calendar')."<span class='screen-reader-text'> $label</a></a>";
 		$hcard .= ( $the_map!='' ) ? "<div class='url map'>$the_map</div>" : '' ;
-	}
-	if ( $context != 'map' ) {
-		$hcard .= ( $url!='' ) ? $sitelink_html : '';
 	}
 	$hcard .= "</div>";	
 	return $hcard;
@@ -148,7 +142,7 @@ function mc_create_tags( $event ) {
 	$e = apply_filters( 'mc_filter_image_data', $e, $event );
 	$map = mc_maplink( $event );
 	$map_url = mc_maplink( $event, 'url' );
-	$sitelink_html = "<div class='url link'><a href='$event->event_url' class='location-link external'>".sprintf(__('Visit web site<span>: %s</span>','my-calendar'),$event->event_label)."</a></div>";
+	$sitelink_html = "<div class='url link'><a href='$event->event_url' class='location-link external'>".sprintf(__('Visit web site<span class="screen-reader-text">: %s</span>','my-calendar'),$event->event_label)."</a></div>";
 	$e['sitelink_html'] = $sitelink_html;
 	$e['sitelink'] = $event->event_url;
 	$e['access'] = mc_expand( get_post_meta( $event->event_post, '_mc_event_access', true ) );
@@ -251,7 +245,7 @@ function mc_create_tags( $event ) {
 	$e['map'] = mc_generate_map( $event );
 		$url = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option( 'mc_uri' ) ) )?$e_link:$event->event_url;
 	$e['gcal'] = mc_google_cal( $dtstart, $dtend, $url, stripcslashes( $event->event_title ), mc_maplink( $event, 'gcal' ), $strip_desc );
-	$e['gcal_link'] = "<a href='".mc_google_cal( $dtstart, $dtend, $url, stripcslashes( $event->event_title ) ,  mc_maplink( $event, 'gcal' ), $strip_desc )."'>".sprintf( __('<span class="screenreader">Send %1$s to </span>Google Calendar','my-calendar'), stripcslashes( $event->event_title ) )."</a>";
+	$e['gcal_link'] = "<a href='".mc_google_cal( $dtstart, $dtend, $url, stripcslashes( $event->event_title ) ,  mc_maplink( $event, 'gcal' ), $strip_desc )."'>".sprintf( __('<span class="screen-reader-text">Send %1$s to </span>Google Calendar','my-calendar'), stripcslashes( $event->event_title ) )."</a>";
 	$e['location_access'] = mc_expand( unserialize( mc_location_data( 'location_access', $event->event_location ) ) );
 	$e['location_source'] = $event->event_location;	
 	
@@ -333,6 +327,7 @@ function mc_generate_map( $event, $source='event' ) {
 	$category_icon = mc_category_icon( $event,'img' );
 	if ( !$category_icon ) { $category_icon = "//maps.google.com/mapfiles/marker_green.png"; }
 	$address = addslashes( mc_map_string( $event, $source ) );
+	if ( strlen($address) < 10 ) return; 
 	$hcard = mc_hcard( $event, true, false, 'event','map' );
 	$hcard = wp_kses( str_replace( array('</div>','<br />','<br><br>' ),'<br>', $hcard ), array( 'br'=>array() ) );	
 	$html = addslashes( apply_filters( 'mc_map_html', $hcard, $event ) );
@@ -433,8 +428,8 @@ function mc_format_date_span( $dates, $display='simple',$default='' ) {
 		foreach ($dates as $date ) {
 			$begin = $date->occur_begin;
 			$end = $date->occur_end;
-				$day_begin = date( 'Y-m-d', $date->occur_begin );
-				$day_end = date( 'Y-m-d', $date->occur_end );
+			$day_begin = date( 'Y-m-d', strtotime( $begin ) );
+			$day_end = date( 'Y-m-d', strtotime( $end ) );
 			$bformat = "<span class='multidate-date'>".date_i18n( get_option('mc_date_format'),strtotime( $begin ) ).'</span> <span class="multidate-time">'.date_i18n( get_option('mc_time_format'), strtotime( $begin ) )."</span>";
 			$endtimeformat = ($date->occur_end == '00:00:00')?'':' '.get_option('mc_time_format');
 			$eformat = ( $day_begin != $day_end )?get_option('mc_date_format').$endtimeformat:$endtimeformat;
