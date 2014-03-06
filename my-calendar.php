@@ -114,7 +114,7 @@ add_filter( 'widget_text', 'do_shortcode', 9 );
 add_filter( 'plugin_action_links', 'mc_plugin_action', -10, 2 );
 add_filter( 'wp_title','mc_event_filter',10,3 );
 
-function mc_event_filter( $title, $sep, $seplocation ) {
+function mc_event_filter( $title, $sep=' | ', $seplocation='right' ) {
 	if ( isset($_GET['mc_id']) ) {
 		$id = (int) $_GET['mc_id'];
 		$event = mc_get_event( $id );
@@ -126,6 +126,11 @@ function mc_event_filter( $title, $sep, $seplocation ) {
 	} else {
 		return $title;
 	}
+}
+
+// back compat
+function jd_show_support_box() {
+	mc_show_sidebar();
 }
 
 // produce admin support box
@@ -380,7 +385,7 @@ function mc_show_event_editing( $status, $args ) {
 		//$data =  "<pre>".print_r( $args, 1 )."THESE:<br />".print_r($input_options, 1 )."</pre>";
 		$settings_options = get_option('mc_input_options');
 		if ( !is_array( $input_options ) ) { $input_options = $settings_options; }
-		$input_labels = array('event_location_dropdown'=>__('Event Location Dropdown Menu','my-calendar'),'event_short'=>__('Event Short Description field','my-calendar'),'event_desc'=>__('Event Description Field','my-calendar'),'event_category'=>__('Event Category field','my-calendar'),'event_image'=>__('Event Image field','my-calendar'),'event_link'=>__('Event Link field','my-calendar'),'event_recurs'=>__('Event Recurrence Options','my-calendar'),'event_open'=>__('Event Registration options','my-calendar'),'event_location'=>__('Event Location fields','my-calendar'),'event_use_editor'=>__('Use HTML Editor in Event Description Field','my-calendar'),'event_specials'=>__('Set Special Scheduling options','my-calendar'), 'event_access'=>__('Event Accessibility') );
+		$input_labels = array('event_location_dropdown'=>__('Event Location Dropdown Menu','my-calendar'),'event_short'=>__('Event Short Description field','my-calendar'),'event_desc'=>__('Event Description Field','my-calendar'),'event_category'=>__('Event Category field','my-calendar'),'event_image'=>__('Event Image field','my-calendar'),'event_link'=>__('Event Link field','my-calendar'),'event_recurs'=>__('Event Recurrence Options','my-calendar'),'event_open'=>__('Event Registration options','my-calendar'),'event_location'=>__('Event Location fields','my-calendar'),'event_specials'=>__('Set Special Scheduling options','my-calendar'), 'event_access'=>__('Event Accessibility') );
 		$output = '';
 		foreach ($input_options as $key=>$value) {
 			$checked = ($value == 'on')?"checked='checked'":'';

@@ -19,8 +19,8 @@ var mediaPopup = '';
 				.on( 'click', '.textfield-field', function(e) {
 					e.preventDefault();
 					var $self = $(this),
-							$inpField = $self.parent('.field-holder').find('#event_image'),
-							$idField = $self.parent('.field-holder').find('#event_image_id'),							
+							$inpField = $self.parent('.field-holder').find('#e_image'),
+							$idField = $self.parent('.field-holder').find('#e_image_id'),							
 							$displayField = $self.parent('.field-holder').find('.event_image');
 					clear_existing();
 					mediaPopup = wp.media( {

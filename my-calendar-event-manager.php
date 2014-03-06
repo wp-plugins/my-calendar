@@ -104,7 +104,7 @@ function mc_create_event_post( $data, $event_id ) {
 	);
 	$post_id = wp_insert_post( $my_post );
 	wp_set_object_terms( $post_id, (int) $term, 'mc-event-category');	
-	$attachment_id = ( isset( $_POST['event_image_id'] ) && is_int( $_POST['event_image_id'] ) ) ? $_POST['event_image_id'] : false;
+	$attachment_id = ( isset( $_POST['event_image_id'] ) && is_numeric( $_POST['event_image_id'] ) ) ? $_POST['event_image_id'] : false;
 	if ( $attachment_id ) { set_post_thumbnail( $post_id, $attachment_id ); }
 	mc_update_event( 'event_post', $post_id, $event_id );
 	mc_update_event( 'event_location', $location_id, $event_id );
@@ -665,18 +665,18 @@ function mc_show_block( $field, $has_data, $data ) {
 		case 'event_desc' :
 			if ( $show_block ) {
 				// because wp_editor cannot return a value, event_desc fields cannot be filtered if its enabled.
-				$value = ( $has_data ) ? $data->event_desc : '';
+				$value = ( $has_data ) ? stripslashes( $data->event_desc ) : '';
 				echo '
 				<div class="event_description">
 				<label for="content">'.__( 'Event Description','my-calendar' ).'</label><br />';
-				if ( mc_show_edit_block( 'event_use_editor') ) {
+				if ( user_can_richedit() ) {
 					if ( version_compare( get_bloginfo( 'version') , '3.3', '>=') ) {
-						wp_editor( stripslashes( $value ), 'content', array( 'textarea_rows'=>10 ) ); 
+						wp_editor( $value, 'content', array( 'textarea_rows'=>10 ) ); 
 					} else { 
-						the_editor( stripslashes( $value ) ); 
+						the_editor( $value ); 
 					}
 				} else {
-					echo '<textarea id="content" name="content" class="event_desc" rows="5" cols="80">'.stripslashes( esc_attr( $value ) ).'</textarea>';
+					echo '<textarea id="content" name="content" class="event_desc" rows="8" cols="80">'.stripslashes( esc_attr( $value ) ).'</textarea>';
 				}
 				echo '</div>';
 			}
@@ -696,13 +696,13 @@ function mc_show_block( $field, $has_data, $data ) {
 				$return = '
 				<div class="mc-image-upload field-holder">
 					<input type="hidden" name="event_image_id" value="" class="textfield" id="e_image_id" />
-					<label for="e_image">'.__( "Add an image:",'my-calendar' ).'</label><br /><input type="text" name="event_image" id="e_image" size="60" value="'.$value.'" placeholder="http://yourdomain.com/image.jpg" /> <a href="#" class="button textfield-field">'.__( "Upload",'my-calendar' ).'</a>
-				</div>';
+					<label for="e_image">'.__( "Add an image:",'my-calendar' ).'</label><br /><input type="text" name="event_image" id="e_image" size="60" value="'.$value.'" placeholder="http://yourdomain.com/image.jpg" /> <a href="#" class="button textfield-field">'.__( "Upload",'my-calendar' ).'</a>';
 				if ( !empty( $data->event_image ) ) {
 					$return .= '<div class="event_image"><img src="'.esc_attr( $data->event_image ).'" alt="" /></div>';
 				} else {
 					$return .= '<div class="event_image"></div>';
-				}				
+				}
+				$return .= '</div>';				
 			} else {
 				$return = '<input type="hidden" name="event_image" value="'.$value.'" />';
 			}			
@@ -1848,7 +1848,7 @@ function mc_standard_datetime_input( $form, $has_data, $data, $context='admin' )
 		$hide = " checked=\"checked\""; 
 	}	
 	$form .= '<p>
-		<label for="e_begin" id="eblabel">'.__('Date (YYYY-MM-DD)','my-calendar').'</label> <input type="text" id="e_begin" name="event_begin[]" class="event_begin calendar_input" size="10" value="'.$event_begin.'" />
+		<label for="e_begin" id="eblabel">'.__('Date (YYYY-MM-DD)','my-calendar').'</label> <input type="text" id="e_begin" name="event_begin[]" size="10" value="'.$event_begin.'" />
 		<label for="e_time">'.__('From','my-calendar').'</label> 
 		<input type="text" id="e_time" name="event_time[]" size="8" value="'.$starttime.'" />	
 		<label for="e_endtime">'.__('To','my-calendar').'</label> 
@@ -1859,7 +1859,7 @@ function mc_standard_datetime_input( $form, $has_data, $data, $context='admin' )
 		<li><input type="checkbox" value="1" id="e_hide_end" name="event_hide_end"'.$hide.' /> <label for="e_hide_end">'.__('Hide end time','my-calendar').'</label></li>
 	</ul>
 	<p>
-		<label for="e_end" id="eelabel"><em>'.__('End Date (YYYY-MM-DD, optional)','my-calendar').'</em></label> <input type="text" name="event_end[]" id="e_end" class="event_end calendar_input" size="10" value="'.$event_end.'" /> 
+		<label for="e_end" id="eelabel"><em>'.__('End Date (YYYY-MM-DD, optional)','my-calendar').'</em></label> <input type="text" name="event_end[]" id="e_end" size="10" value="'.$event_end.'" /> 
 	</p>';
 	return $form;
 }
@@ -1871,7 +1871,7 @@ function mc_standard_event_registration( $form, $has_data, $data, $context='admi
 		$default = jd_option_selected( $data->event_open, '2' ); 
 		$group = jd_option_selected( $data->event_group,'1' );
 		$tickets = esc_attr( $data->event_tickets );
-		$registration = esc_attr( $data->event_registration );
+		$registration = stripslashes( esc_attr( $data->event_registration ) );
 	} else {
 		$event_open = $not_open = $group = $tickets = $registration = '';
 		$default = 'checked="checked"';

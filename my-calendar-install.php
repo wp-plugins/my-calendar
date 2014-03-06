@@ -411,7 +411,7 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option('mc_event_link_expires','no');
 	add_option('mc_apply_color','background');
 	add_option('mc_inverse_color','true');
-	add_option('mc_input_options',array( 'event_short'=>'off','event_desc'=>'on','event_category'=>'on','event_image'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'off','event_location'=>'on','event_location_dropdown'=>'on','event_use_editor'=>'off','event_specials'=>'on', 'event_access'=>'on' ) );
+	add_option('mc_input_options',array( 'event_short'=>'off','event_desc'=>'on','event_category'=>'on','event_image'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'off','event_location'=>'on','event_location_dropdown'=>'on','event_specials'=>'on', 'event_access'=>'on' ) );
 	add_option('mc_input_options_administrators','false');
 	add_site_option('mc_multisite', '0' );
 	add_option('mc_event_mail','false');
@@ -444,7 +444,7 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 		'label'=>'{title}'
 	));
 	add_option('mc_skip_holidays','false');
-	add_option('mc_css_file','refresh.css');
+	add_option('mc_css_file','twentyfourteen.css');
 	add_option('mc_time_format',get_option('time_format'));
 	add_option( 'mc_widget_defaults',$defaults);
 	add_option( 'mc_show_weekends','true' );

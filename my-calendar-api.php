@@ -7,17 +7,17 @@ function my_calendar_api() {
 			// use this filter to add custom scripting handling API keys
 			$api_key = apply_filters( 'mc_api_key', true );
 			if ( $api_key ) {
-				$format = ( isset( $_GET['my-calendar-api'] ) ) ? $_GET['my-calendar-api'] : 'json';
-				$from = ( isset( $_GET['from'] ) ) ? $_GET['from'] : date( 'Y-m-d', current_time( 'timestamp' ) );
-				$to = ( isset( $_GET['to'] ) ) ? $_GET['to'] : date( 'Y-m-d', strtotime( current_time( 'timestamp' ).apply_filters('mc_api_auto_date',' + 7 days') ) );
+				$format = 		( isset( $_GET['my-calendar-api'] ) ) ? $_GET['my-calendar-api'] : 'json';
+				$from = 		( isset( $_GET['from'] ) ) ? $_GET['from'] : date( 'Y-m-d', current_time( 'timestamp' ) );
+				$to = 			( isset( $_GET['to'] ) ) ? $_GET['to'] : date( 'Y-m-d', strtotime( current_time( 'timestamp' ).apply_filters('mc_api_auto_date',' + 7 days') ) );
 				// sanitization is handled elsewhere.
-				$category = ( isset( $_GET['mcat'] ) ) ? $_GET['mcat'] : '' ;
-				$ltype = ( isset( $_GET['ltype'] ) ) ? $_GET['ltype'] : '' ;
-				$lvalue = ( isset( $_GET['lvalue'] ) ) ? $_GET['lvalue'] : '' ;
-				$author = ( isset( $_GET['author'] ) ) ? $_GET['author'] : '' ;
-				$host = ( isset( $_GET['host'] ) ) ? $_GET['host'] : '' ;
-				$data = my_calendar_events( $from, $to, $category, $ltype, $lvalue, 'api', $author, $host );
-				$output = mc_format_api( $data, $format );
+				$category = 	( isset( $_GET['mcat'] ) ) ? $_GET['mcat'] : '' ;
+				$ltype = 		( isset( $_GET['ltype'] ) ) ? $_GET['ltype'] : '' ;
+				$lvalue =		( isset( $_GET['lvalue'] ) ) ? $_GET['lvalue'] : '' ;
+				$author = 		( isset( $_GET['author'] ) ) ? $_GET['author'] : '' ;
+				$host = 		( isset( $_GET['host'] ) ) ? $_GET['host'] : '' ;
+				$data = 		my_calendar_events( $from, $to, $category, $ltype, $lvalue, 'api', $author, $host );
+				$output = 		mc_format_api( $data, $format );
 				// if json, encode as json
 				// if xml, encode as xml
 				echo $output;

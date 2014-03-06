@@ -197,7 +197,7 @@ function mc_controlled_field( $this_field ) {
 }
 
 function mc_location_controller( $fieldname, $selected, $context='location' ) {
-	$field = ( $context == 'location' ) ? 'location_'.$fieldname : 'event_'.$fieldname ;
+	$field = ( $context == 'location' ) ? 'location_'.$fieldname : 'e_'.$fieldname ;
 	$selected = trim($selected);
 	$options = get_option('mc_location_controls');
 	$regions = $options['event_'.$fieldname];
@@ -279,7 +279,7 @@ function mc_manage_locations() {
 	foreach ( $location_fields as $field ) { ?>
 		<h4><?php echo ucfirst( str_replace( 'event_','',$field ) ); ?></h4>
 		<div>
-		<label for="loc_values"><?php printf( __('Location Controls for %s','my-calendar'), ucfirst( str_replace( 'event_','',$field ) ) ); ?> (<?php _e('Value, Label; one per line','my-calendar'); ?>)</label><br />
+		<label for="loc_values_<?php echo $field; ?>"><?php printf( __('Location Controls for %s','my-calendar'), ucfirst( str_replace( 'event_','',$field ) ) ); ?> (<?php _e('Value, Label; one per line','my-calendar'); ?>)</label><br />
 		<?php 
 			$locations = '';
 			if ( is_array( $mc_location_controls ) && isset( $mc_location_controls[$field] ) ) {
@@ -288,7 +288,7 @@ function mc_manage_locations() {
 				}
 			}
 	?>
-		<textarea name="mc_location_controls[<?php echo $field; ?>][]" id="loc_values" cols="80" rows="6"><?php echo trim($locations); ?></textarea>
+		<textarea name="mc_location_controls[<?php echo $field; ?>][]" id="loc_values_<?php echo $field; ?>" cols="80" rows="6"><?php echo trim($locations); ?></textarea>
 		</div>
 	<?php } ?>
 	</div>
@@ -304,7 +304,7 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 		$return .= '<p><input type="checkbox" value="on" name="mc_copy_location" id="mc_copy_location" /> <label for="mc_copy_location">'.__('Copy this location into the locations table','my-calendar').'</label></p>';
 	}
 	$return .= '
-	<p>
+	<p class="checkbox">
 	<label for="e_label">'.__('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar').'</label>';
 	$cur_label = ( !empty( $data ) ) ? ( stripslashes( $data->{$context.'_label'} ) ):'';	
 	if ( mc_controlled_field( 'label' ) ) {
@@ -316,6 +316,10 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	$street_address2 = ( $has_data ) ? esc_attr( stripslashes( $data->{$context.'_street2'} ) ) : '';
 	$return .= '
 	</p>
+	<div class="locations-container">
+	<div class="location-primary">
+	<fieldset>
+	<legend>'.__( 'Location Address','my-calendar' ).'</legend>
 	<p>
 	<label for="e_street">'.__('Street Address','my-calendar').'</label> <input type="text" id="e_street" name="'.$context.'_street" size="40" value="'.$street_address.'" />
 	</p>
@@ -364,7 +368,7 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	if ( mc_controlled_field( 'country' ) ) {
 		$return .= mc_location_controller( 'country', $cur_country, $context );
 	} else {
-		$return .= '<input type="text" id="e_city" name="'.$context.'_country" size="10" value="'.esc_attr( $cur_country ).'" />';
+		$return .= '<input type="text" id="e_country" name="'.$context.'_country" size="10" value="'.esc_attr( $cur_country ).'" />';
 	}
 	$zoom = ( $has_data ) ? $data->{$context.'_zoom'} : '16' ;
 	$event_phone = ( $has_data ) ? esc_attr( stripslashes( $data->{$context.'_phone'} ) ) : '';
@@ -384,15 +388,7 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 			<option value="6"'.jd_option_selected( $zoom, '6', 'option' ).'>'.__('Region','my-calendar').'</option>
 		</select>
 	</p>
-	<p>
-	<label for="e_phone">'.__('Phone','my-calendar').'</label> <input type="text" id="e_phone" name="'.$context.'_phone" size="32" value="'.$event_phone.'" />
-	</p>
-	<p>
-	<label for="e_phone2">'.__('Secondary Phone','my-calendar').'</label> <input type="text" id="e_phone2" name="'.$context.'_phone2" size="32" value="'.$event_phone2.'" />
-	</p>	
-	<p>
-	<label for="e_url">'.__('Location URL','my-calendar').'</label> <input type="text" id="e_url" name="'.$context.'_url" size="40" value="'.$event_url.'" />
-	</p>			
+	</fieldset>
 	<fieldset>
 	<legend>'.__('GPS Coordinates (optional)','my-calendar').'</legend>
 	<p>
@@ -401,6 +397,20 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	<p>
 	<label for="e_latitude">'.__('Latitude','my-calendar').'</label> <input type="text" id="e_latitude" name="'.$context.'_latitude" size="10" value="'.$event_lat.'" /> <label for="e_longitude">'.__('Longitude','my-calendar').'</label> <input type="text" id="e_longitude" name="'.$context.'_longitude" size="10" value="'.$event_lon.'" />
 	</p>			
+	</fieldset>
+	</div>
+	<div class="location-secondary">
+	<fieldset>
+	<legend>'.__( 'Location Contact Information', 'my-calendar' ).'</legend>
+	<p>
+	<label for="e_phone">'.__('Phone','my-calendar').'</label> <input type="text" id="e_phone" name="'.$context.'_phone" size="32" value="'.$event_phone.'" />
+	</p>
+	<p>
+	<label for="e_phone2">'.__('Secondary Phone','my-calendar').'</label> <input type="text" id="e_phone2" name="'.$context.'_phone2" size="32" value="'.$event_phone2.'" />
+	</p>	
+	<p>
+	<label for="e_url">'.__('Location URL','my-calendar').'</label> <input type="text" id="e_url" name="'.$context.'_url" size="40" value="'.$event_url.'" />
+	</p>
 	</fieldset>
 	<fieldset>
 	<legend>'.__('Location Accessibility','my-calendar').'</legend>
@@ -428,7 +438,9 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	}
 	$return  .= $access_list;
 	$return .= '</ul>
-	</fieldset></div>';
+	</fieldset></div>
+	</div>
+	</div>';
 	return $return;
 }
 

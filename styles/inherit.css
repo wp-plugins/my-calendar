@@ -243,4 +243,4 @@ font-size: .9em;
 padding: 10px;
 float: right;
 }
-.screenreader { position: absolute; left: -999em; }
+.screen-reader-text { position: absolute; left: -999em; }

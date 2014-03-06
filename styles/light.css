@@ -268,4 +268,4 @@ background: #f6f6f6;
 padding: 10px;
 float: right;
 }
-.screenreader { position: absolute; left: -999em; }
+.screen-reader-text { position: absolute; left: -999em; }

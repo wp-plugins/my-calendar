@@ -103,8 +103,8 @@ function mc_file_exists( $file ) {
 	$base = basename( $dir );
 	$return = apply_filters( 'mc_file_exists', false, $file );
 	if ( $return ) { return true; }
-	if ( file_exists( get_stylesheet_directory() . '/' . $file ) ) { return true; }
-	if ( file_exists( str_replace($base,'my-calendar-custom',$dir ) . $file ) ) { return true; }
+	if ( file_exists( get_stylesheet_directory() . '/' . $file ) ) {  return true; }
+	if ( file_exists( str_replace( $base,'my-calendar-custom',$dir ) . $file ) ) { return true; }
 	return false;
 }
 
@@ -162,8 +162,8 @@ function mc_register_styles() {
 		wp_enqueue_style( 'my-calendar-mobile-style' );		
 	}
 	if ( function_exists( 'mcs_submissions' ) ) {
-		$mcs = plugins_url('/my-calendar-submissions/mcs-styles.css');
-		$mcs_ui = plugins_url('/my-calendar-submissions/css/smoothness/jquery-ui-1.8.23.custom.css');
+		$mcs = plugins_url( '/my-calendar-submissions/mcs-styles.css' );
+		$mcs_ui = plugins_url( '/my-calendar-submissions/css/smoothness/jquery-ui-1.8.23.custom.css' );
 		wp_register_style( 'my-calendar-submissions-ui-style', $mcs_ui );
 		wp_enqueue_style( 'my-calendar-submissions-ui-style' );			
 		wp_register_style( 'my-calendar-submissions-style', $mcs );
@@ -371,7 +371,7 @@ function my_calendar_add_styles() {
 			echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'css/mc-styles.css', __FILE__ ).'" />';
 		}
 		if ( isset($_GET['page']) && $_GET['page'] == 'my-calendar') {
-			echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'js/calendrical.css', __FILE__ ).'" />';		
+			echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'css/calendrical.css', __FILE__ ).'" />';		
 		}
 	}
 }
@@ -753,10 +753,6 @@ function check_my_calendar() {
 				update_option('mc_db_version','1.9.0');			
 			case '1.8.0':
 				$mc_input = get_option( 'mc_input_options' );
-				if ( !isset( $mc_input['event_use_editor'] ) ) {
-					$mc_input['event_use_editor'] = 'off';
-					update_option( 'mc_input_options',$mc_input );
-				}
 				add_option( 'mc_show_weekends','true' );
 				add_option( 'mc_uri','' );
 				delete_option( 'my_calendar_stored_styles');
@@ -779,7 +775,7 @@ function check_my_calendar() {
 					}
 				}
 				if ( get_option( 'mc_css_file' ) == '' ) {
-					update_option('mc_css_file','my-calendar.css');				
+					update_option('mc_css_file','refresh.css');				
 				}
 				// convert old widget settings into new defaults
 				$type = get_option('display_upcoming_type');
@@ -1276,7 +1272,7 @@ function mc_guess_calendar() {
 		if ( $value && get_option( 'mc_uri' ) == '' ) {
 			$link = get_permalink( $value );
 			update_option( 'mc_uri', $link );
-			$return = __('Is this your calendar page?','my-calendar'); echo ' <code>'.$link.'</code>';
+			$return = __( 'Is this your calendar page?','my-calendar' ) . ' <code>'.$link.'</code>';
 			return $return;
 		}
 	}
