@@ -1825,19 +1825,19 @@ function mc_event_is_grouped( $group_id ) {
 	}
 }
 
-function mc_standard_datetime_input( $form, $has_data, $data, $context='admin' ) {
+function mc_standard_datetime_input( $form, $has_data, $data, $instance, $context='admin' ) {
 	if ( $has_data ) {
 		$event_begin = esc_attr($data->event_begin); 
 		$event_end = esc_attr($data->event_end);
 		if ( !empty($_GET['date'] ) ) {
-			$event = mc_get_event( $instance ); 				
+			$event = mc_get_event( (int) $_GET['date'] );
 			$event_begin = date( 'Y-m-d', strtotime( $event->occur_begin ) );
 			$event_end = date( 'Y-m-d', strtotime( $event->occur_end ) );
 		}
 		$starttime = ( $data->event_time == "00:00:00" && $data->event_endtime == "00:00:00" )?'':date( "h:i a",strtotime( $data->event_time ) );
 		$endtime = ( $data->event_endtime == "00:00:00" && $data->event_time == "00:00:00" )?'':date( "h:i a",strtotime( $data->event_endtime ) );				
 	} else { 
-		$event_begin = date("Y-m-d");
+		$event_begin = date( "Y-m-d" );
 		$event_end = $starttime = $endtime = '';
 	} 
 	$allday = $hide = '';
