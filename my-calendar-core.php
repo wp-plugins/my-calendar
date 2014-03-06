@@ -285,7 +285,6 @@ function my_calendar_write_js() {
 jQuery(document).ready(function($) {
     $('#e_begin,' + '#e_end').calendricalDateRange();
 	$('#mc-accordion').accordion({ collapsible:true, active:false });
-<?php if ( !isset( $_GET['mode'] ) ) { ?>
 	$('#e_time').timeAutocomplete({
 		increment: 15,
 		blur_empty_populate: false,
@@ -299,7 +298,6 @@ jQuery(document).ready(function($) {
 		formatter: '<?php echo apply_filters( 'mc_time_format', 'ampm' ); ?>',
 		value: ''
 	});<?php 
-	} 
 	if ( function_exists( 'jd_doTwitterAPIPost' ) ) { ?>
 	$('#mc_twitter').charCount( { allowed: 140, counterText: '<?php _e('Characters left: ','my-calendar') ?>' } );
 	<?php } ?>
