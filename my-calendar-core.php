@@ -621,7 +621,6 @@ function check_my_calendar() {
 				delete_option( 'mc_show_print' );
 				delete_option( 'mc_show_ical' );
 				delete_option( 'mc_show_rss' );
-				flush_rewrite_rules();
 				break;
 			case '2.2.8':
 				delete_option( 'mc_draggable' );
