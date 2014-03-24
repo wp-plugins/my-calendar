@@ -468,6 +468,18 @@ function mc_author_data( $e, $event ) {
 	return $e;
 }
 
+add_filter( 'mc_filter_shortcodes', 'mc_auto_excerpt', 10, 2 );
+function mc_auto_excerpt( $e, $event ) {
+	$description = $e['description'];
+	$shortdesc = $e['shortdesc'];
+	$e['excerpt'] = $shortdesc;
+	if ( $description != '' ) { // if description is empty, this won't work, so skip it.
+		$excerpt = wp_trim_words( $description );
+		$e['excerpt'] = ( $shortdesc == '' ) ? $excerpt : $shortdesc;   
+	}
+	return $e;
+}
+
 add_filter( 'mc_filter_image_data', 'mc_image_data', 10, 2 );
 function mc_image_data( $e, $event ) {
 	$atts = apply_filters( 'mc_post_thumbnail_atts',  array( 'class'=>'mc-image' ) ); 

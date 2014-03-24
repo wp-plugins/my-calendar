@@ -85,7 +85,7 @@ function mc_create_event_post( $data, $event_id ) {
 	$privacy = ( mc_get_category_detail( $data['event_category'], 'category_private') == 1 ) ? 'private': 'publish';
 	$title = $data['event_title']; 
 	$template = apply_filters( 'mc_post_template', 'details', $term );	
-	$content = "[my_calendar_event event='$event_id' template='$template' list='']";
+	$data['shortcode'] = "[my_calendar_event event='$event_id' template='$template' list='']";
 	$description = $data['event_desc'];
 	$excerpt = $data['event_short'];
 	$location_id = ( isset( $_POST['location_preset'] ) ) ? (int) $_POST['location_preset'] : 0 ;
@@ -94,7 +94,7 @@ function mc_create_event_post( $data, $event_id ) {
 	$type = 'mc-events';
 	$my_post = array(
 		'post_title'=> $title,
-		'post_content'=> $content,
+		'post_content'=> $description,
 		'post_status'=> $post_status,
 		'post_author'=> $auth,
 		'post_name'=> sanitize_title( $title ),
@@ -1834,8 +1834,9 @@ function mc_standard_datetime_input( $form, $has_data, $data, $instance, $contex
 			$event_begin = date( 'Y-m-d', strtotime( $event->occur_begin ) );
 			$event_end = date( 'Y-m-d', strtotime( $event->occur_end ) );
 		}
-		$starttime = ( $data->event_time == "00:00:00" && $data->event_endtime == "00:00:00" )?'':date( "h:i a",strtotime( $data->event_time ) );
-		$endtime = ( $data->event_endtime == "00:00:00" && $data->event_time == "00:00:00" )?'':date( "h:i a",strtotime( $data->event_endtime ) );				
+		$starttime = ( $data->event_time == "00:00:00" && $data->event_endtime == "00:00:00" )?'':date( "h:i A",strtotime( $data->event_time ) );
+		$endtime = ( $data->event_endtime == "00:00:00" && $data->event_time == "00:00:00" )?'':date( "h:i A",strtotime( $data->event_endtime ) );
+		echo "$starttime, $endtime";
 	} else { 
 		$event_begin = date( "Y-m-d" );
 		$event_end = $starttime = $endtime = '';
@@ -1846,7 +1847,25 @@ function mc_standard_datetime_input( $form, $has_data, $data, $instance, $contex
 	}
 	if ( $has_data && $data->event_hide_end == '1' ) { 
 		$hide = " checked=\"checked\""; 
-	}	
+	}
+	$scripting = '
+<script type="text/javascript">
+//<![CDATA[
+jQuery(document).ready(function($) {
+	$("#e_time").pickatime({
+		interval: 15,
+		format: "'.apply_filters( 'mc_time_format', 'h:i A' ).'",
+		formatSubmit: "HH:i:00",
+	});
+	$("#e_endtime").pickatime({
+		interval: 15,
+		format: "'.apply_filters( 'mc_time_format', 'h:i A' ).'",
+		formatSubmit: "HH:i:00",
+	});
+});
+//]]>
+</script>';
+	$form .= $scripting;
 	$form .= '<p>
 		<label for="e_begin" id="eblabel">'.__('Date (YYYY-MM-DD)','my-calendar').'</label> <input type="text" id="e_begin" name="event_begin[]" size="10" value="'.$event_begin.'" />
 		<label for="e_time">'.__('From','my-calendar').'</label> 

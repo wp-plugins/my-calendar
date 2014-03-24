@@ -258,6 +258,10 @@ function my_calendar_upcoming_events( $before='default',$after='default',$type='
 	$before = ($before == 'default')?$widget_defaults['upcoming']['before']:$before;
 	$before = ($before == '')?0:$before;
 	$category = ($category == 'default')?'':$category;
+	// allow reference by file to external template.
+	if ( $template != '' && mc_file_exists( sanitize_file_name( $template ) ) ) {
+		$template = @file_get_contents( mc_get_file( sanitize_file_name( $template ) ) );
+	}
 	$template = ($template == 'default')?$widget_defaults['upcoming']['template']:$template;
 	$template = ($template == '' )?$default_template:$template;
 	$no_event_text = ($substitute == '')?$widget_defaults['upcoming']['text']:$substitute;

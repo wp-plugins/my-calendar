@@ -391,11 +391,11 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 		'11'=> __( 'Sensory Friendly','my-calendar'),
 		'12'=> __( 'Other','my-calendar' )
 	) );	
-	add_option('mc_display_author','false');
-	add_option('mc_display_jump','false');
-	add_option('mc_version',$mc_version);
-	add_option('mc_use_styles','false');
-	add_option('mc_show_months',1);
+	add_option( 'mc_display_author','false' );
+	add_option( 'mc_display_jump','false' );
+	add_option( 'mc_version',$mc_version );
+	add_option( 'mc_use_styles','false' );
+	add_option( 'mc_show_months',1 );
 	add_option('mc_show_map','true');
 	add_option('mc_show_address','false');
 	add_option('mc_calendar_javascript',0);
@@ -443,9 +443,9 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 		'details'=>$single_template,
 		'label'=>'{title}'
 	));
-	add_option('mc_skip_holidays','false');
-	add_option('mc_css_file','twentyfourteen.css');
-	add_option('mc_time_format',get_option('time_format'));
+	add_option( 'mc_skip_holidays','false' );
+	add_option( 'mc_css_file','twentyfourteen.css' );
+	add_option( 'mc_time_format',get_option('time_format') );
 	add_option( 'mc_widget_defaults',$defaults);
 	add_option( 'mc_show_weekends','true' );
 	add_option( 'mc_convert','true' );	

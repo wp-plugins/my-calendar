@@ -157,8 +157,8 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 	$details = apply_filters( 'mc_custom_template', false, $data, $event, $type, $process_date, $time, $template );
 	$templates = get_option('mc_templates');	
 	if ( $details === false ) {
-		if ( $template != '' && mc_file_exists( $template ) ) {
-			$template = @file_get_contents( mc_get_file( $template ) );
+		if ( $template != '' && mc_file_exists( sanitize_file_name( $template ) ) ) {
+			$template = @file_get_contents( mc_get_file( sanitize_file_name( $template ) ) );
 			$details = jd_draw_template( $data, $template );
 		} else {
 			switch ($type) {
