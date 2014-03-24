@@ -240,9 +240,10 @@ function my_calendar_add_javascript() {
 	if ( isset( $_GET['page'] ) && ( $_GET['page'] == 'my-calendar' || $_GET['page'] == 'my-calendar-groups' || $_GET['page'] == 'my-calendar-locations' ) ) {
 		wp_enqueue_script('jquery-ui-autocomplete');
 		wp_enqueue_script('jquery-ui-accordion');
-		wp_enqueue_script('jquery.timeAutocomplete',plugins_url( 'js/jquery.timeAutocomplete.min.js', __FILE__ ), array('jquery') );
-		wp_enqueue_script('jquery.calendrical',plugins_url( 'js/jquery.calendrical.js', __FILE__ ), array('jquery') );
-		wp_localize_script('jquery.calendrical', 'mc_months', array( 
+		wp_enqueue_script('pickadate',plugins_url( 'js/pickadate/picker.js', __FILE__ ), array('jquery') );
+		wp_enqueue_script('pickadate.date',plugins_url( 'js/pickadate/picker.date.js', __FILE__ ), array('pickadate') );
+		wp_enqueue_script('pickadate.time',plugins_url( 'js/pickadate/picker.time.js', __FILE__ ), array('pickadate') );
+		wp_localize_script('pickadate.date', 'mc_months', array( 
 			date_i18n( 'F', strtotime( 'January 1' ) ),
 			date_i18n( 'F', strtotime( 'February 1' ) ),
 			date_i18n( 'F', strtotime( 'March 1' ) ),
@@ -256,6 +257,17 @@ function my_calendar_add_javascript() {
 			date_i18n( 'F', strtotime( 'November 1' ) ),
 			date_i18n( 'F', strtotime( 'December 1' ) )
 		) );
+		wp_localize_script('pickadate.date', 'mc_days', array( 
+			date_i18n( 'D', strtotime( 'Monday' ) ),
+			date_i18n( 'D', strtotime( 'Tuesday' ) ),
+			date_i18n( 'D', strtotime( 'Wednesday' ) ),
+			date_i18n( 'D', strtotime( 'Thursday' ) ),
+			date_i18n( 'D', strtotime( 'Friday' ) ),
+			date_i18n( 'D', strtotime( 'Saturday' ) ),
+			date_i18n( 'D', strtotime( 'Sunday' ) )
+		) );		
+		wp_enqueue_script('pickadate.config',plugins_url( 'js/pickadate/picker.config.js', __FILE__ ), array('pickadate') );
+		
 		wp_enqueue_script('jquery.addfields',plugins_url( 'js/jquery.addfields.js', __FILE__ ), array('jquery') );
 		if ( function_exists('wp_enqueue_media') && !did_action( 'wp_enqueue_media' ) ) {
 			wp_enqueue_media();
@@ -282,22 +294,16 @@ function my_calendar_write_js() {
 	?>
 <script type="text/javascript">
 //<![CDATA[
-jQuery(document).ready(function($) {
-    $('#e_begin,' + '#e_end').calendricalDateRange();
-	$('#mc-accordion').accordion({ collapsible:true, active:false });
-	$('#e_time').timeAutocomplete({
-		increment: 15,
-		blur_empty_populate: false,
-		formatter: '<?php echo apply_filters( 'mc_time_format', 'ampm' ); ?>',
-		value: ''
+	jQuery(document).ready(function($) {
+		$('#e_begin,' + '#e_end').pickadate({
+		monthsFull: mc_months,
+		weekdaysShort: mc_days,
+		formatSubmit: 'yyyy-mm-dd',
+		format: 'yyyy-mm-dd'
 	});
-	$('#e_endtime').timeAutocomplete({
-		increment: 15,
-		from_selector: '#e_time',
-		blur_empty_populate: false,
-		formatter: '<?php echo apply_filters( 'mc_time_format', 'ampm' ); ?>',
-		value: ''
-	});<?php 
+	
+	$('#mc-accordion').accordion({ collapsible:true, active:false });
+	<?php 
 	if ( function_exists( 'jd_doTwitterAPIPost' ) ) { ?>
 	$('#mc_twitter').charCount( { allowed: 140, counterText: '<?php _e('Characters left: ','my-calendar') ?>' } );
 	<?php } ?>
@@ -369,7 +375,9 @@ function my_calendar_add_styles() {
 			echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'css/mc-styles.css', __FILE__ ).'" />';
 		}
 		if ( isset($_GET['page']) && $_GET['page'] == 'my-calendar') {
-			echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'css/calendrical.css', __FILE__ ).'" />';		
+			echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'js/pickadate/themes/default.css', __FILE__ ).'" />';	
+			echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'js/pickadate/themes/default.date.css', __FILE__ ).'" />';		
+			echo '<link type="text/css" rel="stylesheet" href="'.plugins_url( 'js/pickadate/themes/default.time.css', __FILE__ ).'" />';					
 		}
 	}
 }
@@ -1741,7 +1749,7 @@ function mc_taxonomies() {
 	$enabled = array( 'mc-events' );
 	if ( is_array( $enabled ) ) {
 		foreach ( $enabled as $key ) {
-			$value =& $types[$key];
+			$value = $types[$key];
 			register_taxonomy(
 				"mc-event-category",	// internal name = machine-readable taxonomy name
 				array( $key ),	// object type = post, page, link, or custom post-type

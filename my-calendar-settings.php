@@ -208,8 +208,8 @@ function edit_my_calendar_config() {
 	if ( isset( $_POST['mc_show_months'] ) ) {
 		$mc_open_day_uri = ( !empty( $_POST['mc_open_day_uri'] ) ) ? $_POST['mc_open_day_uri'] : '';
 		update_option( 'mc_uri',$_POST['mc_uri'] );
-		update_option( 'mc_use_permalinks', ( !empty( $_POST['mc_use_permalinks'] ) ) ? true : false );
-		update_option( 'mc_open_uri',( !empty($_POST['mc_open_uri']) && $_POST['mc_open_uri']=='on' && get_option('mc_uri') != '')?'true':'false' );
+		update_option( 'mc_use_permalinks', ( !empty( $_POST['mc_use_permalinks'] ) ) ?'true' : 'false' );
+		update_option( 'mc_open_uri',( !empty($_POST['mc_open_uri']) && $_POST['mc_open_uri']=='on' && get_option('mc_uri') != '') ? 'true':'false' );
 		update_option('mc_mini_uri',$_POST['mc_mini_uri'] );
 		update_option('mc_open_day_uri', $mc_open_day_uri );
 		update_option('mc_skip_holidays_category',(int) $_POST['mc_skip_holidays_category']);

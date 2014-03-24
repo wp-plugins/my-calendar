@@ -105,6 +105,8 @@ This is a major revision.
 * Bug fix: Don't attempt to enqueue jquery.charcount.js if WP to Twitter not installed.
 
 * New template tag: {runtime} to show human language version of length of event.
+* New template tag: {excerpt} to create autoexcerpt from description field, using shortdesc if it exists.
+
 * New feature: Accessibility features for locations.
 * New feature: Specify accessibility services for events.
 * New feature: ticketing link field
@@ -128,7 +130,7 @@ This is a major revision.
 * Updated: title template supports all template tags (but strips HTML.).
 * Updated: Various aspects of UI
 
-* Replaced: Time selector with autocomplete option. 
+* Replaced: Date/time selectors. See http://amsul.ca/pickadate.js/, MIT license.
 * Reorganized default output template code.
 * Removed User settings fields.
 * Improved get current URL function.
