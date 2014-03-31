@@ -299,7 +299,9 @@ function my_calendar_write_js() {
 		monthsFull: mc_months,
 		weekdaysShort: mc_days,
 		formatSubmit: 'yyyy-mm-dd',
-		format: 'yyyy-mm-dd'
+		format: 'yyyy-mm-dd',
+		selectYears: true,
+		selectMonths: true		
 	});
 	
 	$('#mc-accordion').accordion({ collapsible:true, active:false });
@@ -328,6 +330,7 @@ function mc_plugin_update_message() {
 }
 
 function mc_footer_js() {
+	global $wp_query;
 	if ( mc_is_mobile() && get_option('mc_convert') == 'true' ) {
 		return;
 	} else {
@@ -343,7 +346,7 @@ function mc_footer_js() {
 			$mini_js = str_replace( 'e.preventDefault();','',$mini_js ); 
 		}
 		$ajax_js = stripcslashes( get_option( 'mc_ajaxjs' ) );
-		if ( is_object($wp_query) && isset($wp_query->post) ) {
+		if ( is_object( $wp_query ) && isset( $wp_query->post ) ) {
 			$id = $wp_query->post->ID;
 		} 
 		if ( get_option( 'mc_show_js' ) != '' ) {
@@ -1653,8 +1656,8 @@ function mc_increment_event( $id, $post=array(), $test=false ) {
 
 function mc_get_details_link( $event ) {
 	// if available, and not querying remotely, use permalink.
-	$permalinks = apply_filters( 'mc_use_permalinks', get_option( 'mc_use_permalinks' ) );
-	$permalinks = ( $permalinks = 1 || $permalinks = true || $permalinks = 'true' ) ? true : false;
+	$permalinks = get_option( 'mc_use_permalinks' );
+	$permalinks = ( $permalinks === 1 || $permalinks === true || $permalinks === 'true' ) ? true : false;
 	$details_link = $event->event_link;
 	if ( $event->event_post != 0 && get_option( 'mc_remote' ) != 'true' && $permalinks ) {
 		$details_link = add_query_arg( 'mc_id', $event->occur_id, get_permalink( $event->event_post ) );
@@ -1689,7 +1692,7 @@ function mc_posttypes() {
 	$arguments = array(
 					'public' => true,
 					'publicly_queryable' => true,
-					'exclude_from_search'=> false,
+					'exclude_from_search'=> true,
 					'show_ui' => true,
 					'show_in_menu' => apply_filters( 'mc_show_custom_posts_in_menu', false ),
 					'show_ui' => true, 

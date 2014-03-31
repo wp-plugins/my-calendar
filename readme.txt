@@ -103,6 +103,7 @@ This is a major revision.
 * Bug fix: If an event ends at midnight, automatically end tomorrow unless set for a later date.
 * Bug fix: Don't show events on both days if they end at midnight.
 * Bug fix: Don't attempt to enqueue jquery.charcount.js if WP to Twitter not installed.
+* Bug fix: Dates didn't strip links in list view when JS disabled for that view.
 
 * New template tag: {runtime} to show human language version of length of event.
 * New template tag: {excerpt} to create autoexcerpt from description field, using shortdesc if it exists.
@@ -115,7 +116,7 @@ This is a major revision.
 * New feature: filter events by available accessibility services
 * New feature: Combined filter shortcode to group all filters into a single form. [mc_filters show='locations,categories,access']
 * New feature: new API for adding custom fields to events.
-* New feature: data API to fetch event data in JSON or RSS formats. 
+* New feature: data API to fetch event data in JSON, CSV, or RSS formats. 
 * New feature: Archive events to hide from admin events list. 
 * New feature: Control input options for multiple types of location input data. 
 * New feature: Shortcode generator for primary, upcoming, and today's events shortcodes.
@@ -129,8 +130,8 @@ This is a major revision.
 * Updated: updated image uploader to use add media panel and store attachment ID
 * Updated: title template supports all template tags (but strips HTML.).
 * Updated: Various aspects of UI
+* Updated: Date/time selectors. See http://amsul.ca/pickadate.js/, MIT license.
 
-* Replaced: Date/time selectors. See http://amsul.ca/pickadate.js/, MIT license.
 * Reorganized default output template code.
 * Removed User settings fields.
 * Improved get current URL function.

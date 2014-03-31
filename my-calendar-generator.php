@@ -24,7 +24,7 @@ function mc_generate() {
 			}
 		}
 		$output = "<div class='updated'><textarea disabled>[$shortcode$string]</textarea></div>";
-		echo $output;
+		echo apply_filters( 'mc_shortcode_generator', $output, $_POST );
 	}
 }
 
@@ -35,7 +35,7 @@ function mc_generator( $type ) { ?>
 			<div id="mc-generator" class="generator">
 				<input type='hidden' name='shortcode' value='<?php echo $type; ?>' />
 				<?php // Common Elements to all Shortcodes ?>
-				<p><?php echo my_calendar_categories_list('select','admin'); ?></p>
+				<p><?php echo my_calendar_categories_list( 'select','admin' ); ?></p>
 				<p>
 					<label for="ltype"><?php _e('Location filter type:','my-calendar'); ?></label>
 					<select name="ltype" id="ltype">

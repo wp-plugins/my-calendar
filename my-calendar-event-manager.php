@@ -31,7 +31,7 @@ function mc_event_post( $action, $data, $event_id ) {
 		$privacy = ( mc_get_category_detail( $data['event_category'], 'category_private') == 1 ) ? 'private': 'publish';
 		$title = $data['event_title']; 
 		$template = apply_filters( 'mc_post_template', 'details', $term );
-		$content = "[my_calendar_event event='$event_id' template='$template' list='']";
+		$data['shortcode'] = "[my_calendar_event event='$event_id' template='$template' list='']";
 		$description = $data['event_desc'];
 		$excerpt = $data['event_short'];
 		$post_status = $privacy;
@@ -40,7 +40,7 @@ function mc_event_post( $action, $data, $event_id ) {
 		$my_post = array(
 			'ID'=> $post_id,
 			'post_title'=> $title,
-			'post_content'=> $content,
+			'post_content'=> $description,
 			'post_status'=> $post_status,
 			'post_author'=> $auth,
 			'post_name'=> sanitize_title( $title ),
@@ -68,6 +68,7 @@ function mc_event_post( $action, $data, $event_id ) {
 add_action( 'mc_update_event_post', 'mc_add_post_meta_data', 10, 4 );
 function mc_add_post_meta_data( $post_id, $post, $data, $event_id ) {
 	// access features for the event
+	update_post_meta( $post_id, '_mc_event_shortcode', $data['shortcode'] );
 	update_post_meta( $post_id, '_mc_event_access', ( isset( $_POST['events_access'] ) ) ? $_POST['events_access'] : '' );
 	update_post_meta( $post_id, '_mc_event_id', $event_id );
 	update_post_meta( $post_id, '_mc_event_desc', $data['event_desc'] );
@@ -1013,7 +1014,7 @@ function mc_form_fields( $data,$mode,$event_id ) {
 			<?php echo apply_filters( 'mc_datetime_inputs', '', $has_data, $data, 'admin' ); ?>
 			</div>
 			<?php if ( $mode != 'edit') { ?>			
-			<p>
+			<p id="event_span">
 				<input type="checkbox" value="1" id="e_span" name="event_span"<?php if ( $has_data && $data->event_span == '1') { echo " checked=\"checked\""; } else if ( $has_data && $data->event_span == '0') { echo ""; } else if ( get_option( 'mc_event_span') == 'true') { echo " checked=\"checked\""; } ?> /> <label for="e_span"><?php _e('This is a multi-day event.','my-calendar'); ?></label>
 			</p>
 			<p class="note"><em><?php _e('Enter start and end dates/times for each occurrence of the event.','my-calendar'); ?></em></p>
@@ -1786,9 +1787,9 @@ function mc_instance_list( $id, $occur=false, $template='<h3>{title}</h3>{descri
 			$begin = "<span id='occur_date'>".date_i18n( get_option('mc_date_format'),strtotime($result->occur_begin) ) . ', ' . date( get_option('mc_time_format'),strtotime($result->occur_begin) )."</span>";
 			$output.= "<li>$form_control$current$begin$end</li>";
 		}
-	} else {
+	} else {	
 		$details = '';
-		foreach ( $results as $result ) {
+		foreach ( $results as $result ) {		
 			$event_id = $result->occur_id;
 			$event = mc_get_event( $event_id );
 			$array = mc_create_tags($event);

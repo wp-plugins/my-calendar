@@ -18,8 +18,6 @@ function my_calendar_api() {
 				$host = 		( isset( $_GET['host'] ) ) ? $_GET['host'] : '' ;
 				$data = 		my_calendar_events( $from, $to, $category, $ltype, $lvalue, 'api', $author, $host );
 				$output = 		mc_format_api( $data, $format );
-				// if json, encode as json
-				// if xml, encode as xml
 				echo $output;
 			}
 			die;
@@ -34,12 +32,43 @@ function mc_format_api( $data, $format ) {
 	switch ( $format ) {
 		case 'json' : $output = mc_format_json( $data ); break;
 		case 'rss' : $output = mc_format_rss( $data ); break;
+		case 'csv' : $ooutput = mc_format_csv( $data ) ; break;
 	}
 	return $output;
 }
 
 function mc_format_json( $data ) {
 	return json_encode( $data );
+}
+
+function mc_format_csv( $data ) {
+	$keyed = false;
+	// Create a stream opening it with read / write mode
+	$stream = fopen('data://text/plain,' . "", 'w+');
+	// Iterate over the data, writting each line to the text stream
+	foreach ($data as $key => $val) {
+		foreach ( $val as $v ) {
+			$values = get_object_vars( $v );
+			if ( !$keyed ) {
+				$keys = array_keys( $values );
+				fputcsv($stream, $keys );
+				$keyed = true;
+			}
+			fputcsv($stream, $values);
+		}
+	}
+	// Rewind the stream
+	rewind($stream);
+	// You can now echo it's content
+	header("Content-type: text/csv");
+	header("Content-Disposition: attachment; filename=my-calendar.csv");
+	header("Pragma: no-cache");
+	header("Expires: 0");
+	
+	echo stream_get_contents($stream);
+	// Close the stream 
+	fclose($stream);
+	die;
 }
 
 function mc_format_rss( $data ) {

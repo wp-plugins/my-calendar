@@ -394,7 +394,9 @@ function mc_show_event_editing( $status, $args ) {
 				// don't display options if this user can't use them.
 				$output .= "<input type='hidden' name='mc_show_on_page[$key]' value='off' />";
 			} else {
-				$output .= "<label for=\"mci_$key\"><input type=\"checkbox\" id=\"mci_$key\" name=\"mc_show_on_page[$key]\" value='on' $checked /> $input_labels[$key]</label>";
+				if ( isset( $input_labels[$key] ) ) { // don't show if label doesn't exist. That means I removed the option.
+					$output .= "<label for=\"mci_$key\"><input type=\"checkbox\" id=\"mci_$key\" name=\"mc_show_on_page[$key]\" value='on' $checked /> $input_labels[$key]</label>";
+				}
 			}
 		}
 		$button = get_submit_button( __( 'Apply' ), 'button', 'screen-options-apply', false );
