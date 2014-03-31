@@ -689,6 +689,15 @@ function mc_show_search_results( $content ) {
 	}
 }
 
+add_filter( 'the_content','mc_show_event_template', 100 );
+function mc_show_event_template( $content ) {
+	global $post;
+	if ( $post->post_type == 'mc-events' ) {
+		//$content .= do_shortcode( get_post_meta( $post->ID, '_mc_event_shortcode', true ) ); // -> triggering an infinite loop.
+	}
+	return $content;
+}
+
 // Actually do the printing of the calendar
 function my_calendar( $name, $format, $category, $time='month', $ltype='', $lvalue='', $id='jd-calendar', $template='', $content='', $author=null, $host=null, $above='', $below='' ) {
 	check_my_calendar();
@@ -1067,7 +1076,7 @@ function my_calendar( $name, $format, $category, $time='month', $ltype='', $lval
 									if ( ( $is_weekend && get_option('mc_show_weekends') == 'true' ) || !$is_weekend ) {
 										$weekend_class = ( $is_weekend )?'weekend':'';
 										if ( $format == "list" ) {
-											if ( get_option('list_javascript') != 1) {
+											if ( get_option('mc_list_javascript') != 1 ) {
 												$is_anchor = "<a href='#'>";
 												$is_close_anchor = "</a>";
 											} else {

@@ -51,6 +51,7 @@ function my_calendar_help() { ?>
 			<li><a href='#mc_main'><?php _e( 'Main','my-calendar' ); ?></a></li>
 			<li><a href='#mc_upcoming'><?php _e( 'Upcoming','my-calendar' ); ?></a></li>
 			<li><a href='#mc_today'><?php _e( 'Today','my-calendar' ); ?></a></li>
+			<?php echo apply_filters( 'mc_generator_tabs', '' ); ?>
 		</ul>
 		<div class='wptab mc_main' id='mc_main' aria-live='polite'>	
 			<?php mc_generator( 'main' ); ?>
@@ -61,6 +62,7 @@ function my_calendar_help() { ?>
 		<div class='wptab mc_today' id='mc_today' aria-live='polite'>
 			<?php mc_generator( 'today' ); ?>
 		</div>
+		<?php echo apply_filters( 'mc_generator_tab_content', '' ); ?>
 	</div>
 </div>
 </div>
