@@ -209,7 +209,7 @@ function mc_related_events( $id, $return=false ) {
 		foreach ( $results as $result ) {
 			$event = $result->occur_event_id;
 			$current = "<a href='".admin_url('admin.php?page=my-calendar')."&amp;mode=edit&amp;event_id=$event'>"; $end = "</a>";
-			$begin = date_i18n( get_option('mc_date_format'),strtotime($result->occur_begin) ) . ''. date( get_option('mc_time_format'),strtotime($result->occur_begin) );
+			$begin = date_i18n( get_option('mc_date_format'),strtotime($result->occur_begin) ) . ', '. date( get_option('mc_time_format'),strtotime($result->occur_begin) );
 			$output.= "<li>$current$begin$end</li>";
 		}
 	} else {

@@ -259,6 +259,9 @@ function my_calendar_help() { ?>
 		<dt><code>{shortdesc_stripped}</code></dt>
 		<dd><?php _e('Displays short description with any HTML stripped out.','my-calendar'); ?></dd>
 
+		<dt><code>{excerpt}</code></dt>
+		<dd><?php _e('Like <code>the_excerpt();</code> displays shortdesc if provided, otherwise excerpts description.','my-calendar'); ?></dd>
+
 		<dt><code>{description}</code></dt>
 		<dd><?php _e('Displays the description of the event.','my-calendar'); ?></dd>
 
