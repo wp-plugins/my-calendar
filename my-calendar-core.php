@@ -298,7 +298,6 @@ function my_calendar_write_js() {
 		$('#e_begin,' + '#e_end').pickadate({
 		monthsFull: mc_months,
 		weekdaysShort: mc_days,
-		formatSubmit: 'yyyy-mm-dd',
 		format: 'yyyy-mm-dd',
 		selectYears: true,
 		selectMonths: true		

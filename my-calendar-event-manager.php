@@ -144,7 +144,7 @@ function manage_my_calendar() {
 	check_my_calendar();
 	global $wpdb,$event_author;
 	$mcdb = $wpdb;
-
+		
 	if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'delete') {
 			$sql = "SELECT event_title, event_author FROM " . my_calendar_table() . " WHERE event_id=" . (int) $_GET['event_id'];
 		   $result = $mcdb->get_results( $sql, ARRAY_A );
@@ -214,7 +214,6 @@ function manage_my_calendar() {
 		$nonce=$_REQUEST['_wpnonce'];
 		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
 		$events = $_POST['mass_edit'];
-		$sql = 'DELETE FROM '. my_calendar_table() . 'WHERE event_id IN (';	
 		$i=0;
 		$deleted = array();
 		foreach ($events as $value) {
@@ -225,13 +224,13 @@ function manage_my_calendar() {
 			if ( mc_can_edit_event( $result[0]['event_author'] ) ) {
 				$delete_occurrences = "DELETE FROM ".my_calendar_event_table()." WHERE occur_event_id = $value";
 				$delete = $mcdb->query($delete_occurrences);
-				$sql .= mysql_real_escape_string($value).',';
+				$ids[] = mysql_real_escape_string($value);
 				$deleted[] = $value;
 				$i++;
 			}
 		}
-		$sql = substr( $sql, 0, -1 );
-		$sql .= ')';
+		$statement = implode( ',', $ids );
+		$sql = 'DELETE FROM '. my_calendar_table() ." WHERE event_id IN ($statement)";	
 		$result = $mcdb->query($sql);
 		if ( $result !== 0 && $result !== false ) {
 			mc_delete_cache();
@@ -329,7 +328,8 @@ function manage_my_calendar() {
 
 function edit_my_calendar() {
     global $current_user, $wpdb, $users_entries;
-	$mcdb = $wpdb;
+	$mcdb = $wpdb;	
+	
 	if ( get_option('ko_calendar_imported') != 'true') {  
 		if (function_exists('check_calendar')) {
 		echo "<div id='message'class='updated'>";
@@ -903,8 +903,12 @@ function mc_form_fields( $data,$mode,$event_id ) {
 			$array_data = (array) $data;
 			$post_id = mc_event_post( 'add', $array_data, $data->event_id );
 		}
-		$post_link = ( $post_id ) ? get_edit_post_link( $post_id ) : false;
-		$text_link = ( $post_link ) ? sprintf( " &middot; <a href='%s'>".__('Edit Event Post','my-calendar')."</a>", $post_link ) : '';
+		if ( get_option( 'mc_use_permalinks' ) == 'true' ) {
+			$post_link = ( $post_id ) ? get_edit_post_link( $post_id ) : false;
+			$text_link = ( $post_link ) ? sprintf( " &middot; <a href='%s'>".__('Edit Event Post','my-calendar')."</a>", $post_link ) : '';
+		} else {
+			$text_link = '';
+		}
 	?>
 	<h3><?php echo $text; ?> <span class="alignright"><a href="<?php echo admin_url('admin.php?page=my-calendar-manage'); ?>"><?php _e('Manage events','my-calendar'); ?></a><?php echo $delete; echo $text_link; ?></span>
 </h3>
@@ -1225,6 +1229,10 @@ function mc_list_events( $type='normal') {
 		} else {
 			$limit .= ( $restrict != 'event_flagged' ) ? " AND event_flagged = 0" : '';
 		}
+		if ( isset( $_POST['mcs'] ) ) {
+			$query = esc_sql( $_POST['mcs'] );
+			$limit .= " AND MATCH(event_title,event_desc,event_short,event_label,event_city) AGAINST ('$query' IN BOOLEAN MODE) ";
+		}
 		$limit .= ( $restrict != 'archived' ) ? " AND event_status = 1" : ' AND event_status = 0';		
 		$events = $mcdb->get_results( "SELECT SQL_CALC_FOUND_ROWS * FROM " . my_calendar_table() . " $limit ORDER BY $sortbyvalue $sortbydirection LIMIT ".( ( $current-1 )*$items_per_page ).", ".$items_per_page );
 		$found_rows = $wpdb->get_col("SELECT FOUND_ROWS();");
@@ -1234,6 +1242,16 @@ function mc_list_events( $type='normal') {
 				<li><a <?php echo ( isset($_GET['restrict']) && $_GET['restrict']=='flagged')?'class="active-link"':''; ?>  href="<?php echo admin_url('admin.php?page=my-calendar-manage&amp;restrict=flagged&amp;filter=1'); ?>"><?php _e('Spam','my-calendar'); ?></a></li>
 			</ul><?php 
 		} 
+		?>
+		<div class='mc-search'>
+			<form action="<?php echo add_query_arg( $_GET, admin_url('admin.php') ); ?>" method="post">
+				<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
+				<div>			
+				<label for="mc_search" class='screen-reader-text'><?php _e( 'Search','my-calendar' ); ?></label> <input type='text' role='search' name='mcs' id='mc_search' value='<?php if ( isset( $_POST['mcs'] ) ) { esc_attr_e( $_POST['mcs'] ); } ?>' /> <input type='submit' value='<?php _e('Search Events','my-calendar'); ?>' class='button-secondary' />
+				</div>
+			</form>
+		</div>
+		<?php		
 		if ( get_option('mc_event_approve') == 'true' ) { ?>
 			<ul class="links">
 				<li><a <?php echo ( isset($_GET['limit']) && $_GET['limit']=='published')?'class="active-link"':''; ?> href="<?php echo admin_url('admin.php?page=my-calendar-manage&amp;limit=published'); ?>"><?php _e('Published','my-calendar'); ?></a></li>
@@ -1258,7 +1276,7 @@ function mc_list_events( $type='normal') {
 		}
 		if ( !empty($events) ) {
 		?>
-		<form action="<?php echo admin_url('admin.php?page=my-calendar-manage'); ?>" method="post">
+		<form action="<?php echo add_query_arg( $_GET, admin_url('admin.php') ); ?>" method="post">
 		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>		
 		<div class='mc-actions'>
 			<input type="submit" class="button-secondary delete" name="mass_delete" value="<?php _e( 'Delete events','my-calendar' ); ?>" />
@@ -1837,7 +1855,6 @@ function mc_standard_datetime_input( $form, $has_data, $data, $instance, $contex
 		}
 		$starttime = ( $data->event_time == "00:00:00" && $data->event_endtime == "00:00:00" )?'':date( "h:i A",strtotime( $data->event_time ) );
 		$endtime = ( $data->event_endtime == "00:00:00" && $data->event_time == "00:00:00" )?'':date( "h:i A",strtotime( $data->event_endtime ) );
-		echo "$starttime, $endtime";
 	} else { 
 		$event_begin = date( "Y-m-d" );
 		$event_end = $starttime = $endtime = '';
@@ -1856,12 +1873,10 @@ jQuery(document).ready(function($) {
 	$("#e_time").pickatime({
 		interval: 15,
 		format: "'.apply_filters( 'mc_time_format', 'h:i A' ).'",
-		formatSubmit: "HH:i:00",
 	});
 	$("#e_endtime").pickatime({
 		interval: 15,
 		format: "'.apply_filters( 'mc_time_format', 'h:i A' ).'",
-		formatSubmit: "HH:i:00",
 	});
 });
 //]]>

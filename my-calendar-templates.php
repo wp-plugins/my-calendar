@@ -474,7 +474,8 @@ function mc_auto_excerpt( $e, $event ) {
 	$shortdesc = $e['shortdesc'];
 	$e['excerpt'] = $shortdesc;
 	if ( $description != '' ) { // if description is empty, this won't work, so skip it.
-		$excerpt = wp_trim_words( $description );
+		$num_words = apply_filters( 'mc_excerpt_length', 55 );
+		$excerpt = wp_trim_words( $description, $num_words );
 		$e['excerpt'] = ( $shortdesc == '' ) ? $excerpt : $shortdesc;   
 	}
 	return $e;

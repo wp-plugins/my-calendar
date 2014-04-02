@@ -23,8 +23,10 @@ function mc_generate() {
 				}
 			}
 		}
-		$output = "<div class='updated'><textarea disabled>[$shortcode$string]</textarea></div>";
-		echo apply_filters( 'mc_shortcode_generator', $output, $_POST );
+		$output = $shortcode.$string;
+		$output = apply_filters( 'mc_shortcode_generator', $output, $_POST );
+		$return = "<div class='updated'><textarea disabled>[$output]</textarea></div>";
+		echo $return;
 	}
 }
 

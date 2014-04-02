@@ -678,7 +678,7 @@ function mc_show_search_results( $content ) {
 	if ( isset( $_GET['mcs'] ) ) { // simple search
 		$ret = true;
 		$query = $_GET['mcs'];
-	} else if ( isset ($_POST['mcs']) ) { // advanced search
+	} else if ( isset ( $_POST['mcs'] ) ) { // advanced search
 		$ret = true;
 		$query = $_POST;
 	}

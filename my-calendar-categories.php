@@ -93,7 +93,7 @@ function my_calendar_manage_categories() {
 		$results = $mcdb->insert( my_calendar_categories_table(), $add, $formats );
 		do_action( 'mc_post_add_category', $add, $results, $_POST );	
 		
-		if ( isset($_POST['mc_default_category']) ) {
+		if ( isset( $_POST['mc_default_category'] ) ) {
 			$cat_ID = $mcdb->insert_id;
 			update_option( 'mc_default_category',$cat_ID );
 			$append = __('Default category changed.','my-calendar');			
@@ -134,10 +134,18 @@ function my_calendar_manage_categories() {
 		);
 		$where = array( 'category_id'=>(int) $_POST['category_id'] );	
 		$append = '';
-		if ( isset($_POST['mc_default_category']) ) {
+		if ( isset( $_POST['mc_default_category'] ) ) {
 			update_option( 'mc_default_category',(int) $_POST['category_id'] );
-			$append = __('Default category changed.','my-calendar');
-		}		
+			$append .= __( 'Default category changed.','my-calendar' );
+		} else {
+			if ( get_option( 'mc_default_category' ) == (int) $_POST['category_id'] ) { delete_option( 'mc_default_category' ); } 
+		}
+		if ( isset( $_POST['mc_skip_holidays_category'] ) ) {
+			update_option( 'mc_skip_holidays_category',(int) $_POST['category_id'] );
+			$append .= __( 'Holiday category changed.','my-calendar' );
+		} else {
+			if ( get_option( 'mc_skip_holidays_category' ) == (int) $_POST['category_id'] ) { delete_option( 'mc_skip_holidays_category' ); } 
+		}
 		$results = $mcdb->update( my_calendar_categories_table(), $update, $where, $formats, '%d' );
 		mc_delete_cache();
 		if ($results) {
@@ -219,8 +227,10 @@ function mc_edit_category_form($view='edit',$catID='') {
 		}
 		?>
 					</select>
-					<?php $checked = ( $view == 'add' )?'':mc_is_checked( 'mc_default_category',$cur_cat->category_id,'',true); ?>
+					<?php $checked = ( $view == 'add' )?'':mc_is_checked( 'mc_default_category',$cur_cat->category_id,'',true ); ?>
+					<?php $holiday_checked = ( $view == 'add' )?'':mc_is_checked( 'mc_skip_holidays_category',$cur_cat->category_id,'',true ); ?>
 					<input type="checkbox" value="on" name="mc_default_category" id="mc_default_category"<?php echo $checked; ?> /> <label for="mc_default_category"><?php _e('Default category','my-calendar'); ?></label>
+					<input type="checkbox" value="on" name="mc_skip_holidays_category" id="mc_shc"<?php echo $holiday_checked; ?> /> <label for="mc_shc"><?php _e( 'Holiday Category','my-calendar' ); ?></label>
 					<?php if ( $view == 'add' ) { $checked = ''; } else { if ( !empty($cur_cat) && is_object($cur_cat) && $cur_cat->category_private == 1 ) { $checked=' checked="checked"'; } else { $checked = ''; } } ?>
 					<p><input type="checkbox" value="on" name="category_private" id="cat_private"<?php echo $checked; ?> /> <label for="cat_private"><?php _e('Private category (logged-in users only)','my-calendar'); ?></label></p>
 				</fieldset>
@@ -291,7 +301,7 @@ function mc_manage_categories() {
 			?>
 			<tr class="<?php echo $class; ?>">
 			<th scope="row"><?php echo $cat->category_id; ?></th>
-			<td><?php echo stripslashes( $cat->category_name ); if ( $cat->category_id == get_option( 'mc_default_category' ) ) { echo ' '.__( '(Default)' ); } ?></td>
+			<td><?php echo stripslashes( $cat->category_name ); if ( $cat->category_id == get_option( 'mc_default_category' ) ) { echo ' '.__( '(Default)' ); } if ( $cat->category_id == get_option( 'mc_skip_holidays_category' ) ) { echo ' '.__( '(Holiday)' ); }?></td>
 			<td style="background-color:<?php echo $background; ?>; color: <?php echo $foreground; ?>"><?php echo $background; ?></td>
 			<td style="background-color:<?php echo $background; ?>;"><img src="<?php echo $icon_src; ?>" alt="" /></td>		 
 			<td><?php echo ( $cat->category_private == 1 )?__('Yes','my-calendar'):__('No','my-calendar'); ?></td>

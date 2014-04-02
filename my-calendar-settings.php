@@ -212,7 +212,6 @@ function edit_my_calendar_config() {
 		update_option( 'mc_open_uri',( !empty($_POST['mc_open_uri']) && $_POST['mc_open_uri']=='on' && get_option('mc_uri') != '') ? 'true':'false' );
 		update_option('mc_mini_uri',$_POST['mc_mini_uri'] );
 		update_option('mc_open_day_uri', $mc_open_day_uri );
-		update_option('mc_skip_holidays_category',(int) $_POST['mc_skip_holidays_category']);
 		update_option('mc_skip_holidays',( !empty($_POST['mc_skip_holidays']) && $_POST['mc_skip_holidays']=='on')?'true':'false');
 		update_option('mc_display_author',( !empty($_POST['mc_display_author']) && $_POST['mc_display_author']=='on')?'true':'false');
 		update_option('mc_show_event_vcal',( !empty($_POST['mc_show_event_vcal']) && $_POST['mc_show_event_vcal']=='on')?'true':'false');		
@@ -589,24 +588,6 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 		<ul>
 			<li><?php mc_settings_field( 'mc_event_link_expires', __( 'Event links expire after event passes.','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>	
 			<li><?php mc_settings_field( 'mc_no_fifth_week', __( 'If a recurring event falls on a date that doesn\'t exist (like the 5th Wednesday in February), move it back one week.','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
-			<li>
-			<label for="mc_shc"><?php _e( 'Holiday Category','my-calendar' ); ?></label>
-			<select id="mc_shc" name="mc_skip_holidays_category">
-			<option value=''> -- <?php _e( 'None','my-calendar' ); ?> -- </option>
-			<?php
-			// Grab all the categories and list them
-			$sql = "SELECT * FROM " . my_calendar_categories_table();
-			$cats = $mcdb->get_results($sql);
-				foreach($cats as $cat) {
-					echo '<option value="'.$cat->category_id.'"';
-						if ( get_option('mc_skip_holidays_category') == $cat->category_id ){
-						 echo ' selected="selected"';
-						}
-					echo '>'.stripslashes($cat->category_name)."</option>\n";
-				}
-			?>
-			</select>
-			</li>
 			<li><?php mc_settings_field( 'mc_skip_holidays', __( 'If an event coincides with an event in the designated "Holiday" category, do not show the event.','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 		</ul>	
 	<?php // End Scheduling Options // ?>

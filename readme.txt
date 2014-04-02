@@ -120,11 +120,14 @@ This is a major revision.
 * New feature: Archive events to hide from admin events list. 
 * New feature: Control input options for multiple types of location input data. 
 * New feature: Shortcode generator for primary, upcoming, and today's events shortcodes.
+* New feature: admin-side event search
 
 * New filter: mc_date_format for customizing date formats.
 * New filter: customize search results page: mc_search_page
 * New filter: mc_use_permalinks to enable use of custom post type permalinks for single event pages.
 * New filter: mc_post_template to customize template used in single event shortcode automatically inserted into custom post type pages.
+
+* New design: new stylesheet option available: twentyfourteen.css
 
 * Updated: added more fields to search on events.
 * Updated: updated image uploader to use add media panel and store attachment ID
@@ -134,6 +137,7 @@ This is a major revision.
 
 * Reorganized default output template code.
 * Removed User settings fields.
+* Moved Holiday category assignment to Category Manager.
 * Improved get current URL function.
 * iCal output in multiple-month view outputs all displayed months.
 * {map} template tag to display a Google Map using the Google Maps API. (Not available in pop-up displays.)
