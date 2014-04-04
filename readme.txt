@@ -20,38 +20,30 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 
 = Basic Features: =
 
-*	Standard calendar grid or list views of events
+*	Standard calendar grid and list views of events
 * 	Show events in monthly, weekly, or daily view.
 * 	Mini-calendar view for compact displays (as widget or as shortcode)
 *	Widget to show today's events
 *	Widget to show upcoming or past events 
-* 	Widget to search events
+* 	Event Search widget
 *	Custom templates for event output
-*	Limit by category/categories
+*	Limit by categories
 * 	Limit by location
 * 	Limit by author
+*	Limit by host
 *	Disable default CSS and default JavaScript or display only on specific Pages/Posts
 *	Editable CSS styles and JavaScript behaviors
 *	Schedule a wide variety of recurring events.
-*	Individual occurrences of recurring events can be edited individually
-* 	Access to most aspects of My Calendar can be restricted by role. (Adding events, editing events, editing styles, changing settings, etc.)
-* 	Choose which of the following fields you want to enter and display for each event:
-	* title, 
-	* description, 
-	* event image,
-	* alternate description, 
-	* event host,
-	* event category, 
-	* URL, 
-	* registration status (open, closed or irrelevant), 
-	* event location
+*	Edit individual occurrences of recurring events
+* 	Rich permissions handling to restrict access to parts of My Calendar
 * 	Email notification to administrator when events are scheduled or reserved
 * 	Post to Twitter when events are created. (with [WP to Twitter](http://wordpress.org/extend/plugins/wp-to-twitter/))
 *	Location Manager for frequently used venues
 *   Fetch events from a remote MySQL database. (Sharing events in a network of sites.)
 *   Import from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/)
 * 	Integrated Help page to guide in use of shortcodes and template tags
-*   New: [Developer Documentation](http://www.joedolson.com/articles/doc-category/my-calendar-3/)
+* 	Shortcode Generator to help create customized views of My Calendar
+*   [Developer Documentation](http://www.joedolson.com/articles/doc-category/my-calendar-3/)
 
 = Translations =
 
@@ -72,13 +64,15 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 3. Configure My Calendar using the following pages in the admin panel:
 
-   My Calendar -> Add/Edit Events
+   My Calendar -> Add/Manage Events
    My Calendar -> Manage Categories
    My Calendar -> Manage Locations
-   My Calendar -> Settings   
-   My Calendar -> Style Editor
-   My Calendar -> Behavior Editor
+   My Calendar -> Manage Event Groups
+   My Calendar -> Style Editor   
+   My Calendar -> Script Editor
    My Calendar -> Template Editor
+   My Calendar -> Settings
+   My Calendar -> Help
    
 4. Edit or create a page on your blog which includes the shortcode [my_calendar] and visit
    the page you have edited or created. You should see your calendar. Visit My Calendar -> Help for assistance
@@ -129,11 +123,11 @@ This is a major revision.
 * New filter: mc_use_permalinks to enable use of custom post type permalinks for single event pages.
 * New filter: mc_post_template to customize template used in single event shortcode automatically inserted into custom post type pages.
 
-* New design: new stylesheet option available: twentyfourteen.css
+* New design: new stylesheet available: twentyfourteen.css
 
 * Updated: added more fields to search on events.
 * Updated: updated image uploader to use add media panel and store attachment ID
-* Updated: title template supports all template tags (but strips HTML.).
+* Updated: <title> template supports all template tags (but strips HTML.).
 * Updated: Various aspects of UI
 * Updated: Date/time selectors. See http://amsul.ca/pickadate.js/, MIT license.
 
