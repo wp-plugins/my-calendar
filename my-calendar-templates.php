@@ -396,7 +396,7 @@ function mc_expand( $data ) {
 			if ( !$label ) { continue; }
 			$output .= "<li class='$class'><span>$label</span></li>\n";
 		}
-		return "<ul>".$output."</ul>";
+		return "<ul class='mc-access'>".$output."</ul>";
 	}
 }
 

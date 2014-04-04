@@ -460,8 +460,8 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<legend><?php _e('Customize Text Fields','my-calendar' ); ?></legend>
 	<ul>
 	<li><?php mc_settings_field( 'mc_notime_text', __( 'Label for all-day events','my-calendar' ), 'N/A' ); ?></li>
-	<li><?php mc_settings_field( 'mc_previous_events', __( 'Previous events link','my-calendar' ), __( 'Previous Events','my-calendar' ), __( 'Use <code>{date}</code> to display date in navigation.','my-calendar' ) ); ?></li>
-	<li><?php mc_settings_field( 'mc_next_events', __( 'Next events link','my-calendar' ), __( 'Next Events', 'my-calendar' ), __( 'Use <code>{date}</code> to display date in navigation.','my-calendar' ) ); ?></li>
+	<li><?php mc_settings_field( 'mc_previous_events', __( 'Previous events link','my-calendar' ), __( 'Previous','my-calendar' ), __( 'Use <code>{date}</code> to display date in navigation.','my-calendar' ) ); ?></li>
+	<li><?php mc_settings_field( 'mc_next_events', __( 'Next events link','my-calendar' ), __( 'Next', 'my-calendar' ), __( 'Use <code>{date}</code> to display date in navigation.','my-calendar' ) ); ?></li>
 	<li><?php mc_settings_field( 'mc_event_open', __( 'If events are open','my-calendar' ), __( 'Registration is open','my-calendar' ) ); ?></li>
 	<li><?php mc_settings_field( 'mc_event_closed', __( 'If events are closed','my-calendar' ), __( 'Registration is closed','my-calendar' ) ); ?></li>	
 	<li><?php mc_settings_field( 'mc_week_caption', __( 'Week view caption:','my-calendar' ), '', __( 'Available tag: <code>{date format=""}</code>','my-calendar' ) ); ?></li>
@@ -489,15 +489,15 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<fieldset>
 	<legend><?php _e('Calendar Link Targets','my-calendar' ); ?></legend>
 	<ul>
-	<li><?php mc_settings_field( 'mc_use_permalinks', __( 'Use Pretty Permalinks for Events','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>	
+	<?php /* <li><?php mc_settings_field( 'mc_use_permalinks', __( 'Use Pretty Permalinks for Events','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li> This just isn't ready; add in a point release. */ ?>
 	<?php $guess = mc_guess_calendar();	?>
 	<li><?php mc_settings_field( 'mc_uri', __( 'Where is your main calendar page?','my-calendar' ), '', "<br /><small>".__( 'Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar' )." $guess</small>", array( 'size'=>'60' ), 'url' ); ?></li>
 	<li><?php mc_settings_field( 'mc_mini_uri', __( 'Target <abbr title="Uniform resource locator">URL</abbr> for mini calendar date links:','my-calendar' ), '', "<br /><small>".__( 'Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.','my-calendar' )."</small>", array( 'size'=>'60' ), 'url' ); ?></li>
-	<li><?php mc_settings_field( 'mc_open_uri', __( 'Open calendar links to event details URL','my-calendar' ), '', "<br /><small>".__( 'Replaces pop-up in grid view.','my-calendar' )."</small>", array(), 'checkbox-single' ); ?></li>
+	<li><?php mc_settings_field( 'mc_open_uri', __( 'Open calendar links to event details URL','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 	<?php 
 		$disabled = ( !get_option( 'mc_uri' ) && !get_option( 'mc_mini_uri' ) ) ? array( 'disabled'=>'disabled' ) : array();
 	?>
-	<li><?php mc_settings_field( 'mc_open_day_uri', __( 'Mini calendar widget date links to:','my-calendar' ), array( 'false'=>__( 'jQuery pop-up view', 'my-calendar' ), 'true'=>__( 'daily view page (above)', 'my-calendar' ), 'listanchor'=>__( 'in-page anchor on main calendar page (list)', 'my-calendar' ), 'calendaranchor'=>__( 'in-page anchor on main calendar page (grid)', 'my-calendar' ) ), "<br /><small>".__( 'Replaces pop-up in mini calendar.','my-calendar' )."</small>", $disabled, 'select' ); ?></li>
+	<li><?php mc_settings_field( 'mc_open_day_uri', __( 'Mini calendar widget date links to:','my-calendar' ), array( 'false'=>__( 'jQuery pop-up view', 'my-calendar' ), 'true'=>__( 'daily view page (above)', 'my-calendar' ), 'listanchor'=>__( 'in-page anchor on main calendar page (list)', 'my-calendar' ), 'calendaranchor'=>__( 'in-page anchor on main calendar page (grid)', 'my-calendar' ) ), '', $disabled, 'select' ); ?></li>
 	</ul>
 	<?php // End General Options // ?>
 	</fieldset>
@@ -653,7 +653,9 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 		}
 		foreach ($input_options as $key=>$value) {
 			$checked = ($value == 'on')?"checked='checked'":'';
-			$output .= "<li><input type=\"checkbox\" id=\"mci_$key\" name=\"mci_$key\" $checked /> <label for=\"mci_$key\">$input_labels[$key]</label></li>";
+			if ( isset($input_labels[$key] ) ) {
+				$output .= "<li><input type=\"checkbox\" id=\"mci_$key\" name=\"mci_$key\" $checked /> <label for=\"mci_$key\">$input_labels[$key]</label></li>";
+			}
 		}
 		echo $output;
 	?>

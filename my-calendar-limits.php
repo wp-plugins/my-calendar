@@ -214,17 +214,17 @@ function mc_limit_string( $type='', $ltype='', $lvalue='' ) {
 				$current_location = esc_sql( $lvalue );
 			}
 		} else {
-			$current_location = urldecode($_GET['loc']);
-			$location = urldecode($_GET['ltype']);
+			$current_location = urldecode( $_GET['loc'] );
+			$location = urldecode( $_GET['ltype'] );
 		}
 		switch ($location) {
-			case "name":$location_type = "event_label";	break;
-			case "city":$location_type = "event_city"; break;
-			case "state":$location_type = "event_state"; break;
-			case "zip":$location_type = "event_postcode"; break;
-			case "country":$location_type = "event_country"; break;
-			case "region":$location_type = "event_region"; break;
-			default:$location_type = $location;
+			case "name" : $location_type = "event_label";	break;
+			case "city" : $location_type = "event_city"; break;
+			case "state" : $location_type = "event_state"; break;
+			case "zip" : $location_type = "event_postcode"; break;
+			case "country" : $location_type = "event_country"; break;
+			case "region" : $location_type = "event_region"; break;
+			default : $location_type = $location;
 		}			
 		if ($current_location != 'all' && $current_location != '') {
 				$limit_string = "$location_type='$current_location' AND";
@@ -232,7 +232,7 @@ function mc_limit_string( $type='', $ltype='', $lvalue='' ) {
 		}
 	}
 	if ( $limit_string != '' ) {
-		if ( isset($_GET['loc2']) && isset($_GET['ltype2']) ) {
+		if ( isset( $_GET['loc2'] ) && isset( $_GET['ltype2'] ) ) {
 			$limit_string .= mc_secondary_limit( $_GET['ltype2'],$_GET['loc2'] );
 		}
 	}

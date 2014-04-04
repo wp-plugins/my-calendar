@@ -227,12 +227,13 @@ function mc_edit_category_form($view='edit',$catID='') {
 		}
 		?>
 					</select>
+					<p>
+					<?php if ( $view == 'add' ) { $private_checked = ''; } else { if ( !empty($cur_cat) && is_object($cur_cat) && $cur_cat->category_private == 1 ) { $private_checked=' checked="checked"'; } else { $private_checked = ''; } } ?>					
 					<?php $checked = ( $view == 'add' )?'':mc_is_checked( 'mc_default_category',$cur_cat->category_id,'',true ); ?>
 					<?php $holiday_checked = ( $view == 'add' )?'':mc_is_checked( 'mc_skip_holidays_category',$cur_cat->category_id,'',true ); ?>
-					<input type="checkbox" value="on" name="mc_default_category" id="mc_default_category"<?php echo $checked; ?> /> <label for="mc_default_category"><?php _e('Default category','my-calendar'); ?></label>
-					<input type="checkbox" value="on" name="mc_skip_holidays_category" id="mc_shc"<?php echo $holiday_checked; ?> /> <label for="mc_shc"><?php _e( 'Holiday Category','my-calendar' ); ?></label>
-					<?php if ( $view == 'add' ) { $checked = ''; } else { if ( !empty($cur_cat) && is_object($cur_cat) && $cur_cat->category_private == 1 ) { $checked=' checked="checked"'; } else { $checked = ''; } } ?>
-					<p><input type="checkbox" value="on" name="category_private" id="cat_private"<?php echo $checked; ?> /> <label for="cat_private"><?php _e('Private category (logged-in users only)','my-calendar'); ?></label></p>
+					<input type="checkbox" value="on" name="category_private" id="cat_private"<?php echo $private_checked; ?> /> <label for="cat_private"><?php _e('Private category (logged-in users only)','my-calendar'); ?></label> 
+					<input type="checkbox" value="on" name="mc_default_category" id="mc_default_category"<?php echo $checked; ?> /> <label for="mc_default_category"><?php _e('Default category','my-calendar'); ?></label> 
+					<input type="checkbox" value="on" name="mc_skip_holidays_category" id="mc_shc"<?php echo $holiday_checked; ?> /> <label for="mc_shc"><?php _e( 'Holiday Category','my-calendar' ); ?></label></p>
 				</fieldset>
 				<p>
 					<input type="submit" name="save" class="button-primary" value="<?php if ($view == 'add') {  _e('Add Category','my-calendar'); } else { _e('Save Changes','my-calendar'); } ?> &raquo;" />

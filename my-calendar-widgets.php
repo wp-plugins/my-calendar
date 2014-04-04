@@ -6,10 +6,27 @@ class my_calendar_simple_search extends WP_Widget {
 		parent::WP_Widget( false, $name=__('My Calendar: Simple Event Search','my-calendar') );
 	}
 	function widget($args,$instance) {
+		extract( $args );
+		$widget_title = apply_filters('widget_title',$instance['title'], $instance, $args );
+		echo $before_widget;
+		echo ( $instance['title'] != '' ) ? $widget_title : '';
 		echo my_calendar_searchform('simple');
+		echo $after_widget;
 	}
-	function form( $instance ) {}
-	function update( $new_instance, $old_instance ) {}
+	function form( $instance ) { 	
+		$widget_title = ( isset( $instance['title'] ) ) ? esc_attr( $instance['title'] ) : '';
+		?>
+		<p>
+		<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title','my-calendar'); ?>:</label><br />
+		<input class="widefat" type="text" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $widget_title; ?>"/>
+		</p>
+		<?php
+	}
+	function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+		$instance['title'] = strip_tags( $new_instance['title'] );
+		return $instance;
+	}
 }
 
 class my_calendar_today_widget extends WP_Widget {

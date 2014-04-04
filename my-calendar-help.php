@@ -301,6 +301,12 @@ function my_calendar_help() { ?>
 		<dt><code>{ical_html}</code></dt>
 		<dd><?php _e('Produces a hyperlink to download an iCal formatted record for the event.','my-calendar'); ?></dd>
 
+		<dt><code>{gcal}</code></dt>
+		<dd><?php _e('URL to submit event to Google Calendar','my-calendar'); ?></dd>
+	
+		<dt><code>{gcal_link}</code></dt>
+		<dd><?php _e('Link to submit event to Google Calendar, with class "gcal"','my-calendar'); ?></dd>
+		
 		<dt><code>{recurs}</code></dt>
 		<dd><?php _e('Shows the recurrence status of the event. (Daily, Weekly, etc.)','my-calendar'); ?></dd>
 
@@ -310,6 +316,9 @@ function my_calendar_help() { ?>
 		<dt><code>{details}</code></dt>
 		<dd><?php _e('Provides a link to an auto-generated page containing all information on the given event.','my-calendar'); ?> <strong><?php _e('Requires that the site URL has been provided on the Settings page','my-calendar'); ?></strong>
 
+		<dt><code>{details_link}</code></dt>
+		<dd><?php _e('Raw URL for the details link; empty if target URL not defined.','my-calendar'); ?>	
+		
 		<dt><code>{linking}</code></dt>
 		<dd><?php _e('Provides a link to the defined event URL when present, otherwise the {details} link.','my-calendar'); ?> <strong><?php _e('Requires that the site URL has been provided on the Settings page','my-calendar'); ?></strong>
 		
