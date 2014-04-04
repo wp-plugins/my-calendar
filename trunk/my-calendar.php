@@ -322,25 +322,25 @@ function my_calendar_menu() {
 	global $wpdb;
 	$mcdb = $wpdb;  
 	$icon_path = plugins_url('/my-calendar/images');
-	if ( function_exists('add_object_page') ) {
+	if ( function_exists( 'add_object_page' ) ) {
 		if ( get_option( 'mc_remote' ) != 'true' ) {
 			add_object_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), 'mc_add_events', 'my-calendar', 'edit_my_calendar',$icon_path.'/icon.png' );
 		} else {
 			add_object_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), 'mc_edit_settings', 'my-calendar', 'edit_my_calendar_config',$icon_path.'/icon.png' );		
 		}
 	} else {  
-		if ( function_exists('add_menu_page') ) {
+		if ( function_exists( 'add_menu_page' ) ) {
 			if ( get_option( 'mc_remote' ) != 'true' ) {
 				add_menu_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), 'mc_add_events', 'my-calendar', 'edit_my_calendar',$icon_path.'/icon.png' );
 			} else {
-				add_menu_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), 'mc_edit_settings', 'my-calendar', 'edit_my_calendar_config',$icon_path.'/icon.png' );		
+				add_menu_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), 'mc_edit_settings', 'my-calendar', 'edit_my_calendar_config',$icon_path.'/icon.png' );
 			}			
 		}
 	}
 	if ( function_exists('add_submenu_page') ) {
 		add_action( "admin_head", 'my_calendar_write_js' );		
 		add_action( "admin_head", 'my_calendar_add_styles' );
-		if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) {
+		if ( get_option( 'mc_remote' ) == 'true' ) {
 		} else { // if we're accessing a remote page, remove these pages.
 			$edit = add_submenu_page('my-calendar', __('Add New Event','my-calendar'), __('Add New Event','my-calendar'), 'mc_add_events', 'my-calendar', 'edit_my_calendar');
 				add_action( "load-$edit", 'mc_event_editing' );	
@@ -350,7 +350,6 @@ function my_calendar_menu() {
 			add_submenu_page('my-calendar', __('Event Locations','my-calendar'), __('Manage Locations','my-calendar'), 'mc_edit_locations', 'my-calendar-locations', 'my_calendar_manage_locations');		
 			$groups = add_submenu_page('my-calendar', __('Event Groups','my-calendar'), __('Manage Event Groups','my-calendar'), 'mc_manage_events', 'my-calendar-groups', 'edit_my_calendar_groups');
 				add_action( "load-$groups", 'mc_add_screen_option' );
-			
 		}
 		add_submenu_page('my-calendar', __('Style Editor','my-calendar'), __('Style Editor','my-calendar'), 'mc_edit_styles', 'my-calendar-styles', 'edit_my_calendar_styles');
 		add_submenu_page('my-calendar', __('Script Editor','my-calendar'), __('Script Editor','my-calendar'), 'mc_edit_behaviors', 'my-calendar-behaviors', 'edit_my_calendar_behaviors');	

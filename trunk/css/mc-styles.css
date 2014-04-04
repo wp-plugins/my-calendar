@@ -75,7 +75,7 @@ strong.label { font-weight: 400; }
 .jd-my-calendar .checkboxes li { display: inline-block; padding: 5px; background: rgba( 0, 0, 0, .05 ); margin: 2px;  }
 .jd-my-calendar .checkboxes li:hover { background: #fff; }
 
-.mc-actions { float: left; vertical-align: middle; height: 30px; margin: 6px 0 4px; }
+.mc-actions { float: left; vertical-align: middle; height: 30px; margin: 6px 0 4px; clear: left; }
 
 .jd-my-calendar fieldset legend { font-weight: 700; padding: 0; font-size: 1.1em; }
 .generator fieldset { border: 1px solid #ccc; margin: 10px 0; padding: 10px; }

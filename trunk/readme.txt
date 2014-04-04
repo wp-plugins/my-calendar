@@ -121,6 +121,8 @@ This is a major revision.
 * New feature: Control input options for multiple types of location input data. 
 * New feature: Shortcode generator for primary, upcoming, and today's events shortcodes.
 * New feature: admin-side event search
+* New feature: category key now acts as quick links to filter by category
+* New feature: Option to add title to Event Search widget.
 
 * New filter: mc_date_format for customizing date formats.
 * New filter: customize search results page: mc_search_page
