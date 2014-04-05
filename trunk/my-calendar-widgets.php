@@ -406,7 +406,7 @@ function mc_span_time( $group_id ) {
 }
 
 // function generates the list of upcoming events by event
-function mc_produce_upcoming_events( $events, $template, $type='list', $order='asc', $skip=0, $before, $after, $show_today='yes' ) {
+function mc_produce_upcoming_events( $events, $template, $type='list', $order='asc', $skip=0, $before, $after, $show_today='yes', $context='filters' ) {
 	// $events has +5 before and +5 after if those values are non-zero.
 	// $events equals array of events based on before/after queries. Nothing skipped, order is not set, holiday conflicts removed.
 	$output = ''; $near_events = $temp_array = array(); $past = $future = 1;
@@ -509,7 +509,7 @@ function mc_produce_upcoming_events( $events, $template, $type='list', $order='a
 		foreach( array_keys($events) as $key ) {
 			$event =& $events[$key];
 			//echo $event->event_title . " " . $event->event_group_id."<br />";
-			$event_details = mc_create_tags( $event );
+			$event_details = mc_create_tags( $event, $context );
 				if ( get_option( 'mc_event_approve' ) == 'true' ) {
 					if ( $event->event_approved != 0 ) { $temp_array[] = $event_details; }
 				} else {

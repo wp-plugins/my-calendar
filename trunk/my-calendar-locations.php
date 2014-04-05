@@ -446,11 +446,13 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 
 // get a specific field with an location ID
 function mc_location_data( $field, $id ) {
-	global $wpdb;
-	$mcdb = $wpdb;
-    if ( get_option( 'mc_remote') == 'true'&& function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
-	$field = esc_sql( $field );
-	$sql = $wpdb->prepare( "SELECT $field FROM ".my_calendar_locations_table()." WHERE location_id = %d", $id );
-	$result = $mcdb->get_var($sql);
-	return $result;
+	if ( $id ) {
+		global $wpdb;
+		$mcdb = $wpdb;
+		if ( get_option( 'mc_remote') == 'true'&& function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+		$field = esc_sql( $field );
+		$sql = $wpdb->prepare( "SELECT $field FROM ".my_calendar_locations_table()." WHERE location_id = %d", $id );
+		$result = $mcdb->get_var($sql);
+		return $result;
+	}
 }

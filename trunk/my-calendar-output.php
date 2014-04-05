@@ -595,7 +595,6 @@ function mc_list_title( $events ) {
 
 function mc_search_results( $query ) {
 	$limits = true;
-	$output = '<h2>'.sprintf(__('Event search results for &ldquo;%1$s&rdquo;','my-calendar'), stripslashes($query) ).'</h2>';
 	$before = apply_filters( 'mc_past_search_results', 0 ); 
 	$after = apply_filters( 'mc_future_search_results', 10 ); // return only future events, nearest 10
 	if ( is_string($query) ) {
@@ -644,7 +643,7 @@ function mc_search_results( $query ) {
 		AND DATE(occur_begin) > '$date' ORDER BY occur_begin ASC LIMIT 0,$after");
 	} else { $events2 = array(); }
 	$arr_events = array();
-    if (!empty($events1) || !empty($events2) || !empty($events3) ) {
+	if (!empty($events1) || !empty($events2) || !empty($events3) ) {
 		$arr_events = array_merge( $events1, $events3, $events2);
 	} 
 	if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
@@ -663,15 +662,24 @@ function mc_search_results( $query ) {
 	if ( !empty($event_array) ) {
 		$template = '<strong>{date}</strong> {title} {details}';
 		$template = apply_filters( 'mc_search_template', $template );
-		$output .= mc_produce_upcoming_events( $event_array,$template,'list','ASC',0,$before, $after, 'yes' );
+		// no filters parameter prevents infinite looping on the_content filters.
+		$output = mc_produce_upcoming_events( $event_array,$template,'list','ASC',0,$before, $after, 'yes', 'nofilters' );
 	} else {
-		$output .= "<li class='no-results'>".__('Sorry, your search produced no results.','my-calendar')."</li>";
+		$output = "<li class='no-results'>".__('Sorry, your search produced no results.','my-calendar')."</li>";
 	}
-	return "<ul class='mc-search-results'>$output</ul>";
+	return "<ol class='mc-search-results'>$output</ol>";
+}
+
+add_filter( 'the_title', 'mc_search_results_title', 10, 2 );
+function mc_search_results_title( $title, $id ) {
+	if ( isset( $_GET['mcs'] ) && ( is_page( $id ) || is_single( $id ) ) && in_the_loop() ) {
+		$query = esc_html( $_GET['mcs'] );
+		$title = sprintf( __('Events Search for &ldquo;%s&rdquo;','my-calendar' ), $query );
+	}
+	return $title;
 }
 
 add_filter( 'the_content','mc_show_search_results' );
-
 function mc_show_search_results( $content ) {
 	// if this is the result of a search, show search output. 
 	$ret = false;
@@ -1529,13 +1537,14 @@ function my_calendar_show_locations( $show='list',$datatype='name',$template='' 
 function my_calendar_searchform($type) {
 	$query = ( isset($_GET['mcs']) )?esc_attr($_GET['mcs']):'';
 	if ( $type == 'simple' ) {
-	return '
-	<form role="search" method="get" id="mcsearchform" action="'.apply_filters( 'mc_search_page', home_url() ).'" >
-	<div><label class="screen-reader-text" for="mcs">'.__('Search Events','my-calendar').'</label>
-	<input type="text" value="'.stripslashes($query).'" name="mcs" id="mcs" />
-	<input type="submit" id="searchsubmit" value="'.__('Search Events','my-calendar').'" />
-	</div>
-	</form>';
+		$url = ( get_option( 'mc_uri' ) != '' ) ? get_option( 'mc_uri' ) : home_url(); 
+		return '
+		<form role="search" method="get" id="mcsearchform" action="'.apply_filters( 'mc_search_page', $url ).'" >
+		<div><label class="screen-reader-text" for="mcs">'.__('Search Events','my-calendar').'</label>
+		<input type="text" value="'.stripslashes($query).'" name="mcs" id="mcs" />
+		<input type="submit" id="searchsubmit" value="'.__('Search Events','my-calendar').'" />
+		</div>
+		</form>';
 	}
 }
 
