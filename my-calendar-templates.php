@@ -134,7 +134,7 @@ function mc_hcard( $event, $address='true', $map='true', $source='event', $conte
 }
 
 // Produces the array of event details used for drawing templates
-function mc_create_tags( $event ) {
+function mc_create_tags( $event, $context='filters' ) {
 	$e = array();
 	$e['post'] = $event->event_post;
 	$date_format = ( get_option('mc_date_format') != '' )?get_option('mc_date_format'):get_option('date_format');	
@@ -203,10 +203,10 @@ function mc_create_tags( $event ) {
 	// general text fields
 	$strip_desc = mc_newline_replace( strip_tags( $event->event_desc ) );	
 	$e['title'] = stripcslashes( $event->event_title );
-	$e['description'] = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',$event->event_desc):wpautop(stripslashes($event->event_desc));
+	$e['description'] = ( get_option('mc_process_shortcodes') == 'true' && $context == 'filters' ) ? apply_filters( 'the_content', $event->event_desc ) : wpautop( stripslashes( $event->event_desc ) );
 	$e['description_raw'] = stripslashes($event->event_desc);
 	$e['description_stripped'] = strip_tags(stripslashes($event->event_desc));
-	$e['shortdesc'] = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',$event->event_short):wpautop(stripslashes($event->event_short));
+	$e['shortdesc'] = ( get_option( 'mc_process_shortcodes' ) == 'true' && $context == 'filters' ) ? apply_filters( 'the_content', $event->event_short ) : wpautop( stripslashes( $event->event_short ) );
 	$e['shortdesc_raw'] = stripslashes($event->event_short);
 	$e['shortdesc_stripped'] = strip_tags(stripslashes($event->event_short));
 
@@ -403,6 +403,10 @@ function mc_expand( $data ) {
 function mc_event_date_span( $group_id, $event_span, $dates=array() ) {
 	global $wpdb;
 	$mcdb = $wpdb;
+	// cache as transient to save db queries.
+	if ( get_transient( 'mc_event_date_span_'.$group_id.'_'.$event_span ) ) { 
+		return get_transient( 'mc_event_date_span_'.$group_id.'_'.$event_span ); 
+	}
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$group_id = (int) $group_id;
 	if ( $group_id == 0 && $event_span != 1 ) {
@@ -410,6 +414,7 @@ function mc_event_date_span( $group_id, $event_span, $dates=array() ) {
 	} else {
 		$sql = "SELECT occur_begin, occur_end FROM ".my_calendar_event_table()." WHERE occur_group_id = $group_id ORDER BY occur_begin ASC";
 		$dates = $mcdb->get_results( $sql );
+		set_transient( 'mc_event_date_span_'.$group_id.'_'.$event_span, $dates, HOUR_IN_SECONDS );
 		return $dates; 
 	}
 }

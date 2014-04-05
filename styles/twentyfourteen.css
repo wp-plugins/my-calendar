@@ -82,7 +82,7 @@ position: absolute; max-height:1px; }
 .single-event .event-title img { margin-right: .5em; }
 /* Mini */
 .mc-main.mini table { margin-bottom: 1.5em; }
-.mc-main.mini .has-events { background: #fff; }
+.mc-main.mini .has-events { background: #fff; font-weight: 700; }
 .mc-main.mini .vcard { line-height: 1.5; margin: 0 0 1.5em; float: none; padding: 1em; max-width: 100%; }
 .mc-main.mini .my-calendar-nav, .mc-main.mini .mc-time, .mc-main.mini .my-calendar-date-switcher { position: static!important; width: 100%!important; margin: .5em 0!important; }
 .mc-main.mini .my-calendar-header { height: auto!important; }

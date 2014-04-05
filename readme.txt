@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager, event calendar
 Requires at least: 3.4.2
-Tested up to: 3.8.1
+Tested up to: 3.9.0
 License: GPLv2 or later
 Stable tag: 2.2.13
 
