@@ -46,7 +46,7 @@ border: 1px solid #eee;
 text-align: center;
 }
 .mc-main .mc-single {font-size: 1.1em!important; text-align: left; padding: 4px}
-.mc-main table {width:100%;line-height:1.2;border-collapse:collapse}
+.mc-main table,.mc-main.calendar {width:100%;line-height:1.2;border-collapse:collapse}
 .mc-main td {
 vertical-align:top;
 text-align:left;
@@ -62,7 +62,7 @@ border-radius: 2px;
 font-size:10px!important;
 font-family: Arial, sans-serif;
 font-weight:400;
-margin:1px 0;
+margin:1px 0!important;
 padding:1px 1px;
 clear: none;
 line-height: 1;

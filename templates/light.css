@@ -51,8 +51,8 @@ margin: 2px 0;
 font-weight:700;
 padding:2px;
 }
-.mc-main table {
-width:100%;
+.mc-main table,.mc-main.calendar {
+width:100%!important;
 line-height:1.2;
 border-collapse:collapse;
 }
@@ -268,4 +268,4 @@ background: #f6f6f6;
 padding: 10px;
 float: right;
 }
-.screenreader { position: absolute; left: -999em; }
+.screen-reader-text { position: absolute; left: -999em; }

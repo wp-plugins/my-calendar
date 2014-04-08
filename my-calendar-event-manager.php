@@ -1603,7 +1603,11 @@ function mc_check_data( $action, $post, $i ) {
 			if ( $conflicts ) { 
 				$errors .= "<div class='error'><p><strong>".__('Error','my-calendar').":</strong> ".__('That event conflicts with a previously scheduled event.','my-calendar')."</p></div>";
 			}
-		}	
+		}
+		$spam = mc_spam( $event_link, $desc, $post );
+		// the likelihood that something will be both flagged as spam and have a zero start time 
+		// and yet be legitimate is crazy minimal. Just kill it.
+		if ( $spam == 1 && $begin == '1970-01-01' ) { echo $begin; die; }
 		if ( $errors == '' ) {
 			$ok = true;
 			$submit = array(
@@ -1642,7 +1646,7 @@ function mc_check_data( $action, $post, $i ) {
 				'event_group'=>$event_group,
 				'event_approved'=>$approved,
 				'event_host'=>$host,
-				'event_flagged'=> mc_spam( $event_link, $desc, $post ),
+				'event_flagged'=> $spam,
 				'event_fifth_week'=>$event_fifth_week,
 				'event_holiday'=>$event_holiday,
 				'event_group_id'=>$event_group_id,

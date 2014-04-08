@@ -29,8 +29,8 @@ padding: 0;
 .mc-main .my-calendar-date-switcher .button {
 font-size: .9em;
 }
-.mc-main table {
-width:100%;
+.mc-main table,.mc-main.calendar {
+width:100%!important;
 line-height:1.2;
 border-collapse:collapse;
 }
@@ -243,4 +243,4 @@ font-size: .9em;
 padding: 10px;
 float: right;
 }
-.screenreader { position: absolute; left: -999em; }
+.screen-reader-text { position: absolute; left: -999em; }

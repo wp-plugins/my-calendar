@@ -166,8 +166,7 @@ function mc_show_sidebar( $show='', $add=false, $remove=false ) {
 					<input type="hidden" name="hosted_button_id" value="UZBQUG2LKKMRW" />
 					<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" name="submit" alt="<?php _e('Make a Donation','my-calendar'); ?>" />
 					<img alt="" src="https://www.paypalobjects.com/WEBSCR-640-20110429-1/en_US/i/scr/pixel.gif" width="1" height="1" />
-				</p>
-				<p class="mcd"><strong><a href="http://www.joedolson.com/donate.php" rel="external"><?php _e("Make a Donation",'my-calendar'); ?></a></strong></p>								
+				</p>							
 				</form>
 			</div>
 			</div>
@@ -181,10 +180,11 @@ function mc_show_sidebar( $show='', $add=false, $remove=false ) {
 					<li><strong><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>#get-started"><?php _e("Getting Started",'my-calendar'); ?></strong></a></li>
 					<li><strong><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>#mc-generator"><?php _e("Shortcode Generator",'my-calendar'); ?></strong></a></li>						
 					<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>#get-support"><?php _e("Get Support",'my-calendar'); ?></a></li>
-					<li><a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>"><?php _e("My Calendar Help",'my-calendar'); ?></a></li>
-					<li><a href="http://profiles.wordpress.org/users/joedolson/"><?php _e('Check out my other plug-ins','my-calendar'); ?></a></li>
-					<li><a href="http://wordpress.org/support/view/plugin-reviews/my-calendar"><?php _e('Rate this plug-in 5 stars!','my-calendar'); ?></a></li>
-					<li><a href="http://translate.joedolson.com/projects/my-calendar"><?php _e('Help translate this plug-in!','my-calendar'); ?></a></li>					</ul>
+					<li><div class="dashicons dashicons-editor-help"></div> <a href="<?php echo admin_url("admin.php?page=my-calendar-help"); ?>"><?php _e("My Calendar Help",'my-calendar'); ?></a></li>
+					<li><div class="dashicons dashicons-yes"></div> <a href="http://profiles.wordpress.org/users/joedolson/"><?php _e('Check out my other plug-ins','my-calendar'); ?></a></li>
+					<li><div class="dashicons dashicons-star-filled"></div> <a href="http://wordpress.org/support/view/plugin-reviews/my-calendar"><?php _e('Rate this plug-in 5 stars!','my-calendar'); ?></a></li>
+					<li><div class="dashicons dashicons-translation"></div> <a href="http://translate.joedolson.com/projects/my-calendar"><?php _e('Help translate this plug-in!','my-calendar'); ?></a></li>
+				</ul>
 			</div>
 			</div>
 		</div>
@@ -388,7 +388,7 @@ function mc_show_event_editing( $status, $args ) {
 		$output = '';
 		foreach ($input_options as $key=>$value) {
 			$checked = ($value == 'on')?"checked='checked'":'';
-			$allowed = ( $settings_options[$key] == 'on' )?true:false;
+			$allowed = ( isset( $settings_options[$key] ) && $settings_options[$key] == 'on' ) ? true:false;
 			if ( !( current_user_can( 'manage_options' ) && get_option( 'mc_input_options_administrators' ) == 'true' ) && !$allowed ) {
 				// don't display options if this user can't use them.
 				$output .= "<input type='hidden' name='mc_show_on_page[$key]' value='off' />";

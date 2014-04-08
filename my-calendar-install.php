@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 // define global variables;
-global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $default_template,$default_user_settings,$wpdb,$grid_template,$list_template,$rss_template,$mini_template,$single_template, $defaults;
+global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $default_template, $wpdb, $grid_template, $list_template, $rss_template, $mini_template, $single_template, $defaults;
 
 $defaults = array(
 	'upcoming'=>array(	
@@ -22,46 +22,37 @@ $defaults = array(
 	)
 );
 
-$grid_template = addslashes('<span class="event-time dtstart" title="{dtstart}">{time}<span class="time-separator"> - </span><span class="end-time dtend" title="{dtend}">{endtime}</span></span>
-
-<div class="sub-details"><span class="event-author">Posted by: <span class="author-name">{author}</span></span><br />
-{hcard}
-<p class="mc_details">{details}</p>
-<p>{ical_html}</p>
-<div class="shortdesc">{image}
-{shortdesc}
-</div>
-<p><a href="{link}" class="event-link external">{title}</a></p></div>');
-
-$list_template = addslashes('<span class="event-time dtstart" title="{dtstart}">{time}<span class="time-separator"> - </span><span class="end-time dtend" title="{dtend}">{endtime}</span></span>
+$grid_template = addslashes( '<span class="event-time dtstart" title="{dtstart}">{time}<span class="time-separator"> - </span>{endtime before="<span class=\'end-time dtend\' title=\'{dtend}\'>" after="</span>"}</span>
 
 <div class="sub-details">
-<h3 class="event-title summary">{icon_html}{title}</h3>
-<span class="event-author">Posted by: <span class="author-name">{author}</span></span><br />
 {hcard}
-<p class="mc_details">{details}</p>
-<p>{ical_html}</p>
-<div class="shortdesc">{image}{shortdesc}</div>
-<p><a href="{link}" class="event-link external">{title}</a></p></div>');
+{details before="<p class=\'mc_details\'>" after="</p>"}
+<p><a href="{linking}" class="event-link external">{title}</a></p></div>' );
 
-$mini_template = addslashes('<span class="event-time dtstart" title="{dtstart}">{time}<span class="time-separator"> - </span><span class="end-time dtend" title="{dtend}">{endtime}</span></span>
+$list_template = addslashes( '<span class="event-time dtstart" title="{dtstart}">{time}<span class="time-separator"> - </span>{endtime before="<span class=\'end-time dtend\' title=\'{dtend}\'>" after="</span>"}</span>
 
-<div class="sub-details"><span class="event-author">Posted by: <span class="author-name">{author}</span></span><br />
+<div class="sub-details">
 {hcard}
-<p class="mc_details">{details}</p>
-<p>{ical_html}</p>
-<p><a href="{link}" class="event-link external">{title}</a></p></div>');
+{details before="<p class=\'mc_details\'>" after="</p>"}
+<p><a href="{linking}" class="event-link external">{title}</a></p></div>' );
 
-$single_template = addslashes('<span class="event-time dtstart" title="{dtstart}">{time}<span class="time-separator"> - </span><span class="end-time dtend" title="{dtend}">{endtime}</span></span>
+$mini_template = addslashes( '<span class="event-time dtstart" title="{dtstart}">{time}<span class="time-separator"> - </span>{endtime before="<span class=\'end-time dtend\' title=\'{dtend}\'>" after="</span>"}</span>
 
-<div class="sub-details"><span class="event-author">Posted by: <span class="author-name">{author}</span></span><br />
+<div class="sub-details">
+{excerpt before="<div class=\'excerpt\'>" after="</div>"}
 {hcard}
-<p class="mc_details">{details}</p>
-<p>{ical_html}</p>
-<div class="shortdesc">{image}{description}</div>
-<p><a href="{link}" class="event-link external">{title}</a></p></div>');
+<p><a href="{linking}" class="event-link external">{title}</a></p></div>' );
 
-$rss_template = addslashes("\n<item>
+$single_template = addslashes( '<span class="event-time dtstart" title="{dtstart}">{time}<span class="time-separator"> - </span><span class="end-time dtend" title="{dtend}">{endtime}</span></span>
+
+<div class="sub-details">
+{hcard}
+<div class="mc-description">{image}{description}</div>
+<p>{ical_html} &bull; {gcal}</p>
+{map}
+<p><a href="{linking}" class="event-link external">{title}</a></p></div>' );
+
+$rss_template = addslashes( "\n<item>
     <title>{rss_title}: {date}, {time}</title>
     <link>{link}</link>
 	<pubDate>{rssdate}</pubDate>
@@ -72,7 +63,7 @@ $rss_template = addslashes("\n<item>
     <div class='description'>{rss_description}</div>
     <p class='dtstart' title='{ical_start}'>Begins: {time} on {date}</p>
     <p class='dtend' title='{ical_end}'>Ends: {endtime} on {enddate}</p>	
-	<p>Recurrance: {recurs}</p>
+	<p>Recurrence: {recurs}</p>
 	<p>Repetition: {repeats} times</p>
     <div class='location'>{rss_hcard}</div>
 	{link_title}
@@ -80,7 +71,7 @@ $rss_template = addslashes("\n<item>
 	<dc:format xmlns:dc='http://purl.org/dc/elements/1.1/'>text/html</dc:format>
 	<dc:source xmlns:dc='http://purl.org/dc/elements/1.1/'>".home_url()."</dc:source>	
 	{guid}
-  </item>\n");
+  </item>\n" );
 
 $initial_ajaxjs = "$(function(){
 	$(document).on('click', '.calendar .my-calendar-nav a', function(e){
@@ -112,6 +103,7 @@ $initial_ajaxjs = "$(function(){
 		});
 	});	
 });";
+
 // defaults will go into the options table on a new install
 $initial_caljs = '$(function() {
   $(".calendar-event").children().not(".event-title").hide();
@@ -256,112 +248,8 @@ $initial_loc_db = "CREATE TABLE " . my_calendar_locations_table() . " (
  PRIMARY KEY  (location_id) 
  ) $charset_collate;";
 
-$default_user_settings = array(
-	'my_calendar_tz_default'=>array(
-		'enabled'=>'off',
-		'label'=>__('My Calendar Default Timezone','my-calendar'),
-		'values'=>array(
-			"-12" => "(GMT -12:00) Eniwetok, Kwajalein",
-			"-11" => "(GMT -11:00) Midway Island, Samoa",
-			"-10" => "(GMT -10:00) Hawaii",
-			"-9.5" => "(GMT -9:30) Marquesas Islands",
-			"-9" => "(GMT -9:00) Alaska",
-			"-8" => "(GMT -8:00) Pacific Time (US &amp; Canada)",
-			"-7" => "(GMT -7:00) Mountain Time (US &amp; Canada)",
-			"-6" => "(GMT -6:00) Central Time (US &amp; Canada), Mexico City",
-			"-5" => "(GMT -5:00) Eastern Time (US &amp; Canada), Bogota, Lima",
-			"-4.5" => "(GMT -4:30) Venezuela",
-			"-4" => "(GMT -4:00) Atlantic Time (Canada), Caracas, La Paz",
-			"-3.5" => "(GMT -3:30) Newfoundland",
-			"-3" => "(GMT -3:00) Brazil, Buenos Aires, Georgetown",
-			"-2" => "(GMT -2:00) Mid-Atlantic",
-			"-1" => "(GMT -1:00 hour) Azores, Cape Verde Islands",
-			"0" => "(GMT) Western Europe Time, London, Lisbon, Casablanca",
-			"1" => "(GMT +1:00 hour) Brussels, Copenhagen, Madrid, Paris",
-			"2" => "(GMT +2:00) Kaliningrad, South Africa",
-			"3" => "(GMT +3:00) Baghdad, Riyadh, Moscow, St. Petersburg",
-			"3.5" => "(GMT +3:30) Tehran",
-			"4" => "(GMT +4:00) Abu Dhabi, Muscat, Baku, Tbilisi",
-			"4.5" => "(GMT +4:30) Afghanistan",
-			"5" => "(GMT +5:00) Ekaterinburg, Islamabad, Karachi, Tashkent",
-			"5.5" => "(GMT +5:30) Bombay, Calcutta, Madras, New Delhi",
-			"5.75" => "(GMT +5:45) Nepal",
-			"6" => "(GMT +6:00) Almaty, Dhaka, Colombo",
-			"6.5" => "(GMT +6:30) Myanmar, Cocos Islands",
-			"7" => "(GMT +7:00) Bangkok, Hanoi, Jakarta",
-			"8" => "(GMT +8:00) Beijing, Perth, Singapore, Hong Kong",
-			"9" => "(GMT +9:00) Tokyo, Seoul, Osaka, Sapporo, Yakutsk",
-			"9.5" => "(GMT +9:30) Adelaide, Darwin",
-			"10" => "(GMT +10:00) Eastern Australia, Guam, Vladivostok",
-			"10.5" => "(GMT +10:30) Lord Howe Island",
-			"11" => "(GMT +11:00) Magadan, Solomon Islands, New Caledonia",
-			"11.5" => "(GMT +11:30) Norfolk Island",
-			"12" => "(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka",
-			"12.75" => "(GMT +12:45) Chatham Islands",
-			"13" => "(GMT +13:00) Tonga",
-			"14" => "(GMT +14:00) Line Islands"
-			),
-		),
-	'my_calendar_location_default'=>array(
-		'enabled'=>'off',
-		'label'=>__('My Calendar Default Location','my-calendar'),
-		'values'=>array(
-			'AL'=>"Alabama",
-			'AK'=>"Alaska", 
-			'AZ'=>"Arizona", 
-			'AR'=>"Arkansas", 
-			'CA'=>"California", 
-			'CO'=>"Colorado", 
-			'CT'=>"Connecticut", 
-			'DE'=>"Delaware", 
-			'DC'=>"District Of Columbia", 
-			'FL'=>"Florida", 
-			'GA'=>"Georgia", 
-			'HI'=>"Hawaii", 
-			'ID'=>"Idaho", 
-			'IL'=>"Illinois", 
-			'IN'=>"Indiana", 
-			'IA'=>"Iowa", 
-			'KS'=>"Kansas", 
-			'KY'=>"Kentucky", 
-			'LA'=>"Louisiana", 
-			'ME'=>"Maine", 
-			'MD'=>"Maryland", 
-			'MA'=>"Massachusetts", 
-			'MI'=>"Michigan", 
-			'MN'=>"Minnesota", 
-			'MS'=>"Mississippi", 
-			'MO'=>"Missouri", 
-			'MT'=>"Montana",
-			'NE'=>"Nebraska",
-			'NV'=>"Nevada",
-			'NH'=>"New Hampshire",
-			'NJ'=>"New Jersey",
-			'NM'=>"New Mexico",
-			'NY'=>"New York",
-			'NC'=>"North Carolina",
-			'ND'=>"North Dakota",
-			'OH'=>"Ohio", 
-			'OK'=>"Oklahoma", 
-			'OR'=>"Oregon", 
-			'PA'=>"Pennsylvania", 
-			'RI'=>"Rhode Island", 
-			'SC'=>"South Carolina", 
-			'SD'=>"South Dakota",
-			'TN'=>"Tennessee", 
-			'TX'=>"Texas", 
-			'UT'=>"Utah", 
-			'VT'=>"Vermont", 
-			'VA'=>"Virginia", 
-			'WA'=>"Washington", 
-			'WV'=>"West Virginia", 
-			'WI'=>"Wisconsin", 
-			'WY'=>"Wyoming"),
-		)				
-	); 
-
-function mc_default_settings( ) {
-global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $default_user_settings,$grid_template,$rss_template, $list_template,$mini_template,$single_template,$mc_version, $defaults;
+function mc_default_settings() {
+global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $grid_template,$rss_template, $list_template, $mini_template, $single_template, $mc_version, $defaults;
 // no arguments
 	add_option( 'mc_location_access', array(
 		'1'=> __('Accessible Entrance','my-calendar'),
@@ -425,8 +313,6 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option('mc_event_approve_perms','manage_options');
 	add_option('mc_no_fifth_week','true');
 	add_option( 'mc_week_format', "M j, 'y" );	
-	$mc_user_settings = $default_user_settings;	
-	add_option('mc_user_settings',$mc_user_settings);
 	add_option('mc_location_type','event_state');
 	add_option('mc_user_settings_enabled',false);
 	add_option('mc_user_location_type','state');
@@ -537,14 +423,18 @@ function mc_check_location_table( $event, $locations ) {
 			'location_latitude'=>$event['event_latitude'],
 			'location_zoom'=>$event['event_zoom'],
 			'location_phone'=>$event['event_phone'],
+			'location_phone2'=>$event['event_phone2'],			
 			'location_access'=>$event['event_access']
 			);
-	sort( $location );
-	$hash = md5( serialize( $location ) );
-	$keys = array_keys( $locations );
-	if ( in_array( $hash, $keys ) ) {
-		return $locations[$hash];
-	} 
+	//ksort( $location );
+
+	foreach ( $locations as $id => $loc ) {
+		// compare locations - if there are differences, return as not existing
+		$diff = array_diff( $location, $loc );
+		if ( empty( $diff ) ) {
+			return $id;
+		}
+	}
 	return false;
 }
 
@@ -558,7 +448,7 @@ function mc_transition_db() {
 			$location_id = $result['location_id'];
 			unset( $result['location_id'] );
 			$hash = md5( serialize( $result ) );
-			$locations[$hash] = $location_id;
+			$locations[$location_id] = $result;
 		}
 		$results = $wpdb->get_results( 'SELECT * FROM '.my_calendar_categories_table() );
 		foreach ( $results as $category ) {
@@ -618,80 +508,80 @@ function my_calendar_copyr($source, $dest) {
 		return false;
 	}
     // Check for symlinks
-    if (is_link($source)) {
-        return symlink(readlink($source), $dest);
+    if ( is_link( $source ) ) {
+        return symlink( readlink( $source ), $dest );
     }
     // Simple copy for a file
-    if (is_file($source)) {
-        return @copy($source, $dest);
+    if ( is_file( $source ) ) {
+        return @copy( $source, $dest );
     }
     // Make destination directory
-    if (!is_dir($dest)) {
-        @mkdir($dest);
+    if ( !is_dir( $dest ) ) {
+        @mkdir( $dest );
     }
     // Loop through the folder
-	$dir = dir($source);
-	while (false !== $entry = $dir->read()) {
+	$dir = dir( $source );
+	while ( false !== $entry = $dir->read() ) {
 		// Skip pointers
-		if ($entry == '.' || $entry == '..') {
+		if ( $entry == '.' || $entry == '..' ) {
 			continue;
 		}
 		// Deep copy directories
-		my_calendar_copyr("$source/$entry", "$dest/$entry");
+		my_calendar_copyr( "$source/$entry", "$dest/$entry" );
 	}
 	// Clean up
 	$dir->close();
     return true;
 }
-function my_calendar_rmdirr($dirname) {
+function my_calendar_rmdirr( $dirname ) {
 	// Sanity check
-	if (!file_exists($dirname)) {
+	if ( !file_exists( $dirname ) ) {
 		return false;
 	}
 	// Simple delete for a file
-	if (is_file($dirname)) {
-		return unlink($dirname);
+	if ( is_file( $dirname ) ) {
+		return unlink( $dirname );
 	}
 	// Loop through the folder
-	$dir = dir($dirname);
-	while (false !== $entry = $dir->read()) {
+	$dir = dir( $dirname );
+	while ( false !== $entry = $dir->read() ) {
 	// Skip pointers
-		if ($entry == '.' || $entry == '..') {
+		if ( $entry == '.' || $entry == '..' ) {
 			continue;
 		}
 		// Recurse
-		my_calendar_rmdirr("$dirname/$entry");
+		my_calendar_rmdirr( "$dirname/$entry" );
 	}
 	// Clean up
 	$dir->close();
-	return @rmdir($dirname);
+	return @rmdir( $dirname );
 }
 function my_calendar_backup( $process, $plugin ) {
 	if ( isset( $plugin['plugin'] ) && $plugin['plugin'] == 'my-calendar/my-calendar.php' ) {
-		$to = dirname(__FILE__)."/../styles_backup/";
-		$from = dirname(__FILE__)."/styles/";
-		my_calendar_copyr($from, $to);
+		$to = dirname( __FILE__ )."/../styles_backup/";
+		$from = dirname( __FILE__ )."/styles/";
+		my_calendar_copyr( $from, $to );
 		
-		$to = dirname(__FILE__)."/../icons_backup/";
-		$from = dirname(__FILE__)."/images/icons/";
-		my_calendar_copyr($from, $to);
+		$to = dirname( __FILE__ )."/../icons_backup/";
+		$from = dirname( __FILE__ )."/images/icons/";
+		my_calendar_copyr( $from, $to );
 	}	
 }
 function my_calendar_recover( $process, $plugin ) {
 	if ( isset( $plugin['plugin'] ) && $plugin['plugin'] == 'my-calendar/my-calendar.php' ) {
-		$from = dirname(__FILE__)."/../styles_backup/";
-		$to = dirname(__FILE__)."/styles/";
-		my_calendar_copyr($from, $to);
-		if (is_dir($from)) {
-			my_calendar_rmdirr($from);
+		$from = dirname( __FILE__ )."/../styles_backup/";
+		$to = dirname( __FILE__ )."/styles/";
+		my_calendar_copyr( $from, $to );
+		if ( is_dir( $from ) ) {
+			my_calendar_rmdirr( $from );
 		}
-		$from = dirname(__FILE__)."/../icons_backup/";
-		$to = dirname(__FILE__)."/images/icons/";
-		my_calendar_copyr($from, $to);
-		if (is_dir($from)) {
-			my_calendar_rmdirr($from);
+		$from = dirname( __FILE__ )."/../icons_backup/";
+		$to = dirname( __FILE__ )."/images/icons/";
+		my_calendar_copyr( $from, $to );
+		if ( is_dir( $from ) ) {
+			my_calendar_rmdirr( $from );
 		}
 	}
 }
-add_filter('upgrader_pre_install', 'my_calendar_backup', 10, 2);
-add_filter('upgrader_post_install', 'my_calendar_recover', 10, 2);
+add_filter( 'upgrader_pre_install', 'my_calendar_backup', 10, 2 );
+add_filter( 'upgrader_post_install', 'my_calendar_recover', 10, 2 );

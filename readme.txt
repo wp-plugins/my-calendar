@@ -132,6 +132,7 @@ This is a major revision.
 * Updated: Date/time selectors. See http://amsul.ca/pickadate.js/, MIT license.
 
 * Reorganized default output template code.
+* Import all used locations into location manager.
 * Removed User settings fields.
 * Moved Holiday category assignment to Category Manager.
 * Improved get current URL function.
