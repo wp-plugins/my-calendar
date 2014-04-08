@@ -701,7 +701,7 @@ add_filter( 'the_content','mc_show_event_template', 100 );
 function mc_show_event_template( $content ) {
 	global $post;
 	if ( $post->post_type == 'mc-events' ) {
-		//$content .= do_shortcode( get_post_meta( $post->ID, '_mc_event_shortcode', true ) ); // -> triggering an infinite loop.
+		$content .= do_shortcode( get_post_meta( $post->ID, '_mc_event_shortcode', true ) ); // -> triggers an infinite loop when shortcode filters enabled in settings. If you're using this view, you have no reason to allow the_content filters.
 	}
 	return $content;
 }
@@ -1165,7 +1165,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 			$sql = "SELECT * FROM " . MY_CALENDAR_CATEGORIES_TABLE . " $cat_limit ORDER BY category_name ASC";
 			$cat_details = $mcdb->get_results($sql);
 			$category_key .= '<div class="category-key">
-			<h3>'.__('Category Key','my-calendar')."</h3>\n<ul>\n";
+			<h3>'.__('Categories','my-calendar')."</h3>\n<ul>\n";
 				$subpath = (is_custom_icon())?'my-calendar-custom/':'my-calendar/images/icons/';
 				$path = str_replace( basename( $dir ) . '/','',$url) . $subpath;
 			foreach($cat_details as $cat_detail) {
