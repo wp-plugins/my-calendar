@@ -2,7 +2,7 @@
 .mcbuy, .mcsbuy {font-size: 1.1em; line-height: 1.5}
 .mc-button { text-align: center; font-size: 1.4em; padding: 10px 0 0}
 .mc-button a { padding: 3px 8px; border: 1px solid; border-radius: 5px; background: #fff}
-.mcd { text-align: center; font-size: 1.2em}
+.mcd { text-align: center; margin: 0; }
 #cat_icon option {padding: 5px 0 5px 24px}
 #my-calendar-admin-table .delete {color: #c00}
 .import {background: #ffa;padding: 5px 10px;border: 1px solid #aaa;border-radius: 5px;margin: 15px 0}

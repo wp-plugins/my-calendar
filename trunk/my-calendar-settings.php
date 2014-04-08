@@ -141,7 +141,7 @@ function mc_drop_table( $table ) {
 }
 
 function edit_my_calendar_config() {
-	global $wpdb,$default_user_settings;
+	global $wpdb;
 	$mcdb = $wpdb;
 	check_my_calendar();
 	if ( !empty( $_POST ) ) {

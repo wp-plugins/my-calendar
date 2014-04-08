@@ -592,6 +592,7 @@ function check_my_calendar() {
 				$loc_type = ( get_option( 'mc_location_type' ) == '' ) ? 'event_state' : get_option( 'mc_location_type' );
 				$locations[$loc_type] = $user_data['my_calendar_location_default']['values'];
 				add_option( 'mc_use_permalinks', false );
+				delete_option( 'mc_modified_feeds' );
 				add_option( 'mc_location_controls', $locations );
 				add_option( 'mc_location_access', array(
 					'1'=> __('Accessible Entrance','my-calendar'),
@@ -1135,8 +1136,6 @@ function my_calendar_send_email( $event ) {
 		remove_filter('wp_mail_content_type',create_function('', 'return "text/html";'));
 	}
 }
-
-
 
 // checks submitted events against akismet or botsmasher, if available, otherwise just returns false 
 function mc_spam( $event_url='', $description='', $post=array() ) {

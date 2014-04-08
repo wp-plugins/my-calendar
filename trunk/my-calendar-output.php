@@ -735,13 +735,11 @@ function my_calendar( $name, $format, $category, $time='month', $ltype='', $lval
 	$args = array( 'name'=>$name,'format'=>$format,'category'=>$category,'above'=>$above,'below'=>$below,'time'=>$time,'ltype'=>$ltype,'lvalue'=>$lvalue, 'author'=>$author, 'id'=>$id );
 	$my_calendar_body .= apply_filters('mc_before_calendar','',$args);
 	
-	//echo "<p>Debug:<br /><pre>".print_r( $args, 1 )."</pre></p>";
-
 	$main_class = ( $name !='' )?sanitize_title($name):'all';
 	$cid = ( isset( $_GET['cid'] ) )?esc_attr(strip_tags($_GET['cid'])):$main_class;
 	
 	// mc body wrapper
-	$mc_wrapper = "<div id=\"$id\" class=\"mc-main $format $time $main_class\" aria-live='polite' aria-atomic='true'>";
+	$mc_wrapper = "<div id=\"$id\" class=\"mc-main $format $time $main_class\" aria-live='assertive' aria-atomic='true'>";
 	$mc_closer = "</div>";
 	
 	if ( get_option('mc_convert') == 'true' ) {	$format = ( mc_is_mobile() )?'list':$format; }
