@@ -516,7 +516,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 							'print'=> 		'<div class="dashicons dashicons-list-view"></div> '.__( 'Link to printable view','my-calendar' ),
 							'timeframe'=> 	'<div class="dashicons dashicons-clock"></div> '.__( 'Toggle between day, week, and month view','my-calendar' ),
 							'calendar'=> 	'<div class="dashicons dashicons-calendar"></div> '.__( 'The calendar','my-calendar' ),
-							'key'=> 		'<div class="dashicons dashicons-admin-network"></div> '.__( 'Category key','my-calendar' ),
+							'key'=> 		'<div class="dashicons dashicons-admin-network"></div> '.__( 'Categories','my-calendar' ),
 							'feeds'=> 		'<div class="dashicons dashicons-rss"></div> '.__( 'Links to RSS and iCal output','my-calendar' ),
 							'stop'=> 		'<div class="dashicons dashicons-no"></div> '.__( 'Elements below here will be hidden.' )
 						);
