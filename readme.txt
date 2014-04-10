@@ -27,10 +27,7 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 *	Widget to show upcoming or past events 
 * 	Event Search widget
 *	Custom templates for event output
-*	Limit by categories
-* 	Limit by location
-* 	Limit by author
-*	Limit by host
+*	Limit views by categories, location, author, or host
 *	Disable default CSS and default JavaScript or display only on specific Pages/Posts
 *	Editable CSS styles and JavaScript behaviors
 *	Schedule a wide variety of recurring events.
