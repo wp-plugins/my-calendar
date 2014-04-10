@@ -568,7 +568,7 @@ function check_my_calendar() {
 		if ( version_compare( $current_version, "2.2.0", "<" ) ) { $upgrade_path[] = "2.2.0"; }	
 		if ( version_compare( $current_version, "2.2.6", "<" ) ) { $upgrade_path[] = "2.2.6"; }	
 		if ( version_compare( $current_version, "2.2.10", "<" ) ) { $upgrade_path[] = "2.2.10"; }
-		if ( version_compare( $current_version, "2.2.15", "<" ) ) { $upgrade_path[] = "2.3.0"; }		
+		if ( version_compare( $current_version, "2.3.0", "<" ) ) { $upgrade_path[] = "2.3.0"; }		
 	}
 	// having determined upgrade path, assign new version number
 	update_option( 'mc_version' , $mc_version );
@@ -764,74 +764,6 @@ function check_my_calendar() {
 				add_option( 'mc_show_weekends','true' );
 				add_option( 'mc_uri','' );
 				delete_option( 'my_calendar_stored_styles');
-			break;
-			case '1.7.1':
-				if ( get_option('mc_location_type') == '' ) {
-					update_option('mc_location_type','event_state');
-				}
-			break;				
-			case '1.7.0': 
-				add_option('mc_skip_holidays','false');	
-				add_option('mc_event_edit_perms','manage_options');
-				$original_styles = get_option('mc_style');
-				if ($original_styles != '') {
-				$stylefile = mc_get_style_path('refresh.css');
-					if ( mc_write_styles( $stylefile, $original_styles ) ) {
-						delete_option('mc_style');
-					} else {
-						add_option('mc_file_permissions','false');
-					}
-				}
-				if ( get_option( 'mc_css_file' ) == '' ) {
-					update_option('mc_css_file','refresh.css');				
-				}
-				// convert old widget settings into new defaults
-				$type = get_option('display_upcoming_type');
-				if ($type == 'events') {
-					$before = get_option('display_upcoming_events');
-					$after = get_option('display_past_events');
-				} else {
-					$before = get_option('display_upcoming_days');
-					$after = get_option('display_past_days');
-				}
-				$category = get_option('display_in_category');
-				$today_template = get_option('mc_today_template'); 
-				$upcoming_template = get_option('mc_upcoming_template');
-				$today_title = get_option('mc_today_title');
-				$today_text = get_option('mc_no_events_text');
-				$upcoming_title = get_option('mc_upcoming_title');
-				$defaults = array(
-					'upcoming'=>array(	
-						'type'=>$type,
-						'before'=>$before,
-						'after'=>$after,
-						'template'=>$upcoming_template,
-						'category'=>$category,
-						'text'=>'',
-						'title'=>$upcoming_title
-					),
-					'today'=>array(
-						'template'=>$today_template,
-						'category'=>'',
-						'title'=>$today_title,
-						'text'=>$today_text
-					)
-				);
-				add_option('mc_widget_defaults',$defaults);
-				delete_option('display_upcoming_type');
-				delete_option('display_upcoming_events');
-				delete_option('display_past_events');
-				delete_option('display_upcoming_days');
-				delete_option('display_todays','true');
-				delete_option('display_upcoming','true');
-				delete_option('display_upcoming_days',7);				
-				delete_option('display_past_days');
-				delete_option('display_in_category');
-				delete_option('mc_today_template'); 
-				delete_option('mc_upcoming_template');
-				delete_option('mc_today_title');
-				delete_option('my_calendar_no_events_text');
-				delete_option('mc_upcoming_title');			
 			break;
 			default:
 			break;
@@ -1543,7 +1475,7 @@ function mc_increment_event( $id, $post=array(), $test=false ) {
 	$group_id = $event->event_group_id;
 	$format = array( '%d','%s','%s','%d' );
 	$recurs = str_split( $event->event_recur, 1 );
-	$recur = $recurs[0];
+	$recur = $recurs[0];	
 	$every = ( isset($recurs[1]) )?$recurs[1]:1;
 	if ($recur != "S") {
 		// if this event had a rep of 0, translate that.
@@ -1732,7 +1664,7 @@ function mc_posttypes() {
 				'show_ui' => $raw['show_ui'],
 				'show_in_menu' => $raw['show_in_menu'],
 				'show_ui' => $raw['show_ui'], 
-				'menu_icon' => ($raw['menu_icon']==null)?plugins_url('images',__FILE__)."/icon.png":$raw['menu_icon'],
+				'menu_icon' => ( $raw['menu_icon']==null ) ? plugins_url( 'images',__FILE__ )."/icon.png" : $raw['menu_icon'],
 				'query_var' => true,
 				'rewrite' => array( 'with_front'=>false, 'slug'=>apply_filters( 'mc_event_slug','mc-events' ) ),
 				'hierarchical' => false,

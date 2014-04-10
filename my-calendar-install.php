@@ -144,14 +144,12 @@ $initial_minijs = '$(function() {
 });';
 
 $default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{time}, {category}</span>";
-
+$charset_collate = ''; 
 if ( ! empty( $wpdb->charset ) ) {
 	$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
-} else {
-	$charset_collate = "DEFAULT CHARACTER SET $wpdb->collate";
-}
+} 
 
-if ( ! empty( $wpdb->collate ) ) {
+if ( ! empty( $wpdb->collate ) && $charset_collate != '' ) {
 	$charset_collate .= " COLLATE $wpdb->collate";
 }
 

@@ -787,7 +787,7 @@ function mc_show_block( $field, $has_data, $data ) {
 						<h3>'.$label.'</h3>
 							<div class="inside">		
 								'.mc_event_accessibility( '', $data, $label ).
-								apply_filters( 'mc_event_accessibility', '', $has_data, $data ).'						
+								apply_filters( 'mc_event_access_fields', '', $has_data, $data ).'						
 							</div>'.$post;
 			}	
 		break;
@@ -1887,7 +1887,7 @@ jQuery(document).ready(function($) {
 </script>';
 	$form .= $scripting;
 	$form .= '<p>
-		<label for="e_begin" id="eblabel">'.__('Date (YYYY-MM-DD)','my-calendar').'</label> <input type="text" id="e_begin" name="event_begin[]" size="10" value="'.$event_begin.'" />
+		<label for="e_begin" id="eblabel">'.__('Date (YYYY-MM-DD)','my-calendar').'</label> <input type="text" id="e_begin" name="event_begin[]" size="10" value="" data-value="'.$event_begin.'" />
 		<label for="e_time">'.__('From','my-calendar').'</label> 
 		<input type="text" id="e_time" name="event_time[]" size="8" value="'.$starttime.'" />	
 		<label for="e_endtime">'.__('To','my-calendar').'</label> 
@@ -1898,7 +1898,7 @@ jQuery(document).ready(function($) {
 		<li><input type="checkbox" value="1" id="e_hide_end" name="event_hide_end"'.$hide.' /> <label for="e_hide_end">'.__('Hide end time','my-calendar').'</label></li>
 	</ul>
 	<p>
-		<label for="e_end" id="eelabel"><em>'.__('End Date (YYYY-MM-DD, optional)','my-calendar').'</em></label> <input type="text" name="event_end[]" id="e_end" size="10" value="'.$event_end.'" /> 
+		<label for="e_end" id="eelabel"><em>'.__('End Date (YYYY-MM-DD, optional)','my-calendar').'</em></label> <input type="text" name="event_end[]" id="e_end" size="10" value="" data-value="'.$event_end.'" /> 
 	</p>';
 	return $form;
 }

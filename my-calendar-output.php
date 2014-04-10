@@ -37,7 +37,7 @@ function mc_set_date_array( $events ) {
 }
 
 function my_calendar_draw_events($events, $type, $process_date, $time, $template='') {
-	apply_filters("debug", "my_calendar( $type ) begin draw events");
+	apply_filters( 'debug', "my_calendar( $type ) begin draw events" );
 
 	if ( $type == 'mini' && ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'listanchor' || get_option('mc_open_day_uri') == 'calendaranchor' ) ) return true;
 	// We need to sort arrays of objects by time
@@ -49,21 +49,21 @@ function my_calendar_draw_events($events, $type, $process_date, $time, $template
 		}
 		// By default, skip no events.
 		$skipping = false;
-		foreach(array_keys($events) as $key ) {
+		foreach( array_keys( $events ) as $key ) {
 			$event =& $events[$key];
 			$output_array[] = my_calendar_draw_event( $event,$type,$process_date,$time,$template );
 		}
-		if ( is_array($output_array) ) {
-			foreach (array_keys($output_array) as $key) {
+		if ( is_array( $output_array ) ) {
+			foreach( array_keys( $output_array ) as $key ) {
 				$value =& $output_array[$key];	
 				$event_output .= $value;
 			}
 		}	
 		if ( $event_output == '' ) { return; }
-		if ( $type == "mini" && count($events) > 0 ) { $end .= "</div>"; }
+		if ( $type == "mini" && count( $events ) > 0 ) { $end .= "</div>"; }
 		return $begin . $event_output . $end;
 	}
-	apply_filters("debug", "my_calendar( $name ) end draw events");
+	apply_filters( "debug", "my_calendar( $name ) end draw events" );
 	
 }
 
@@ -142,7 +142,7 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 		return;
 	}
 	// if event ends at midnight today (e.g., very first thing of the day), exit without re-drawing
-	if ( $event->event_endtime == '00:00:00' && $event->event_time != '00:00:00' && $event->event_end == $process_date && $event->event_begin != $process_date ) {
+	if ( $event->event_endtime == '00:00:00' && $event->event_end == $process_date && $event->event_begin != $process_date ) {
 		return;
 	}
 	global $wpdb;
@@ -1174,8 +1174,11 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 				if ($cat_detail->category_icon != "" && get_option('mc_hide_icons')!='true') {
 					$category_key .= '<li class="cat_'.$title_class.'"><a href="'.$url.'"><span class="category-color-sample"><img src="'.$path.$cat_detail->category_icon.'" alt="" style="background:'.$hex.$cat_detail->category_color.';" /></span>'.stripcslashes($cat_detail->category_name)."</a></li>\n";
 				} else {
-					$category_key .= '<li class="cat_'.$title_class.'"><span class="category-color-sample no-icon" style="background:'.$hex.$cat_detail->category_color.';"> &nbsp; </span>'.stripcslashes($cat_detail->category_name)."</li>\n";			
+					$category_key .= '<li class="cat_'.$title_class.'"><a href="'.$url.'"><span class="category-color-sample no-icon" style="background:'.$hex.$cat_detail->category_color.';"> &nbsp; </span>'.stripcslashes($cat_detail->category_name)."</a></li>\n";			
 				}
+			}
+			if ( isset( $_GET['mcat'] ) ) {
+				$category_key .= "<li><a href='".mc_get_current_url()."'>".__('All Categories','my-calendar')."</a></li>";
 			}
 			$category_key .= "</ul>\n</div>";
 		$category_key = apply_filters('mc_category_key',$category_key,$cat_details);
@@ -1212,7 +1215,7 @@ function mc_feed_base() {
 // Configure the "Next" link in the calendar
 function my_calendar_next_link($cur_year,$cur_month,$cur_day,$format,$time='month') {
   $next_year = $cur_year + 1;
-  $next_events = ( get_option( 'mc_next_events') == '' )?__("Next events &raquo;",'my-calendar'):stripcslashes( get_option( 'mc_next_events') );
+  $next_events = ( get_option( 'mc_next_events') == '' )?__("Next",'my-calendar'):stripcslashes( get_option( 'mc_next_events') );
   $num_months = get_option('mc_show_months');
   $nYr = $cur_year;
   if ($num_months <= 1 || $format != "list" ) {
@@ -1256,7 +1259,7 @@ function my_calendar_next_link($cur_year,$cur_month,$cur_day,$format,$time='mont
 // Configure the "Previous" link in the calendar
 function my_calendar_prev_link($cur_year,$cur_month,$cur_day,$format,$time='month') {
   $last_year = $cur_year - 1;
-  $previous_events = ( get_option( 'mc_previous_events') == '' )?__("&laquo; Previous events",'my-calendar'):stripcslashes( get_option( 'mc_previous_events') );
+  $previous_events = ( get_option( 'mc_previous_events') == '' )?__("Previous",'my-calendar'):stripcslashes( get_option( 'mc_previous_events') );
   $num_months = get_option('mc_show_months');
   $pYr = $cur_year;
   if ($num_months <= 1 || $format!="list" ) {  
