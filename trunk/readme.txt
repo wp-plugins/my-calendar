@@ -139,7 +139,7 @@ This is a major revision.
 * iCal output in multiple-month view outputs all displayed months.
 * {map} template tag to display a Google Map using the Google Maps API. (Not available in pop-up displays.)
 * Scheduled removal of showkey, shownav, toggle, and showjump shortcode attributes.
-* Removed upgrade routines for 1.6.x series of My Calendar.
+* Removed upgrade support for 1.6.x & 1.7.x series of My Calendar.
 
 = 2.2.13 =
 

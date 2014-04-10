@@ -4,7 +4,7 @@
 .mc-main .my-calendar-header a:hover, .mc-main .mc_bottomnav a:hover, .mc-main .my-calendar-header a:focus, .mc-main .mc_bottomnav a:focus { color: #000; text-decoration: underline; background: linear-gradient(to bottom, rgba(225,225,225,.95) 0%,rgba(210,210,210,.95) 70%); }
 .mc-main.calendar { width: 100%!important; }
 .mc-main table { width: 100%; border-collapse: collapse; }
-.mc-main tr td { width: 14.285714%; border: 1px solid #f6f6f6; padding: 0!important; }
+.mc-main tr td { width: 14.285714%; border: 1px solid #f6f6f6; padding: 0!important; height: 5em; }
 .mc-main th { text-align: center; text-transform: uppercase; padding: 1em 0; background: rgba( 0,0,0,.8 ); color: #fff!important; }
 .mc-main { position: relative; }
 .mc-main table, .mc-main .mc-list { box-shadow: 0 0 2px; }
@@ -83,6 +83,7 @@ position: absolute; max-height:1px; }
 .single-event .event-title img { margin-right: .5em; }
 /* Mini */
 .mc-main.mini table { margin-bottom: 1.5em; }
+.mc-main.mini tr td { height: auto; }
 .mc-main.mini .has-events { background: #fff; font-weight: 700; }
 .mc-main.mini .vcard { line-height: 1.5; margin: 0 0 1.5em; float: none; padding: 1em; max-width: 100%; }
 .mc-main.mini .my-calendar-nav, .mc-main.mini .mc-time, .mc-main.mini .my-calendar-date-switcher { position: static!important; width: 100%!important; margin: .5em 0!important; }

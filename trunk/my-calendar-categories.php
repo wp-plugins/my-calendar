@@ -81,12 +81,13 @@ function my_calendar_manage_categories() {
   
 	if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
 		$term = wp_insert_term( $_POST['category_name'], 'mc-event-category' );
+		if ( !is_wp_error( $term ) ) { $term = $term['term_id']; } else { $term = false; }
 		$add = array(
-		'category_name'=>$_POST['category_name'],
-		'category_color'=>$_POST['category_color'],
-		'category_icon'=>$_POST['category_icon'],
-		'category_private'=>( (isset( $_POST['category_private'] ))?1:0 ),
-		'category_term'=>$term['term_id']
+			'category_name'=>$_POST['category_name'],
+			'category_color'=>$_POST['category_color'],
+			'category_icon'=>$_POST['category_icon'],
+			'category_private'=>( (isset( $_POST['category_private'] ))?1:0 ),
+			'category_term'=>$term
 		);
 		// actions and filters
 		$add = apply_filters( 'mc_pre_add_category', $add, $_POST );
