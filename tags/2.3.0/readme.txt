@@ -5,7 +5,7 @@ Tags: calendar, dates, times, events, scheduling, event manager, event calendar
 Requires at least: 3.4.2
 Tested up to: 3.8.2
 License: GPLv2 or later
-Stable tag: 2.2.13
+Stable tag: 2.3.0
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
@@ -27,10 +27,7 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 *	Widget to show upcoming or past events 
 * 	Event Search widget
 *	Custom templates for event output
-*	Limit by categories
-* 	Limit by location
-* 	Limit by author
-*	Limit by host
+*	Limit views by categories, location, author, or host
 *	Disable default CSS and default JavaScript or display only on specific Pages/Posts
 *	Editable CSS styles and JavaScript behaviors
 *	Schedule a wide variety of recurring events.
@@ -1195,6 +1192,6 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 == Upgrade Notice ==
 
-= 2.2.13 =
+= 2.3.0 =
 
-Minor bug fix.
+This is a MAJOR update. Be sure to backup!
