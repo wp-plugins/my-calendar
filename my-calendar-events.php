@@ -303,7 +303,7 @@ function my_calendar_grab_events( $from, $to,$category=null,$ltype='',$lvalue=''
 						OR DATE(occur_end) BETWEEN '$from 00:00:00' and '$to 23:59:59' 
 						OR ( DATE('$from') BETWEEN DATE(occur_begin) AND DATE(occur_end) ) 
 						OR ( DATE('$to') BETWEEN DATE(occur_begin) AND DATE(occur_end) ) ) 
-						ORDER BY occur_begin";
+						ORDER BY occur_begin, ".apply_filters( 'mc_secondary_sort', 'event_title ASC' );
 	$events = $mcdb->get_results( $event_query );
 	if (!empty($events)) {
 			foreach( array_keys($events) as $key) {

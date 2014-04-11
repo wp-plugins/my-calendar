@@ -452,14 +452,18 @@ function mc_author_data( $e, $event ) {
 	if ( $event->event_author != 0 ) {
 		$author = get_userdata($event->event_author);
 		$host = get_userdata($event->event_host);
-		$e['author'] = $author->display_name;
-		$e['gravatar'] = get_avatar( $author->user_email );
-		$e['author_email'] = $author->user_email;
-		$e['author_id'] = $event->event_author;
-		$e['host'] = (!$host || $host->display_name == '')?$author->display_name:$host->display_name; 
-		$e['host_id'] = $event->event_host;
-		$e['host_email'] = (!$host || $host->user_email == '')?$author->user_email:$host->user_email;
-		$e['host_gravatar'] = ( !$host || $host->user_email == '' )?$e['gravatar']:get_avatar( $host->user_email );
+		if ( $author ) {
+			$e['author'] = $author->display_name;
+			$e['gravatar'] = get_avatar( $author->user_email );
+			$e['author_email'] = $author->user_email;
+			$e['author_id'] = $event->event_author;			
+		}
+		if ( $host ) {
+			$e['host'] = (!$host || $host->display_name == '')?$author->display_name:$host->display_name; 
+			$e['host_id'] = $event->event_host;
+			$e['host_email'] = (!$host || $host->user_email == '')?$author->user_email:$host->user_email;
+			$e['host_gravatar'] = ( !$host || $host->user_email == '' )?$e['gravatar']:get_avatar( $host->user_email );
+		}
 	} else {
 		$e['author'] = 'Public Submitter';
 		$e['host'] = 'Public Submitter';
@@ -494,7 +498,7 @@ function mc_image_data( $e, $event ) {
 	foreach ( $sizes as $size ) {
 		$e[$size] = get_the_post_thumbnail( $event->event_post, $size, $atts );
 	}
-	if ( is_numeric( $event->event_post ) && isset( $e['medium'] ) ) {
+	if ( is_numeric( $event->event_post ) && ( isset( $e['medium'] ) && $e['medium'] != '' ) ) {
 		$e['image_url'] = strip_tags( $e['medium'] );
 		$e['image'] = $e['medium'];
 	} else {

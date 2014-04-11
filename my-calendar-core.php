@@ -258,13 +258,13 @@ function my_calendar_add_javascript() {
 			date_i18n( 'F', strtotime( 'December 1' ) )
 		) );
 		wp_localize_script('pickadate.date', 'mc_days', array( 
+			date_i18n( 'D', strtotime( 'Sunday' ) ),
 			date_i18n( 'D', strtotime( 'Monday' ) ),
 			date_i18n( 'D', strtotime( 'Tuesday' ) ),
 			date_i18n( 'D', strtotime( 'Wednesday' ) ),
 			date_i18n( 'D', strtotime( 'Thursday' ) ),
 			date_i18n( 'D', strtotime( 'Friday' ) ),
-			date_i18n( 'D', strtotime( 'Saturday' ) ),
-			date_i18n( 'D', strtotime( 'Sunday' ) )
+			date_i18n( 'D', strtotime( 'Saturday' ) )
 		) );		
 		wp_enqueue_script('pickadate.config',plugins_url( 'js/pickadate/picker.config.js', __FILE__ ), array('pickadate') );
 		

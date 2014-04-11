@@ -77,6 +77,16 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.3.1 =
+
+* Bug fix: PHP warning on event save
+* Bug fix: PHP Notices generated on deleted author/host value.
+* Bug fix: Pop-up calendar for date entry had incorrect day labels
+* Bug fix: Editing individual date instances issues.
+* Bug fix: {image} fallback for pre 2.3.0 uploaded images
+* Added: secondary sort filter for main calendar views; default event_title ASC. Field and direction must be provided to change.
+* Updated my-calendar.pot
+
 = 2.3.0 =
 
 This is a major revision.
