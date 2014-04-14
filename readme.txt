@@ -77,6 +77,18 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.3.2 =
+
+* Bug fix: label change to clarify entry format for location controls
+* Bug fix: Missing end tag on <time> element
+* Bug fix: my_calendar_search_title can handle missing 2nd argument
+* Bug fix: Add "active" class span on time toggle active case.
+* Bug fix: Recurring all-day events showing twice
+* Bug fix: Non-editable fields for date/time input broke occurrences & restricted time options
+* Bug fix: Category filtering broken when holiday categories enabled
+* Bug fix: Double check whether categories exist and throw error if not, after attempting to create default category.
+* Feature: Mass delete locations
+
 = 2.3.1 =
 
 * Bug fix: PHP warning on event save

@@ -233,18 +233,18 @@ function mc_related_events( $id, $return=false ) {
 * @param int $author Author ID to filter to.
 * @return array Array of events with dates as keys.
 */
-function my_calendar_events( $from, $to, $category, $ltype, $lvalue, $source, $author ) {
-	$events = my_calendar_grab_events( $from, $to, $category, $ltype, $lvalue, $source ,$author );
-	if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
+function my_calendar_events( $from, $to, $category, $ltype, $lvalue, $source, $author, $host ) {
+	$events = my_calendar_grab_events( $from, $to, $category, $ltype, $lvalue, $source ,$author, $host );
+	if ( !get_option( 'mc_skip_holidays_category' ) || get_option( 'mc_skip_holidays_category' ) == '' ) { 
 		$holidays = array();
 	} else {
-		$holidays = my_calendar_grab_events( $from, $to, get_option('mc_skip_holidays_category'),$ltype, $lvalue, $source, $author );
+		$holidays = my_calendar_grab_events( $from, $to, get_option( 'mc_skip_holidays_category' ), $ltype, $lvalue, $source, $author, $host, 'holidays' );
 		$holiday_array = mc_set_date_array( $holidays );
 	}
 	// get events into an easily parseable set, keyed by date.
 	if ( is_array( $events ) && !empty($events) ) {
 		$event_array = mc_set_date_array( $events );
-		if ( is_array( $holidays ) && count($holidays) > 0 ) {
+		if ( is_array( $holidays ) && count( $holidays ) > 0 ) {
 			$event_array = mc_holiday_limit( $event_array, $holiday_array ); // if there are holidays, rejigger.
 		}
 	} else {
@@ -254,12 +254,19 @@ function my_calendar_events( $from, $to, $category, $ltype, $lvalue, $source, $a
 }
 
 // Grab all events for the requested date from calendar
-function my_calendar_grab_events( $from, $to,$category=null,$ltype='',$lvalue='',$source='calendar',$author=null, $host=null ) {
-	if ( isset($_GET['mcat']) ) { $ccategory = $_GET['mcat']; } else { $ccategory = $category; }
-	if ( isset($_GET['ltype']) ) { $cltype = $_GET['ltype']; } else { $cltype = $ltype; }
-	if ( isset($_GET['loc']) ) { $clvalue = $_GET['loc']; } else { $clvalue = $lvalue; }
-	if ( isset($_GET['mc_auth']) ) { $clauth = $_GET['mc_auth']; } else { $clauth = $author; }
-	if ( isset($_GET['mc_host']) ) { $clhost = $_GET['mc_host']; } else { $clhost = $host; }
+function my_calendar_grab_events( $from, $to, $category=null, $ltype='', $lvalue='', $source='calendar', $author=null, $host=null, $holidays=null ) {
+    global $wpdb;
+	$mcdb = $wpdb;
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+	if ( $holidays === null ) {
+		if ( isset( $_GET['mcat'] ) ) { $ccategory = $_GET['mcat']; } else { $ccategory = $category; }
+	} else {
+		$ccategory = $category;
+	}
+	if ( isset( $_GET['ltype'] ) ) { $cltype = $_GET['ltype']; } else { $cltype = $ltype; }
+	if ( isset( $_GET['loc'] ) ) { $clvalue = $_GET['loc']; } else { $clvalue = $lvalue; }
+	if ( isset( $_GET['mc_auth'] ) ) { $clauth = $_GET['mc_auth']; } else { $clauth = $author; }
+	if ( isset( $_GET['mc_host'] ) ) { $clhost = $_GET['mc_host']; } else { $clhost = $host; }
 	
 	if ( $ccategory == '' ) { $ccategory = 'all'; }
 	if ( $clvalue == '' ) { $clvalue = 'all';  }			
@@ -267,9 +274,9 @@ function my_calendar_grab_events( $from, $to,$category=null,$ltype='',$lvalue=''
 	if ( $clvalue == 'all' ) { $cltype = 'all'; }
 	if ( $clauth == '' ) { $clauth = 'all'; }
 	if ( $clhost == '' ) { $clhost = 'all'; }
-
+	
 	if ( !mc_checkdate($from) || !mc_checkdate($to) ) { return; } // not valid dates
-	$caching = apply_filters( 'mc_caching_enabled', false, $category, $ltype, $lvalue, $author, $host ); 
+	$caching = apply_filters( 'mc_caching_enabled', false, $ccategory, $ltype, $lvalue, $author, $host ); 
 	$hash = md5($from.$to.$ccategory.$cltype.$clvalue.$clauth.$clhost);
 	if ( $source != 'upcoming' ) { // no caching on upcoming events by days widgets or lists
 		if ( $caching ) {
@@ -278,14 +285,12 @@ function my_calendar_grab_events( $from, $to,$category=null,$ltype='',$lvalue=''
 			if ( $output == 'empty' ) { return; }
 		}
 	}
-    global $wpdb;
-	$mcdb = $wpdb;
-	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
-	$select_category = ( $category != null )?mc_select_category($category):'';
-	$select_author = ( $author != null )?mc_select_author($author):'';	
-	$select_host = ( $author != null )?mc_select_host($host):'';		
-	$select_location = mc_limit_string( 'grab', $ltype, $lvalue );
-
+	
+	$select_category = ( $ccategory != 'all' ) ? mc_select_category( $ccategory ):'';
+	$select_author = ( $clauth != 'all' ) ? mc_select_author( $clauth ):'';	
+	$select_host = ( $clhost != 'all' ) ? mc_select_host( $clhost ):'';		
+	$select_location = mc_limit_string( 'grab', $cltype, $clvalue );
+	
 	if ( $caching && $source != 'upcoming' ) { $select_category = ''; $select_location = ''; $select_author = ''; $select_host = ''; } 
 	// if caching, then need all categories/locations in cache. UNLESS this is an upcoming events list
 

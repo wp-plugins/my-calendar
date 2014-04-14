@@ -1109,10 +1109,10 @@ function mc_form_fields( $data,$mode,$event_id ) {
 						<fieldset>
 						<legend><?php _e('Special Options','my-calendar'); ?></legend>
 						<p>
-						<label for="e_holiday"><?php _e('Cancel this event if it occurs on a date with an event in the Holidays category','my-calendar'); ?></label> <input type="checkbox" value="true" id="e_holiday" name="event_holiday"<?php if ( $has_data && $data->event_holiday == '1') { echo " checked=\"checked\""; } else if ( $has_data && $data->event_holiday == '0') { echo ""; } else if ( get_option( 'mc_skip_holidays') == 'true') { echo " checked=\"checked\""; } ?> />
+						<label for="e_holiday"><?php _e('Cancel this event if it occurs on a date with an event in the Holidays category','my-calendar'); ?></label> <input type="checkbox" value="true" id="e_holiday" name="event_holiday"<?php if ( $has_data && $data->event_holiday == '1') { echo " checked=\"checked\""; } else if ( $has_data && $data->event_holiday == '0') { echo ""; } else if ( get_option( 'mc_skip_holidays') == 'true' ) { echo " checked=\"checked\""; } ?> />
 						</p>
 						<p>
-						<label for="e_fifth_week"><?php _e('If this event recurs, and falls on the 5th week of the month in a month with only four weeks, move it back one week.','my-calendar'); ?></label> <input type="checkbox" value="true" id="e_fifth_week" name="event_fifth_week"<?php if ( $has_data && $data->event_fifth_week == '1') { echo " checked=\"checked\""; } else if ( $has_data && $data->event_fifth_week == '0') { echo ""; } else if ( get_option( 'mc_no_fifth_week') == 'true') { echo " checked=\"checked\""; } ?> />
+						<label for="e_fifth_week"><?php _e('If this event recurs, and falls on the 5th week of the month in a month with only four weeks, move it back one week.','my-calendar'); ?></label> <input type="checkbox" value="true" id="e_fifth_week" name="event_fifth_week"<?php if ( $has_data && $data->event_fifth_week == '1') { echo " checked=\"checked\""; } else if ( $has_data && $data->event_fifth_week == '0' ) { echo ""; } else if ( get_option( 'mc_no_fifth_week') == 'true') { echo " checked=\"checked\""; } ?> />
 						</p>
 						</fieldset>
 					</div>
@@ -1120,8 +1120,8 @@ function mc_form_fields( $data,$mode,$event_id ) {
 			</div><?php 
 			} else { ?>
 				<div>
-				<input type="hidden" name="event_holiday" value="true"<?php if ( get_option( 'mc_skip_holidays') == 'true') { echo " checked=\"checked\""; } ?> />
-				<input type="hidden" name="event_fifth_week" value="true"<?php if ( get_option( 'mc_no_fifth_week') == 'true') { echo " checked=\"checked\""; } ?>/>
+				<input type="hidden" name="event_holiday" value="true"<?php if ( get_option( 'mc_skip_holidays') == 'true' ) { echo " checked=\"checked\""; } ?> />
+				<input type="hidden" name="event_fifth_week" value="true"<?php if ( get_option( 'mc_no_fifth_week') == 'true' ) { echo " checked=\"checked\""; } ?>/>
 				</div><?php 
 			} ?>
 		<p>
@@ -1885,10 +1885,12 @@ jQuery(document).ready(function($) {
 	$("#e_time").pickatime({
 		interval: 15,
 		format: "'.apply_filters( 'mc_time_format', 'h:i A' ).'",
+		editable: true
 	});
 	$("#e_endtime").pickatime({
 		interval: 15,
 		format: "'.apply_filters( 'mc_time_format', 'h:i A' ).'",
+		editable: true		
 	});
 });
 //]]>

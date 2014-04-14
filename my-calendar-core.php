@@ -266,7 +266,6 @@ function my_calendar_add_javascript() {
 			date_i18n( 'D', strtotime( 'Friday' ) ),
 			date_i18n( 'D', strtotime( 'Saturday' ) )
 		) );		
-		wp_enqueue_script('pickadate.config',plugins_url( 'js/pickadate/picker.config.js', __FILE__ ), array('pickadate') );
 		
 		wp_enqueue_script('jquery.addfields',plugins_url( 'js/jquery.addfields.js', __FILE__ ), array('jquery') );
 		if ( function_exists('wp_enqueue_media') && !did_action( 'wp_enqueue_media' ) ) {
@@ -300,7 +299,8 @@ function my_calendar_write_js() {
 		weekdaysShort: mc_days,
 		format: 'yyyy-mm-dd',
 		selectYears: true,
-		selectMonths: true		
+		selectMonths: true,
+		editable: true
 	});
 	
 	$('#mc-accordion').accordion({ collapsible:true, active:false });
@@ -583,8 +583,8 @@ function check_my_calendar() {
 		mc_delete_cache();
 	}	
 	// switch for different upgrade paths
-	foreach ($upgrade_path as $upgrade) {
-		switch ($upgrade) {
+	foreach ( $upgrade_path as $upgrade ) {
+		switch ( $upgrade ) {
 		// only upgrade db on most recent version
 			case '2.3.0':
 				delete_option('mc_location_control' );
@@ -788,7 +788,14 @@ function mc_category_select( $data=false, $option=true ) {
 	$list = $default = '';
 	$sql = "SELECT * FROM " . my_calendar_categories_table() . " ORDER BY category_name ASC";
 	$cats = $mcdb->get_results($sql);
-	foreach($cats as $cat) {
+	if ( empty( $cats ) ) {
+		// need to have categories. Try to create again.
+		$insert = "INSERT INTO " . my_calendar_categories_table() . " SET category_id=1, category_name='General', category_color='#ffffcc', category_icon='event.png'";
+		$mcdb->query( $insert );
+		$cats = $mcdb->get_results($sql);
+	}
+	if ( !empty( $cats ) ) {
+	foreach( $cats as $cat ) {
 		$c = '<option value="'.$cat->category_id.'"';
 		if ( !empty($data) ) {
 			if ( !is_object($data) ) { $category = $data; } else { $category = $data->event_category; }				
@@ -802,6 +809,10 @@ function mc_category_select( $data=false, $option=true ) {
 		} else {
 			$default = $c;
 		}
+	}
+	} else {
+		$category_url = admin_url( 'admin.php?page=my-calendar-categories' ); 
+		echo "<div class='updated error'><p>".sprintf( __( 'You do not have any categories created. Please <a href="%s">create at least one category!</a>','my-calendar' ), $category_url )."</p></div>";
 	}
 	if ( !$option ) {
 		$default = ( get_option( 'mc_default_category' ) ) ? get_option( 'mc_default_category' ) : 1 ;

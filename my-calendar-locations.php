@@ -8,13 +8,45 @@ if ( !empty( $_SERVER['SCRIPT_FILENAME'] ) && 'my-calendar-locations.php' == bas
 function mc_update_location_controls() {
 	if ( isset( $_POST['mc_locations'] ) && $_POST['mc_locations'] == 'true' ) {
 		$nonce = $_POST['_wpnonce'];
-		if ( !wp_verify_nonce($nonce,'my-calendar-locations-nonce') ) wp_die( "Invalid nonce" );
+		if ( !wp_verify_nonce($nonce,'my-calendar-nonce') ) wp_die( "Invalid nonce" );
 		$locations = $_POST['mc_location_controls'];
 		foreach ( $locations as $key=>$value ) {
 			$mc_location_controls[$key] = mc_csv_to_array( $value[0] );
 		}
 		update_option( 'mc_location_controls', $mc_location_controls );
 		echo "<div class='notice updated'><p>".__( 'Location Controls Updated','my-calendar' )."</p></div>";		
+	}
+}
+
+function mc_mass_delete_locations() {
+	global $wpdb;
+	$mcdb = $wpdb;	
+	// mass delete locations
+	if ( !empty($_POST['mass_edit']) && isset($_POST['mass_delete']) ) {
+		$nonce=$_REQUEST['_wpnonce'];
+		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die( "Security check failed 2" );
+		$locations = $_POST['mass_edit'];
+		$i=0;
+		$deleted = array();
+		foreach ($locations as $value) {
+			$value = (int) $value;
+			$total = count( $locations );	
+			$ids[] = mysql_real_escape_string( $value );
+			$deleted[] = $value;
+			$i++;
+		}
+		$statement = implode( ',', $ids );
+		$sql = 'DELETE FROM '. my_calendar_locations_table() ." WHERE location_id IN ($statement)";	
+		$result = $mcdb->query($sql);
+		if ( $result !== 0 && $result !== false ) {
+			mc_delete_cache();
+			// argument: array of event IDs
+			do_action( 'mc_mass_delete_locations', $deleted );		
+			$message = "<div class='updated'><p>".sprintf(__('%1$d locations deleted successfully out of %2$d selected','my-calendar'), $i, $total )."</p></div>";
+		} else {
+			$message = "<div class='error'><p><strong>".__('Error','my-calendar').":</strong>".__('Your locations have not been deleted. Please investigate.','my-calendar')."</p></div>";
+		}
+		echo $message;
 	}
 }
 
@@ -42,9 +74,10 @@ function my_calendar_manage_locations() {
 <?php my_calendar_check_db(); 
 	// We do some checking to see what we're doing
 	mc_update_location_controls();
-	if ( !empty( $_POST ) && !isset( $_POST['mc_locations'] ) ) {
-		$nonce=$_REQUEST['_wpnonce'];
-		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
+	mc_mass_delete_locations();
+	if ( !empty( $_POST ) && ( !isset( $_POST['mc_locations'] ) && !isset( $_POST['mass_delete'] ) ) ) {
+		$nonce = $_REQUEST['_wpnonce'];
+		if ( wp_verify_nonce( $nonce,'my-calendar-nonce' ) ) die( "Security check failed" );
 	}
 	if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
 		$add = array(
@@ -215,6 +248,7 @@ function mc_location_controller( $fieldname, $selected, $context='location' ) {
 function mc_manage_locations() {
 	global $wpdb;
 	$mcdb = $wpdb;
+		
 	// pull the locations from the database	
 	$items_per_page = 50;
 	$current = empty( $_GET['paged'] ) ? 1 : intval( $_GET['paged'] );
@@ -237,6 +271,11 @@ function mc_manage_locations() {
 	}
 
 	if ( !empty( $locations ) ) { ?>
+	<form action="<?php echo add_query_arg( $_GET, admin_url('admin.php') ); ?>" method="post">
+	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>		
+	<div class='mc-actions'>
+		<input type="submit" class="button-secondary delete" name="mass_delete" value="<?php _e( 'Delete locations','my-calendar' ); ?>" />
+	</div>
 	<table class="widefat page" id="my-calendar-admin-table">
 	<thead> 
 	<tr>
@@ -249,16 +288,19 @@ function mc_manage_locations() {
        <?php
        $class = '';
        foreach ( $locations as $location ) {
-	   $class = ($class == 'alternate') ? '' : 'alternate';
-           ?>
-         <tr class="<?php echo $class; ?>">
-	     <th scope="row"><?php echo $location->location_id; ?></th>
-	     <td><?php echo mc_hcard( $location, 'true', 'false', 'location' ); ?></td>
-	     <td><a href="<?php echo admin_url("admin.php?page=my-calendar-locations&amp;mode=edit&amp;location_id=$location->location_id"); ?>" class='edit'><?php _e('Edit','my-calendar'); ?></a></td>
-         <td><a href="<?php echo admin_url("admin.php?page=my-calendar-locations&amp;mode=delete&amp;location_id=$location->location_id"); ?>" class="delete" onclick="return confirm('<?php _e('Are you sure you want to delete this category?','my-calendar'); ?>')"><?php _e('Delete','my-calendar'); ?></a></td>
+	   $class = ($class == 'alternate') ? '' : 'alternate'; ?>
+		<tr class="<?php echo $class; ?>">
+			<th scope="row"><input type="checkbox" value="<?php echo $location->location_id; ?>" name="mass_edit[]" id="mc<?php echo $location->location_id; ?>" /> <label for="mc<?php echo $location->location_id; ?>"><?php echo $location->location_id; ?></label></th>		 
+			<td><?php echo mc_hcard( $location, 'true', 'false', 'location' ); ?></td>
+			<td><a href="<?php echo admin_url("admin.php?page=my-calendar-locations&amp;mode=edit&amp;location_id=$location->location_id"); ?>" class='edit'><?php _e('Edit','my-calendar'); ?></a></td>
+			<td><a href="<?php echo admin_url("admin.php?page=my-calendar-locations&amp;mode=delete&amp;location_id=$location->location_id"); ?>" class="delete" onclick="return confirm('<?php _e('Are you sure you want to delete this category?','my-calendar'); ?>')"><?php _e('Delete','my-calendar'); ?></a></td>
 		</tr>
 		<?php } ?>
-	</table><?php
+	</table>
+	<p>
+		<input type="submit" class="button-secondary delete" name="mass_delete" value="<?php _e( 'Delete locations','my-calendar' ); ?>" />
+	</p>
+	</form><?php
 	} else {
 		echo '<p>'.__('There are no locations in the database yet!','my-calendar').'</p>';
 	} ?>
@@ -267,7 +309,7 @@ function mc_manage_locations() {
 	</em></p>
 	
 <form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-locations"); ?>">
-	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-locations-nonce'); ?>" /></div>
+	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>
 	<div><input type="hidden" name="mc_locations" value="true" /></div>
 	<fieldset>
 	<legend><?php _e( 'Control Input Options for Location Fields','my-calendar' ); ?></legend>
@@ -279,7 +321,7 @@ function mc_manage_locations() {
 	foreach ( $location_fields as $field ) { ?>
 		<h4><?php echo ucfirst( str_replace( 'event_','',$field ) ); ?></h4>
 		<div>
-		<label for="loc_values_<?php echo $field; ?>"><?php printf( __('Location Controls for %s','my-calendar'), ucfirst( str_replace( 'event_','',$field ) ) ); ?> (<?php _e('Value, Label; one per line','my-calendar'); ?>)</label><br />
+		<label for="loc_values_<?php echo $field; ?>"><?php printf( __('Location Controls for %s','my-calendar'), ucfirst( str_replace( 'event_','',$field ) ) ); ?> (<?php _e('Value, Label (one per line)','my-calendar'); ?>)</label><br />
 		<?php 
 			$locations = '';
 			if ( is_array( $mc_location_controls ) && isset( $mc_location_controls[$field] ) ) {

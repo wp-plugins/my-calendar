@@ -1,27 +1,26 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-function mc_select_category($category, $type='event', $group='events' ) {
+function mc_select_category( $category, $type='event', $group='events' ) {
 $category = urldecode($category);
 global $wpdb;
 	$mcdb = $wpdb;
 	  if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$select_category = '';
-	$data = ($group=='category')?'category_id':'event_category';
-	if ( isset( $_GET['mcat'] ) ) { $category = $_GET['mcat']; }
+	$data = ( $group=='category' ) ? 'category_id' : 'event_category';
 	if ( preg_match('/^all$|^all,|,all$|,all,/i', $category) > 0 ) {
 		return '';
 	} else {
  	if ( strpos( $category, "|" ) || strpos( $category, "," ) ) {
-		if ( strpos($category, "|" ) ) {
+		if ( strpos( $category, "|" ) ) {
 			$categories = explode( "|", $category );
 		} else {
 			$categories = explode( ",", $category );		
 		}
 		$numcat = count( $categories );
 		$i = 1;
-		foreach ($categories as $key) {
-			if ( is_numeric($key) ) {
+		foreach ( $categories as $key ) {
+			if ( is_numeric( $key ) ) {
 				$key = (int) $key;
 				if ($i == 1) { $select_category .= ($type=='all')?" WHERE (":' ('; }				
 				$select_category .= " $data = $key";
