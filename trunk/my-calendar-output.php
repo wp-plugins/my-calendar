@@ -5,7 +5,6 @@ function mc_holiday_limit( $events, $holidays ) {
 	foreach ( array_keys($events) as $key ) {
 		if ( !empty($holidays[$key]) ) {
 			foreach ( $events[$key] as $k => $event ) {
-				echo "$key<br />";
 				if ( $event->event_category != get_option( 'mc_skip_holidays_category' ) && $event->event_holiday == 1 ) {
 					unset( $events[$key][$k] );
 				}
