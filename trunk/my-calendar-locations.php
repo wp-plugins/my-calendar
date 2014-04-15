@@ -24,7 +24,7 @@ function mc_mass_delete_locations() {
 	// mass delete locations
 	if ( !empty($_POST['mass_edit']) && isset($_POST['mass_delete']) ) {
 		$nonce=$_REQUEST['_wpnonce'];
-		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die( "Security check failed 2" );
+		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die( "Security check failed" );
 		$locations = $_POST['mass_edit'];
 		$i=0;
 		$deleted = array();
@@ -77,7 +77,7 @@ function my_calendar_manage_locations() {
 	mc_mass_delete_locations();
 	if ( !empty( $_POST ) && ( !isset( $_POST['mc_locations'] ) && !isset( $_POST['mass_delete'] ) ) ) {
 		$nonce = $_REQUEST['_wpnonce'];
-		if ( wp_verify_nonce( $nonce,'my-calendar-nonce' ) ) die( "Security check failed" );
+		if ( !wp_verify_nonce( $nonce,'my-calendar-nonce' ) ) die( "Security check failed" );
 	}
 	if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
 		$add = array(
@@ -177,7 +177,7 @@ function mc_show_location_form( $view='add',$curID='' ) {
 <h3><?php _e('Location Editor','my-calendar'); ?></h3>
 	<div class="inside location_form">	   
     <form id="my-calendar" method="post" action="<?php echo admin_url("admin.php?page=my-calendar-locations"); ?>">
-	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-nonce'); ?>" /></div>	
+	<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'my-calendar-nonce' ); ?>" /></div>	
 		<?php if ( $view == 'add' ) { ?>
 			<div>
 			<input type="hidden" name="mode" value="add" />
@@ -235,7 +235,11 @@ function mc_location_controller( $fieldname, $selected, $context='location' ) {
 	$options = get_option('mc_location_controls');
 	$regions = $options['event_'.$fieldname];
 	$form = "<select name='$field' id='$field'>";
-	$form .= "<option value='none'>No preference</option>\n";				
+	if ( $selected == '' || in_array( $selected, array_keys( $regions ) ) ) {
+		$form .= "<option value='none'>No preference</option>\n";	
+	} else {
+		$form .= "<option value='$selected'>$selected ".__('(Not a controlled value)','my-calendar')."</option>\n";		
+	}
 	foreach ( $regions as $key=>$value ) {
 		$key = trim($key);
 		$aselected = ( $selected == $key )?" selected='selected'":'';

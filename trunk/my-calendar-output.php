@@ -1449,7 +1449,7 @@ function mc_access_list( $show='list',$group='single' ) {
 		$output .= ( $show != 'list' && $group == 'single' )?"<p><input type='submit' value=".__('Limit by Access','my-calendar')." /></p></form>":'';
 		$output .= "\n</div>";
 	}
-	$output = apply_filters('mc_access_selector',$output,$options);
+	$output = apply_filters( 'mc_access_selector',$output,$access_options );
 	return $output;
 }
 
