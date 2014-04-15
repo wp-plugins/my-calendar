@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager, event calendar
 Requires at least: 3.4.2
-Tested up to: 3.8.2
+Tested up to: 3.9
 License: GPLv2 or later
 Stable tag: 2.3.2
 
@@ -45,7 +45,7 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 = Translations =
 
 Available languages (in order of completeness):
-French, Japanese, Dutch, German, Galician, Spanish, Italian, Danish, Czech, Hindi, Turkish, Finnish, Slovenian, Polish, Portuguese, Russian, Swedish, Romanian, Basque, Persian
+French, Danish, Japanese, Dutch, German, Galician, Spanish, Italian, Danish, Czech, Hindi, Turkish, Polish, Finnish, Slovenian, Portuguese, Russian, Swedish, Romanian, Basque, Persian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -76,6 +76,15 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.3.3 =
+
+* Bug fix: Notice on access_options filter.
+* Bug fix: Invalid date values if no parameters set for iCal
+* Bug fix: Invalid nonce check in location entry prevented creation of new locations. One missing exclamation point. Sigh.
+* Bug fix: If location controls are on, allow old values to be saved, but raise notice that value is not part of controlled set.
+* Feature: add sync=true to root iCal URL to connect apps for scheduled syncing. (http://example.com/feeds/my-calendar-ics/?sync=true)
+* Updated: Polish translation
 
 = 2.3.2 =
 
@@ -1195,9 +1204,9 @@ Because the majority of users end up on my web site asking for help anyway -- an
 
 I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/articles/my-calendar/users-guide/) for $25. This helps defray the thousand plus hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
 
-= How can my site visitors or members submit events? =
+= Can my visitors or members submit events? =
 
-I've written a paid plug-in that adds this feature to My Calendar, called My Calendar: Submissions. You can [buy it at my web site](https://www.joedolson.com/articles/my-calendar/submissions/)!
+I've written a paid plug-in that adds this feature to My Calendar, called My Calendar: Submissions. [Buy it today](https://www.joedolson.com/articles/my-calendar/submissions/)!
 
 == Screenshots ==
 
@@ -1216,4 +1225,4 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 = 2.3.0 =
 
-This is a MAJOR update. Be sure to backup! 2.3.2: Bug fixes.
+This is a MAJOR update. Be sure to backup! 2.3.3: Bug fixes.

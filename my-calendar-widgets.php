@@ -305,7 +305,7 @@ function my_calendar_upcoming_events( $before='default',$after='default',$type='
 
 		$event_array = my_calendar_events( $from, $to, $category, $ltype, $lvalue, 'upcoming', $author, $host );
 		$no_events = ( empty( $event_array ) ) ? true : false;		
-		if (count($event_array) != 0) {
+		if ( count( $event_array ) != 0 ) {
 			foreach( $event_array as $key=>$value) {
 				if ( is_array($value) ) {
 					foreach ( $value as $k => $v ) {
@@ -320,9 +320,7 @@ function my_calendar_upcoming_events( $before='default',$after='default',$type='
 			}
 		}
 		$i = 0;
-		$last_item = '';
-		$last_id = '';
-		$last_date = '';
+		$last_item = $last_id = $last_date = '';
 		$skips = array();
 		foreach ( reverse_array($temp_array, true, $order) as $details ) {
 			$item = jd_draw_template($details,$template);

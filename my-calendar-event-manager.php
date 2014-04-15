@@ -1387,16 +1387,16 @@ function mc_list_events( $type='normal') {
 					?>	
 					</div>
 				</td>
-				<td><a class='mc_filter' href="<?php $auth = (is_object($author))?$author->ID:0; echo admin_url("admin.php?page=my-calendar-manage&amp;filter=$auth&amp;restrict=author"); ?>" title="<?php _e('Filter by author','my-calendar'); ?>"><span class="screen-reader-text"><?php _e('Show only: ', 'my-calendar'); ?></span><?php echo ( is_object($author)?$author->display_name:$author ); ?></a></td>
+				<td><a class='mc_filter' href="<?php $auth = ( is_object( $author ) ) ? $author->ID : 0; echo admin_url("admin.php?page=my-calendar-manage&amp;filter=$auth&amp;restrict=author"); ?>" title="<?php _e('Filter by author','my-calendar'); ?>"><span class="screen-reader-text"><?php _e('Show only: ', 'my-calendar'); ?></span><?php echo ( is_object($author)?$author->display_name:$author ); ?></a></td>
                                 <?php
 								$this_category = $event->event_category;
-								foreach ($categories as $key=>$value) {
-									if ($value->category_id == $this_category) {
+								foreach ( $categories as $key=>$value ) {
+									if ( $value->category_id == $this_category ) {
 										$this_cat = $categories[$key];
-									} 
+									}
 								}
                                 ?>
-				<td><div class="category-color" style="background-color:<?php echo (strpos($this_cat->category_color,'#') !== 0)?'#':''; echo $this_cat->category_color;?>;"> </div> <a class='mc_filter' href='<?php echo admin_url("admin.php?page=my-calendar-manage&amp;filter=$event->event_category&amp;restrict=category"); ?>' title="<?php _e('Filter by category','my-calendar'); ?>"><span class="screen-reader-text"><?php _e('Show only: ', 'my-calendar'); ?></span><?php echo stripslashes($this_cat->category_name); ?></a></td>
+				<td><div class="category-color" style="background-color:<?php echo ( strpos( $this_cat->category_color,'#' ) !== 0 ) ? '#' : ''; echo $this_cat->category_color;?>;"> </div> <a class='mc_filter' href='<?php echo admin_url("admin.php?page=my-calendar-manage&amp;filter=$event->event_category&amp;restrict=category"); ?>' title="<?php _e('Filter by category','my-calendar'); ?>"><span class="screen-reader-text"><?php _e('Show only: ', 'my-calendar'); ?></span><?php echo stripslashes($this_cat->category_name); ?></a></td>
 				<?php unset($this_cat); ?>
 			</tr>
 <?php

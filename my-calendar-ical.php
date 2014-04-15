@@ -5,8 +5,8 @@ function my_calendar_ical() {
 	$p = ( isset( $_GET['span'] ) ) ? 'year' : false;
 	$y = ( isset( $_GET['yr'] ) ) ? $_GET['yr'] : date('Y');
 	$m = ( isset( $_GET['month'] ) ) ? $_GET['month'] : date('n');
-	$ny = ( isset( $_GET['nyr'] ) ) ? $_GET['nyr'] : $m;
-	$nm = ( isset( $_GET['nmonth'] ) ) ? $_GET['nmonth'] : $y;
+	$ny = ( isset( $_GET['nyr'] ) ) ? $_GET['nyr'] : $y;
+	$nm = ( isset( $_GET['nmonth'] ) ) ? $_GET['nmonth'] : $m;
 
 	if ( $p ) {
 		$from = "$y-1-1";
@@ -16,7 +16,7 @@ function my_calendar_ical() {
 		$from = "$y-$m-1";
 		$to = "$ny-$nm-$d";
 	}
-
+	
 	$from = apply_filters( 'mc_ical_download_from', $from, $p );
 	$to = apply_filters( 'mc_ical_download_to', $to, $p );
 	$atts = array( 'category'=>null, 'ltype'=>'', 'lvalue'=>'', 'source'=>'calendar', 'author'=>null, 'host'=> null );
@@ -57,10 +57,12 @@ PRODID:-//Accessible Web Design//My Calendar//http://www.joedolson.com//v'.$mc_v
 	}
 $output .= "\nEND:VCALENDAR";
 $output = html_entity_decode(preg_replace("~(?<!\r)\n~","\r\n",$output));
-	header("Content-Type: text/calendar; charset=".get_bloginfo('charset'));
-	header("Pragma: no-cache");
-	header("Expires: 0");		
-	header("Content-Disposition: inline; filename=my-calendar.ics");
+	if ( !( isset( $_GET['sync'] ) && $_GET['sync'] == 'true' ) ) {
+		header("Content-Type: text/calendar; charset=".get_bloginfo('charset'));
+		header("Pragma: no-cache");
+		header("Expires: 0");		
+		header("Content-Disposition: inline; filename=my-calendar.ics");
+	}
 	echo $output;
 }
 ?>
