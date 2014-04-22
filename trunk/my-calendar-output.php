@@ -239,7 +239,7 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 			$heading_level = apply_filters('mc_heading_level_list','h3',$format,$time,$template );	
 			$list_title = "<$heading_level class='event-title summary'>$image".$event_title."</$heading_level>\n";
 		}
-		if ($mc_display_author == 'true') {
+		if ( $mc_display_author == 'true' ) {
 			if ( $event->event_author != 0 ) {
 				$e = get_userdata( $event->event_author );
 				$author = '<p class="event-author">'.__('Posted by', 'my-calendar').' <span class="author-name">'.$e->display_name."</span></p>\n";

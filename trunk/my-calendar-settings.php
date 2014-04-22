@@ -256,10 +256,10 @@ function edit_my_calendar_config() {
 	}
 	// input
 	if ( isset($_POST['mc_dates']) ) {
-		update_option('mc_date_format',stripslashes($_POST['mc_date_format']));
-		update_option('mc_week_format',stripslashes($_POST['my_calendar_week_format']));
-		update_option('mc_time_format',stripslashes($_POST['mc_time_format']));
-		update_option('mc_month_format',stripslashes($_POST['mc_month_format']));
+		update_option( 'mc_date_format',stripslashes( $_POST['mc_date_format'] ) );
+		update_option( 'mc_week_format',stripslashes( $_POST['mc_week_format'] ) );
+		update_option( 'mc_time_format',stripslashes( $_POST['mc_time_format'] ) );
+		update_option( 'mc_month_format',stripslashes( $_POST['mc_month_format'] ) );
 		$mc_ical_utc = ( !empty($_POST['mc_ical_utc']) && $_POST['mc_ical_utc']=='on')?'true':'false';
 		update_option('mc_ical_utc',$mc_ical_utc);		
 		echo "<div class=\"updated\"><p><strong>".__( 'Date/Time Format Settings saved','my-calendar' )."</strong></p></div>";		

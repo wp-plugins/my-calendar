@@ -77,6 +77,15 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+
+= 2.3.4 =
+
+* Bug fix: Week date format wouldn't save.
+* Bug fix: Event posts & custom field data not saved on copy action
+* Bug fix: HTML errors in {hcard} address format.
+* Bug fix: Manage events search form overlapped pagination links
+* Bug fix: Events ending at midnight in Today's Events lists appeared twice
+
 = 2.3.3 =
 
 * Bug fix: Notice on access_options filter.
