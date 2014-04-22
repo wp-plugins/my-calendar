@@ -97,7 +97,7 @@ strong.label { font-weight: 400; }
 .mc-locations .location-secondary { position: absolute; left: 50%; top: 0; width: 47%; }
 .mc-locations .locations-container input { max-width: 90%; }
 
-.mc-search { position: absolute; right: 12px; }
+.mc-search { float: right; }
 
 @media (max-width: 1140px) {
 	.mc-locations .locations-container input { max-width: 70%; }

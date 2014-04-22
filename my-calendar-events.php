@@ -92,7 +92,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 	$date = date('Y', current_time('timestamp') ).'-'.date('m', current_time('timestamp') ).'-'.date('d', current_time('timestamp') );
 	// if a value is non-zero, I'll grab a handful of extra events so I can throw out holidays and others like that.
 	if ( $before > 0 ) {
-		$before = $before + 5;
+		$before = $before + 10;
 		$events1 = $mcdb->get_results("SELECT *
 		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 		JOIN " . MY_CALENDAR_TABLE . " 
@@ -113,7 +113,7 @@ if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { 
 		$events3 = array();
 	}
 	if ( $after > 0 ) {
-		$after = $after + 5;
+		$after = $after + 10;
 		$events2 = $mcdb->get_results("SELECT * 
 		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 		JOIN " . MY_CALENDAR_TABLE . " 

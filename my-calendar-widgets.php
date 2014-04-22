@@ -554,7 +554,7 @@ function mc_produce_upcoming_events( $events, $template, $type='list', $order='a
 }
 
 // Widget todays events
-function my_calendar_todays_events($category='default',$template='default',$substitute='',$author='all', $host='all' ) {
+function my_calendar_todays_events( $category='default', $template='default', $substitute='', $author='all', $host='all' ) {
 	$caching = apply_filters( 'mc_cache_enabled', false );
 	$todays_cache = ($caching)? get_transient('mc_todays_cache') :'';
 	if ( $caching && is_array($todays_cache) && @$todays_cache[$category] ) { return @$todays_cache[$category]; }
@@ -571,32 +571,30 @@ function my_calendar_todays_events($category='default',$template='default',$subs
 	$no_event_text = ($substitute == '')?$defaults['today']['text']:$substitute;
 
 	$from = $to = date( 'Y-m-d', current_time( 'timestamp' ) );
-    $events = my_calendar_events($from, $to,$category,'','','upcoming',$author, $host);
+    $events = my_calendar_events( $from, $to,$category,'','','upcoming',$author, $host );
+	$today = $events[$from];
 	$header = "<ul id='todays-events'>";
 	$footer = "</ul>";		
 	$groups = $todays_events = array();
 	// quick loop through all events today to check for holidays
-	if ( is_array( $events ) ) {
-        foreach( array_keys($events) as $key ) {
-			$event =& $events[$key];
-			foreach ( $event as $e ) {
-				if ( $e->category_private == 1 && !is_user_logged_in() ) {
-				} else {
-					if ( !in_array( $e->event_group_id, $groups ) )	{
-						$event_details = mc_create_tags($e);
-						$ts = $e->ts_occur_begin;
-						$date = date_i18n( apply_filters( 'mc_date_format', get_option('mc_date_format'), 'todays_events' ) , current_time( 'timestamp' ) );
-						if ( get_option( 'mc_event_approve' ) == 'true' ) {
-							if ( $e->event_approved != 0 ) { 
-								$todays_events[$ts][] = "<li>".jd_draw_template($event_details,$template)."</li>";
-							}
-						} else {
+	if ( is_array( $today ) ) {
+        foreach( $today as $e ) {
+			if ( $e->category_private == 1 && !is_user_logged_in() ) {
+			} else {
+				if ( !in_array( $e->event_group_id, $groups ) )	{
+					$event_details = mc_create_tags($e);
+					$ts = $e->ts_occur_begin;
+					$date = date_i18n( apply_filters( 'mc_date_format', get_option('mc_date_format'), 'todays_events' ) , current_time( 'timestamp' ) );
+					if ( get_option( 'mc_event_approve' ) == 'true' ) {
+						if ( $e->event_approved != 0 ) { 
 							$todays_events[$ts][] = "<li>".jd_draw_template($event_details,$template)."</li>";
 						}
+					} else {
+						$todays_events[$ts][] = "<li>".jd_draw_template($event_details,$template)."</li>";
 					}
 				}
 			}
-        }
+		}
 		$todays_events = apply_filters( 'mc_event_today',$todays_events, $events );
 		foreach ( $todays_events as $k => $t ) {
 			foreach ( $t as $now ) {

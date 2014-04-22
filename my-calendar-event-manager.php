@@ -18,7 +18,7 @@ function mc_switch_sites() {
 
 function mc_event_post( $action, $data, $event_id ) {
 	// if the event save was successful.
-	if ( $action == 'add' ) {
+	if ( $action == 'add' || $action == 'copy' ) {
 		$post_id = mc_create_event_post( $data, $event_id );
 	}
 	if ( $action == 'edit' ) {
@@ -361,7 +361,7 @@ $event_id = !empty( $_POST['event_id'] ) ? $_POST['event_id'] : '';
 
 if ( isset( $_GET['mode'] ) ) {
 	$action = $_GET['mode'];
-	if ( $action == 'edit'|| $action == 'copy') {
+	if ( $action == 'edit' || $action == 'copy') {
 		$event_id = (int) $_GET['event_id'];
 	}
 }
@@ -422,7 +422,7 @@ if ( isset( $_POST['event_action'] ) ) {
 		if ( empty($event_id) ) {
 			echo "<div class=\"error\"><p>".__("You must provide an event id in order to edit it",'my-calendar')."</p></div>";
 		} else {
-			mc_edit_event_form('copy', $event_id);
+			mc_edit_event_form( 'copy', $event_id );
 		}
 	} else { ?>	
 		<div id="icon-edit" class="icon32"></div>	
@@ -451,7 +451,7 @@ function my_calendar_save( $action,$output,$event_id=false ) {
 					'%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d',
 					'%f','%f'
 					);	
-	if ( ( $action == 'add'|| $action == 'copy' ) && $proceed == true ) {
+	if ( ( $action == 'add' || $action == 'copy' ) && $proceed == true ) {
 		$add = $output[2]; // add format here
 		$add = apply_filters( 'mc_before_save_insert', $add );
 		$result = $mcdb->insert( my_calendar_table(), $add, $formats );
@@ -870,7 +870,7 @@ function mc_form_fields( $data,$mode,$event_id ) {
 
 <div class="postbox-container jcd-wide">
 <div class="metabox-holder">
-<?php if ( $mode == 'add'|| $mode == 'copy') { $edit_args = ''; } else {
+<?php if ( $mode == 'add' || $mode == 'copy') { $edit_args = ''; } else {
 	$edit_args = "&amp;mode=$mode&amp;event_id=$event_id";
 	if ( $instance ) { $edit_args .= "&amp;date=$instance"; }
 } 
@@ -1438,7 +1438,7 @@ function mc_check_data( $action, $post, $i ) {
 	if ( get_magic_quotes_gpc() ) { $post = array_map( 'stripslashes_deep', $post ); }
 	if ( !wp_verify_nonce($post['event_nonce_name'],'event_nonce') ) { return; }
 
-	if ( $action == 'add'|| $action == 'edit'|| $action == 'copy') {
+	if ( $action == 'add' || $action == 'edit' || $action == 'copy') {
 		$title = !empty($post['event_title']) ? trim($post['event_title']) : '';
 		$desc = !empty($post['content']) ? trim($post['content']) : '';
 		$short = !empty($post['event_short']) ? trim($post['event_short']) : '';
