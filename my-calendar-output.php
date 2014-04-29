@@ -263,11 +263,12 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 			$vcal_link = "<p class='ical'><a rel='nofollow' href='".home_url()."?vcal=$uid"."'>".__('iCal','my-calendar')."</a></p>\n";
 			$vcal = $vcal_link;
 		}
-		if ( is_numeric( $event->event_post ) && $event->event_post != 0 ) {
+		$default_size = apply_filters( 'mc_default_image_size', 'medium' );
+		if ( is_numeric( $event->event_post ) && $event->event_post != 0 && ( isset( $data[$default_size] ) && $data[$default_size] != '' )) {
 			$atts = apply_filters( 'mc_post_thumbnail_atts',  array( 'class'=>'mc-image' ) ); 
-			$image = get_the_post_thumbnail( $event->event_post, 'medium', $atts );
+			$image = get_the_post_thumbnail( $event->event_post, $default_size, $atts );
 		} else {
-			$image = ($event->event_image!='')?"<img src='$event->event_image' alt='' class='mc-image' />":'';
+			$image = ( $event->event_image != '' )?"<img src='$event->event_image' alt='' class='mc-image' />":'';
 		}
 		if ( get_option('mc_desc') == 'true' || $type == 'single' ) {
 			$description = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',stripcslashes($event->event_desc)):wpautop(stripcslashes($event->event_desc),1);
@@ -311,7 +312,9 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 
 		if ( $type == 'calendar' && get_option('mc_open_uri') == 'true' && $time != 'day' ) $description = $short = $status = '';
 
-		$map = ( is_singular( 'mc-event' ) || $type == 'single' )? mc_generate_map( $event ) : '' ;	
+		if ( get_option( 'mc_gmap' ) == 'true' ) {
+			$map = ( is_singular( 'mc-event' ) || $type == 'single' ) ? mc_generate_map( $event ) : '' ;
+		}
 		
 		if ( $event_link != '' && get_option( 'mc_event_link' ) != 'false' ) {
 			$is_external = mc_external_link( $event_link );	
@@ -343,7 +346,7 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 	} else {
 		$custom = true; 
 		// if a custom template is in use
-		$toggle = ( $type == 'calendar' || $type == 'mini' )?"<a href=\"#$uid-$day_id-$type\" class='mc-toggle mc-close close'><img src=\"".plugin_dir_url(__FILE__)."images/event-close.png\" alt='".__('Close','my-calendar')."' /></a>":'';	
+		$toggle = ( $type == 'calendar' || $type == 'mini' ) ? "<a href=\"#$uid-$day_id-$type\" class='mc-toggle mc-close close'><img src=\"".plugin_dir_url(__FILE__)."images/event-close.png\" alt='".__('Close','my-calendar')."' /></a>" : '';	
 		$details = $toggle.$details."\n";
 	}
 	$container = "<div id='$uid-$day_id-$type-details' class='details'>\n"; 

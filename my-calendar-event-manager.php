@@ -1329,7 +1329,7 @@ function mc_list_events( $type='normal') {
 			?>
 			<tr class="<?php echo "$class $spam $pending"; ?>">
 				<th scope="row"><input type="checkbox" value="<?php echo $event->event_id; ?>" name="mass_edit[]" id="mc<?php echo $event->event_id; ?>" <?php echo ($event->event_flagged == 1)?'checked="checked"':''; ?> /> <label for="mc<?php echo $event->event_id; ?>"><?php echo $event->event_id; ?></label></th>
-				<td title="<?php echo esc_attr(substr(strip_tags(stripslashes($event->event_desc)),0,240)); ?>">
+				<td title="<?php echo esc_attr( substr( strip_tags( stripslashes( $event->event_desc ) ),0,240)); ?>">
 					<strong><?php if ( mc_can_edit_event( $event->event_author ) ) { ?>
 						<a href="<?php echo admin_url("admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id"); ?>" class='edit'>
 					<?php } ?>
@@ -1359,9 +1359,12 @@ function mc_list_events( $type='normal') {
 					} ?>	
 				</div>
 				</td>
-				<td><?php if ( $event->event_label != '') { ?><a class='mc_filter'href='<?php $elabel = urlencode($event->event_label); echo admin_url("admin.php?page=my-calendar-manage&amp;filter=$elabel&amp;restrict=where"); ?>' title="<?php _e('Filter by location','my-calendar'); ?>"><span class="screen-reader-text"><?php _e('Show only: ', 'my-calendar'); ?></span><?php echo stripslashes($event->event_label); ?></a><?php } ?></td>
-				<?php if ($event->event_time != "00:00:00") { $eventTime = date_i18n(get_option('mc_time_format'), strtotime($event->event_time)); } else { $eventTime = get_option('mc_notime_text'); } ?>
-				<td><?php $begin = date_i18n( get_option('mc_date_format'), strtotime( $event->event_begin ) ); echo "$begin, $eventTime"; ?>
+				<td><?php if ( $event->event_label != '') { ?><a class='mc_filter'href='<?php $elabel = urlencode($event->event_label); echo admin_url("admin.php?page=my-calendar-manage&amp;filter=$elabel&amp;restrict=where"); ?>' title="<?php _e('Filter by location','my-calendar'); ?>"><span class="screen-reader-text"><?php _e('Show only: ', 'my-calendar'); ?></span><?php echo stripslashes( $event->event_label ); ?></a><?php } ?></td>
+				<?php if ( $event->event_time != "00:00:00" ) { $eventTime = date_i18n(get_option('mc_time_format'), strtotime($event->event_time)); } else { $eventTime = get_option('mc_notime_text'); } ?>
+				<td><?php 
+					$date_format = ( get_option('mc_date_format') == '' ) ? get_option( 'date_format' ) : get_option('mc_date_format');
+					$begin = date_i18n( $date_format, strtotime( $event->event_begin ) ); 
+					echo "$begin, $eventTime"; ?>
 					<div class="recurs">
 					<strong><?php _e('Recurs','my-calendar'); ?></strong> 
 						<?php 

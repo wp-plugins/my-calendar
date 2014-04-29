@@ -137,13 +137,15 @@ function mc_register_styles() {
 	$js_array = ( get_option( 'mc_show_js' ) != '' ) ? explode( ",",get_option( 'mc_show_js' ) ) : array() ;
 	$css_array = ( get_option( 'mc_show_css' ) != '' ) ? explode( ",",get_option( 'mc_show_css' ) ) : array() ;	
 	// check whether any scripts are actually enabled.
-	if ( get_option('mc_calendar_javascript') != 1 || get_option('mc_list_javascript') != 1 || get_option('mc_mini_javascript') != 1 || get_option('mc_ajax_javascript') != 1 ) {
+	if ( get_option( 'mc_calendar_javascript' ) != 1 || get_option( 'mc_list_javascript' ) != 1 || get_option( 'mc_mini_javascript' ) != 1 || get_option( 'mc_ajax_javascript' ) != 1 ) {
 		if ( @in_array( $id, $js_array ) || get_option( 'mc_show_js' ) == '' ) {
-			wp_enqueue_script( 'jquery' );
-			wp_register_script( 'gmaps', "//maps.google.com/maps/api/js?sensor=true" );
-			wp_register_script( 'gmap3', plugins_url( 'js/gmap3.min.js', __FILE__ ), array( 'jquery' ) );
-			wp_enqueue_script( 'gmaps' );
-			wp_enqueue_script( 'gmap3' );
+			if ( get_option( 'mc_gmap' ) == 'true' ) {
+				wp_enqueue_script( 'jquery' );
+				wp_register_script( 'gmaps', "//maps.google.com/maps/api/js?sensor=true" );
+				wp_register_script( 'gmap3', plugins_url( 'js/gmap3.min.js', __FILE__ ), array( 'jquery' ) );
+				wp_enqueue_script( 'gmaps' );
+				wp_enqueue_script( 'gmap3' );
+			}
 		}
 	}
 	if ( get_option('mc_use_styles') != 'true' ) {
@@ -329,8 +331,8 @@ function mc_plugin_update_message() {
 }
 
 function mc_footer_js() {
-	global $wp_query;
-	if ( mc_is_mobile() && get_option('mc_convert') == 'true' ) {
+	global $wp_query, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs;
+	if ( mc_is_mobile() && get_option( 'mc_convert' ) == 'true' ) {
 		return;
 	} else {
 		$top = $bottom = $inner = '';
@@ -347,7 +349,7 @@ function mc_footer_js() {
 		$ajax_js = stripcslashes( get_option( 'mc_ajaxjs' ) );
 		if ( is_object( $wp_query ) && isset( $wp_query->post ) ) {
 			$id = $wp_query->post->ID;
-		} 
+		}
 		if ( get_option( 'mc_show_js' ) != '' ) {
 		$array = explode( ",",get_option( 'mc_show_js' ) );
 			if ( !is_array( $array ) ) {
@@ -355,6 +357,12 @@ function mc_footer_js() {
 			}
 		}
 		if ( @in_array( $id, $array ) || get_option( 'mc_show_js' ) == '' ) {
+			// if records are blank, but enabled, set back to defaults
+			$cal_js = ( trim( $cal_js ) == '' ) ? $initial_caljs : $cal_js;
+			$list_js = ( trim( $cal_js ) == '' ) ? $initial_listjs : $list_js;
+			$mini_js = ( trim( $cal_js ) == '' ) ? $initial_minijs : $mini_js;
+			$ajax_js = ( trim( $cal_js ) == '' ) ? $initial_ajaxjs : $ajax_js;
+	
 			$top = "
 <script type='text/javascript'>
 (function( $ ) { 'use strict'; \n";
@@ -552,8 +560,6 @@ function check_my_calendar() {
 	} else {	
 		// for each release requiring an upgrade path, add a version compare. 
 		// Loop will run every relevant upgrade cycle.
-		if ( version_compare( $current_version, "1.7.0", "<" ) ) { 	$upgrade_path[] = "1.7.0"; } 
-		if ( version_compare( $current_version, "1.7.1", "<" ) ) { 	$upgrade_path[] = "1.7.1"; } 
 		if ( version_compare( $current_version, "1.8.0", "<" ) ) {	$upgrade_path[] = "1.8.0"; } 
 		if ( version_compare( $current_version, "1.9.0", "<" ) ) {	$upgrade_path[] = "1.9.0"; }
 		if ( version_compare( $current_version, "1.9.1", "<" ) ) {	$upgrade_path[] = "1.9.1"; }
@@ -577,7 +583,7 @@ function check_my_calendar() {
 		 //add default settings
 		mc_default_settings();
 		$sql = "INSERT INTO " . MY_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_color='#ffffcc', category_icon='event.png'";
-		$mcdb->query($sql);
+		$mcdb->query( $sql );
     } else {
 		// clear cache so updates are immediately available
 		mc_delete_cache();
@@ -587,7 +593,7 @@ function check_my_calendar() {
 		switch ( $upgrade ) {
 		// only upgrade db on most recent version
 			case '2.3.0':
-				delete_option('mc_location_control' );
+				delete_option( 'mc_location_control' );
 				$user_data = get_option( 'mc_user_settings' );
 				$loc_type = ( get_option( 'mc_location_type' ) == '' ) ? 'event_state' : get_option( 'mc_location_type' );
 				$locations[$loc_type] = $user_data['my_calendar_location_default']['values'];
