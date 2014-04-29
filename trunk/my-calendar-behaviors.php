@@ -62,26 +62,21 @@ function edit_my_calendar_behaviors() {
 	<fieldset>
 	<legend><?php _e('Calendar Behaviors: Grid View','my-calendar'); ?></legend>
 	<p>
-	<input type="checkbox" id="reset_caljs" name="reset_caljs" /> <label for="reset_caljs"><?php _e('Update Grid View JavaScript','my-calendar'); ?></label> <input type="checkbox" id="calendar_javascript" name="calendar_javascript" value="1"  <?php mc_is_checked('mc_calendar_javascript',1); ?>/> <label for="calendar_javascript"><?php _e('Disable Grid Javascript','my-calendar'); ?></label>
+	<input type="checkbox" id="reset_caljs" name="reset_caljs" /> <label for="reset_caljs"><?php _e('Restore Grid View JavaScript','my-calendar'); ?></label> <input type="checkbox" id="calendar_javascript" name="calendar_javascript" value="1"  <?php mc_is_checked('mc_calendar_javascript',1); ?>/> <label for="calendar_javascript"><?php _e('Disable Grid Javascript','my-calendar'); ?></label>
 	</p>
 	<p>
 	<label for="calendar-javascript"><?php _e('Edit jQuery scripts for My Calendar in Grid View','my-calendar'); ?></label><br /><textarea id="calendar-javascript" name="mc_caljs" rows="8" cols="80"><?php echo $mc_caljs; ?></textarea>
 	</p>
 	<?php
+	$args = array( 'title' => __('Comparing scripts with latest installed version of My Calendar','my-calendar'), 'title_right' => __('Latest (from plugin)','my-calendar'), 'title_left' => __('Current (in use)','my-calendar') );
 	$left_string  = normalize_whitespace($mc_caljs);
 	$right_string = normalize_whitespace($initial_caljs);
 	if ( isset( $_GET['cdiff'] ) ) {
-		echo '<div class="wrap jd-my-calendar" id="diff">';
-		echo wp_text_diff( $left_string,$right_string, array( 'title' => __('Comparing scripts with latest installed version of My Calendar','my-calendar'), 'title_right' => __('Latest (from plugin)','my-calendar'), 'title_left' => __('Current (in use)','my-calendar') ) );
-		echo '</div>';
+		echo wp_text_diff( $left_string, $right_string, $args );
 	} else if ( trim($left_string)!=trim($right_string) ) {
-		echo '<div class="wrap jd-my-calendar">';
 		echo '<div class="updated"><p>'.__('There have been updates to the calendar view scripts.','my-calendar').' <a href="'.admin_url('admin.php?page=my-calendar-behaviors&amp;cdiff#cdiff').'">'.__('Compare your scripts with latest installed version of My Calendar.','my-calendar').'</a></p></div>';
-		echo '</div>';
 	} else {
-		echo '<div class="wrap jd-my-calendar"><em>';
-			_e('Your script matches that included with My Calendar.','my-calendar');
-		echo '</em></div>';
+		_e('Your script matches that included with My Calendar.','my-calendar');
 	}
 	?>	
 	<p>
@@ -92,7 +87,7 @@ function edit_my_calendar_behaviors() {
     <fieldset id="ldiff">
 	<legend><?php _e('Calendar Behaviors: List View','my-calendar'); ?></legend>
 	<p>
-	<input type="checkbox" id="reset_listjs" name="reset_listjs" /> <label for="reset_listjs"><?php _e('Update List JavaScript','my-calendar'); ?></label> <input type="checkbox" id="list_javascript" name="list_javascript" value="1" <?php mc_is_checked('mc_list_javascript',1); ?> /> <label for="list_javascript"><?php _e('Disable List JavaScript','my-calendar'); ?></label> 
+	<input type="checkbox" id="reset_listjs" name="reset_listjs" /> <label for="reset_listjs"><?php _e('Restore List JavaScript','my-calendar'); ?></label> <input type="checkbox" id="list_javascript" name="list_javascript" value="1" <?php mc_is_checked('mc_list_javascript',1); ?> /> <label for="list_javascript"><?php _e('Disable List JavaScript','my-calendar'); ?></label> 
 	</p>
 	<p>
 	<label for="list-javascript"><?php _e('Edit the jQuery scripts for My Calendar in List format','my-calendar'); ?></label><br /><textarea id="list-javascript" name="mc_listjs" rows="8" cols="80"><?php echo $mc_listjs; ?></textarea>
@@ -101,17 +96,11 @@ function edit_my_calendar_behaviors() {
 	$left_string  = normalize_whitespace($mc_listjs);
 	$right_string = normalize_whitespace($initial_listjs);
 	if ( isset( $_GET['ldiff'] ) ) {
-		echo '<div class="wrap jd-my-calendar" id="diff">';
-		echo wp_text_diff( $left_string,$right_string, array( 'title' => __('Comparing scripts with latest installed version of My Calendar','my-calendar'), 'title_right' => __('Latest (from plugin)','my-calendar'), 'title_left' => __('Current (in use)','my-calendar') ) );
-		echo '</div>';
+		echo wp_text_diff( $left_string, $right_string, $args );
 	} else if ( trim($left_string)!=trim($right_string) ) {
-		echo '<div class="wrap jd-my-calendar">';
 		echo '<div class="updated"><p>'.__('There have been updates to the list view scripts.','my-calendar').' <a href="'.admin_url('admin.php?page=my-calendar-behaviors&amp;ldiff#ldiff').'">'.__('Compare your scripts with latest installed version of My Calendar.','my-calendar').'</a></p></div>';
-		echo '</div>';
 	} else {
-		echo '<div class="wrap jd-my-calendar"><em>';
-			_e('Your script matches that included with My Calendar.','my-calendar');
-		echo '</em></div>';
+		_e('Your script matches that included with My Calendar.','my-calendar');
 	}
 	?>	
 	<p>
@@ -122,7 +111,7 @@ function edit_my_calendar_behaviors() {
    <fieldset id="mdiff">
 	<legend><?php _e('Calendar Behaviors: Mini Calendar View','my-calendar'); ?></legend>
 	<p>
-	<input type="checkbox" id="reset_minijs" name="reset_minijs" /> <label for="reset_minijs"><?php _e('Update Mini View JavaScript','my-calendar'); ?></label> <input type="checkbox" id="mini_javascript" name="mini_javascript" value="1" <?php mc_is_checked('mc_mini_javascript',1); ?> /> <label for="mini_javascript"><?php _e('Disable Mini JavaScript','my-calendar'); ?></label> 
+	<input type="checkbox" id="reset_minijs" name="reset_minijs" /> <label for="reset_minijs"><?php _e('Restore Mini View JavaScript','my-calendar'); ?></label> <input type="checkbox" id="mini_javascript" name="mini_javascript" value="1" <?php mc_is_checked('mc_mini_javascript',1); ?> /> <label for="mini_javascript"><?php _e('Disable Mini JavaScript','my-calendar'); ?></label> 
 	</p>
 	<p>
 	<label for="mini-javascript"><?php _e('Edit jQuery scripts in Mini view','my-calendar'); ?></label><br /><textarea id="mini-javascript" name="mc_minijs" rows="8" cols="80"><?php echo $mc_minijs; ?></textarea>
@@ -131,17 +120,11 @@ function edit_my_calendar_behaviors() {
 	$left_string  = normalize_whitespace($mc_minijs);
 	$right_string = normalize_whitespace($initial_minijs);
 	if ( isset( $_GET['mdiff'] ) ) {
-		echo '<div class="wrap jd-my-calendar" id="diff">';
-		echo wp_text_diff( $left_string,$right_string, array( 'title' => __('Comparing scripts with latest installed version of My Calendar','my-calendar'), 'title_right' => __('Latest (from plugin)','my-calendar'), 'title_left' => __('Current (in use)','my-calendar') ) );
-		echo '</div>';
+		echo wp_text_diff( $left_string, $right_string, $args );
 	} else if ( trim($left_string)!=trim($right_string) ) {
-		echo '<div class="wrap jd-my-calendar">';
 		echo '<div class="updated"><p>'.__('There have been updates to the mini view scripts.','my-calendar').' <a href="'.admin_url('admin.php?page=my-calendar-behaviors&amp;mdiff#mdiff').'">'.__('Compare your scripts with latest installed version of My Calendar.','my-calendar').'</a></p></div>';
-		echo '</div>';
 	} else {
-		echo '<div class="wrap jd-my-calendar"><em>';
-			_e('Your script matches that included with My Calendar.','my-calendar');
-		echo '</em></div>';
+		_e('Your script matches that included with My Calendar.','my-calendar');
 	}
 	?>
 	<p>
@@ -152,7 +135,7 @@ function edit_my_calendar_behaviors() {
     <fieldset id="adiff">
 	<legend><?php _e('Calendar Behaviors: AJAX','my-calendar'); ?></legend>
 	<p>
-	<input type="checkbox" id="reset_ajaxjs" name="reset_ajaxjs" /> <label for="reset_ajaxjs"><?php _e('Update AJAX JavaScript','my-calendar'); ?></label> <input type="checkbox" id="ajax_javascript" name="ajax_javascript" value="1" <?php mc_is_checked('mc_ajax_javascript',1); ?> /> <label for="ajax_javascript"><?php _e('Disable AJAX Navigation','my-calendar'); ?></label> 
+	<input type="checkbox" id="reset_ajaxjs" name="reset_ajaxjs" /> <label for="reset_ajaxjs"><?php _e('Restore AJAX JavaScript','my-calendar'); ?></label> <input type="checkbox" id="ajax_javascript" name="ajax_javascript" value="1" <?php mc_is_checked('mc_ajax_javascript',1); ?> /> <label for="ajax_javascript"><?php _e('Disable AJAX Navigation','my-calendar'); ?></label> 
 	</p>
 	<p>
 	<label for="ajax-javascript"><?php _e('Edit jQuery scripts for AJAX navigation','my-calendar'); ?></label><br /><textarea id="ajax-javascript" name="mc_ajaxjs" rows="8" cols="80"><?php echo $mc_ajaxjs; ?></textarea>
@@ -161,17 +144,11 @@ function edit_my_calendar_behaviors() {
 	$left_string  = normalize_whitespace($mc_ajaxjs);
 	$right_string = normalize_whitespace($initial_ajaxjs);
 	if ( isset( $_GET['adiff'] ) ) {
-		echo '<div class="wrap jd-my-calendar" id="diff">';
-		echo wp_text_diff( $left_string,$right_string, array( 'title' => __('Comparing scripts with latest installed version of My Calendar','my-calendar'), 'title_right' => __('Latest (from plugin)','my-calendar'), 'title_left' => __('Current (in use)','my-calendar') ) );
-		echo '</div>';
+		echo wp_text_diff( $left_string, $right_string, $args );
 	} else if ( trim($left_string)!=trim($right_string) ) {
-		echo '<div class="wrap jd-my-calendar">';
 		echo '<div class="updated"><p>'.__('There have been updates to the AJAX scripts.','my-calendar').' <a href="'.admin_url('admin.php?page=my-calendar-behaviors&amp;adiff#adiff').'">'.__('Compare your scripts with latest installed version of My Calendar.','my-calendar').'</a></p></div>';
-		echo '</div>';
 	} else {
-		echo '<div class="wrap jd-my-calendar"><em>';
-			_e('Your script matches that included with My Calendar.','my-calendar');
-		echo '</em></div>';
+		_e('Your script matches that included with My Calendar.','my-calendar');
 	}
 	?>		
 	</fieldset>

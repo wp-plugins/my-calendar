@@ -383,7 +383,7 @@ function mc_generate_map( $event, $source='event' ) {
 	})(jQuery);
 </script>
 	<div id='mc_gmap_$id' class='mc-gmap-fupup'$styles></div>";
-	return $value;
+	return apply_filters( 'mc_gmap_html', $value, $event );
 }
 
 function mc_expand( $data ) {

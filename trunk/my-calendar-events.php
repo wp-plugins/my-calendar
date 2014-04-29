@@ -25,6 +25,7 @@ function mc_private_categories() {
 function mc_get_all_events( $category, $before, $after, $today, $author, $host, $ltype='', $lvalue='' ) {
 	global $wpdb;
 	$mcdb = $wpdb;
+	$events1 = $events2 = $events3 = array();
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
 	$exclude_categories = mc_private_categories(); 
 	$select_category = ( $category != 'default' ) ? mc_select_category( $category ) : '';
@@ -35,7 +36,7 @@ function mc_get_all_events( $category, $before, $after, $today, $author, $host, 
 	$date = date('Y', current_time('timestamp')).'-'.date('m', current_time('timestamp')).'-'.date('d', current_time('timestamp'));
 	// if a value is non-zero, I'll grab a handful of extra events so I can throw out holidays and others like that.
 	if ( $before > 0 ) {
-		$before = $before + 10;
+		$before = $before + 15;
 		$events1 = $mcdb->get_results("SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
 		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 		JOIN " . MY_CALENDAR_TABLE . " 
@@ -46,8 +47,6 @@ function mc_get_all_events( $category, $before, $after, $today, $author, $host, 
 		AND DATE(occur_begin) < '$date' 
 		$exclude_categories 
 		ORDER BY occur_begin DESC LIMIT 0,$before");
-	} else { 
-		$events1 = array(); 
 	}
 	if ( $today == 'yes' ) {
 		$events3 = $mcdb->get_results("SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
@@ -59,11 +58,9 @@ function mc_get_all_events( $category, $before, $after, $today, $author, $host, 
 		AND event_flagged <> 1 
 		$exclude_categories 
 		AND ( ( DATE(occur_begin) < '$date' AND DATE(occur_end) > '$date' ) OR DATE(occur_begin) = '$date' )");	// event crosses or equals
-	} else {
-		$events3 = array();
 	}
 	if ( $after > 0 ) {
-		$after = $after + 10;
+		$after = $after + 15;
 		$events2 = $mcdb->get_results("SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
 		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 		JOIN " . MY_CALENDAR_TABLE . " 
@@ -73,11 +70,9 @@ function mc_get_all_events( $category, $before, $after, $today, $author, $host, 
 		AND event_flagged <> 1 
 		$exclude_categories 		
 		AND DATE(occur_begin) > '$date' ORDER BY occur_begin ASC LIMIT 0,$after");
-	} else { 
-		$events2 = array(); 
 	}
 	$arr_events = array();
-    if (!empty($events1) || !empty($events2) || !empty($events3) ) {
+    if ( !empty( $events1 ) || !empty( $events2 ) || !empty( $events3 ) ) {
 		$arr_events = array_merge( $events1, $events3, $events2);
 	} 
 	return $arr_events;

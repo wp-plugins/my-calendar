@@ -238,6 +238,7 @@ function edit_my_calendar_config() {
 		update_option( 'mc_bottomnav', implode( ',' ,$bottom ) );
 		update_option( 'mc_topnav', implode( ',' ,$top ) );
 		update_option('mc_show_map',( !empty($_POST['mc_show_map']) && $_POST['mc_show_map']=='on')?'true':'false');
+		update_option('mc_gmap',( !empty($_POST['mc_gmap']) && $_POST['mc_gmap']=='on')?'true':'false');
 		update_option('mc_show_address',( !empty($_POST['mc_show_address']) && $_POST['mc_show_address']=='on')?'true':'false'); 
 		update_option('mc_hide_icons',( !empty($_POST['mc_hide_icons']) && $_POST['mc_hide_icons']=='on')?'true':'false');
 		update_option('mc_event_link_expires',( !empty($_POST['mc_event_link_expires']) && $_POST['mc_event_link_expires']=='on')?'true':'false');
@@ -566,6 +567,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 			<li><?php mc_settings_field( 'mc_show_gcal', __( 'Link to submit event to Google Calendar','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>		
 			<li><?php mc_settings_field( 'mc_hide_icons', __( 'Hide Category icons','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 			<li><?php mc_settings_field( 'mc_show_map', __( 'Link to Google Map','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
+			<li><?php mc_settings_field( 'mc_gmap', __( 'Google Map (single event view only)','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>			
 			<li><?php mc_settings_field( 'mc_show_address', __( 'Event Address','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 			<li><?php mc_settings_field( 'mc_short', __( 'Short description','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 			<li><?php mc_settings_field( 'mc_desc', __( 'Full description','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>

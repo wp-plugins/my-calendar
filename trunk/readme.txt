@@ -77,6 +77,15 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.3.5 =
+
+* Bug fix: Notice in today's events widget
+* Bug fix: Images from pre 2.3.0 configuration did not display in default Single event view.
+* Bug fix: Upcoming events list could return too few events.
+* Bug fix: Display default date format if format not set.
+* Bug fix: Fallback to default JS if custom JS not defined.
+* Filter: added filter to Google Maps code; mc_gmap_html
+* Option: enabled option to disable Google Maps output.
 
 = 2.3.4 =
 

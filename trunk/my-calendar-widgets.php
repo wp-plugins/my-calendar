@@ -361,7 +361,7 @@ function my_calendar_upcoming_events( $before='default',$after='default',$type='
 		} else {
 			$events = mc_get_all_events( $category, $before, $after, $show_today, $author, $host, $ltype, $lvalue );	 // grab all events within reasonable proximity		
 		}
-		
+			
 		if ( !get_option('mc_skip_holidays_category') || get_option('mc_skip_holidays_category') == '' ) { 
 			$holidays = array();
 		} else {
@@ -407,7 +407,8 @@ function mc_span_time( $group_id ) {
 function mc_produce_upcoming_events( $events, $template, $type='list', $order='asc', $skip=0, $before, $after, $show_today='yes', $context='filters' ) {
 	// $events has +5 before and +5 after if those values are non-zero.
 	// $events equals array of events based on before/after queries. Nothing skipped, order is not set, holiday conflicts removed.
-	$output = ''; $near_events = $temp_array = array(); $past = $future = 1;
+	
+	$output = array(); $near_events = $temp_array = array(); $past = $future = 1;
 	$now = current_time( 'timestamp' );
 	$today = date('Y',$now).'-'.date('m',$now).'-'.date('d',$now);		
 	@uksort( $events, "my_calendar_timediff_cmp" );// sort all events by proximity to current date
@@ -497,12 +498,7 @@ function mc_produce_upcoming_events( $events, $template, $type='list', $order='a
 	@usort( $events, "my_calendar_datetime_cmp" ); // sort split events by date
 	// If more items in the list than there should be (possible, due to handling of current-day's events), pop off.
 	$intended = $before + $after + $extra;
-	$actual = count($events);
-	if ( $actual > $intended ) {
-		for ( $i=0;$i<($actual-$intended);$i++ ) {
-			array_pop($events);
-		}
-	}
+
 	if ( is_array( $events ) ) {
 		foreach( array_keys($events) as $key ) {
 			$event =& $events[$key];
@@ -538,7 +534,7 @@ function mc_produce_upcoming_events( $events, $template, $type='list', $order='a
 					$i++;
 				} else {
 					if ( !in_array( $details['dateid'], $skips ) ) {
-						$output .= apply_filters('mc_event_upcoming',"$prepend".jd_draw_template($details,$template,$type)."$append",$event); 	  
+						$output[] = apply_filters('mc_event_upcoming',"$prepend".jd_draw_template($details,$template,$type)."$append",$event); 	  
 						$skips[] = $details['dateid'];
 					}
 				}
@@ -547,10 +543,19 @@ function mc_produce_upcoming_events( $events, $template, $type='list', $order='a
 				}
 			}
 		}
-	} else {
-		$output .= '';
+	} 
+	$actual = count($output);
+	
+	if ( $actual > $intended ) {
+		for ( $i=0;$i<($actual-$intended);$i++ ) {
+			array_pop( $events );
+		}
 	}
-	return $output;
+	$html = '';
+	foreach ( $output as $out ) {
+		$html .= $out;
+	}
+	return $html;
 }
 
 // Widget todays events
@@ -572,7 +577,7 @@ function my_calendar_todays_events( $category='default', $template='default', $s
 
 	$from = $to = date( 'Y-m-d', current_time( 'timestamp' ) );
     $events = my_calendar_events( $from, $to,$category,'','','upcoming',$author, $host );
-	$today = $events[$from];
+	$today = ( isset( $events[$from] ) ) ? $events[$from] : false;
 	$header = "<ul id='todays-events'>";
 	$footer = "</ul>";		
 	$groups = $todays_events = array();
