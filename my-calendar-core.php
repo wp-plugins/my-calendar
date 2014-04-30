@@ -1065,7 +1065,7 @@ function my_calendar_locations_table() {
 
 // Mail functions (originally by Roland)
 function my_calendar_send_email( $event ) {
-	$details = mc_create_tags($event);
+	$details = mc_create_tags( $event );
 	// shift to boolean
 	$send_email_option = ( get_option( 'mc_event_mail' ) == 'true' ) ? true : false;
 	$send_email = apply_filters( 'mc_send_notification', $send_email_option, $details );

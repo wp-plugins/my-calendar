@@ -156,6 +156,7 @@ function mc_create_tags( $event, $context='filters' ) {
 	$e['date_utc'] = date_i18n( apply_filters( 'mc_date_format', $date_format, 'template_begin_ts' ) , $event->ts_occur_begin );
 	$e['date_end_utc'] = date_i18n( apply_filters( 'mc_date_format', $date_format, 'template_end_ts' ) , $event->ts_occur_end );
 	$e['time'] = ( date( 'H:i:s', strtotime( $event->occur_begin ) ) == '00:00:00' )?get_option( 'mc_notime_text' ):date(get_option('mc_time_format'), strtotime( $event->occur_begin ) );
+	$e['time24'] = ( date( 'G:i', strtotime( $event->occur_begin ) ) == '00:00:00' ) ? get_option( 'mc_notime_text' ):date( get_option('mc_time_format'), strtotime( $event->occur_begin ) );
 	$endtime = date( 'H:i:s', strtotime($event->occur_end) );
 	$e['endtime'] = ( $event->occur_end == $event->occur_begin || $event->event_hide_end == 1 )?'':date_i18n( get_option('mc_time_format'),strtotime( $endtime ));
 	$tz = mc_user_timezone();
