@@ -472,7 +472,7 @@ function mc_produce_upcoming_events( $events, $template, $type='list', $order='a
 									}
 
 									if ( my_calendar_date_comp( $beginning,$current ) ) { 	
-										if ( !$same_event && !$same_group ) { $past++; } else { $extra++; }
+										if ( !$same_event && !$same_group ) { $past++; }
 									} else if ( my_calendar_date_equal( $beginning, $current ) ) {  
 										$present = 1;
 										if ( $show_today == 'yes' ) { $extra++; }
@@ -496,8 +496,6 @@ function mc_produce_upcoming_events( $events, $template, $type='list', $order='a
 	}
 	$events = $near_events;	
 	@usort( $events, "my_calendar_datetime_cmp" ); // sort split events by date
-	// If more items in the list than there should be (possible, due to handling of current-day's events), pop off.
-	$intended = $before + $after + $extra;
 
 	if ( is_array( $events ) ) {
 		foreach( array_keys($events) as $key ) {
@@ -544,11 +542,12 @@ function mc_produce_upcoming_events( $events, $template, $type='list', $order='a
 			}
 		}
 	} 
+	// If more items than there should be (due to handling of current-day's events), pop off.
+	$intended = $before + $after + $extra;	
 	$actual = count($output);
-	
 	if ( $actual > $intended ) {
 		for ( $i=0;$i<($actual-$intended);$i++ ) {
-			array_pop( $events );
+			array_pop( $output );
 		}
 	}
 	$html = '';

@@ -465,7 +465,7 @@ function my_calendar_save( $action,$output,$event_id=false ) {
 			do_action( 'mc_save_event', $action, $data, $event_id, $result );				
 			// Call mail function
 			if ( get_option('mc_event_mail') == 'true') {				
-				$event = mc_get_event( $mcdb->insert_id ); // insert_id is last occurrence inserted in the db
+				$event = mc_get_first_event( $event_id ); // insert_id is last occurrence inserted in the db
 				my_calendar_send_email( $event );
 			}
 			if ( $add['event_approved'] == 0 ) {

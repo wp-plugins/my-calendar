@@ -77,6 +77,11 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.3.6 =
+
+* Error in yesterday's bug fix for upcoming events. 
+* Bug fix: Email notifications broken.
+
 = 2.3.5 =
 
 * Bug fix: Notice in today's events widget
