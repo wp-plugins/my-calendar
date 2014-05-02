@@ -139,8 +139,8 @@ function mc_register_styles() {
 	// check whether any scripts are actually enabled.
 	if ( get_option( 'mc_calendar_javascript' ) != 1 || get_option( 'mc_list_javascript' ) != 1 || get_option( 'mc_mini_javascript' ) != 1 || get_option( 'mc_ajax_javascript' ) != 1 ) {
 		if ( @in_array( $id, $js_array ) || get_option( 'mc_show_js' ) == '' ) {
+			wp_enqueue_script( 'jquery' );		
 			if ( get_option( 'mc_gmap' ) == 'true' ) {
-				wp_enqueue_script( 'jquery' );
 				wp_register_script( 'gmaps', "//maps.google.com/maps/api/js?sensor=true" );
 				wp_register_script( 'gmap3', plugins_url( 'js/gmap3.min.js', __FILE__ ), array( 'jquery' ) );
 				wp_enqueue_script( 'gmaps' );
