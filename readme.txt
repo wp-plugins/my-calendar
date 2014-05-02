@@ -77,6 +77,10 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.3.7 =
+
+* Did not enqueue jQuery on front-end unless Google Maps was enabled. (Incorrect condition nesting...) Whoops.
+
 = 2.3.6 =
 
 * Error in yesterday's bug fix for upcoming events. 
