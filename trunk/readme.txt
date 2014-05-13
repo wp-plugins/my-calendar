@@ -5,7 +5,7 @@ Tags: calendar, dates, times, events, scheduling, event manager, event calendar
 Requires at least: 3.4.2
 Tested up to: 3.9.1
 License: GPLv2 or later
-Stable tag: 2.3.7
+Stable tag: 2.3.8
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
@@ -18,14 +18,12 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 * 	[Buy the User's Guide](http://www.joedolson.com/articles/my-calendar/users-guide/) for extensive help with set up and use.
 *   [Buy My Calendar: Submissions](https://www.joedolson.com/articles/my-calendar/submissions/), the PRO extension for front-end event submissions
 
-= Basic Features: =
+= Features: =
 
 *	Standard calendar grid and list views of events
 * 	Show events in monthly, weekly, or daily view.
 * 	Mini-calendar view for compact displays (as widget or as shortcode)
-*	Widget to show today's events
-*	Widget to show upcoming or past events 
-* 	Event Search widget
+*	Widgets: today's events, upcoming events, compact calendar, event search
 *	Custom templates for event output
 *	Limit views by categories, location, author, or host
 *	Disable default CSS and default JavaScript or display only on specific Pages/Posts
@@ -37,7 +35,7 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 * 	Post to Twitter when events are created. (with [WP to Twitter](http://wordpress.org/extend/plugins/wp-to-twitter/))
 *	Location Manager for frequently used venues
 *   Fetch events from a remote MySQL database. (Sharing events in a network of sites.)
-*   Import from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/)
+*   Import events from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/)
 * 	Integrated Help page to guide in use of shortcodes and template tags
 * 	Shortcode Generator to help create customized views of My Calendar
 *   [Developer Documentation](http://www.joedolson.com/articles/doc-category/my-calendar-3/)
