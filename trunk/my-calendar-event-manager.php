@@ -1475,16 +1475,20 @@ function mc_check_data( $action, $post, $i ) {
 		}
 		
 		$begin = date( 'Y-m-d',strtotime( $begin ) );// regardless of entry format, convert.
-		$time = !empty($post['event_time'][$i]) ? trim($post['event_time'][$i]) : '';
-		$endtime = !empty($post['event_endtime'][$i]) ? trim( $post['event_endtime'][$i] ) : date( 'H:i:s',strtotime( $time . '+1 hour') );
-		$endtime = ( $time == '' || $time == '00:00:00')?'00:00:00':$endtime; // set at midnight if all day.
-		$endtime = ($endtime == '')?'00:00:00':date( 'H:i:00',strtotime($endtime) );		
+		$time = !empty( $post['event_time'][$i] ) ? trim( $post['event_time'][$i] ) : '';
+		$endtime = !empty( $post['event_endtime'][$i] ) ? trim( $post['event_endtime'][$i] ) : date( 'H:i:s',strtotime( $time . '+1 hour') );
+		$endtime = ( $time == '' || $time == '00:00:00') ? '00:00:00' : $endtime; // set at midnight if all day.
+		$endtime = ($endtime == '') ? '00:00:00' : date( 'H:i:00',strtotime($endtime) );		
 		// if the end time is midnight but the date is empty, change to tomorrow.
-		if ( $endtime == '00:00:00' && $end == $begin ) {
-			$end = date( 'Y-m-d', strtotime( $begin . ' +1 day' ) );
-		} 
+		if ( $endtime == '00:00:00' && $action != 'edit' ) { // cascading problem if this happens on edits!
+			$end = date( 'Y-m-d', strtotime( $end . ' +1 day' ) );
+		}
+		// prevent setting enddate to incorrect value on copy.
+		if ( strtotime( $end ) < strtotime( $begin ) && $action == 'copy' ) {
+			$end = date( 'Y-m-d', ( strtotime( $begin ) + ( strtotime( $post['prev_event_end'] ) - strtotime( $post['prev_event_begin'] ) ) ) );	
+		}
 		if ( isset($post['event_allday']) && (int) $post['event_allday'] !== 0 ) { $time = $endtime = '00:00:00'; }
-		$end = date( 'Y-m-d',strtotime( $end ) );// regardless of entry format, convert.			
+		$end = date( 'Y-m-d',strtotime( $end ) ); // regardless of entry format, convert.			
 		$repeats = ( !empty($post['event_repeats']) || trim($post['event_repeats'])=='') ? trim($post['event_repeats']) : 0;
 		$host = !empty($post['event_host']) ? $post['event_host'] : $current_user->ID;	
 		$category = !empty($post['event_category']) ? $post['event_category'] : '';
@@ -1506,7 +1510,7 @@ function mc_check_data( $action, $post, $i ) {
 		$event_group_id = ( ( is_array($post['event_begin']) && count($post['event_begin'])>1 ) || mc_event_is_grouped( $group_id_submitted) )?$group_id_submitted:0;
 		$event_span = ( !empty( $post['event_span'] ) && $event_group_id != 0 ) ? 1 : 0;
 		$event_hide_end	= ( !empty( $post['event_hide_end'] ) ) ? (int) $post['event_hide_end'] : 0 ;
-		$event_hide_end = ( $time == ''|| $time == '00:00:00')?1:$event_hide_end; // hide end time automatically on all day events
+		$event_hide_end = ( $time == ''|| $time == '00:00:00') ? 1 : $event_hide_end; // hide end time automatically on all day events
 		// set location
 			if ( $location_preset != 'none') {
 				$sql = "SELECT * FROM " . my_calendar_locations_table() . " WHERE location_id = $location_preset";
@@ -1597,17 +1601,18 @@ function mc_check_data( $action, $post, $i ) {
 		}
 		// A title is required, and can't be more than 255 characters.
 		$title_length = strlen($title);
-		if ( $title_length >= 1 && $title_length <= 255 ) {
-		} else {
-			$errors .= "<div class='error'><p><strong>".__('Error','my-calendar').":</strong> ".__('An event title is required.','my-calendar')."</p></div>";
+		if ( !( $title_length >= 1 && $title_length <= 255 ) ) {
+			$title = __( 'Untitled Event', 'my-calendar' );
 		}
 		// Run checks on recurrence profile                                                                      
-		if (( $repeats == 0 && $recur == 'S') || (($repeats >= 0) && ($recur == 'W'|| $recur == 'B'|| $recur == 'M'|| $recur == 'U'|| $recur == 'Y'|| $recur == 'D'|| $recur == 'E'))) {
+		if ( ( $repeats == 0 && $recur == 'S' ) || ( ( $repeats >= 0 ) && ( $recur == 'W' || $recur == 'B' || $recur == 'M' || $recur == 'U' || $recur == 'Y' || $recur == 'D' || $recur == 'E' ) ) ) {
 			$recur = $recur . $every;
 		} else {
-			$errors .= "<div class='error'><p><strong>".__('Error','my-calendar').":</strong> ".__('The repetition value must be 0 unless a type of recurrence is selected.','my-calendar')."</p></div>";
+			// if it's not valid, assign a default value.
+			$repeats = 0;
+			$recur = 'S1';
 		}
-		if ( function_exists('mcs_submissions') && isset($post['mcs_check_conflicts']) ) {
+		if ( function_exists('mcs_submissions') && isset( $post['mcs_check_conflicts'] ) ) {
 			$conflicts = mcs_check_conflicts( $begin, $time, $end, $endtime, $event_label );
 			if ( $conflicts ) { 
 				$errors .= "<div class='error'><p><strong>".__('Error','my-calendar').":</strong> ".__('That event conflicts with a previously scheduled event.','my-calendar')."</p></div>";
@@ -1616,7 +1621,7 @@ function mc_check_data( $action, $post, $i ) {
 		$spam = mc_spam( $event_link, $desc, $post );
 		// the likelihood that something will be both flagged as spam and have a zero start time 
 		// and yet be legitimate is crazy minimal. Just kill it.
-		if ( $spam == 1 && $begin == '1970-01-01' ) { echo $begin; die; }
+		if ( $spam == 1 && $begin == '1970-01-01' ) { die; }
 		if ( $errors == '' ) {
 			$ok = true;
 			$submit = array(

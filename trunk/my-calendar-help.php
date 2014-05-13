@@ -196,6 +196,9 @@ function my_calendar_help() { ?>
 		<dt><code>{link_title}</code></dt>
 		<dd><?php _e('Displays title of the event as a link if a URL is present, or the title alone if no URL is available.','my-calendar'); ?></dd>
 
+		<dt><code>{link_image}</code></dt>
+		<dd><?php _e('Displays featured image of the event as a link if a URL is present, or the image alone if no URL is available.','my-calendar'); ?></dd>
+		
 		<dt><code>{time}</code></dt>
 		<dd><?php _e('Displays the start time for the event.','my-calendar'); ?></dd>
 

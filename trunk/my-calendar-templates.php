@@ -227,7 +227,13 @@ function mc_create_tags( $event, $context='filters' ) {
 	//$e_label = mc_get_details_label( $event, $e ); // recursive...hmmmm.
 	$e_link = mc_get_details_link( $event );
 	$e['link'] = mc_event_link( $event );
-	$e['link_title'] = ($e['link'] != '')?"<a href='".$event->event_link."'>".stripslashes($event->event_title)."</a>":stripslashes($event->event_title);	
+	if ( $e['link'] ) {
+		$e['link_image'] = str_replace( "alt=''", "alt='".esc_attr( $e['title'] )."'", "<a href='".$e['link']."'>".$e['image']."</a>" );
+		$e['link_title'] = "<a href='".$event->event_link."'>".stripslashes( $e['title'] )."</a>";	
+	} else {
+		$e['link_image'] = $e['image'];
+		$e['link_title'] = $e['title'];
+	}
 	$e['details_link'] = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option('mc_uri') ) )?$e_link:'';
 	$e['details'] = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option('mc_uri') ) )?"<a href='$e_link' class='mc-details'>$e_label</a>":'';
 	$e['linking'] = ( $e['link'] != '' )?$event->event_url:$e_link;

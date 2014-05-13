@@ -305,7 +305,7 @@ function edit_my_calendar_config() {
 		$mc_event_open = $_POST['mc_event_open'];
 		$mc_event_closed = $_POST['mc_event_closed'];
 		$mc_week_caption = $_POST['mc_week_caption'];
-		$my_calendar_caption = $_POST['my_calendar_caption'];
+		$mc_caption = $_POST['mc_caption'];
 		$templates = get_option('mc_templates');
 		$templates['title'] = $mc_title_template;
 		$templates['label'] = $mc_details_label;
@@ -316,7 +316,7 @@ function edit_my_calendar_config() {
 		update_option( 'mc_week_caption',$mc_week_caption );
 		update_option( 'mc_next_events',$mc_next_events );
 		update_option( 'mc_previous_events',$mc_previous_events );
-		update_option( 'mc_caption',$my_calendar_caption );
+		update_option( 'mc_caption',$mc_caption );
 		update_option( 'mc_event_open',$mc_event_open );
 		update_option( 'mc_event_closed',$mc_event_closed );
 		echo "<div class=\"updated\"><p><strong>".__( 'Custom text settings saved','my-calendar' ).".</strong></p></div>";	 
@@ -466,7 +466,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<li><?php mc_settings_field( 'mc_event_open', __( 'If events are open','my-calendar' ), __( 'Registration is open','my-calendar' ) ); ?></li>
 	<li><?php mc_settings_field( 'mc_event_closed', __( 'If events are closed','my-calendar' ), __( 'Registration is closed','my-calendar' ) ); ?></li>	
 	<li><?php mc_settings_field( 'mc_week_caption', __( 'Week view caption:','my-calendar' ), '', __( 'Available tag: <code>{date format=""}</code>','my-calendar' ) ); ?></li>
-	<li><?php mc_settings_field( 'my_calendar_caption', __( 'Extended caption:','my-calendar' ), '', __( 'Follows month/year in list views.','my-calendar' ) ); ?></li>
+	<li><?php mc_settings_field( 'mc_caption', __( 'Extended caption:','my-calendar' ), '', __( 'Follows month/year in list views.','my-calendar' ) ); ?></li>
 	<li><?php mc_settings_field( 'mc_title_template', __( 'Event title template','my-calendar' ), $mc_title_template, "<a href='".admin_url("admin.php?page=my-calendar-help#templates")."'>".__( "Templating Help",'my-calendar' ).'</a>' ); ?></li>
 	<li><?php mc_settings_field( 'mc_details_label', __( 'Event details link text','my-calendar' ), $mc_details_label, __( 'Tags: <code>{title}</code>, <code>{location}</code>, <code>{color}</code>, <code>{icon}</code>, <code>{date}</code>, <code>{time}</code>.','my-calendar' ) ); ?></li>
 	<li><?php mc_settings_field( 'mc_link_label', __( 'Event URL link text','my-calendar' ), $mc_link_label, "<a href='".admin_url("admin.php?page=my-calendar-help#templates")."'>".__( "Templating Help",'my-calendar' ).'</a>' ); ?></li>
