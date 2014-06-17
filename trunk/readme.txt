@@ -5,13 +5,13 @@ Tags: calendar, dates, times, events, scheduling, event manager, event calendar
 Requires at least: 3.4.2
 Tested up to: 3.9.1
 License: GPLv2 or later
-Stable tag: 2.3.8
+Stable tag: 2.3.9
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
 == Description ==
 
-My Calendar provides event management with richly customizable ways to display events. The plug-in can support individual event calendars within WordPress Multisite, multiple calendars displayed by categories, locations or author, or simple lists of upcoming events. 
+My Calendar does WordPress event management with richly customizable ways to display events. The plug-in supports individual event calendars within WordPress Multisite, multiple calendars displayed by categories, locations or author, or simple lists of upcoming events. 
 
 Easy to use for anybody, My Calendar provides enormous potential for developers needing a custom calendar interface.
 
