@@ -39,7 +39,7 @@ function jd_draw_template( $array,$template,$type='list' ) {
 				$template = stripcslashes(str_replace($rss_search,$value,$template));
 			}				
 		} 
-	}		
+	}
 	return stripslashes(trim($template));
 }
 
@@ -236,7 +236,7 @@ function mc_create_tags( $event, $context='filters' ) {
 	}
 	$e['details_link'] = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option('mc_uri') ) )?$e_link:'';
 	$e['details'] = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option('mc_uri') ) )?"<a href='$e_link' class='mc-details'>$e_label</a>":'';
-	$e['linking'] = ( $e['link'] != '' )?$event->event_url:$e_link;
+	$e['linking'] = ( $e['link'] != '' ) ? $event->event_link : $e_link;
 		
 	// location fields
 	$e['location'] = stripslashes($event->event_label);
@@ -252,7 +252,7 @@ function mc_create_tags( $event, $context='filters' ) {
 	$e['link_map'] = $map;
 	$e['map_url'] = $map_url;
 	$e['map'] = mc_generate_map( $event );
-		$url = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option( 'mc_uri' ) ) )?$e_link:$event->event_url;
+		$url = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option( 'mc_uri' ) ) ) ? $e_link : $event->event_url;
 	$e['gcal'] = mc_google_cal( $dtstart, $dtend, $url, stripcslashes( $event->event_title ), mc_maplink( $event, 'gcal' ), $strip_desc );
 	$e['gcal_link'] = "<a href='".mc_google_cal( $dtstart, $dtend, $url, stripcslashes( $event->event_title ) ,  mc_maplink( $event, 'gcal' ), $strip_desc )."'>".sprintf( __('<span class="screen-reader-text">Send %1$s to </span>Google Calendar','my-calendar'), stripcslashes( $event->event_title ) )."</a>";
 	$e['location_access'] = mc_expand( unserialize( mc_location_data( 'location_access', $event->event_location ) ) );

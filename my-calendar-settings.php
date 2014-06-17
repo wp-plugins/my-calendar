@@ -6,7 +6,7 @@ function mc_settings_field( $name, $label, $default='', $note='', $atts=array( '
 	if ( is_array( $atts ) && !empty( $atts ) ) {
 		foreach ( $atts as $key => $value ) { $attributes .= " $key='$value'"; }
 	}
-	$value = ( get_option( $name ) != '' ) ? stripslashes( esc_attr( get_option( $name ) ) ) : $default ;	
+	$value = ( get_option( $name ) != '' ) ? esc_attr( stripslashes( get_option( $name ) ) ) : $default ;	
 	switch ( $type ) {
 		case 'text':
 		case 'url':
@@ -111,8 +111,8 @@ function my_calendar_import() {
 		$cats = $mcdb->get_results("SELECT * FROM " . KO_CALENDAR_CATS, 'ARRAY_A');	
 		$catsql = "";
 		foreach ( $cats as $key ) {
-			$name = mysql_real_escape_string($key['category_name']);
-			$color = mysql_real_escape_string($key['category_colour']);
+			$name = esc_sql($key['category_name']);
+			$color = esc_sql($key['category_colour']);
 			$id = (int) $key['category_id'];
 			$catsql = "INSERT INTO " . my_calendar_categories_table() . " SET 
 				category_id='".$id."',
@@ -309,7 +309,7 @@ function edit_my_calendar_config() {
 		$templates = get_option('mc_templates');
 		$templates['title'] = $mc_title_template;
 		$templates['label'] = $mc_details_label;
-		$templates['link'] = $mc_link_label;	
+		$templates['link'] = $mc_link_label;
 		update_option( 'mc_templates',$templates);
 		update_option( 'mc_event_title_template', $mc_event_title_template );
 		update_option( 'mc_notime_text',$mc_notime_text );
@@ -343,9 +343,9 @@ function edit_my_calendar_config() {
 	
 	// pull templates for passing into functions.
 	$templates = get_option('mc_templates');
-	$mc_title_template = $templates['title'];
-	$mc_details_label = $templates['label'];
-	$mc_link_label = $templates['link'];
+	$mc_title_template = esc_attr( stripslashes( $templates['title'] ) );
+	$mc_details_label = esc_attr( stripslashes( $templates['label'] ) );
+	$mc_link_label = esc_attr( stripslashes( $templates['link'] ) );
 ?> 
 
 <div class="wrap jd-my-calendar mc-settings-page" id="mc_settings">
