@@ -225,7 +225,7 @@ function manage_my_calendar() {
 			if ( mc_can_edit_event( $result[0]['event_author'] ) ) {
 				$delete_occurrences = "DELETE FROM ".my_calendar_event_table()." WHERE occur_event_id = $value";
 				$delete = $mcdb->query($delete_occurrences);
-				$ids[] = mysql_real_escape_string($value);
+				$ids[] = (int) $value;
 				$deleted[] = $value;
 				$i++;
 			}
@@ -248,14 +248,14 @@ function manage_my_calendar() {
 		$nonce=$_REQUEST['_wpnonce'];
 		if (! wp_verify_nonce($nonce,'my-calendar-nonce') ) die("Security check failed");
 		$events = $_POST['mass_edit'];
-		$sql = 'UPDATE '. my_calendar_table() . 'SET event_approved = 1 WHERE event_id IN (';	
+		$sql = 'UPDATE '. my_calendar_table() . ' SET event_approved = 1 WHERE event_id IN (';	
 		$i=0;
 		$approved = array();
 		foreach ($events as $value) {
 			$value = (int) $value;
 			$total = count($events);	
 			if ( current_user_can('mc_approve_events') ) {
-				$sql .= mysql_real_escape_string($value).',';
+				$sql .= (int) $value.',';
 				$approved[] = $value;
 				$i++;
 			}
@@ -909,7 +909,7 @@ function mc_form_fields( $data,$mode,$event_id ) {
 			$array_data = (array) $data;
 			$post_id = mc_event_post( 'add', $array_data, $data->event_id );
 		}
-		if ( get_option( 'mc_use_permalinks' ) == 'true' ) {
+		if ( apply_filters( 'mc_use_permalinks', get_option( 'mc_use_permalinks' ) ) == 'true' ) {
 			$post_link = ( $post_id ) ? get_edit_post_link( $post_id ) : false;
 			$text_link = ( $post_link ) ? sprintf( " &middot; <a href='%s'>".__('Edit Event Post','my-calendar')."</a>", $post_link ) : '';
 		} else {
@@ -945,7 +945,7 @@ function mc_form_fields( $data,$mode,$event_id ) {
 					} else if ( get_option( 'mc_event_approve') == 'true' ) { 
 						$checked = "checked=\"checked\""; 
 					} ?>
-					<input type="checkbox" value="1" id="e_approved" name="event_approved"<?php echo $checked; ?> /> <label for="e_approved"><?php _e('Approve','my-calendar'); ?></label><?php
+					<input type="checkbox" value="1" id="e_approved" name="event_approved" <?php echo $checked; ?> /> <label for="e_approved"><?php _e('Approve','my-calendar'); ?></label><?php
 				} else { // case: editing, approval enabled, user cannot approve ?>
 					<input type="hidden" value="0" name="event_approved" /><?php _e( 'An administrator must approve your new event.','my-calendar' ); 
 				} 

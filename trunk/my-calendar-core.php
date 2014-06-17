@@ -1322,7 +1322,13 @@ $plugins_string
 		$has_read_faq = ( $_POST['has_read_faq'] == 'on')?"Read FAQ":false;
 		$subject = "My Calendar support request. $has_donated; $has_purchased";
 		$message = $request ."\n\n". $data;
-		$from = "From: \"$current_user->display_name\" <$current_user->user_email>\r\n";
+		// Get the site domain and get rid of www. from pluggable.php
+		$sitename = strtolower( $_SERVER['SERVER_NAME'] );
+		if ( substr( $sitename, 0, 4 ) == 'www.' ) {
+				$sitename = substr( $sitename, 4 );
+		}
+		$from_email = 'wordpress@' . $sitename;		
+		$from = "From: \"$current_user->display_name\" <$from_email>\r\nReply-to: \"$current_user->display_name\" <$current_user->user_email>\r\n";
 
 		if ( !$has_read_faq ) {
 			echo "<div class='message error'><p>".__('Please read the FAQ and other Help documents before making a support request.','my-calendar')."</p></div>";
@@ -1603,7 +1609,7 @@ function mc_increment_event( $id, $post=array(), $test=false ) {
 
 function mc_get_details_link( $event ) {
 	// if available, and not querying remotely, use permalink.
-	$permalinks = get_option( 'mc_use_permalinks' );
+	$permalinks = apply_filters( 'mc_use_permalinks', get_option( 'mc_use_permalinks' ) );
 	$permalinks = ( $permalinks === 1 || $permalinks === true || $permalinks === 'true' ) ? true : false;
 	$details_link = $event->event_link;
 	if ( $event->event_post != 0 && get_option( 'mc_remote' ) != 'true' && $permalinks ) {

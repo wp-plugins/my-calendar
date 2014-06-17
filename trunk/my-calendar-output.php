@@ -202,8 +202,8 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 	$image = mc_category_icon( $event );
     $header .= "<div id='$uid-$day_id-$type' class='$type-event "."mc_".sanitize_title( $event->category_name )." vevent'>\n";
 	
-	$title_template = ($templates['title'] == '' ) ? '{title}' : $templates['title'];
-	$event_title = jd_draw_template($data,$title_template);
+	$title_template = ( $templates['title'] == '' ) ? '{title}' : $templates['title'];
+	$event_title = jd_draw_template( $data,$title_template );
 	$event_title = ( $event_title == '' ) ? jd_draw_template( $data, '{title}' ) : $event_title; //prevent empty titles
 	
 	if ( strpos( $event_title,'http' ) === false && $type != 'mini' && $type != 'list' ) { 
@@ -314,6 +314,8 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 
 		if ( get_option( 'mc_gmap' ) == 'true' ) {
 			$map = ( is_singular( 'mc-event' ) || $type == 'single' ) ? mc_generate_map( $event ) : '' ;
+		} else {
+			$map = '';
 		}
 		
 		if ( $event_link != '' && get_option( 'mc_event_link' ) != 'false' ) {

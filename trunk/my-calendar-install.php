@@ -48,7 +48,7 @@ $single_template = addslashes( '<span class="event-time dtstart" title="{dtstart
 <div class="sub-details">
 {hcard}
 <div class="mc-description">{image}{description}</div>
-<p>{ical_html} &bull; {gcal}</p>
+<p>{ical_html} &bull; {gcal_link}</p>
 {map}
 <p><a href="{linking}" class="event-link external">{title}</a></p></div>' );
 

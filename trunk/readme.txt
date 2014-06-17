@@ -43,7 +43,7 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 = Translations =
 
 Available languages (in order of completeness):
-French, Danish, Japanese, Dutch, German, Galician, Spanish, Italian, Danish, Czech, Hindi, Turkish, Polish, Finnish, Slovenian, Portuguese, Russian, Swedish, Romanian, Basque, Persian
+French, Japanese, Danish, Dutch, German, Italian, Galician, Spanish, Danish, Czech, Hindi, Turkish, Polish, Finnish, Slovenian, Portuguese, Russian, Swedish, Romanian, Basque, Persian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -74,6 +74,18 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.3.9 =
+
+* Bug fix: Minor event templates ( title, detail, etc. ) were not properly escaped in admin forms.
+* Bug fix: use reply-to email header in support messages
+* Bug fix: Mass approval of pending events broken.
+* Bug fix: {linking} template tag referenced wrong event URL.
+* Bug fix: My Calendar API RSS no longer dependent on default RSS data.
+* Bug fix: Replace mysql_* functions for PHP 5.5 compatibility.
+* Bug fix: Incorrect template tag in Single view template: {gcal} instead of {gcal_link}
+* Bug fix: PHP notice on $map
+* Language updates: Japanese, German, Italian
 
 = 2.3.8 =
 

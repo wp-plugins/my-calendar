@@ -29,9 +29,8 @@ function mc_mass_delete_locations() {
 		$i=0;
 		$deleted = array();
 		foreach ($locations as $value) {
-			$value = (int) $value;
 			$total = count( $locations );	
-			$ids[] = mysql_real_escape_string( $value );
+			$ids[] = (int) $value;
 			$deleted[] = $value;
 			$i++;
 		}
