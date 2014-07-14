@@ -143,7 +143,7 @@ $initial_minijs = '$(function() {
 	 });
 });';
 
-$default_template = "<strong>{date}</strong> &#8211; {link_title}<br /><span>{time}, {category}</span>";
+$default_template = '<strong>{timerange}, {date}</strong> &#8211; {linking_title}';
 $charset_collate = ''; 
 if ( ! empty( $wpdb->charset ) ) {
 	$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";

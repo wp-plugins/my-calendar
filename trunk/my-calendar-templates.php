@@ -182,7 +182,7 @@ function mc_create_tags( $event, $context='filters' ) {
 	} else {
 		$dates = array();
 	}
-	$e['date'] = ($event->event_span != 1)?$date:mc_format_date_span( $dates, 'simple', $date );
+	$e['date'] = ( $event->event_span != 1 ) ? $date : mc_format_date_span( $dates, 'simple', $date );
 	$e['enddate'] = $date_end;
 	$e['daterange'] = ($date == $date_end)?$date:"<span class='mc_db'>$date</span> <span>&ndash;</span> <span class='mc_de'>$date_end</span>";
 	$e['timerange'] = ( ($e['time'] == $e['endtime'] ) || $event->event_hide_end == 1 )?$e['time']:"<span class='mc_tb'>".$e['time']."</span> <span>&ndash;</span> <span class='mc_te'>".$e['endtime']."</span>";
@@ -205,7 +205,7 @@ function mc_create_tags( $event, $context='filters' ) {
 	
 	// general text fields
 	$strip_desc = mc_newline_replace( strip_tags( $event->event_desc ) );	
-	$e['title'] = stripcslashes( $event->event_title );
+	$e['title'] = stripslashes( $event->event_title );
 	$e['description'] = ( get_option('mc_process_shortcodes') == 'true' && $context == 'filters' ) ? apply_filters( 'the_content', $event->event_desc ) : wpautop( stripslashes( $event->event_desc ) );
 	$e['description_raw'] = stripslashes($event->event_desc);
 	$e['description_stripped'] = strip_tags(stripslashes($event->event_desc));
@@ -229,15 +229,16 @@ function mc_create_tags( $event, $context='filters' ) {
 	$e['link'] = mc_event_link( $event );
 	if ( $e['link'] ) {
 		$e['link_image'] = str_replace( "alt=''", "alt='".esc_attr( $e['title'] )."'", "<a href='".$e['link']."'>".$e['image']."</a>" );
-		$e['link_title'] = "<a href='".$event->event_link."'>".stripslashes( $e['title'] )."</a>";	
+		$e['link_title'] = "<a href='".$event->event_link."'>". $e['title'] ."</a>";	
 	} else {
 		$e['link_image'] = $e['image'];
 		$e['link_title'] = $e['title'];
 	}
-	$e['details_link'] = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option('mc_uri') ) )?$e_link:'';
+	$e['details_link'] = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option('mc_uri') ) ) ? $e_link : '';
 	$e['details'] = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option('mc_uri') ) )?"<a href='$e_link' class='mc-details'>$e_label</a>":'';
 	$e['linking'] = ( $e['link'] != '' ) ? $event->event_link : $e_link;
-		
+	$e['linking_title'] = ( $e['linking'] != '' ) ? "<a href='".$e['linking']."'>". $e['title'] ."</a>" :  $e['title'] ;
+	
 	// location fields
 	$e['location'] = stripslashes($event->event_label);
 	$e['street'] = stripslashes($event->event_street);

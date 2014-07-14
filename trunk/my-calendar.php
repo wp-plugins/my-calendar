@@ -7,7 +7,7 @@ Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
 Text Domain: my-calendar
 Domain Path: lang
-Version: 2.3.9
+Version: 2.3.10
 */
 /*  Copyright 2009-2014  Joe Dolson (email : joe@joedolson.com)
 
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 apply_filters("debug", "MC Started");
 
 global $mc_version, $wpdb;
-$mc_version = '2.3.9';
+$mc_version = '2.3.10';
 
 // Define the tables used in My Calendar
 if ( is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
@@ -324,14 +324,14 @@ function my_calendar_menu() {
 	$icon_path = plugins_url('/my-calendar/images');
 	if ( function_exists( 'add_object_page' ) ) {
 		if ( get_option( 'mc_remote' ) != 'true' ) {
-			add_object_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), 'mc_add_events', 'my-calendar', 'edit_my_calendar',$icon_path.'/icon.png' );
+			add_object_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), 'mc_add_events', apply_filters( 'mc_modify_default','my-calendar' ), apply_filters( 'mc_modify_default_cb', 'edit_my_calendar' ),$icon_path.'/icon.png' );
 		} else {
 			add_object_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), 'mc_edit_settings', 'my-calendar', 'edit_my_calendar_config',$icon_path.'/icon.png' );		
 		}
 	} else {  
 		if ( function_exists( 'add_menu_page' ) ) {
 			if ( get_option( 'mc_remote' ) != 'true' ) {
-				add_menu_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), 'mc_add_events', 'my-calendar', 'edit_my_calendar',$icon_path.'/icon.png' );
+				add_menu_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), 'mc_add_events', apply_filters( 'mc_modify_default','my-calendar' ), apply_filters( 'mc_modify_default_cb', 'edit_my_calendar' ),$icon_path.'/icon.png' );
 			} else {
 				add_menu_page(__('My Calendar','my-calendar'), __('My Calendar','my-calendar'), 'mc_edit_settings', 'my-calendar', 'edit_my_calendar_config',$icon_path.'/icon.png' );
 			}			
@@ -342,7 +342,7 @@ function my_calendar_menu() {
 		add_action( "admin_head", 'my_calendar_add_styles' );
 		if ( get_option( 'mc_remote' ) == 'true' ) {
 		} else { // if we're accessing a remote page, remove these pages.
-			$edit = add_submenu_page('my-calendar', __('Add New Event','my-calendar'), __('Add New Event','my-calendar'), 'mc_add_events', 'my-calendar', 'edit_my_calendar');
+			$edit = add_submenu_page( apply_filters( 'mc_locate_events_page','my-calendar' ), __('Add New Event','my-calendar'), __('Add New Event','my-calendar'), 'mc_add_events', 'my-calendar', 'edit_my_calendar');
 				add_action( "load-$edit", 'mc_event_editing' );	
 			$manage = add_submenu_page('my-calendar', __('Manage Events','my-calendar'), __('Manage Events','my-calendar'), 'mc_add_events', 'my-calendar-manage', 'manage_my_calendar');		
 				add_action( "load-$manage", 'mc_add_screen_option' );

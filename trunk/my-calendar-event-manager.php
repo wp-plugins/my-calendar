@@ -1325,7 +1325,7 @@ function mc_list_events( $type='normal') {
 				$spam = '';
 				$spam_label = '';
 			}
-			if ( current_user_can( 'mc_manage_events') || current_user_can( 'mc_approve_events') || mc_can_edit_event( $event->event_author ) ) {
+			if ( current_user_can( 'mc_manage_events' ) || current_user_can( 'mc_approve_events') || mc_can_edit_event( $event->event_author ) ) {
 			?>
 			<tr class="<?php echo "$class $spam $pending"; ?>">
 				<th scope="row"><input type="checkbox" value="<?php echo $event->event_id; ?>" name="mass_edit[]" id="mc<?php echo $event->event_id; ?>" <?php echo ($event->event_flagged == 1)?'checked="checked"':''; ?> /> <label for="mc<?php echo $event->event_id; ?>"><?php echo $event->event_id; ?></label></th>
