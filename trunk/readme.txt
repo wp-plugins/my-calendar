@@ -5,7 +5,7 @@ Tags: calendar, dates, times, events, scheduling, event manager, event calendar
 Requires at least: 3.4.2
 Tested up to: 3.9.1
 License: GPLv2 or later
-Stable tag: 2.3.9
+Stable tag: 2.3.10
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
