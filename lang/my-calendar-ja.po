@@ -1,0 +1,3766 @@
+# Translation of My Calendar in Japanese
+# This file is distributed under the same license as the My Calendar package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-06-17 16:31:50+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: GlotPress/0.1\n"
+"Project-Id-Version: My Calendar\n"
+
+#: my-calendar-help.php:17 my-calendar.php:181
+msgid "Shortcode Generator"
+msgstr "ショートコード作成"
+
+#: my-calendar-categories.php:146
+msgid "Holiday category changed."
+msgstr ""
+
+#: my-calendar-categories.php:306
+msgid "(Holiday)"
+msgstr "(休日)"
+
+#: my-calendar-event-manager.php:908
+msgid "Edit Event Post"
+msgstr "投稿イベントの編集"
+
+#: my-calendar-event-manager.php:1250
+msgid "Search"
+msgstr "検索"
+
+#: my-calendar-event-manager.php:1269 my-calendar-group-manager.php:742
+msgid "&laquo; Previous<span class=\"screen-reader-text\"> Events</span>"
+msgstr "&laquo; 前の<span class=\"screen-reader-text\"> イベント</span>"
+
+#: my-calendar-event-manager.php:1270 my-calendar-group-manager.php:743
+msgid "Next<span class=\"screen-reader-text\"> Events</span> &raquo;"
+msgstr "次の<span class=\"screen-reader-text\"> イベント</span> &raquo;"
+
+#: my-calendar-generator.php:115
+msgid "Fallback Text"
+msgstr "代替テキスト"
+
+#: my-calendar-generator.php:127
+msgid "Events/Days Before Current Day"
+msgstr ""
+
+#: my-calendar-generator.php:131
+msgid "Events/Days After Current Day"
+msgstr ""
+
+#: my-calendar-generator.php:135
+msgid "Events/Days to Skip"
+msgstr ""
+
+#: my-calendar-generator.php:139
+msgid "Fallback"
+msgstr ""
+
+#: my-calendar-generator.php:143
+msgid "Type of Upcoming Events List"
+msgstr ""
+
+#: my-calendar-generator.php:152
+msgid "Ascending"
+msgstr "昇順"
+
+#: my-calendar-generator.php:153
+msgid "Descending"
+msgstr "降順"
+
+#: my-calendar-help.php:51
+msgid "Main"
+msgstr ""
+
+#: my-calendar-help.php:52
+msgid "Upcoming"
+msgstr ""
+
+#: my-calendar-help.php:53
+msgid "Today"
+msgstr ""
+
+#: my-calendar-help.php:122
+msgid "Displays all available filters as a single form. The <code>show</code> attribute takes three keywords: categories, locations, and access, to indicate which filters to show and in what order."
+msgstr ""
+
+#: my-calendar-help.php:203
+msgid "Human language estimate of how long an event will run."
+msgstr ""
+
+#: my-calendar-help.php:263
+msgid "Like <code>the_excerpt();</code> displays shortdesc if provided, otherwise excerpts description."
+msgstr ""
+
+#: my-calendar-help.php:305
+msgid "URL to submit event to Google Calendar"
+msgstr ""
+
+#: my-calendar-help.php:308
+msgid "Link to submit event to Google Calendar, with class \"gcal\""
+msgstr ""
+
+#: my-calendar-help.php:320
+msgid "Raw URL for the details link; empty if target URL not defined."
+msgstr ""
+
+#: my-calendar-locations.php:230
+msgid "&laquo; Previous<span class=\"screen-reader-text\"> Locations</span>"
+msgstr "&laquo; 前の<span class=\"screen-reader-text\">場所</span>"
+
+#: my-calendar-locations.php:231
+msgid "Next<span class=\"screen-reader-text\"> Locations</span> &raquo;"
+msgstr "次の<span class=\"screen-reader-text\">場所</span> &raquo;"
+
+#: my-calendar-locations.php:404
+msgid "Location Contact Information"
+msgstr "場所の問い合わせ先"
+
+#: my-calendar-output.php:677
+msgid "Events Search for &ldquo;%s&rdquo;"
+msgstr ""
+
+#: my-calendar-output.php:1218 my-calendar-settings.php:464
+msgid "Next"
+msgstr "次へ"
+
+#: my-calendar-output.php:1262 my-calendar-settings.php:463
+msgid "Previous"
+msgstr "前へ"
+
+#: my-calendar-settings.php:567
+msgid "Hide Category icons"
+msgstr "カテゴリーアイコンを非表示にする"
+
+#: my-calendar-templates.php:129
+msgid "Map"
+msgstr "マップ"
+
+#: my-calendar-templates.php:145
+msgid "Visit web site<span class=\"screen-reader-text\">: %s</span>"
+msgstr "Webサイトを訪れる<span class=\"screen-reader-text\">: %s</span>"
+
+#: my-calendar-templates.php:248
+msgid "<span class=\"screen-reader-text\">Send %1$s to </span>Google Calendar"
+msgstr "Googleカレンダーに<span class=\"screen-reader-text\"> %1$s を送信</span>"
+
+#: my-calendar.php:147
+msgid "Buy the <a href='http://www.joedolson.com/articles/my-calendar/submissions/' rel='external'>My Calendar Submissions add-on</a> &mdash; let your audience build your calendar."
+msgstr "<a href='http://www.joedolson.com/articles/my-calendar/submissions/' rel='external'>My Calendar Submissions アドオン</a>を購入 &mdash; みんなでカレンダーを作ろう"
+
+#: my-calendar-behaviors.php:63
+msgid "Calendar Behaviors: Grid View"
+msgstr "カレンダー表示: グリッドビュー"
+
+#: my-calendar-behaviors.php:65
+msgid "Update Grid View JavaScript"
+msgstr "グリッドビュー JavaScriptを更新"
+
+#: my-calendar-behaviors.php:65
+msgid "Disable Grid Javascript"
+msgstr "グリッドJavaScriptを無効にする"
+
+#: my-calendar-behaviors.php:68
+msgid "Edit jQuery scripts for My Calendar in Grid View"
+msgstr "My Calendar グリッドビュー用のjQueryスクリプトを編集"
+
+#: my-calendar-behaviors.php:95
+msgid "Update List JavaScript"
+msgstr ""
+
+#: my-calendar-behaviors.php:95
+msgid "Disable List JavaScript"
+msgstr ""
+
+#: my-calendar-behaviors.php:125
+msgid "Update Mini View JavaScript"
+msgstr ""
+
+#: my-calendar-behaviors.php:125
+msgid "Disable Mini JavaScript"
+msgstr ""
+
+#: my-calendar-behaviors.php:128
+msgid "Edit jQuery scripts in Mini view"
+msgstr "ミニビューのjQueryスクリプトを編集"
+
+#: my-calendar-behaviors.php:153
+msgid "Calendar Behaviors: AJAX"
+msgstr ""
+
+#: my-calendar-behaviors.php:155
+msgid "Update AJAX JavaScript"
+msgstr ""
+
+#: my-calendar-behaviors.php:155
+msgid "Disable AJAX Navigation"
+msgstr ""
+
+#: my-calendar-behaviors.php:158
+msgid "Edit jQuery scripts for AJAX navigation"
+msgstr ""
+
+#: my-calendar-event-manager.php:1414
+msgid "Return to Manage Events"
+msgstr "[イベントの管理] に戻る"
+
+#: my-calendar-help.php:35
+msgid "Add events by clicking on the Add/Edit Events link in the admin or on \"Add Events\" in the toolbar."
+msgstr ""
+
+#: my-calendar-help.php:39
+msgid "Read more help documentation below or <a href=\"%s\">purchase the My Calendar User's Guide</a> to learn more -- but the above is all that you need to do to begin using the calendar."
+msgstr ""
+
+#: my-calendar-help.php:78
+msgid "Example Customized Shortcode"
+msgstr ""
+
+#: my-calendar-help.php:81
+msgid "This shortcode shows the one-week view of the calendar on a post or page including all categories and the category key, in a list format. The standard previous/next navigation will be included above the calendar, the link to the print format (if enabled) will be shown below."
+msgstr ""
+
+#: my-calendar-help.php:84
+msgid "Shortcode attributes:"
+msgstr ""
+
+#: my-calendar-help.php:87
+msgid "Names or IDs of categories in the calendar, comma or pipe separated."
+msgstr ""
+
+#: my-calendar-help.php:88
+msgid "\"list\" or \"mini\"; exclude or any other value to show a calendar grid."
+msgstr ""
+
+#: my-calendar-help.php:89
+msgid "Comma-separated list of navigation to display above or below the calendar. Available: <strong>nav, toggle, jump, print, key, feeds, timeframe</strong>. Order listed determines the order displayed. Defaults in settings will be used if the attribute is blank. Use <em>none</em> to hide all navigation."
+msgstr ""
+
+#: my-calendar-help.php:90
+msgid "Set to \"week\" to show a one week view or to \"day\" to show a single day view. Any other value will show a month view. (Day view always shows as a list.)"
+msgstr ""
+
+#: my-calendar-help.php:91
+msgid "Type of location data to restrict by."
+msgstr ""
+
+#: my-calendar-help.php:92
+msgid "Specific location information to filter to."
+msgstr ""
+
+#: my-calendar-help.php:93
+msgid "Author or comma-separated list (usernames or IDs) to show events from."
+msgstr ""
+
+#: my-calendar-help.php:94
+msgid "Host or comma-separated list (usernames or IDs) to show events from."
+msgstr ""
+
+#: my-calendar-help.php:95
+msgid "String to give shortcode a unique ID."
+msgstr ""
+
+#: my-calendar-help.php:100
+msgid "Additional Views (Upcoming events, today's events)"
+msgstr ""
+
+#: my-calendar-help.php:103
+msgid "Displays the output of the Upcoming Events widget. <code>before</code> and <code>after</code> are numbers; <code>type</code> is either \"event\" or \"days\", and <code>category</code> and <code>author</code> work the same as in the main calendar shortcode. Templates use the template codes listed below. <code>fallback</code> provides text if no events meet your criteria. Order sets sort order for the list &ndash; ascending (<code>asc</code>) or descending (<code>desc</code>). <code>show_today</code> indicates whether to include today's events in the list. <code>Skip</code> is how many events to skip in the list."
+msgstr ""
+
+#: my-calendar-help.php:110
+msgid "Upcoming Events and Today's Events can also be configured as widgets."
+msgstr ""
+
+#: my-calendar-help.php:118
+msgid "Calendar Filter Shortcodes"
+msgstr ""
+
+#: my-calendar-help.php:126
+msgid "List of event locations, as a list of links or as a select form. <code>show</code> is either <code>list</code> or <code>form</code>, <code>type</code> is <code>saved</code> (to show items from stored locations), or <code>custom</code> (to show options configured in location settings). <code>datatype</code> must be the type of data your limits are using: <code>name</code> (business name), <code>city</code>, <code>state</code>, <code>country</code>, <code>zip</code> (postal code), or <code>region</code>."
+msgstr ""
+
+#: my-calendar-help.php:136
+msgid "Information Listing Shortcodes"
+msgstr ""
+
+#: my-calendar-help.php:140
+msgid "List of locations. <code>datatype</code> is the type of data displayed; all lists include a link to the map to that location. In addition to basic location information as in the above shortcode, you can also use \"hcard\" to display all available location information."
+msgstr ""
+
+#: my-calendar-help.php:141
+msgid "Use <code>template</code> to show customized data, sorted by the <code>datatype</code> value."
+msgstr ""
+
+#: my-calendar-help.php:406
+msgid "Displays the ID for the category the event is in."
+msgstr ""
+
+#: my-calendar-core.php:309
+msgid "Characters left: "
+msgstr ""
+
+#: my-calendar-api.php:25
+msgid "The My Calendar API is not enabled."
+msgstr ""
+
+#: my-calendar-generator.php:100
+msgid "For navigational fields above and below the calendar: the defaults specified in your settings will be used if the attribute is left blank. Use <code>none</code> to hide all navigation elements."
+msgstr ""
+
+#: my-calendar-categories.php:222
+msgid "Color"
+msgstr "カラー"
+
+#: my-calendar-categories.php:306
+msgid "(Default)"
+msgstr "(既定)"
+
+#: my-calendar-core.php:598 my-calendar-install.php:253
+msgid "Accessible Entrance"
+msgstr ""
+
+#: my-calendar-core.php:599 my-calendar-install.php:254
+msgid "Accessible Parking Designated"
+msgstr ""
+
+#: my-calendar-core.php:600 my-calendar-install.php:255
+msgid "Accessible Restrooms"
+msgstr ""
+
+#: my-calendar-core.php:601 my-calendar-install.php:256
+msgid "Accessible Seating"
+msgstr ""
+
+#: my-calendar-core.php:602 my-calendar-install.php:257
+msgid "Accessible Transportation Available"
+msgstr ""
+
+#: my-calendar-core.php:603 my-calendar-install.php:258
+msgid "Wheelchair Accessible"
+msgstr ""
+
+#: my-calendar-core.php:604 my-calendar-install.php:259
+msgid "Courtesy Wheelchairs"
+msgstr ""
+
+#: my-calendar-core.php:605 my-calendar-install.php:260
+msgid "Bariatric Seating Available"
+msgstr ""
+
+#: my-calendar-core.php:606 my-calendar-install.php:261
+msgid "Elevator to all public areas"
+msgstr ""
+
+#: my-calendar-core.php:607 my-calendar-install.php:262
+msgid "Braille Signage"
+msgstr ""
+
+#: my-calendar-core.php:608 my-calendar-install.php:263
+msgid "Fragrance-Free Policy"
+msgstr ""
+
+#: my-calendar-core.php:609 my-calendar-core.php:623
+#: my-calendar-install.php:264 my-calendar-install.php:278
+msgid "Other"
+msgstr ""
+
+#: my-calendar-core.php:612 my-calendar-install.php:267
+msgid "Audio Description"
+msgstr ""
+
+#: my-calendar-core.php:613 my-calendar-install.php:268
+msgid "ASL Interpretation"
+msgstr ""
+
+#: my-calendar-core.php:614 my-calendar-install.php:269
+msgid "ASL Interpretation with voicing"
+msgstr ""
+
+#: my-calendar-core.php:615 my-calendar-install.php:270
+msgid "Deaf-Blind ASL"
+msgstr ""
+
+#: my-calendar-core.php:616 my-calendar-install.php:271
+msgid "Real-time Captioning"
+msgstr ""
+
+#: my-calendar-core.php:617 my-calendar-install.php:272
+msgid "Scripted Captioning"
+msgstr ""
+
+#: my-calendar-core.php:618 my-calendar-install.php:273
+msgid "Assisted Listening Devices"
+msgstr ""
+
+#: my-calendar-core.php:619 my-calendar-install.php:274
+msgid "Tactile/Touch Tour"
+msgstr ""
+
+#: my-calendar-core.php:620 my-calendar-install.php:275
+msgid "Braille Playbill"
+msgstr ""
+
+#: my-calendar-core.php:621 my-calendar-install.php:276
+msgid "Large Print Playbill"
+msgstr ""
+
+#: my-calendar-core.php:622 my-calendar-install.php:277
+msgid "Sensory Friendly"
+msgstr ""
+
+#: my-calendar-core.php:992 my-calendar-core.php:1638
+#: my-calendar-generator.php:145
+msgid "Events"
+msgstr "イベント"
+
+#: my-calendar-core.php:1002
+msgid "Locations"
+msgstr "場所"
+
+#: my-calendar-core.php:1323
+msgid "Sorry! I couldn't send that message. Here's the text of your request:"
+msgstr ""
+
+#: my-calendar-core.php:1635
+msgid "event"
+msgstr "イベント"
+
+#: my-calendar-core.php:1636
+msgid "events"
+msgstr "イベント"
+
+#: my-calendar-core.php:1637
+msgid "Event"
+msgstr "イベント"
+
+#: my-calendar-core.php:1649
+msgid "Create New %s"
+msgstr ""
+
+#: my-calendar-core.php:1650
+msgid "Modify %s"
+msgstr ""
+
+#: my-calendar-core.php:1651
+msgid "New %s"
+msgstr ""
+
+#: my-calendar-core.php:1652
+msgid "View %s"
+msgstr ""
+
+#: my-calendar-core.php:1653
+msgid "Search %s"
+msgstr ""
+
+#: my-calendar-core.php:1654
+msgid "No %s found"
+msgstr "%sが見つかりません"
+
+#: my-calendar-core.php:1655
+msgid "No %s found in Trash"
+msgstr "ゴミ箱に%sはありません"
+
+#: my-calendar-core.php:1691
+msgid "%s Categories"
+msgstr "%s カテゴリー"
+
+#: my-calendar-core.php:1709
+msgid "%1$s updated. <a href=\"%2$s\">View %1$s</a>"
+msgstr ""
+
+#: my-calendar-core.php:1710
+msgid "Custom field updated."
+msgstr "カスタムフィールドを更新しました。"
+
+#: my-calendar-core.php:1711
+msgid "Custom field deleted."
+msgstr "カスタムフィールドを削除しました。"
+
+#: my-calendar-core.php:1712
+msgid "%s updated."
+msgstr "更新: %s"
+
+#: my-calendar-core.php:1714
+msgid "%1$s restored to revision from %2$ss"
+msgstr ""
+
+#: my-calendar-core.php:1715
+msgid "%1$s published. <a href=\"%2$s\">View %3$s</a>"
+msgstr "公開済 %1$s <a href=\"%2$s\">プレビュー %3$s</a>"
+
+#: my-calendar-core.php:1716
+msgid "%s saved."
+msgstr "保存: %s"
+
+#: my-calendar-core.php:1717
+msgid "%1$s submitted. <a target=\"_blank\" href=\"%2$s\">Preview %3$s</a>"
+msgstr ""
+
+#: my-calendar-core.php:1718
+msgid "%1$s scheduled for: <strong>%2$s</strong>. <a target=\"_blank\" href=\"%3$s\">Preview %4$s</a>"
+msgstr ""
+
+#: my-calendar-core.php:1719
+msgid "M j, Y @ G:i"
+msgstr ""
+
+#: my-calendar-core.php:1720
+msgid "%1$s draft updated. <a target=\"_blank\" href=\"%2$s\">Preview %3$s</a>"
+msgstr "下書き更新 %1$s <a target=\"_blank\" href=\"%2$s\">プレビュー %3$s</a>"
+
+#: my-calendar-event-manager.php:293
+msgid "Could not archive those events."
+msgstr "イベントをアーカイブできませんでした。"
+
+#: my-calendar-event-manager.php:298
+msgid "%1$d events archived successfully out of %2$d selected."
+msgstr ""
+
+#: my-calendar-event-manager.php:483
+msgid " <a href=\"%s\">View Event</a>"
+msgstr " <a href=\"%s\">イベントを表示</a>"
+
+#: my-calendar-event-manager.php:913
+msgid "Manage events"
+msgstr "イベントの管理"
+
+#: my-calendar-event-manager.php:672
+msgid "Event Description"
+msgstr "イベントの説明"
+
+#: my-calendar-event-manager.php:690
+msgid "Short Description"
+msgstr "イベントの概要"
+
+#: my-calendar-event-manager.php:700 my-calendar-group-manager.php:339
+msgid "Upload"
+msgstr "アップロード"
+
+#: my-calendar-event-manager.php:976
+msgid "Host"
+msgstr "主催者"
+
+#: my-calendar-event-manager.php:735
+msgid "URL"
+msgstr "URL"
+
+#: my-calendar-event-manager.php:735
+msgid "Link will expire after event"
+msgstr "イベント終了後はリンクを無効にする"
+
+#: my-calendar-event-manager.php:1007
+msgid "Date and Time"
+msgstr "日時"
+
+#: my-calendar-event-manager.php:1890
+msgid "Date (YYYY-MM-DD)"
+msgstr "日付 (YYYY-MM-DD)"
+
+#: my-calendar-event-manager.php:1891
+msgid "From"
+msgstr "開始"
+
+#: my-calendar-event-manager.php:1893
+msgid "To"
+msgstr "終了"
+
+#: my-calendar-event-manager.php:1901
+msgid "End Date (YYYY-MM-DD, optional)"
+msgstr "終了日 (YYYY-MM-DD, オプション)"
+
+#: my-calendar-event-manager.php:1024
+msgid "Enter start and end dates/times for each occurrence of the event."
+msgstr "イベントの各実施回の開始・終了日時を入力してください。"
+
+#: my-calendar-event-manager.php:1032
+msgid "Scheduled dates for this event"
+msgstr "このイベントの予定日"
+
+#: my-calendar-event-manager.php:1034
+msgid "Editing a single date of an event changes only that date. Editing the root event changes all events in the series."
+msgstr ""
+
+#: my-calendar-event-manager.php:758
+msgid "Recurring"
+msgstr "繰り返し"
+
+#: my-calendar-event-manager.php:785
+msgid "Event Access"
+msgstr "イベント アクセス"
+
+#: my-calendar-locations.php:409
+msgid "Secondary Phone"
+msgstr "その他の電話"
+
+#: my-calendar-group-manager.php:492 my-calendar-locations.php:416
+msgid "Location Accessibility"
+msgstr "バリアフリー"
+
+#: my-calendar-event-manager.php:1151
+msgid "Notes"
+msgstr ""
+
+#: my-calendar-event-manager.php:1259
+msgid "Archived"
+msgstr "アーカイブ済"
+
+#: my-calendar-event-manager.php:1282 my-calendar-event-manager.php:1402
+msgid "Delete events"
+msgstr "イベントを削除"
+
+#: my-calendar-event-manager.php:1284 my-calendar-event-manager.php:1404
+msgid "Approve events"
+msgstr "イベントを承認"
+
+#: my-calendar-event-manager.php:1287 my-calendar-event-manager.php:1407
+msgid "Archive events"
+msgstr "イベントをアーカイブ"
+
+#: my-calendar-event-manager.php:1412
+msgid "View Archived Events"
+msgstr "アーカイブ済イベントを表示する"
+
+#: my-calendar-event-manager.php:1593
+msgid "An event title is required."
+msgstr ""
+
+#: my-calendar-event-manager.php:1932
+msgid "Tickets URL"
+msgstr "チケットのURL"
+
+#: my-calendar-event-manager.php:1935
+msgid "Registration Information"
+msgstr "登録情報"
+
+#: my-calendar-group-manager.php:382
+msgid "Link will expire after event."
+msgstr "イベント終了後はリンクを無効にする"
+
+#: my-calendar-help.php:134
+msgid "List of filterable accessibility services, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>."
+msgstr ""
+
+#: my-calendar-help.php:180
+msgid "Template Tags"
+msgstr "テンプレート タグ"
+
+#: my-calendar-help.php:275
+msgid "Unordered list of accessibility options for this event."
+msgstr ""
+
+#: my-calendar-help.php:284
+msgid "Event post thumbnail, full size, full HTML"
+msgstr ""
+
+#: my-calendar-help.php:290
+msgid "Event post thumbnail, %s size, full HTML"
+msgstr ""
+
+#: my-calendar-help.php:329
+msgid "URL to ticketing for event."
+msgstr ""
+
+#: my-calendar-help.php:332
+msgid "Registration information about this event."
+msgstr "このイベントの登録情報"
+
+#: my-calendar-help.php:384
+msgid "Output Google Map if sufficient address information is available. If not, will be empty."
+msgstr ""
+
+#: my-calendar-help.php:387
+msgid "Unordered list of accessibility options for this location."
+msgstr ""
+
+#: my-calendar-locations.php:17
+msgid "Location Controls Updated"
+msgstr ""
+
+#: my-calendar-locations.php:322
+msgid "Location Address"
+msgstr "住所情報"
+
+#: my-calendar-locations.php:273
+msgid "Control Input Options for Location Fields"
+msgstr ""
+
+#: my-calendar-locations.php:282
+msgid "Location Controls for %s"
+msgstr ""
+
+#: my-calendar-locations.php:295
+msgid "Save Location Controls"
+msgstr ""
+
+#: my-calendar-output.php:302
+msgid "This event is in a series. Register for the first event in this series to attend."
+msgstr ""
+
+#: my-calendar-output.php:1329
+msgid "Filter Events"
+msgstr "イベントの絞り込み"
+
+#: my-calendar-output.php:1430 my-calendar-output.php:1431
+msgid "Accessibility Services"
+msgstr ""
+
+#: my-calendar-output.php:1433
+msgid "No Limit"
+msgstr ""
+
+#: my-calendar-output.php:1448
+msgid "Limit by Access"
+msgstr ""
+
+#: my-calendar-settings.php:425
+msgid "Enable external API."
+msgstr ""
+
+#: my-calendar-settings.php:455
+msgid "Text Settings"
+msgstr "テキストの設定"
+
+#: my-calendar-settings.php:460
+msgid "Customize Text Fields"
+msgstr "テキストフィールドのカスタマイズ"
+
+#: my-calendar-settings.php:463 my-calendar-settings.php:464
+msgid "Use <code>{date}</code> to display date in navigation."
+msgstr ""
+
+#: my-calendar-settings.php:468
+msgid "Follows month/year in list views."
+msgstr ""
+
+#: my-calendar-settings.php:485
+msgid "Output Settings"
+msgstr "出力設定"
+
+#: my-calendar-settings.php:506
+msgid "Set Default Navigation Element Order (can be overridden in shortcodes)"
+msgstr ""
+
+#: my-calendar-settings.php:513
+msgid "Primary Previous/Next Buttons"
+msgstr ""
+
+#: my-calendar-settings.php:514
+msgid "Switch between list and grid views"
+msgstr ""
+
+#: my-calendar-settings.php:515
+msgid "Jump to any other month/year"
+msgstr ""
+
+#: my-calendar-settings.php:516
+msgid "Link to printable view"
+msgstr ""
+
+#: my-calendar-settings.php:517
+msgid "Toggle between day, week, and month view"
+msgstr ""
+
+#: my-calendar-settings.php:518
+msgid "The calendar"
+msgstr ""
+
+#: my-calendar-settings.php:520
+msgid "Links to RSS and iCal output"
+msgstr ""
+
+#: my-calendar-settings.php:521
+msgid "Elements below here will be hidden."
+msgstr ""
+
+#: my-calendar-settings.php:575
+msgid "Registration info"
+msgstr "登録情報"
+
+#: my-calendar-settings.php:590
+msgid "If a recurring event falls on a date that doesn't exist (like the 5th Wednesday in February), move it back one week."
+msgstr ""
+
+#: my-calendar-settings.php:591
+msgid "If an event coincides with an event in the designated \"Holiday\" category, do not show the event."
+msgstr ""
+
+#: my-calendar-settings.php:622
+msgid "Date formats use syntax from the <a href=\"http://php.net/date\">PHP <code>date()</code> function</a>. Save to update sample output."
+msgstr ""
+
+#: my-calendar-settings.php:648 my-calendar.php:387
+msgid "Event Accessibility"
+msgstr "イベント アクセシビリティ"
+
+#: my-calendar-settings.php:682
+msgid "WP MultiSite configurations"
+msgstr ""
+
+#: my-calendar-settings.php:776
+msgid "Notification messages are sent to:"
+msgstr ""
+
+#: my-calendar-settings.php:777
+msgid "Notification messages are sent from:"
+msgstr ""
+
+#: my-calendar-settings.php:778
+msgid "New event added"
+msgstr ""
+
+#: my-calendar-templates.php:279
+msgid "Event Details %s"
+msgstr ""
+
+#: my-calendar-templates.php:520
+msgid "the %s of each month"
+msgstr ""
+
+#: my-calendar-templates.php:521
+msgid "the %s %s of each month"
+msgstr ""
+
+#: my-calendar.php:162
+msgid "<strong>Or make a donation today!</strong> Every donation counts - donate $5, $20, or $100 and help me keep this plug-in running!"
+msgstr ""
+
+#: my-calendar.php:308
+msgid "All Template Tags &raquo;"
+msgstr ""
+
+#: my-calendar.php:349
+msgid "Event Categories"
+msgstr ""
+
+#: my-calendar.php:350
+msgid "Event Locations"
+msgstr ""
+
+#: my-calendar.php:351
+msgid "Event Groups"
+msgstr "イベントグループ"
+
+#: my-calendar-event-manager.php:856
+msgid "This event ends after the next occurrence begins. Events must end <strong>before</strong> the next occurrence begins."
+msgstr ""
+
+#: my-calendar-categories.php:320
+msgid "There are no categories in the database - or something has gone wrong!"
+msgstr ""
+
+#: my-calendar-event-manager.php:856
+msgid "Event end date: <strong>%s %s</strong>. Next occurrence starts: <strong>%s</strong>"
+msgstr ""
+
+#: my-calendar-event-manager.php:800
+msgid "Event Registration"
+msgstr ""
+
+#: my-calendar-help.php:98
+msgid "The main My Calendar shortcode can be generated from a button in your post and page editor. The mini calendar can also be accessed and configured as a widget."
+msgstr ""
+
+#: my-calendar-help.php:107
+msgid "Displays the output of the Today's Events widget, with four configurable attributes: category, author, template and fallback text."
+msgstr ""
+
+#: my-calendar-help.php:130
+msgid "List of event categories, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>."
+msgstr ""
+
+#: my-calendar-help.php:152
+msgid "My Calendar is designed to manage multiple calendars. The basis for these calendars are categories; you can setup a calendar page which includes all categories, or you can dedicate separate pages to calendars in each category. For an example, this might be useful for you in managing the tour calendars for multiple bands; event calendars for a variety of locations, etc."
+msgstr ""
+
+#: my-calendar-help.php:155
+msgid "The pre-installed category icons may not be what you need. I assume that you'll upload your own icons -- place your custom icons in a folder at \"my-calendar-custom\" to avoid having them overwritten by upgrades."
+msgstr ""
+
+#: my-calendar-help.php:166
+msgid "My Calendar comes with five default stylesheets. My Calendar will retain your changes to stylesheets, but if you want to add an entirely new stylesheet, you may wish to store it in the My Calendar custom styles directory."
+msgstr ""
+
+#: my-calendar-help.php:169
+msgid "Your custom style directory is"
+msgstr "カスタム スタイル ディレクトリ: "
+
+#: my-calendar-help.php:172
+msgid "You can also add custom styles to your custom directory or your theme directory for print styles, mobile styles, and tablet styles. <code>mc-print.css</code>, <code>mc-mobile.css</code>, and <code>mc-tablet.css</code>."
+msgstr ""
+
+#: my-calendar-help.php:381
+msgid "Produces the URL for the Google Map for the event location if sufficient address information is available. If not, will be empty."
+msgstr ""
+
+#: my-calendar-settings.php:470
+msgid "Tags: <code>{title}</code>, <code>{location}</code>, <code>{color}</code>, <code>{icon}</code>, <code>{date}</code>, <code>{time}</code>."
+msgstr ""
+
+#: my-calendar-settings.php:472
+msgid "Title element template"
+msgstr ""
+
+#: my-calendar-settings.php:472
+msgid "Current: %s"
+msgstr ""
+
+#: my-calendar-settings.php:494
+msgid "Where is your main calendar page?"
+msgstr ""
+
+#: my-calendar-settings.php:495
+msgid "Target <abbr title=\"Uniform resource locator\">URL</abbr> for mini calendar date links:"
+msgstr ""
+
+#: my-calendar-settings.php:561
+msgid "Event Details Pop-up"
+msgstr ""
+
+#: my-calendar-settings.php:564
+msgid "Author's name"
+msgstr ""
+
+#: my-calendar-settings.php:565
+msgid "Link to single event iCal download"
+msgstr ""
+
+#: my-calendar-settings.php:566
+msgid "Link to submit event to Google Calendar"
+msgstr ""
+
+#: my-calendar-settings.php:568
+msgid "Link to Google Map"
+msgstr "Google Mapへのリンク"
+
+#: my-calendar-settings.php:569
+msgid "Event Address"
+msgstr ""
+
+#: my-calendar-settings.php:570
+msgid "Short description"
+msgstr ""
+
+#: my-calendar-settings.php:571
+msgid "Full description"
+msgstr ""
+
+#: my-calendar-settings.php:573
+msgid "Link to event details (requires <a href='#mc_uri'>URL</a>)"
+msgstr ""
+
+#: my-calendar-settings.php:574
+msgid "External link"
+msgstr ""
+
+#: my-calendar-settings.php:579
+msgid "Event Category Display"
+msgstr ""
+
+#: my-calendar-settings.php:581
+msgid "No category colors with titles."
+msgstr ""
+
+#: my-calendar-settings.php:581
+msgid "Titles are in category colors."
+msgstr ""
+
+#: my-calendar-settings.php:581
+msgid "Titles have category color as background."
+msgstr ""
+
+#: my-calendar-settings.php:582
+msgid "Optimize contrast for category colors."
+msgstr "カテゴリーカラーのコントラストを最適化"
+
+#: my-calendar-settings.php:462
+msgid "Label for all-day events"
+msgstr "終日のイベントのラベル"
+
+#: my-calendar-generator.php:103 my-calendar-widgets.php:676
+msgid "Navigation above calendar"
+msgstr "カレンダーの上に表示するナビゲーション"
+
+#: my-calendar-generator.php:107 my-calendar-widgets.php:680
+msgid "Navigation below calendar"
+msgstr "カレンダーの下に表示するナビゲーション"
+
+#: my-calendar-generator.php:68 my-calendar-widgets.php:684
+msgid "Limit by Author"
+msgstr "登録者で絞り込む"
+
+#: my-calendar-generator.php:70 my-calendar-widgets.php:686
+msgid "All authors"
+msgstr "すべての登録者"
+
+#: my-calendar-generator.php:75 my-calendar-widgets.php:691
+msgid "Limit by Host"
+msgstr "主催者で絞り込む"
+
+#: my-calendar-generator.php:77 my-calendar-widgets.php:693
+msgid "All hosts"
+msgstr "すべての主催者"
+
+#: my-calendar-core.php:1062
+msgid "Event Notifications"
+msgstr "イベントの通知"
+
+#: my-calendar-core.php:1374 my-calendar-generator.php:146
+msgid "Days"
+msgstr "日"
+
+#: my-calendar-core.php:1375
+msgid "Days, weekdays only"
+msgstr "日 (平日のみ)"
+
+#: my-calendar-core.php:1376
+msgid "Weeks"
+msgstr "週"
+
+#: my-calendar-core.php:1377
+msgid "Months by date (e.g., the 24th of each month)"
+msgstr "月 (日付指定　例： 毎月24日)"
+
+#: my-calendar-core.php:1378
+msgid "Month by day (e.g., the 3rd Monday of each month)"
+msgstr "月 (曜日指定　例： 毎月第3月曜日)"
+
+#: my-calendar-event-manager.php:310
+msgid "My Events"
+msgstr "イベント"
+
+#: my-calendar-event-manager.php:391
+msgid "Return to Calendar"
+msgstr "カレンダーに戻る"
+
+#: my-calendar-event-manager.php:481
+msgid "Event added. It will now show on the calendar."
+msgstr "イベントを追加しました。カレンダーに表示されます。"
+
+#: my-calendar-event-manager.php:966
+msgid "Post to Twitter (via WP to Twitter)"
+msgstr "Twitterに投稿 (WP to Twitter利用)"
+
+#: my-calendar-event-manager.php:763
+msgid "Repeats"
+msgstr "繰り返し"
+
+#: my-calendar-event-manager.php:763
+msgid "times"
+msgstr "回"
+
+#: my-calendar-event-manager.php:764
+msgid "every"
+msgstr "間隔"
+
+#: my-calendar-event-manager.php:1242
+msgid "Spam"
+msgstr "スパム"
+
+#: my-calendar-event-manager.php:1317
+msgid "Possible spam"
+msgstr "スパムの可能性あり"
+
+#: my-calendar-event-manager.php:1356 my-calendar-event-manager.php:1384
+#: my-calendar-event-manager.php:1393
+msgid "Show only: "
+msgstr "表示のみ: "
+
+#: my-calendar-event-manager.php:1369
+msgid "Every %d days"
+msgstr "%d日毎"
+
+#: my-calendar-event-manager.php:1370
+msgid "Every %d weekdays"
+msgstr "%d日毎(平日)"
+
+#: my-calendar-event-manager.php:1371
+msgid "Every %d weeks"
+msgstr "%d週毎"
+
+#: my-calendar-event-manager.php:1373
+msgid "Every %d months (by date)"
+msgstr "%d月毎 (日付固定)"
+
+#: my-calendar-event-manager.php:1375
+msgid "Every %d years"
+msgstr "%d年毎"
+
+#: my-calendar-event-manager.php:1379 my-calendar-event-manager.php:1380
+msgid "&ndash; %d Times"
+msgstr "&ndash; %d 回"
+
+#: my-calendar-event-manager.php:1420
+msgid "There are no events in the database meeting your current criteria."
+msgstr "条件にマッチするイベントがデータベース内にありません。"
+
+#: my-calendar-group-manager.php:111
+msgid "Select an event group to edit."
+msgstr "編集するイベントグループを選択してください。"
+
+#: my-calendar-help.php:242
+msgid "Displays the gravatar image for the event author."
+msgstr "イベント登録者のGravatar画像を表示します。"
+
+#: my-calendar-help.php:251
+msgid "Displays the gravatar image for the event host."
+msgstr "イベント主催者の Gravatar 画像を表示します。"
+
+#: my-calendar-help.php:278
+msgid "Image associated with the event. (HTMl)"
+msgstr "イベントに関連付けされた画像 (HTML)"
+
+#: my-calendar-help.php:281
+msgid "Image associated with the event. (image URL only)"
+msgstr "イベントに関連付けされた画像 (URLのみ)"
+
+#: my-calendar-help.php:323
+msgid "Provides a link to the defined event URL when present, otherwise the {details} link."
+msgstr "イベントの定義で設定されているリンク先URLを表示します。リンクが設定されていなければ {details} リンクを表示します。"
+
+#: my-calendar-output.php:668
+msgid "Sorry, your search produced no results."
+msgstr "見つかりません。"
+
+#: my-calendar-event-manager.php:1250 my-calendar-output.php:1544
+#: my-calendar-output.php:1546
+msgid "Search Events"
+msgstr "イベントの検索："
+
+#: my-calendar-settings.php:406
+msgid "My Calendar Management"
+msgstr "My Calendar の管理"
+
+#: my-calendar-settings.php:467
+msgid "Available tag: <code>{date format=\"\"}</code>"
+msgstr "利用可能なタグ: <code>{date format=\"\"}</code>"
+
+#: my-calendar-settings.php:562
+msgid "The checked items will be shown in your event details view. Does not apply if you are using a custom template"
+msgstr "チェックを入れた項目は、イベント詳細画面に表示されます。(カスタムテンプレートを使用している場合は適用されません。)"
+
+#: my-calendar-settings.php:572
+msgid "Process WordPress shortcodes in descriptions"
+msgstr "説明欄でショートコードを有効にする"
+
+#: my-calendar-settings.php:648 my-calendar.php:387
+msgid "Event Location Dropdown Menu"
+msgstr "「イベントの場所」ドロップダウン メニュー"
+
+#: my-calendar-settings.php:648 my-calendar.php:387
+msgid "Event Short Description field"
+msgstr "イベントの概要"
+
+#: my-calendar-settings.php:648 my-calendar.php:387
+msgid "Event Description Field"
+msgstr "イベントの説明"
+
+#: my-calendar-settings.php:648 my-calendar.php:387
+msgid "Event Category field"
+msgstr "イベントのカテゴリー"
+
+#: my-calendar-settings.php:648 my-calendar.php:387
+msgid "Event Image field"
+msgstr "イベントの画像"
+
+#: my-calendar-settings.php:648 my-calendar.php:387
+msgid "Event Link field"
+msgstr "イベントのリンク"
+
+#: my-calendar-settings.php:648 my-calendar.php:387
+msgid "Event Recurrence Options"
+msgstr "イベントの繰り返しオプション"
+
+#: my-calendar-settings.php:648 my-calendar.php:387
+msgid "Event Registration options"
+msgstr "イベントの登録オプション"
+
+#: my-calendar-settings.php:648 my-calendar.php:387
+msgid "Event Location fields"
+msgstr "イベントの場所"
+
+#: my-calendar-settings.php:780
+msgid "Send HTML email"
+msgstr "HTMLメールを送信"
+
+#: my-calendar-widgets.php:6
+msgid "My Calendar: Simple Event Search"
+msgstr "My Calendar: イベント検索"
+
+#: my-calendar-widgets.php:196
+msgid "Show current month"
+msgstr "今月を表示"
+
+#: my-calendar-widgets.php:197
+msgid "Show current year"
+msgstr "今年を表示"
+
+#: my-calendar.php:345
+msgid "Add New Event"
+msgstr "新規イベントの追加"
+
+#: my-calendar.php:355
+msgid "Script Editor"
+msgstr "スクリプト編集"
+
+#: my-calendar.php:401
+msgid "Apply"
+msgstr "適用"
+
+#: my-calendar.php:404
+msgid "Event editing fields to show"
+msgstr "表示するイベント編集項目"
+
+#: my-calendar-event-manager.php:1575
+msgid "The time field must either be blank or be entered in the format hh:mm am/pm"
+msgstr "時刻欄は空欄にするか、「hh:mm am/pm」形式で入力"
+
+#: my-calendar-event-manager.php:1580
+msgid "The end time field must either be blank or be entered in the format hh:mm am/pm"
+msgstr "修了時刻欄は空欄にするか、「hh:mm am/pm」形式で入力"
+
+#: my-calendar-help.php:18
+msgid "Shortcodes"
+msgstr "ショートコード"
+
+#: my-calendar-help.php:19
+msgid "Icons"
+msgstr "アイコン"
+
+#: my-calendar-help.php:20
+msgid "Styles"
+msgstr "スタイル"
+
+#: my-calendar-help.php:21
+msgid "Templating"
+msgstr "テンプレート"
+
+#: my-calendar-help.php:22
+msgid "Support Form"
+msgstr "サポートフォーラム"
+
+#: my-calendar-help.php:31 my-calendar.php:180
+msgid "Getting Started"
+msgstr "はじめに"
+
+#: my-calendar-help.php:34
+msgid "Add the My Calendar shortcode (<code>[my_calendar]</code>) to a page."
+msgstr "My Calendar ショートコード (<code>[my_calendar]</code>) をページに挿入する。"
+
+#: my-calendar-help.php:36
+msgid "Select your preferred stylesheet in the Styles Editor"
+msgstr "[CSS編集]で、好みのスタイルシートを選択する。"
+
+#: my-calendar-help.php:215
+msgid "Displays the date on which the series of events began (for recurring events)."
+msgstr "一連のイベントの開始日を表示 (繰り返しのあるイベント用)"
+
+#: my-calendar-help.php:260
+msgid "Displays short description with any HTML stripped out."
+msgstr "イベントの概要を表示 (HTMLタグを含まない)"
+
+#: my-calendar-help.php:272
+msgid "Displays description with any HTML stripped out."
+msgstr "イベントの説明を表示 (HTMLタグを含まない)"
+
+#: my-calendar-settings.php:152
+msgid "Dropping occurrences database table"
+msgstr ""
+
+#: my-calendar-settings.php:154
+msgid "Reinstalling occurrences database table."
+msgstr ""
+
+#: my-calendar-settings.php:156
+msgid "Generating event occurrences."
+msgstr ""
+
+#: my-calendar-settings.php:158
+msgid "Event generation completed."
+msgstr "イベントの作成が完了しました。"
+
+#: my-calendar-settings.php:265
+msgid "Date/Time Format Settings saved"
+msgstr "日付/時刻書式の設定を保存しました"
+
+#: my-calendar-event-manager.php:1297 my-calendar-settings.php:391
+msgid "Date/Time"
+msgstr "日/時"
+
+#: my-calendar-settings.php:439
+msgid "Re-generate event occurrences table."
+msgstr "イベント発生テーブルを生成し直す"
+
+#: my-calendar-settings.php:490
+msgid "Calendar Link Targets"
+msgstr "カレンダーのリンク先"
+
+#: my-calendar-settings.php:587
+msgid "Event Scheduling Defaults"
+msgstr "イベントスケジューリングの設定"
+
+#: my-calendar-settings.php:603
+msgid "Calendar Time Formats"
+msgstr "カレンダーの日時書式"
+
+#: my-calendar-settings.php:608
+msgid "Set default date/time formats"
+msgstr "既定の日時書式を設定"
+
+#: my-calendar-settings.php:617
+msgid "Month format (calendar headings)"
+msgstr "月の書式 (カレンダーの見出し用)"
+
+#: my-calendar-settings.php:628
+msgid "Save Date/Time Settings"
+msgstr "日時の設定を保存"
+
+#: my-calendar-templating.php:28
+msgid "RSS Feed Output Template saved"
+msgstr "RSSフィード出力テンプレートを保存しました"
+
+#: my-calendar-templating.php:157
+msgid "My Calendar: RSS Event Template"
+msgstr "My Calendar: RSS イベントテンプレート"
+
+#: my-calendar-templating.php:159
+msgid "Notice: HTML templates are very forgiving of errors. RSS templates are not. Be sure to test your changes."
+msgstr "注意: RSSテンプレートは、HTMLテンプレートと違って、記述ミスがあるとエラーにつながりやすいので、変更にあたってはテストを行ってください。"
+
+#: my-calendar-templating.php:163
+msgid "Use this custom RSS event template"
+msgstr "このカスタムRSSイベントテンプレートを使用"
+
+#: my-calendar-templating.php:166
+msgid "Your custom template for events in the RSS feed."
+msgstr "RSSフィード用のカスタムテンプレート"
+
+#: my-calendar-templating.php:169
+msgid "Save RSS Template"
+msgstr "RSSテンプレートを保存"
+
+#: my-calendar-widgets.php:87 my-calendar-widgets.php:189
+msgid "Widget title links to:"
+msgstr "ウィジェットタイトルのリンク先:"
+
+#: my-calendar-widgets.php:103 my-calendar-widgets.php:231
+msgid "Host or hosts to show:"
+msgstr "主催者名:"
+
+#: my-calendar-widgets.php:668
+msgid "Widget Title Link"
+msgstr "ウィジェットタイトルリンク"
+
+#: my-calendar.php:186
+msgid "Help translate this plug-in!"
+msgstr "プラグインの翻訳にご協力を！"
+
+#: my-calendar-event-manager.php:1897
+msgid "All day event"
+msgstr "終日のイベント"
+
+#: my-calendar-categories.php:100 my-calendar-categories.php:140
+msgid "Default category changed."
+msgstr "既定のカテゴリーが変更されました。"
+
+#: my-calendar-categories.php:153
+msgid "Category edited successfully."
+msgstr "カテゴリーが正常に編集されました。"
+
+#: my-calendar-categories.php:155
+msgid "Category was not edited."
+msgstr "カテゴリーは編集されませんでした。"
+
+#: my-calendar-categories.php:236
+msgid "Default category"
+msgstr "既定のカテゴリー"
+
+#: my-calendar-categories.php:235
+msgid "Private category (logged-in users only)"
+msgstr "非公開カテゴリー (ログインユーザーにだけ表示)"
+
+#: my-calendar-categories.php:291
+msgid "Private"
+msgstr "非公開"
+
+#: my-calendar-event-manager.php:271
+msgid "%1$d events approved successfully out of %2$d selected"
+msgstr "選択した %2$d 中 %1$d のイベントが承認されました"
+
+#: my-calendar-event-manager.php:266
+msgid "Your events have not been approved. Please investigate."
+msgstr "イベントは承認されませんでした。確認してください。"
+
+#: my-calendar-event-manager.php:470
+msgid "Event saved. An administrator will review and approve your event."
+msgstr "イベントが追加されました。管理者による確認・承認が行われます。"
+
+#: my-calendar-event-manager.php:523
+msgid "Date/time information for this event has been updated."
+msgstr "イベントの日時が更新されました。"
+
+#: my-calendar-event-manager.php:924
+msgid "There was an error acquiring information about this event instance. The ID for this event instance was not provided. <strong>You are editing this entire recurrence set.</strong>"
+msgstr "イベントインスタンスの情報を取得する際にエラーが発生しました。イベントインスタンスのIDがありません。<strong>繰り返しイベントのセット全体を編集しようとしています。</strong>"
+
+#: my-calendar-event-manager.php:1898
+msgid "Hide end time"
+msgstr "終了時刻を表示しない"
+
+#: my-calendar-event-manager.php:1045
+msgid "Related Events:"
+msgstr "関連するイベント:"
+
+#: my-calendar-event-manager.php:1045
+msgid "Edit group"
+msgstr "グループ編集"
+
+#: my-calendar-locations.php:304
+msgid "Copy this location into the locations table"
+msgstr "この場所の情報を一覧にコピー"
+
+#: my-calendar-event-manager.php:1216
+msgid "Clear filters"
+msgstr "絞込み条件をクリア"
+
+#: my-calendar-event-manager.php:1356
+msgid "Filter by location"
+msgstr "場所で絞込む"
+
+#: my-calendar-event-manager.php:1384
+msgid "Filter by author"
+msgstr "登録者で絞込む"
+
+#: my-calendar-event-manager.php:1393
+msgid "Filter by category"
+msgstr "カテゴリーで絞り込む"
+
+#: my-calendar-event-manager.php:1604
+msgid "That event conflicts with a previously scheduled event."
+msgstr "すでに設定済のイベントと競合しています。"
+
+#: my-calendar-event-manager.php:1804
+msgid "Editing: "
+msgstr "編集中:"
+
+#: my-calendar-events.php:202 my-calendar-events.php:216
+msgid "No related events"
+msgstr "関連するイベントはありません"
+
+#: my-calendar-group-manager.php:300 my-calendar-group-manager.php:307
+#: my-calendar-group-manager.php:317 my-calendar-group-manager.php:328
+#: my-calendar-group-manager.php:339 my-calendar-group-manager.php:350
+#: my-calendar-group-manager.php:370 my-calendar-group-manager.php:382
+#: my-calendar-group-manager.php:399 my-calendar-group-manager.php:450
+#: my-calendar-group-manager.php:453 my-calendar-group-manager.php:456
+#: my-calendar-group-manager.php:459 my-calendar-group-manager.php:462
+#: my-calendar-group-manager.php:463 my-calendar-group-manager.php:466
+#: my-calendar-group-manager.php:469 my-calendar-group-manager.php:480
+#: my-calendar-group-manager.php:483 my-calendar-group-manager.php:488
+msgid "Fields do not match"
+msgstr "項目が一致しません"
+
+#: my-calendar-group-manager.php:731
+msgid "Grouped Events"
+msgstr "グループ化イベント"
+
+#: my-calendar-group-manager.php:732
+msgid "Ungrouped Events"
+msgstr "非グループ化イベント"
+
+#: my-calendar-help.php:114
+msgid "Displays a single event and/or all dates for that event. If template is set to a blank value, will only display the list of occurrences. If the list attribute is set blank, will only show the event template"
+msgstr "単一のイベント、またはそのイベントのすべての開催日を表示します。テンプレートが空白の場合、できごとのリストだけを表示します。list属性が空白の場合、イベントテンプレートのみ表示します。"
+
+#: my-calendar-help.php:227
+msgid "Displays the beginning and end times for events. Does not show end time if same as start or if marked as hidden."
+msgstr "イベントの開始日と終了日を表示します。終了日が開始日と同じ場合や、終了日を表示しない設定になっている場合には、終了日は表示されません。"
+
+#: my-calendar-help.php:369
+msgid "Output the stored phone number for the location."
+msgstr "場所の情報に含まれている電話番号を表示します。"
+
+#: my-calendar-settings.php:421
+msgid "You will need to allow remote connections from this site to the site hosting your My Calendar events. Replace the above placeholders with the host-site information. The two sites must have the same WP table prefix. While this option is enabled, you may not enter or edit events through this installation."
+msgstr ""
+
+#: my-calendar-settings.php:624
+msgid "iCal times are UTC"
+msgstr "iCal の時刻は UTC です"
+
+#: my-calendar-settings.php:648 my-calendar.php:387
+msgid "Set Special Scheduling options"
+msgstr "詳細なスケジュールオプションを表示する"
+
+#: my-calendar-styles.php:90
+msgid "Styles are disabled, and were not edited."
+msgstr "スタイルは無効です。変更されていません。"
+
+#: my-calendar-styles.php:198
+msgid "Apply CSS on these pages (comma separated IDs)"
+msgstr "CSS を適用するページ (ID をカンマで区切る)"
+
+#: my-calendar-widgets.php:99 my-calendar-widgets.php:227
+msgid "Author or authors to show:"
+msgstr "表示する登録者:"
+
+#: my-calendar.php:145
+msgid "My Calendar: Submissions"
+msgstr "My Calendar: Submissions"
+
+#: my-calendar.php:148
+msgid "Learn more!"
+msgstr "詳しくはこちら"
+
+#: my-calendar.php:364
+msgid "Event Submissions"
+msgstr "Event Submissions"
+
+#: my-calendar.php:365
+msgid "Payments"
+msgstr "お支払い"
+
+#: my-calendar-event-manager.php:928
+msgid "Event Details"
+msgstr "イベント詳細"
+
+#: my-calendar-help.php:47
+msgid "My Calendar Shortcode Generator"
+msgstr "My Calendar ショートコードジェネレーター"
+
+#: my-calendar-generator.php:36
+msgid "Shortcode Attributes"
+msgstr "ショートコードの属性"
+
+#: my-calendar-generator.php:42
+msgid "Location filter type:"
+msgstr "場所フィルターの種類:"
+
+#: my-calendar-generator.php:44
+msgid "All locations"
+msgstr "すべての場所"
+
+#: my-calendar-generator.php:45 my-calendar-settings.php:430
+msgid "Location Name"
+msgstr "場所"
+
+#: my-calendar-generator.php:46 my-calendar-group-manager.php:459
+#: my-calendar-locations.php:330 my-calendar.php:269
+msgid "City"
+msgstr "市町村"
+
+#: my-calendar-generator.php:47 my-calendar-group-manager.php:475
+#: my-calendar-locations.php:387 my-calendar.php:272
+msgid "State"
+msgstr "都道府県"
+
+#: my-calendar-generator.php:48 my-calendar-group-manager.php:462
+#: my-calendar-locations.php:348 my-calendar.php:275
+msgid "Postal Code"
+msgstr "郵便番号"
+
+#: my-calendar-generator.php:49 my-calendar-group-manager.php:466
+#: my-calendar-locations.php:366
+msgid "Country"
+msgstr "国名"
+
+#: my-calendar-generator.php:50 my-calendar-group-manager.php:463
+#: my-calendar-group-manager.php:476 my-calendar-locations.php:357
+#: my-calendar-locations.php:388
+msgid "Region"
+msgstr "地方"
+
+#: my-calendar-generator.php:54
+msgid "Location filter value:"
+msgstr "場所フィルターの値:"
+
+#: my-calendar-generator.php:85
+msgid "Format"
+msgstr "表示形式: グリッド (カレンダー)、リスト"
+
+#: my-calendar-generator.php:87
+msgid "Grid"
+msgstr "グリッド (カレンダー)"
+
+#: my-calendar-generator.php:88
+msgid "List"
+msgstr "リスト"
+
+#: my-calendar-categories.php:309
+msgid "Yes"
+msgstr "はい"
+
+#: my-calendar-categories.php:309
+msgid "No"
+msgstr "いいえ"
+
+#: my-calendar-generator.php:92 my-calendar-generator.php:150
+msgid "Time Segment"
+msgstr "表示する期間"
+
+#: my-calendar-generator.php:94 my-calendar-output.php:400
+#: my-calendar-output.php:512 my-calendar-output.php:519
+#: my-calendar-output.php:525 my-calendar-widgets.php:699
+msgid "Month"
+msgstr "月"
+
+#: my-calendar-generator.php:95 my-calendar-output.php:513
+#: my-calendar-output.php:521 my-calendar-output.php:527
+#: my-calendar-widgets.php:700
+msgid "Week"
+msgstr "週"
+
+#: my-calendar-generator.php:96 my-calendar-output.php:515
+#: my-calendar-output.php:522 my-calendar-output.php:529
+msgid "Day"
+msgstr "日"
+
+#: my-calendar-generator.php:160
+msgid "Generate Shortcode"
+msgstr "ショートコード生成"
+
+#: my-calendar-generator.php:58
+msgid "<strong>Note:</strong> If you provide a location filter value, it must be an exact match for that information as saved with your events. (e.g. \"Saint Paul\" is not equivalent to \"saint paul\" or \"St. Paul\")"
+msgstr "<strong>注意:</strong> ロケーションフィルターの値は、イベントに保存されている情報と完全に一致する必要があります (アルファベットの大文字小文字、全角・半角など)"
+
+#: my-calendar-behaviors.php:33
+msgid "Behavior Settings saved"
+msgstr "JavaScript設定が保存されました"
+
+#: my-calendar-behaviors.php:48
+msgid "My Calendar Behaviors"
+msgstr "My Calendar のJavaScript編集"
+
+#: my-calendar-behaviors.php:55
+msgid "Calendar Behavior Settings"
+msgstr "カレンダーの動作設定"
+
+#: my-calendar-behaviors.php:60
+msgid "Insert scripts on these pages (comma separated post IDs)"
+msgstr "ページにスクリプトを挿入 (投稿IDをカンマで区切って指定)"
+
+#: my-calendar-behaviors.php:75 my-calendar-behaviors.php:105
+#: my-calendar-behaviors.php:135 my-calendar-behaviors.php:165
+msgid "Comparing scripts with latest installed version of My Calendar"
+msgstr "インストール済の My Calendar 最新版のスクリプトと比較中"
+
+#: my-calendar-behaviors.php:75 my-calendar-behaviors.php:105
+#: my-calendar-behaviors.php:135 my-calendar-behaviors.php:165
+#: my-calendar-styles.php:217
+msgid "Latest (from plugin)"
+msgstr "最新 (プラグイン)"
+
+#: my-calendar-behaviors.php:75 my-calendar-behaviors.php:105
+#: my-calendar-behaviors.php:135 my-calendar-behaviors.php:165
+#: my-calendar-styles.php:217
+msgid "Current (in use)"
+msgstr "現在 (使用中)"
+
+#: my-calendar-behaviors.php:79
+msgid "There have been updates to the calendar view scripts."
+msgstr "カレンダー表示スクリプトに更新がありました。"
+
+#: my-calendar-behaviors.php:79 my-calendar-behaviors.php:109
+#: my-calendar-behaviors.php:139 my-calendar-behaviors.php:169
+msgid "Compare your scripts with latest installed version of My Calendar."
+msgstr "インストール済の My Calendar 最新版のスクリプトと比較します。"
+
+#: my-calendar-behaviors.php:83 my-calendar-behaviors.php:113
+#: my-calendar-behaviors.php:143 my-calendar-behaviors.php:173
+msgid "Your script matches that included with My Calendar."
+msgstr "スクリプトは My Calendar に含まれるものと同一です。"
+
+#: my-calendar-behaviors.php:88 my-calendar-behaviors.php:118
+#: my-calendar-behaviors.php:148 my-calendar-behaviors.php:179
+msgid "Save"
+msgstr "保存する"
+
+#: my-calendar-behaviors.php:93
+msgid "Calendar Behaviors: List View"
+msgstr "カレンダーの動作: リスト表示"
+
+#: my-calendar-behaviors.php:98
+msgid "Edit the jQuery scripts for My Calendar in List format"
+msgstr "リスト表示の jQuery を編集する"
+
+#: my-calendar-behaviors.php:109
+msgid "There have been updates to the list view scripts."
+msgstr "リスト表示スクリプトが更新されました。"
+
+#: my-calendar-behaviors.php:123
+msgid "Calendar Behaviors: Mini Calendar View"
+msgstr "カレンダーの動作: ミニカレンダー"
+
+#: my-calendar-behaviors.php:139
+msgid "There have been updates to the mini view scripts."
+msgstr "ミニカレンダー表示スクリプトが更新されました。"
+
+#: my-calendar-behaviors.php:169
+msgid "There have been updates to the AJAX scripts."
+msgstr "AJAX スクリプトが更新されました。"
+
+#: my-calendar-behaviors.php:185
+msgid "Resetting JavaScript will set that script to the version currently distributed with the plug-in."
+msgstr "JavaScript をリセットすると、プラグインに同梱されているのと同じバージョンのスクリプトになります。"
+
+#: my-calendar-categories.php:103
+msgid "Category added successfully"
+msgstr "カテゴリーが正常に追加されました"
+
+#: my-calendar-categories.php:105
+msgid "Category addition failed."
+msgstr "カテゴリーの追加に失敗しました"
+
+#: my-calendar-categories.php:120
+msgid "Category deleted successfully. Categories in calendar updated."
+msgstr "カテゴリーが正常に削除されました。カレンダーの中のカテゴリーが更新されました。"
+
+#: my-calendar-categories.php:122
+msgid "Category deleted successfully. Categories in calendar not updated."
+msgstr "カテゴリーが正常に削除されました。カレンダーの中のカテゴリーは更新されませんでした。"
+
+#: my-calendar-categories.php:124
+msgid "Category not deleted. Categories in calendar updated."
+msgstr "カテゴリーの削除に失敗しました。カレンダーの中のカテゴリーは更新されました。"
+
+#: my-calendar-categories.php:189 my-calendar-categories.php:215
+#: my-calendar-categories.php:240
+msgid "Add Category"
+msgstr "カテゴリーを追加する"
+
+#: my-calendar-categories.php:191 my-calendar-categories.php:215
+msgid "Edit Category"
+msgstr "カテゴリーを編集する"
+
+#: my-calendar-categories.php:199
+msgid "Category Editor"
+msgstr "カテゴリーの編集"
+
+#: my-calendar-categories.php:222 my-calendar-categories.php:288
+msgid "Category Name"
+msgstr "カテゴリー名"
+
+#: my-calendar-categories.php:223 my-calendar-categories.php:290
+msgid "Category Icon"
+msgstr "アイコン"
+
+#: my-calendar-categories.php:240 my-calendar-locations.php:162
+#: my-calendar-styles.php:207
+msgid "Save Changes"
+msgstr "変更を保存する"
+
+#: my-calendar-categories.php:248
+msgid "Add a New Category"
+msgstr "新規カテゴリーを追加"
+
+#: my-calendar-categories.php:252
+msgid "Category List"
+msgstr "カテゴリーの一覧"
+
+#: my-calendar-categories.php:274 my-calendar.php:349
+msgid "Manage Categories"
+msgstr "カテゴリーの管理"
+
+#: my-calendar-categories.php:287 my-calendar-event-manager.php:1294
+#: my-calendar-group-manager.php:763 my-calendar-locations.php:243
+msgid "ID"
+msgstr "ID"
+
+#: my-calendar-categories.php:289
+msgid "Category Color"
+msgstr "カテゴリーの色"
+
+#: my-calendar-categories.php:292 my-calendar-categories.php:310
+#: my-calendar-event-manager.php:1335 my-calendar-locations.php:245
+#: my-calendar-locations.php:257 my-calendar-output.php:369
+msgid "Edit"
+msgstr "編集"
+
+#: my-calendar-categories.php:293 my-calendar-categories.php:314
+#: my-calendar-event-manager.php:173 my-calendar-event-manager.php:896
+#: my-calendar-event-manager.php:1338 my-calendar-locations.php:246
+#: my-calendar-locations.php:258 my-calendar-output.php:369
+msgid "Delete"
+msgstr "消去"
+
+#: my-calendar-categories.php:312 my-calendar-group-manager.php:827
+#: my-calendar-output.php:99
+msgid "N/A"
+msgstr "N/A"
+
+#: my-calendar-categories.php:314 my-calendar-locations.php:258
+msgid "Are you sure you want to delete this category?"
+msgstr "本当に削除してもいいですか？"
+
+#: my-calendar-core.php:55 my-calendar.php:357
+msgid "Settings"
+msgstr "設定"
+
+#: my-calendar-core.php:56 my-calendar.php:358
+msgid "Help"
+msgstr "ヘルプ"
+
+#: my-calendar-core.php:327
+msgid "<br /><strong>Note:</strong> Please review the <a class=\"thickbox\" href=\"%1$s\">changelog</a> before upgrading."
+msgstr "<br /><strong>注意:</strong> アップグレードする前に<a class=\"thickbox\" href=\"%1$s\">変更ログ</a>を確認してください。"
+
+#: my-calendar-core.php:987 my-calendar-event-manager.php:427
+#: my-calendar-event-manager.php:898
+msgid "Add Event"
+msgstr "イベントの追加"
+
+#: my-calendar-core.php:1213
+msgid "Is this your calendar page?"
+msgstr "カレンダーページはこれですか?"
+
+#: my-calendar-core.php:1311
+msgid "Please read the FAQ and other Help documents before making a support request."
+msgstr "サポートを依頼する前に、FAQ やその他のヘルプドキュメントをお読みください。"
+
+#: my-calendar-core.php:1313
+msgid "Please describe your problem in detail. I'm not psychic."
+msgstr "問題点を英語で詳細に記述してください。"
+
+#: my-calendar-core.php:1318
+msgid "Thank you for supporting the continuing development of this plug-in! I'll get back to you as soon as I can."
+msgstr "このプラグインの開発を継続するためのご支援に感謝します。なるべく早く回答します。"
+
+#: my-calendar-core.php:1320
+msgid "I'll get back to you as soon as I can, after dealing with any support requests from plug-in supporters."
+msgstr "プラグイン支援者の方々からのサポートリクエストには、できるだけ早く連絡します。"
+
+#: my-calendar-core.php:1333
+msgid "Please note: I do keep records of those who have donated, <strong>but if your donation came from somebody other than your account at this web site, please note this in your message.</strong>"
+msgstr "寄付の履歴は記録していますが、<strong>このWebサイトのアカウント名とは異なる名前で寄付している場合は、その旨をメッセージの中に記載してください。</strong>"
+
+#: my-calendar-core.php:1335
+msgid "From:"
+msgstr "送信者:"
+
+#: my-calendar-core.php:1338
+msgid "I have read <a href=\"http://www.joedolson.com/articles/my-calendar/faq/\">the FAQ for this plug-in</a>."
+msgstr "<a href=\"http://www.joedolson.com/articles/my-calendar/faq/\">このプラグインの FAQ</a> を読みました。"
+
+#: my-calendar-core.php:1341
+msgid "I have <a href=\"http://www.joedolson.com/donate.php\">made a donation to help support this plug-in</a>."
+msgstr "<a href=\"http://www.joedolson.com/donate.php\">このプラグインを支援するための寄付</a>を行いました。"
+
+#: my-calendar-core.php:1344
+msgid "I have <a href=\"http://www.joedolson.com/articles/my-calendar/users-guide/\">purchased the User's Guide</a>, but could not find an answer to this question."
+msgstr "<a href=\"http://www.joedolson.com/articles/my-calendar/users-guide/\">User's Guide</a>を購入しましたが、解決策が得られませんでした。"
+
+#: my-calendar-core.php:1350
+msgid "Send Support Request"
+msgstr "サポートリクエストを送信"
+
+#: my-calendar-core.php:1353
+msgid "The following additional information will be sent with your support request:"
+msgstr "下記の情報がサポートリクエストとともに送信されます:"
+
+#: my-calendar-event-manager.php:337 my-calendar-settings.php:368
+msgid "My Calendar has identified that you have the Calendar plugin by Kieran O'Shea installed. You can import those events and categories into the My Calendar database. Would you like to import these events?"
+msgstr "Kieran O'Shea のカレンダー プラグインがインストールされています。このカレンダーのイベントとカテゴリーを My Calendar のデータベースにインポートできます。インポートしますか?"
+
+#: my-calendar-event-manager.php:344 my-calendar-settings.php:374
+msgid "Import from Calendar"
+msgstr "カレンダーからインポート"
+
+#: my-calendar-event-manager.php:349
+msgid "Although it is possible that this import could fail to import your events correctly, it should not have any impact on your existing Calendar database. If you encounter any problems, <a href=\"http://www.joedolson.com/contact.php\">please contact me</a>!"
+msgstr "イベント情報を正しくインポートできない可能性もありますが、その場合でも、既存のカレンダーデータベースには悪影響は及ばないはずです。万一問題が生じたときは、<a href=\"http://www.joedolson.com/contact.php\">こちらに連絡</a>してください。"
+
+#: my-calendar-event-manager.php:239
+msgid "%1$d events deleted successfully out of %2$d selected"
+msgstr "選択した %2$d 中 %1$d のイベントが削除されました"
+
+#: my-calendar-event-manager.php:241 my-calendar-event-manager.php:266
+#: my-calendar-event-manager.php:293 my-calendar-event-manager.php:459
+#: my-calendar-event-manager.php:546 my-calendar-event-manager.php:561
+#: my-calendar-event-manager.php:581 my-calendar-event-manager.php:1563
+#: my-calendar-event-manager.php:1566 my-calendar-event-manager.php:1575
+#: my-calendar-event-manager.php:1580 my-calendar-event-manager.php:1593
+#: my-calendar-event-manager.php:1599 my-calendar-event-manager.php:1604
+#: my-calendar-group-manager.php:50 my-calendar-group-manager.php:76
+#: my-calendar-group-manager.php:155 my-calendar-group-manager.php:609
+msgid "Error"
+msgstr "エラー"
+
+#: my-calendar-event-manager.php:241
+msgid "Your events have not been deleted. Please investigate."
+msgstr "イベントは削除されませんでした。確認してください。"
+
+#: my-calendar-event-manager.php:162
+msgid "Delete Event"
+msgstr "イベントを削除"
+
+#: my-calendar-event-manager.php:162
+msgid "Are you sure you want to delete this event?"
+msgstr "本当にこのイベントを削除していいですか？"
+
+#: my-calendar-event-manager.php:178
+msgid "You do not have permission to delete that event."
+msgstr "このイベントを削除する権限がありません"
+
+#: my-calendar-event-manager.php:192
+msgid "You do not have permission to approve that event."
+msgstr "このイベントを承認する権限がありません"
+
+#: my-calendar-event-manager.php:207
+msgid "You do not have permission to reject that event."
+msgstr "このイベントを却下する権限がありません"
+
+#: my-calendar-event-manager.php:401
+msgid "Currently editing your local calendar"
+msgstr "ローカルカレンダーの編集中"
+
+#: my-calendar-event-manager.php:403
+msgid "Currently editing your central calendar"
+msgstr "センター カレンダーを編集中"
+
+#: my-calendar-event-manager.php:409 my-calendar-event-manager.php:895
+#: my-calendar-group-manager.php:799
+msgid "Edit Event"
+msgstr "イベントの編集"
+
+#: my-calendar-event-manager.php:412 my-calendar-event-manager.php:421
+msgid "You must provide an event id in order to edit it"
+msgstr "編集するにはイベントIDが必要です"
+
+#: my-calendar-event-manager.php:418
+msgid "Copy Event"
+msgstr "イベントのコピー"
+
+#: my-calendar-event-manager.php:459
+msgid "I'm sorry! I couldn't add that event to the database."
+msgstr "データベースにイベントを追加できませんでした。"
+
+#: my-calendar-event-manager.php:491 my-calendar-group-manager.php:48
+#: my-calendar-group-manager.php:151
+msgid "View <a href=\"%s\">your calendar</a>."
+msgstr "<a href=\"%s\">カレンダー</a>を表示"
+
+#: my-calendar-event-manager.php:546 my-calendar-group-manager.php:155
+msgid "Your event was not updated."
+msgstr "イベントは更新されませんでした。"
+
+#: my-calendar-group-manager.php:52 my-calendar-group-manager.php:78
+#: my-calendar-group-manager.php:157
+msgid "Nothing was changed in that update."
+msgstr "この更新で変更された箇所はありません"
+
+#: my-calendar-event-manager.php:550 my-calendar-group-manager.php:54
+#: my-calendar-group-manager.php:159
+msgid "Event updated successfully"
+msgstr "イベントが正常に更新されました"
+
+#: my-calendar-event-manager.php:554 my-calendar-group-manager.php:163
+msgid "You do not have sufficient permissions to edit that event."
+msgstr "このイベントを編集する権限がありません。"
+
+#: my-calendar-event-manager.php:561
+msgid "You can't delete an event if you haven't submitted an event id"
+msgstr "イベントを削除するにはイベントIDが必要です"
+
+#: my-calendar-event-manager.php:579
+msgid "Event deleted successfully"
+msgstr "イベントが正常に削除されました"
+
+#: my-calendar-event-manager.php:581
+msgid "Despite issuing a request to delete, the event still remains in the database. Please investigate."
+msgstr "削除処理を行いましたが、イベントがデータベースに残っています。確認してください。"
+
+#: my-calendar-event-manager.php:594 my-calendar-group-manager.php:175
+msgid "Sorry! That's an invalid event key."
+msgstr "イベントキーが正しくありません。"
+
+#: my-calendar-event-manager.php:598 my-calendar-group-manager.php:179
+msgid "Sorry! We couldn't find an event with that ID."
+msgstr "この ID を持つイベントが見つかりませんでした。"
+
+#: my-calendar-event-manager.php:623
+msgid "This event must be approved in order for it to appear on the calendar."
+msgstr "このイベントをカレンダーに表示するには、承認を得る必要があります。"
+
+#: my-calendar-event-manager.php:1122
+msgid "Save Event"
+msgstr "イベントを保存する"
+
+#: my-calendar-group-manager.php:298
+msgid "Enter your Event Information"
+msgstr "イベントの内容を入力して下さい"
+
+#: my-calendar-event-manager.php:930 my-calendar-group-manager.php:300
+msgid "Event Title"
+msgstr "イベント名"
+
+#: my-calendar-event-manager.php:930 my-calendar-group-manager.php:300
+msgid "(required)"
+msgstr "(必須)"
+
+#: my-calendar-event-manager.php:944
+msgid "An administrator must approve your new event."
+msgstr "新規イベントの承認を得る必要があります。"
+
+#: my-calendar-event-manager.php:959
+msgid "This event is not spam"
+msgstr "このイベントはスパムではありません"
+
+#: my-calendar-group-manager.php:315
+msgid "Event Description (<abbr title=\"hypertext markup language\">HTML</abbr> allowed)"
+msgstr "イベントの説明（HTMLが使えます）"
+
+#: my-calendar-event-manager.php:700 my-calendar-group-manager.php:339
+msgid "Add an image:"
+msgstr "画像を追加: "
+
+#: my-calendar-group-manager.php:328
+msgid "Event Short Description (<abbr title=\"hypertext markup language\">HTML</abbr> allowed)"
+msgstr "イベントの概要（HTMLが使えます）"
+
+#: my-calendar-group-manager.php:350
+msgid "Event Host"
+msgstr "イベントの主催者"
+
+#: my-calendar-group-manager.php:370
+msgid "Event Category"
+msgstr "イベントのカテゴリー"
+
+#: my-calendar-group-manager.php:382
+msgid "Event Link (Optional)"
+msgstr "イベントへのリンク（オプション）"
+
+#: my-calendar-event-manager.php:1015
+msgid "Event Date and Time"
+msgstr "イベントの日時"
+
+#: my-calendar-event-manager.php:1022
+msgid "This is a multi-day event."
+msgstr "複数回実施するイベント"
+
+#: my-calendar-event-manager.php:1026
+msgid "Add another occurrence"
+msgstr "他の実施日を追加"
+
+#: my-calendar-event-manager.php:1027
+msgid "Remove last occurrence"
+msgstr "最後の実施日を消去"
+
+#: my-calendar-event-manager.php:761
+msgid "Recurring Events"
+msgstr "繰り返しイベント"
+
+#: my-calendar-event-manager.php:765
+msgid "Units"
+msgstr "回数"
+
+#: my-calendar-core.php:1373 my-calendar-templates.php:515
+msgid "Does not recur"
+msgstr "繰り返さない"
+
+#: my-calendar-event-manager.php:1369 my-calendar-group-manager.php:818
+#: my-calendar-templates.php:516
+msgid "Daily"
+msgstr "毎日"
+
+#: my-calendar-templates.php:517
+msgid "Daily, weekdays only"
+msgstr "毎日 (平日のみ)"
+
+#: my-calendar-event-manager.php:1371 my-calendar-group-manager.php:820
+#: my-calendar-templates.php:518
+msgid "Weekly"
+msgstr "毎週"
+
+#: my-calendar-templates.php:519
+msgid "Bi-weekly"
+msgstr "隔週"
+
+#: my-calendar-templates.php:522
+msgid "Annually"
+msgstr "毎年"
+
+#: my-calendar-event-manager.php:769
+msgid "Your entry is the number of events after the first occurrence of the event: a recurrence of <em>2</em> means the event will happen three times."
+msgstr "初回のイベントの後の実施回数です。例えば、繰り返し回数 <em>2</em> は、イベントが計3回実施されることを意味します。"
+
+#: my-calendar-event-manager.php:797
+msgid "Event Registration Settings"
+msgstr "イベント登録設定"
+
+#: my-calendar-group-manager.php:399
+msgid "Event Registration Status"
+msgstr "イベント登録状況"
+
+#: my-calendar-event-manager.php:1921
+msgid "Open"
+msgstr "公開"
+
+#: my-calendar-event-manager.php:1922
+msgid "Closed"
+msgstr "非公開"
+
+#: my-calendar-event-manager.php:1923
+msgid "Does not apply"
+msgstr "適用しない"
+
+#: my-calendar-event-manager.php:1926
+msgid "If this event recurs, it can only be registered for as a complete series."
+msgstr "このイベントが繰り返しの場合、一つの完結したセットとして登録されます"
+
+#: my-calendar-event-manager.php:1068 my-calendar-event-manager.php:1071
+#: my-calendar-group-manager.php:418 my-calendar-group-manager.php:421
+msgid "Event Location"
+msgstr "イベントの場所"
+
+#: my-calendar-event-manager.php:1077 my-calendar-group-manager.php:428
+msgid "Choose a preset location:"
+msgstr "登録された場所から選択する"
+
+#: my-calendar-event-manager.php:1086 my-calendar-group-manager.php:441
+msgid "Add recurring locations for later use."
+msgstr "繰り返し使う場所を登録する"
+
+#: my-calendar-group-manager.php:450 my-calendar-locations.php:308
+msgid "Name of Location (e.g. <em>Joe's Bar and Grill</em>)"
+msgstr "場所の名前 (例： <em>マリンタワー</em>)"
+
+#: my-calendar-group-manager.php:453 my-calendar-locations.php:324
+msgid "Street Address"
+msgstr "住所 (町名・通り名など)"
+
+#: my-calendar-group-manager.php:456 my-calendar-locations.php:327
+msgid "Street Address (2)"
+msgstr "住所 (ビル・マンション名など)"
+
+#: my-calendar-group-manager.php:480 my-calendar-locations.php:406
+msgid "Phone"
+msgstr "電話番号"
+
+#: my-calendar-group-manager.php:459 my-calendar-locations.php:339
+msgid "State/Province"
+msgstr "都道府県"
+
+#: my-calendar-group-manager.php:469 my-calendar-locations.php:381
+msgid "Initial Zoom"
+msgstr "ズーム初期設定"
+
+#: my-calendar-group-manager.php:471 my-calendar-locations.php:383
+msgid "Neighborhood"
+msgstr "近隣"
+
+#: my-calendar-group-manager.php:472 my-calendar-locations.php:384
+msgid "Small City"
+msgstr "市街"
+
+#: my-calendar-group-manager.php:473 my-calendar-locations.php:385
+msgid "Large City"
+msgstr "大都市"
+
+#: my-calendar-group-manager.php:474 my-calendar-locations.php:386
+msgid "Greater Metro Area"
+msgstr "都市圏"
+
+#: my-calendar-group-manager.php:483 my-calendar-locations.php:412
+msgid "Location URL"
+msgstr "場所の URL"
+
+#: my-calendar-group-manager.php:486 my-calendar-locations.php:393
+msgid "GPS Coordinates (optional)"
+msgstr "GPS情報 (オプション)"
+
+#: my-calendar-locations.php:395
+msgid "If you supply GPS coordinates for your location, they will be used in place of any other address information to provide your map link."
+msgstr "イベント開催場所の GPS 情報がある場合には、住所を入力せずに地図上にリンクを生成できます。"
+
+#: my-calendar-group-manager.php:488 my-calendar-locations.php:398
+msgid "Latitude"
+msgstr "緯度"
+
+#: my-calendar-group-manager.php:488 my-calendar-locations.php:398
+msgid "Longitude"
+msgstr "経度"
+
+#: my-calendar-event-manager.php:1101
+msgid "Special scheduling options"
+msgstr "詳細なスケジュールオプション"
+
+#: my-calendar-event-manager.php:1104
+msgid "Special Options"
+msgstr "詳細オプション"
+
+#: my-calendar-event-manager.php:1106
+msgid "Cancel this event if it occurs on a date with an event in the Holidays category"
+msgstr "「休日」カテゴリーのイベントと重なった場合は、このイベントをキャンセルする"
+
+#: my-calendar-event-manager.php:1109
+msgid "If this event recurs, and falls on the 5th week of the month in a month with only four weeks, move it back one week."
+msgstr "繰り返しのイベントで、4週目までしかない月で5週目に設定できない場合、1週間前に移動する"
+
+#: my-calendar-event-manager.php:305 my-calendar-settings.php:184
+#: my-calendar-settings.php:725 my-calendar.php:347
+msgid "Manage Events"
+msgstr "イベントの管理"
+
+#: my-calendar-event-manager.php:1257 my-calendar-templates.php:201
+msgid "Published"
+msgstr "承認済み"
+
+#: my-calendar-event-manager.php:1258 my-calendar-templates.php:201
+msgid "Reserved"
+msgstr "保留中"
+
+#: my-calendar-event-manager.php:1260 my-calendar-group-manager.php:733
+msgid "All"
+msgstr "すべて"
+
+#: my-calendar-event-manager.php:1295 my-calendar-group-manager.php:765
+#: my-calendar-settings.php:430 my-calendar-widgets.php:20
+#: my-calendar-widgets.php:78 my-calendar-widgets.php:177
+#: my-calendar-widgets.php:664
+msgid "Title"
+msgstr "イベント名"
+
+#: my-calendar-group-manager.php:766
+msgid "Where"
+msgstr "場所"
+
+#: my-calendar-settings.php:430
+msgid "Description"
+msgstr "説明"
+
+#: my-calendar-group-manager.php:767
+msgid "Starts"
+msgstr "状況"
+
+#: my-calendar-event-manager.php:1360 my-calendar-group-manager.php:768
+msgid "Recurs"
+msgstr "繰り返し"
+
+#: my-calendar-event-manager.php:1298 my-calendar-group-manager.php:769
+#: my-calendar-settings.php:430
+msgid "Author"
+msgstr "登録者"
+
+#: my-calendar-event-manager.php:714 my-calendar-event-manager.php:1299
+#: my-calendar-group-manager.php:770 my-calendar-output.php:119
+#: my-calendar-settings.php:430 my-calendar-templates.php:196
+msgid "Category"
+msgstr "カテゴリー"
+
+#: my-calendar-event-manager.php:1368 my-calendar-group-manager.php:817
+msgid "Never"
+msgstr "繰り返さない"
+
+#: my-calendar-event-manager.php:1370 my-calendar-group-manager.php:819
+msgid "Weekdays"
+msgstr "平日"
+
+#: my-calendar-event-manager.php:1372 my-calendar-group-manager.php:821
+msgid "Bi-Weekly"
+msgstr "隔週"
+
+#: my-calendar-event-manager.php:1373 my-calendar-group-manager.php:822
+msgid "Monthly (by date)"
+msgstr "毎月 (日付指定)"
+
+#: my-calendar-event-manager.php:1374 my-calendar-group-manager.php:823
+msgid "Monthly (by day)"
+msgstr "毎月 (曜日指定)"
+
+#: my-calendar-event-manager.php:1375 my-calendar-group-manager.php:824
+msgid "Yearly"
+msgstr "毎年"
+
+#: my-calendar-group-manager.php:829
+msgid "Forever"
+msgstr "永久"
+
+#: my-calendar-group-manager.php:831
+msgid "%d Times"
+msgstr "%d 回"
+
+#: my-calendar-event-manager.php:1333
+msgid "Copy"
+msgstr "コピー"
+
+#: my-calendar-event-manager.php:1336 my-calendar-group-manager.php:801
+#: my-calendar-output.php:363
+msgid "Edit Group"
+msgstr "グループ編集"
+
+#: my-calendar-event-manager.php:1339 my-calendar-group-manager.php:805
+msgid "Not editable."
+msgstr "編集権限がありません"
+
+#: my-calendar-event-manager.php:1343
+msgid "Reject"
+msgstr "却下"
+
+#: my-calendar-event-manager.php:942 my-calendar-event-manager.php:1343
+msgid "Approve"
+msgstr "承認"
+
+#: my-calendar-event-manager.php:1348
+msgid "Approved"
+msgstr "承認済み"
+
+#: my-calendar-event-manager.php:1349
+msgid "Rejected"
+msgstr "却下されました"
+
+#: my-calendar-event-manager.php:1350
+msgid "Awaiting Approval"
+msgstr "承認待ち"
+
+#: my-calendar-group-manager.php:856
+msgid "There are no events in the database!"
+msgstr "データベースにイベント情報がありません！"
+
+#: my-calendar-event-manager.php:1563
+msgid "Your event end date must be either after or the same as your event begin date"
+msgstr "イベント終了日は、開始日と同日かそれ以降の日付にしてください"
+
+#: my-calendar-event-manager.php:1566
+msgid "Your date formatting is correct but one or more of your dates is invalid. Check for number of days in month and leap year related errors."
+msgstr "日付の形式は問題ありませんが、いくつかの日付が正しくありません。月の日数やうるう年を確認してください。"
+
+#: my-calendar-group-manager.php:609
+msgid "The event title must be between 1 and 255 characters in length."
+msgstr "イベント名は1文字以上255文字（全角128文字）以下にしてください"
+
+#: my-calendar-event-manager.php:1599
+msgid "The repetition value must be 0 unless a type of recurrence is selected."
+msgstr "繰り返しイベントを「繰り返さない」に設定した場合、繰り返し回数は必ず「0」にしてください"
+
+#: my-calendar-group-manager.php:50
+msgid "Event not updated."
+msgstr "イベントは更新されていません。"
+
+#: my-calendar-group-manager.php:76
+msgid "Event not grouped."
+msgstr "イベントはグループ化されていません。"
+
+#: my-calendar-group-manager.php:80
+msgid "Event grouped successfully"
+msgstr "イベントをグループ化しました。"
+
+#: my-calendar-group-manager.php:91 my-calendar-group-manager.php:387
+#: my-calendar-group-manager.php:524
+msgid "Edit Event Group"
+msgstr "イベントグループの編集"
+
+#: my-calendar-group-manager.php:94
+msgid "You must provide an event group id in order to edit it"
+msgstr "編集するにはイベントグループIDが必要です"
+
+#: my-calendar-group-manager.php:100 my-calendar-group-manager.php:109
+#: my-calendar-group-manager.php:295 my-calendar.php:351
+msgid "Manage Event Groups"
+msgstr "グループの管理"
+
+#: my-calendar-group-manager.php:102
+msgid "Grouped events can be edited simultaneously. When you choose a group of events to edit, the form will be pre-filled with the content applicable to the member of the event group you started from. (e.g., if you click on the \"Edit Group\" link for the 3rd of a set of events, the boxes will use the content applicable to that event.). You will also receive a set of checkboxes which will indicate which events in the group should have these changes applied. (All grouped events can also be edited individually.)"
+msgstr "グループ化したイベントは複数同時に編集できます。イベントグループの編集を選択した場合、イベントグループに属する各イベントに共通する項目を表示します。また、グループ内のどのイベントに変更を適用するか選択するチェックボックスも表示されます。(グループ内のイベントを個別に編集することもできます。)"
+
+#: my-calendar-group-manager.php:227
+msgid "<strong>NOTE:</strong> The group editable fields for the events in this group do not match"
+msgstr "<strong>注意:</strong> このグループ内のイベントの編集可能フィールドの内容が一致していません"
+
+#: my-calendar-group-manager.php:227
+msgid "The group editable fields for the events in this group match."
+msgstr "このグループ内のイベントの編集可能フィールドの内容は一致しています。"
+
+#: my-calendar-group-manager.php:234
+msgid "Apply these changes to:"
+msgstr "変更の適用先: "
+
+#: my-calendar-event-manager.php:1294 my-calendar-group-manager.php:245
+msgid "Check/Uncheck all"
+msgstr "すべてチェック/クリア"
+
+#: my-calendar-group-manager.php:247
+msgid "Remove checked events from this group"
+msgstr "チェックしたイベントをグループから外す"
+
+#: my-calendar-group-manager.php:265
+msgid "You must provide a group ID to edit groups"
+msgstr "グループの編集にはグループIDが必要です"
+
+#: my-calendar-group-manager.php:307
+msgid "Selected dates are a single multi-day event."
+msgstr "選択した日付は、複数回実施イベントの実施日の1つです。"
+
+#: my-calendar-group-manager.php:396
+msgid "Event Registration Options"
+msgstr "イベント登録オプション"
+
+#: my-calendar-group-manager.php:117
+msgid "Create/Modify Groups"
+msgstr "グループの作成/変更"
+
+#: my-calendar-group-manager.php:736
+msgid "Check a set of events to group them for mass editing."
+msgstr "グループ化したいイベントにチェックを入れてください。"
+
+#: my-calendar-group-manager.php:757 my-calendar-group-manager.php:851
+msgid "Group checked events for mass editing"
+msgstr "チェックしたイベントをグループ化"
+
+#: my-calendar-group-manager.php:764
+msgid "Group"
+msgstr "グループ"
+
+#: my-calendar-group-manager.php:803
+msgid "Ungrouped"
+msgstr "グループ解除"
+
+#: my-calendar-help.php:7
+msgid "How to use My Calendar"
+msgstr "My Calendar の使い方"
+
+#: my-calendar-help.php:73
+msgid "Shortcode Syntax"
+msgstr "ショートコードの構文"
+
+#: my-calendar-help.php:76
+msgid "Main Calendar Shortcode (List or Grid, Weekly or Monthly view)"
+msgstr "メイン カレンダー ショートコード (リスト、グリッド、週表示、月表示)"
+
+#: my-calendar-help.php:149
+msgid "Category Icons"
+msgstr "カテゴリーのアイコン"
+
+#: my-calendar-help.php:155
+msgid "You can alternately place icons in:"
+msgstr "代替のアイコン ディレクトリー:"
+
+#: my-calendar-help.php:163
+msgid "Custom Styles"
+msgstr "カスタムスタイル"
+
+#: my-calendar-help.php:183
+msgid "All template tags support two attributes: before=\"value\" and after=\"value\". The values of the attributes will be placed before and after the output value. These attribute values <strong>must</strong> be wrapped in double quotes."
+msgstr "すべてのテンプレートタグは、before=\"値\" と after=\"値\" の 2つの属性をサポートしています。\"値\" に指定した文字列が、テンプレートタグで出力される文字列の前と後に付加されます。これらの属性の値は、<strong>ダブルクォーテーションで括る必要があります</strong>。"
+
+#: my-calendar-help.php:186
+msgid "Date/Time template tags support the \"format\" attribute: format=\"M, Y\", where the value is a PHP formatted date string. Only <code>dtstart</code> and <code>dtend</code> include the full date/time information for formatting."
+msgstr "日付・時刻テンプレートタグは、\"format\" 属性をサポートしてします。構文は format=\"M, Y\" で、値は PHP の日付書式文字と同じです。<code>dtstart</code> と <code>dtend</code> は、日付と時刻の両方の情報を含んでいます。"
+
+#: my-calendar-help.php:189
+msgid "Example:"
+msgstr "例:"
+
+#: my-calendar-help.php:191 my-calendar.php:208
+msgid "Event Template Tags"
+msgstr "イベント テンプレートタグ"
+
+#: my-calendar-help.php:194
+msgid "Displays the title of the event."
+msgstr "イベントのタイトルを表示します"
+
+#: my-calendar-help.php:197
+msgid "Displays title of the event as a link if a URL is present, or the title alone if no URL is available."
+msgstr "タイトルをリンクとして表示します（リンク情報がない場合はタイトルのみ表示）"
+
+#: my-calendar-help.php:200
+msgid "Displays the start time for the event."
+msgstr "イベントの開始時刻を表示します"
+
+#: my-calendar-help.php:206
+msgid "Displays the start time for the event adjusted to the current user's time zone settings. Returns <code>{time}</code> if user settings are disabled or if the user has not selected a preferred time zone."
+msgstr "ユーザーのタイムゾーンに合わせて調整された、イベントの開始時刻を表示します。タイムゾーン機能がオフになっているか、タイムゾーンが選択されていない場合は、<code>{time}</code>と同じ結果になります。"
+
+#: my-calendar-help.php:209
+msgid "Displays the end time for the event adjusted to the current user's time zone settings. Returns <code>{endtime}</code> if user settings are disabled or if the user has not selected a preferred time zone."
+msgstr "ユーザーのタイムゾーンに合わせて調整された、イベントの終了時刻を表示します。タイムゾーン機能がオフになっているか、タイムゾーンが選択されていない場合は、<code>{endtime}</code>と同じ結果になります。"
+
+#: my-calendar-help.php:212
+msgid "Displays the date on which the event begins."
+msgstr "イベントの開始日時を表示します"
+
+#: my-calendar-help.php:218
+msgid "Displays the date on which the event ends."
+msgstr "イベントの終了日時を表示します"
+
+#: my-calendar-help.php:221
+msgid "Displays the time at which the event ends."
+msgstr "イベントの終了時刻を表示します"
+
+#: my-calendar-help.php:224
+msgid "Displays the beginning date to the end date for events. Does not show end date if same as start date."
+msgstr "イベントの開始日と終了日を表示します。終了日が同日の場合は、開始日のみ表示します。"
+
+#: my-calendar-help.php:230
+msgid "Timestamp for beginning of event."
+msgstr "イベント開始日時"
+
+#: my-calendar-help.php:233
+msgid "Timestamp for end of event."
+msgstr "イベント終了日時"
+
+#: my-calendar-help.php:236
+msgid "For multi-day events displays an unordered list of dates and times for events in this group. Otherwise, beginning date/time."
+msgstr "複数回実施イベントの場合は、イベントの日時のリストを表示、それ以外は開始日時を表示します。"
+
+#: my-calendar-help.php:239
+msgid "Displays the WordPress author who posted the event."
+msgstr "イベントの登録者を表示します"
+
+#: my-calendar-help.php:245
+msgid "Displays the name of the person assigned as host for the event."
+msgstr "イベントの主催者に設定された人の名前を表示します。"
+
+#: my-calendar-help.php:248
+msgid "Displays the email address of the person assigned as host for the event."
+msgstr "イベントの主催者に設定された人のメールアドレスを表示します。"
+
+#: my-calendar-help.php:254
+msgid "Displays the short version of the event description."
+msgstr "イベントの概要を表示します"
+
+#: my-calendar-help.php:257
+msgid "Displays short description without converting paragraphs."
+msgstr "イベントの概要を表示します (段落に変換しない)"
+
+#: my-calendar-help.php:266
+msgid "Displays the description of the event."
+msgstr "イベントの説明を表示します"
+
+#: my-calendar-help.php:269
+msgid "Displays description without converting paragraphs."
+msgstr "イベントの説明を表示します (段落に変換しない)"
+
+#: my-calendar.php:242
+msgid "Image associated with the event."
+msgstr "イベントに関連付けられた画像"
+
+#: my-calendar-help.php:296
+msgid "Displays the URL provided for the event."
+msgstr "イベントのURLを表示します"
+
+#: my-calendar-help.php:299
+msgid "Produces the URL to download an iCal formatted record for the event."
+msgstr "イベントの iCal データをダウンロードする URL を生成します。"
+
+#: my-calendar-help.php:302
+msgid "Produces a hyperlink to download an iCal formatted record for the event."
+msgstr "イベントの iCal データをダウンロードするリンクを生成します。"
+
+#: my-calendar-help.php:311
+msgid "Shows the recurrence status of the event. (Daily, Weekly, etc.)"
+msgstr "イベントの繰り返し情報( 毎日、毎週、など) を表示します。"
+
+#: my-calendar-help.php:314
+msgid "Shows the number of repetitions of the event."
+msgstr "イベントの繰り返し回数を表示します。"
+
+#: my-calendar-help.php:317
+msgid "Provides a link to an auto-generated page containing all information on the given event."
+msgstr "イベントに関するすべての情報を含むページを自動生成して、そのページへのリンクを作成します。"
+
+#: my-calendar-help.php:317 my-calendar-help.php:323
+msgid "Requires that the site URL has been provided on the Settings page"
+msgstr "[設定]画面のカレンダー出力オプションでサイトのURLを設定しておく必要があります。"
+
+#: my-calendar-help.php:326
+msgid "Displays text indicating whether registration for the event is currently open or closed; displays nothing if that choice is selected in the event."
+msgstr "イベント登録状況の公開・非公開を表示します。「適用しない」を選ぶと空欄で表示されます。"
+
+#: my-calendar-help.php:335
+msgid "Displays the current status of the event: either \"Published\" or \"Reserved\" - primary used in email templates."
+msgstr "イベントのステータスを「投稿済」か「保留中」で表示します。メールのテンプレートで使用します。"
+
+#: my-calendar-help.php:338 my-calendar.php:257
+msgid "Location Template Tags"
+msgstr "場所テンプレート タグ"
+
+#: my-calendar-help.php:342
+msgid "Displays the name of the location of the event."
+msgstr "イベントの場所を表示します"
+
+#: my-calendar-help.php:345
+msgid "Displays the first line of the site address."
+msgstr "住所（町名・通り名など）を表示します"
+
+#: my-calendar-help.php:348
+msgid "Displays the second line of the site address."
+msgstr "住所（ビル・マンション名など）を表示します"
+
+#: my-calendar-help.php:351
+msgid "Displays the city for the location."
+msgstr "市町村名を表示します。"
+
+#: my-calendar-help.php:354
+msgid "Displays the state for the location."
+msgstr "都道府県名を表示します。"
+
+#: my-calendar-help.php:357
+msgid "Displays the postcode for the location."
+msgstr "郵便番号を表示します。"
+
+#: my-calendar-help.php:360
+msgid "Shows the custom region entered for the location."
+msgstr "地方名を表示します。"
+
+#: my-calendar-help.php:363
+msgid "Displays the country for the event location."
+msgstr "国名を表示します"
+
+#: my-calendar-help.php:366
+msgid "Output the URL for the location link."
+msgstr "場所リンクの URL を出力"
+
+#: my-calendar-help.php:372
+msgid "Output a hyperlink to the location's listed link with default link text."
+msgstr "入力されている場所のURLへのハイパーリンクを出力します"
+
+#: my-calendar-help.php:375
+msgid "Displays the event address in <a href=\"http://microformats.org/wiki/hcard\">hcard</a> format."
+msgstr "イベントの場所を <a href=\"http://microformats.org/wiki/hcard\">hcard</a> 形式で表示します"
+
+#: my-calendar-help.php:378
+msgid "Displays a link to a Google Map of the event, if sufficient address information is available. If not, will be empty."
+msgstr "緯度・経度情報が正しく入力されている場合、Google マップへのリンクを表示します"
+
+#: my-calendar-help.php:390 my-calendar.php:292
+msgid "Category Template Tags"
+msgstr "カテゴリー テンプレートタグ"
+
+#: my-calendar-help.php:394
+msgid "Displays the name of the category the event is in."
+msgstr "イベントが含まれるカテゴリー名を表示します"
+
+#: my-calendar-help.php:397
+msgid "Produces the address of the current event's category icon."
+msgstr "現在のイベントカテゴリー アイコンのアドレスを出力します。"
+
+#: my-calendar-help.php:400
+msgid "Produces the HTML for the current event's category icon."
+msgstr "現在のイベントカテゴリー アイコンの HTMLコードを出力します。"
+
+#: my-calendar-help.php:403
+msgid "Produces the hex code for the current event's category color."
+msgstr "現在のイベントカテゴリーの色の16進数コードを出力します。"
+
+#: my-calendar-help.php:409
+msgid "Special use Template Tags"
+msgstr "特殊用途のテンプレートタグ"
+
+#: my-calendar-help.php:413
+msgid "A unique ID for the current instance of an event."
+msgstr "イベントのインスタンスのユニークID"
+
+#: my-calendar-help.php:416
+msgid "The ID for the event record associated with the current instance of an event."
+msgstr "イベントのインスタンスと紐付けられたイベントレコードのID"
+
+#: my-calendar-help.php:426
+msgid "Get Plug-in Support"
+msgstr "プラグインのサポート"
+
+#: my-calendar-help.php:431
+msgid "My Calendar support requests can only be sent by administrators."
+msgstr "My Calendar のサポート リクエストは、管理者だけが送信できます。"
+
+#: my-calendar-help.php:23 my-calendar-help.php:438
+msgid "Helpful Information"
+msgstr "その他の情報"
+
+#: my-calendar-help.php:441
+msgid "<strong>Uninstalling the plugin</strong>: Although the WordPress standard and expectation is for plug-ins to delete any custom database tables when they're uninstalled, My Calendar <em>does not do this</em>. This was a conscious decision on my part -- the data stored in your My Calendar tables is yours; with the sole exception of the \"General\" category, you added every piece of it yourself. As such, I feel it would be a major disservice to you to delete this information if you uninstall the plug-in. As a result, if you wish to get rid of the plug-in completely, you'll need to remove those tables yourself. All your My Calendar settings will be deleted, however."
+msgstr "<strong>プラグインのアンインストール</strong>： WordPressのプラグイン仕様では、プラグインがアンインストールされた際には独自のテーブルも同時に削除されるのが望ましいとされていますが、My Calendarは敢えて独自テーブルを残す仕様にしています。それはあなたがMy Calendarに入力した全てのデータ(\"General\"カテゴリーは除く)はあなた自身のものであり、アンインストールと同時にそのデータも消去するのは不親切だと確信しているからです。もし完全にアンインストールしたい場合は、自分で独自テーブルを削除してください。全ての設定・データも消去されます。"
+
+#: my-calendar-help.php:444
+msgid "<strong>Donations</strong>: I appreciate anything you can give. $2 may not seem like much, but it can really add up when thousands of people are using the software. Please note that I am not a non-profit organization, and your gifts are not tax deductible. Thank you!"
+msgstr "<strong>寄付</strong>: 少額でも結構です。$2 は少なく思えるかもしれませんが、たくさんの人たちがソフトウェアを利用してくれれば意味があります。ただし、私は非営利団体ではありませんので、寄付しても節税にはなりません。"
+
+#: my-calendar-locations.php:70
+msgid "Location added successfully"
+msgstr "場所が正常に追加されました"
+
+#: my-calendar-locations.php:72
+msgid "Location could not be added to database"
+msgstr "場所をデータベースに追加できませんでした"
+
+#: my-calendar-locations.php:79
+msgid "Location deleted successfully"
+msgstr "場所を正常に削除しました"
+
+#: my-calendar-locations.php:81
+msgid "Location could not be deleted"
+msgstr "場所を削除できませんでした"
+
+#: my-calendar-locations.php:109
+msgid "Location could not be edited."
+msgstr "場所を編集できませんでした"
+
+#: my-calendar-locations.php:111
+msgid "Location was not changed."
+msgstr "場所を変更できませんでした"
+
+#: my-calendar-locations.php:113
+msgid "Location edited successfully"
+msgstr "場所が正常に編集されました"
+
+#: my-calendar-locations.php:135
+msgid "Add New Location"
+msgstr "新しい場所の追加"
+
+#: my-calendar-locations.php:137
+msgid "Edit Location"
+msgstr "場所を編集する"
+
+#: my-calendar-locations.php:144
+msgid "Location Editor"
+msgstr "場所の編集"
+
+#: my-calendar-locations.php:162
+msgid "Add Location"
+msgstr "場所を追加する"
+
+#: my-calendar-locations.php:170
+msgid "Add a New Location"
+msgstr "新しい場所の追加"
+
+#: my-calendar-locations.php:174 my-calendar.php:350
+msgid "Manage Locations"
+msgstr "場所の管理"
+
+#: my-calendar-event-manager.php:1296 my-calendar-locations.php:244
+#: my-calendar-output.php:1606
+msgid "Location"
+msgstr "場所"
+
+#: my-calendar-locations.php:263
+msgid "There are no locations in the database yet!"
+msgstr "データベースにまだ場所が登録されていません。"
+
+#: my-calendar-locations.php:266
+msgid "Please note: editing or deleting locations stored for re-use will have no effect on any event previously scheduled at that location. The location database exists purely as a shorthand method to enter frequently used locations into event records."
+msgstr "注記：再利用のために登録されている場所を編集／削除しても、すでに登録されているイベントのデータに影響はありません。場所のデータベースは、イベントの場所としてよく登録される場所を保存するだけのものです。"
+
+#: my-calendar-output.php:235 my-calendar-output.php:345
+msgid "Close"
+msgstr "閉じる"
+
+#: my-calendar-output.php:93
+msgid "(%s in your time zone)"
+msgstr ""
+
+#: my-calendar-output.php:99
+msgid "Not Applicable"
+msgstr "情報がありません"
+
+#: my-calendar-output.php:244
+msgid "Posted by"
+msgstr "投稿者"
+
+#: my-calendar-templates.php:220
+msgid "Details about"
+msgstr ""
+
+#: my-calendar-output.php:262 my-calendar-templates.php:270
+msgid "iCal"
+msgstr "iCal"
+
+#: my-calendar-output.php:309
+msgid "View full calendar"
+msgstr "カレンダーを表示"
+
+#: my-calendar-output.php:371
+msgid "Edit This Date"
+msgstr "この日付を編集"
+
+#: my-calendar-output.php:371
+msgid "Edit All"
+msgstr "すべて編集"
+
+#: my-calendar-output.php:371
+msgid "Delete This Date"
+msgstr "この日付を削除"
+
+#: my-calendar-output.php:371
+msgid "Delete All"
+msgstr "すべて削除"
+
+#: my-calendar-core.php:1379 my-calendar-output.php:405
+msgid "Year"
+msgstr "年"
+
+#: my-calendar-output.php:433
+msgid "Go"
+msgstr "移動"
+
+#: my-calendar-output.php:459
+msgid "Calendar: Print View"
+msgstr "カレンダー: 印刷ビュー"
+
+#: my-calendar-output.php:478
+msgid "Return to site"
+msgstr "サイトに戻る"
+
+#: my-calendar-output.php:491
+msgid "View as Grid"
+msgstr "グリッド形式で表示"
+
+#: my-calendar-output.php:495
+msgid "View as List"
+msgstr "リスト形式で表示"
+
+#: my-calendar-output.php:757
+msgid "<abbr title=\"Sunday\">Sun</abbr>"
+msgstr "<abbr title=\"日曜日\">日</abbr>"
+
+#: my-calendar-output.php:758
+msgid "<abbr title=\"Monday\">Mon</abbr>"
+msgstr "<abbr title=\"月曜日\">月</abbr>"
+
+#: my-calendar-output.php:759
+msgid "<abbr title=\"Tuesday\">Tues</abbr>"
+msgstr "<abbr title=\"火曜日\">火</abbr>"
+
+#: my-calendar-output.php:760
+msgid "<abbr title=\"Wednesday\">Wed</abbr>"
+msgstr "<abbr title=\"水曜日\">水</abbr>"
+
+#: my-calendar-output.php:761
+msgid "<abbr title=\"Thursday\">Thur</abbr>"
+msgstr "<abbr title=\"木曜日\">木</abbr>"
+
+#: my-calendar-output.php:762
+msgid "<abbr title=\"Friday\">Fri</abbr>"
+msgstr "<abbr title=\"金曜日\">金</abbr>"
+
+#: my-calendar-output.php:763
+msgid "<abbr title=\"Saturday\">Sat</abbr>"
+msgstr "<abbr title=\"土曜日\">土</abbr>"
+
+#: my-calendar-output.php:768
+msgid "<abbr title=\"Sunday\">S</abbr>"
+msgstr "<abbr title=\"日曜日\">日</abbr>"
+
+#: my-calendar-output.php:769
+msgid "<abbr title=\"Monday\">M</abbr>"
+msgstr "<abbr title=\"月曜日\">月</abbr>"
+
+#: my-calendar-output.php:770
+msgid "<abbr title=\"Tuesday\">T</abbr>"
+msgstr "<abbr title=\"火曜日\">火</abbr>"
+
+#: my-calendar-output.php:771
+msgid "<abbr title=\"Wednesday\">W</abbr>"
+msgstr "<abbr title=\"水曜日\">水</abbr>"
+
+#: my-calendar-output.php:772
+msgid "<abbr title=\"Thursday\">T</abbr>"
+msgstr "<abbr title=\"木曜日\">木</abbr>"
+
+#: my-calendar-output.php:773
+msgid "<abbr title=\"Friday\">F</abbr>"
+msgstr "<abbr title=\"金曜日\">金</abbr>"
+
+#: my-calendar-output.php:774
+msgid "<abbr title=\"Saturday\">S</abbr>"
+msgstr "<abbr title=\"土曜日\">土</abbr>"
+
+#: my-calendar-output.php:875
+msgid "Print View"
+msgstr "印刷ビュー"
+
+#: my-calendar-output.php:968
+msgid "No events scheduled for today!"
+msgstr "今日予定されているイベントはありません。"
+
+#: my-calendar-output.php:987
+msgid "and"
+msgstr "と"
+
+#: my-calendar-output.php:1002
+msgid "Events in"
+msgstr "今月のイベント："
+
+#: my-calendar-output.php:588
+msgid " and %d other event"
+msgstr "他%d個のイベント"
+
+#: my-calendar-output.php:590
+msgid " and %d other events"
+msgstr "他%d個のイベント"
+
+#: my-calendar-output.php:1034
+msgid "There are no events scheduled during this period."
+msgstr "この期間内に設定されているイベントはありません"
+
+#: my-calendar-output.php:1142
+msgid "Unrecognized calendar format. Please use one of 'list','calendar', or 'mini'."
+msgstr "無効なカレンダー フォーマットです。'list', 'calendar', 'mini' のいずれかを使用してください。"
+
+#: my-calendar-output.php:1194
+msgid "Subscribe by <abbr title=\"Really Simple Syndication\">RSS</abbr>"
+msgstr "<abbr title=\"Really Simple Syndication\">RSS</abbr>フィード"
+
+#: my-calendar-output.php:1195
+msgid "Download as <abbr title=\"iCal Events Export\">iCal</abbr>"
+msgstr "<abbr title=\"iCal Events Export\">iCal</abbr>形式でダウンロード"
+
+#: my-calendar-output.php:1244 my-calendar-output.php:1288
+msgid "Week of "
+msgstr ""
+
+#: my-calendar-output.php:1346
+msgid "(select to include)"
+msgstr "(選択してください)"
+
+#: my-calendar-output.php:1181 my-calendar-output.php:1371
+#: my-calendar-output.php:1374
+msgid "All Categories"
+msgstr "すべてのカテゴリー"
+
+#: my-calendar-core.php:997 my-calendar-output.php:1166
+#: my-calendar-output.php:1372 my-calendar-settings.php:519
+msgid "Categories"
+msgstr "カテゴリー"
+
+#: my-calendar-output.php:1391 my-calendar-output.php:1650
+msgid "Submit"
+msgstr "送信"
+
+#: my-calendar-output.php:1585 my-calendar-output.php:1608
+msgid "Show all"
+msgstr "すべて表示"
+
+#: my-calendar-settings.php:127
+msgid "Categories imported successfully."
+msgstr "カテゴリーのインポートに成功しました"
+
+#: my-calendar-settings.php:127
+msgid "Categories not imported."
+msgstr "カテゴリーはインポートされませんでした。"
+
+#: my-calendar-settings.php:128
+msgid "Events imported successfully."
+msgstr "イベントのインポートに成功しました。"
+
+#: my-calendar-settings.php:128
+msgid "Events not imported."
+msgstr "イベントはインポートされませんでした。"
+
+#: my-calendar-settings.php:168
+msgid "My Calendar Cache cleared"
+msgstr "My Calendar キャッシュをクリアしました"
+
+#: my-calendar-settings.php:177
+msgid "My Calendar Management Settings saved"
+msgstr "My Calendar 管理設定が保存されました"
+
+#: my-calendar-settings.php:182 my-calendar-settings.php:723
+msgid "Add Events"
+msgstr "イベントの追加"
+
+#: my-calendar-settings.php:183 my-calendar-settings.php:724
+msgid "Approve Events"
+msgstr "イベントの承認"
+
+#: my-calendar-settings.php:185 my-calendar-settings.php:726
+msgid "Edit Categories"
+msgstr "カテゴリーの編集"
+
+#: my-calendar-settings.php:186 my-calendar-settings.php:727
+msgid "Edit Locations"
+msgstr "場所の編集"
+
+#: my-calendar-settings.php:187 my-calendar-settings.php:728
+msgid "Edit Styles"
+msgstr "スタイルの編集"
+
+#: my-calendar-settings.php:188 my-calendar-settings.php:729
+msgid "Edit Behaviors"
+msgstr "スクリプトの編集"
+
+#: my-calendar-settings.php:189 my-calendar-settings.php:730
+msgid "Edit Templates"
+msgstr "テンプレートの編集"
+
+#: my-calendar-settings.php:190 my-calendar-settings.php:731
+msgid "Edit Settings"
+msgstr "設定の編集"
+
+#: my-calendar-settings.php:191 my-calendar-settings.php:732
+msgid "View Help"
+msgstr "ヘルプの参照"
+
+#: my-calendar-settings.php:205
+msgid "My Calendar Permissions Updated"
+msgstr "My Calendar パーミッションを更新しました"
+
+#: my-calendar-settings.php:255
+msgid "Output Settings saved"
+msgstr "設定が保存されました"
+
+#: my-calendar-settings.php:284
+msgid "Input Settings saved"
+msgstr "設定が保存されました"
+
+#: my-calendar-settings.php:292
+msgid "Multisite settings saved"
+msgstr "マルチサイトの設定が保存されました"
+
+#: my-calendar-settings.php:321
+msgid "Custom text settings saved"
+msgstr "カスタムテキストの設定を保存しました"
+
+#: my-calendar-settings.php:337
+msgid "Email notice settings saved"
+msgstr "Email通知の設定を保存しました"
+
+#: my-calendar-settings.php:353
+msgid "My Calendar Options"
+msgstr "My Calendar のオプション"
+
+#: my-calendar-settings.php:385
+msgid "My Calendar Settings"
+msgstr "My Calendar の設定"
+
+#: my-calendar-settings.php:388 my-calendar-settings.php:412
+msgid "Management"
+msgstr "管理設定"
+
+#: my-calendar-settings.php:389
+msgid "Customizable Text"
+msgstr "テキスト設定"
+
+#: my-calendar-settings.php:390
+msgid "Output"
+msgstr "表示設定"
+
+#: my-calendar-settings.php:392
+msgid "Input"
+msgstr "入力設定"
+
+#: my-calendar-settings.php:394
+msgid "Multi-site"
+msgstr "マルチサイト"
+
+#: my-calendar-settings.php:396
+msgid "Permissions"
+msgstr "パーミッション"
+
+#: my-calendar-settings.php:397 my-calendar-settings.php:772
+msgid "Email Notifications"
+msgstr "メール通知"
+
+#: my-calendar-settings.php:414
+msgid "Get data (events, categories and locations) from a remote database."
+msgstr "リモートデータベースからデータ (イベント, カテゴリー, 場所) を取得"
+
+#: my-calendar-settings.php:416
+msgid "Add this code to your theme's <code>functions.php</code> file:"
+msgstr "このコードをテーマの<code> functions.php </code>ファイルに追加:"
+
+#: my-calendar-settings.php:424
+msgid "Enable approval options."
+msgstr "承認機能を有効にする"
+
+#: my-calendar-settings.php:428
+msgid "Clear current cache. (Necessary if you edit shortcodes to change displayed categories, for example.)"
+msgstr "キャッシュをクリア (ショートコードを編集して表示カテゴリーを変更するような場合に必要)"
+
+#: my-calendar-settings.php:430
+msgid "Default Sort order for Admin Events List"
+msgstr "イベント管理リストの並べ替え方法"
+
+#: my-calendar-settings.php:430
+msgid "Event ID"
+msgstr "イベントID"
+
+#: my-calendar-settings.php:430
+msgid "Start Date"
+msgstr "開始日時"
+
+#: my-calendar-settings.php:433
+msgid "Currently editing my local calendar"
+msgstr "ローカルカレンダーを編集中"
+
+#: my-calendar-settings.php:433
+msgid "Currently editing the network calendar"
+msgstr "ネットワークカレンダーを編集中"
+
+#: my-calendar-settings.php:436
+msgid "You are currently working in the primary site for this network; your local calendar is also the global table."
+msgstr "現在、ネットワークのメインサイトで作業中です。ローカルカレンダーはグローバルテーブルにあります。"
+
+#: my-calendar-settings.php:443
+msgid "Save Management Settings"
+msgstr "管理設定を保存"
+
+#: my-calendar-settings.php:447
+msgid "My Calendar management settings are only available to administrators."
+msgstr "My Calendar 管理設定は管理者のみアクセス可能です。"
+
+#: my-calendar-settings.php:463
+msgid "Previous events link"
+msgstr "前のイベントへのリンク"
+
+#: my-calendar-settings.php:464
+msgid "Next events link"
+msgstr "次のイベントへのリンク"
+
+#: my-calendar-settings.php:465
+msgid "If events are open"
+msgstr "公開イベントの場合"
+
+#: my-calendar-settings.php:465
+msgid "Registration is open"
+msgstr "登録を受け付けています"
+
+#: my-calendar-settings.php:466
+msgid "If events are closed"
+msgstr "非公開イベントの場合"
+
+#: my-calendar-settings.php:466
+msgid "Registration is closed"
+msgstr "登録は受け付けていません"
+
+#: my-calendar-settings.php:467
+msgid "Week view caption:"
+msgstr "週表示のキャプション"
+
+#: my-calendar-settings.php:468
+msgid "Extended caption:"
+msgstr "拡張キャプション:"
+
+#: my-calendar-settings.php:476
+msgid "Save Custom Text Settings"
+msgstr "カスタムテキスト設定を保存する"
+
+#: my-calendar-settings.php:595
+msgid "Save Output Settings"
+msgstr "設定を保存する"
+
+#: my-calendar-settings.php:494 my-calendar-settings.php:495
+msgid "Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode."
+msgstr "<code>[my_calendar]</code> ショートコードを含む投稿または固定ページのいずれかを指定可能"
+
+#: my-calendar-settings.php:496
+msgid "Open calendar links to event details URL"
+msgstr "イベント詳細ページを開く"
+
+#: my-calendar-settings.php:500
+msgid "Mini calendar widget date links to:"
+msgstr "ミニカレンダー ウィジェットの日付をクリックしたとき:"
+
+#: my-calendar-settings.php:500
+msgid "jQuery pop-up view"
+msgstr "jQuery ポップアップ表示"
+
+#: my-calendar-settings.php:500
+msgid "daily view page (above)"
+msgstr "日表示ページ"
+
+#: my-calendar-settings.php:500
+msgid "in-page anchor on main calendar page (list)"
+msgstr ""
+
+#: my-calendar-settings.php:500
+msgid "in-page anchor on main calendar page (grid)"
+msgstr ""
+
+#: my-calendar-settings.php:618
+msgid "Time format"
+msgstr "時刻の書式"
+
+#: my-calendar-settings.php:619
+msgid "Date in grid mode, week view"
+msgstr "日付の書式 (グリッド表示、週表示)"
+
+#: my-calendar-settings.php:620
+msgid "Date Format in other views"
+msgstr "日付の書式 (その他の表示モード)"
+
+#: my-calendar-settings.php:543
+msgid "Grid Layout Options"
+msgstr "グリッド表示のオプション"
+
+#: my-calendar-settings.php:545
+msgid "Show Weekends on Calendar"
+msgstr "カレンダーに週末を表示する"
+
+#: my-calendar-settings.php:546
+msgid "Switch to list view on mobile devices"
+msgstr "モバイルデバイスではリスト表示に切り替える"
+
+#: my-calendar-settings.php:552
+msgid "List Layout Options"
+msgstr "リスト表示のオプション"
+
+#: my-calendar-settings.php:554
+msgid "How many months of events to show at a time:"
+msgstr "何か月分のイベントを表示するか:"
+
+#: my-calendar-settings.php:555
+msgid "Show the first event's title and the number of events that day next to the date."
+msgstr "日付の後に、最初のイベントのタイトルと、その日に実施されるイベントの数を表示"
+
+#: my-calendar-settings.php:469
+msgid "Event title template"
+msgstr "イベント名テンプレート"
+
+#: my-calendar-settings.php:469 my-calendar-settings.php:471
+#: my-calendar-settings.php:779
+msgid "Templating Help"
+msgstr "テンプレートのヘルプ"
+
+#: my-calendar-settings.php:470
+msgid "Event details link text"
+msgstr "イベント詳細リンクのテキスト"
+
+#: my-calendar-settings.php:471
+msgid "Event URL link text"
+msgstr "イベント URL リンクのテキスト"
+
+#: my-calendar-settings.php:589
+msgid "Event links expire after event passes."
+msgstr "イベント終了後はリンクを消す"
+
+#: my-calendar-categories.php:237
+msgid "Holiday Category"
+msgstr "「休日」カテゴリー"
+
+#: my-calendar-settings.php:638
+msgid "Calendar Input Settings"
+msgstr "カレンダーの入力設定"
+
+#: my-calendar-settings.php:643
+msgid "Select which input fields will be available when adding or editing events."
+msgstr "イベントの追加・編集時に表示する入力項目を選択してください。"
+
+#: my-calendar-settings.php:662
+msgid "Administrators see all input options"
+msgstr "管理者には全ての入力フィールドを表示"
+
+#: my-calendar-settings.php:666
+msgid "Save Input Settings"
+msgstr "設定を保存する"
+
+#: my-calendar-settings.php:676
+msgid "Multisite Settings (Network Administrators only)"
+msgstr "マルチサイト設定 (ネットワーク管理者のみ)"
+
+#: my-calendar-settings.php:683
+msgid "The central calendar is the calendar associated with the primary site in your WordPress Multisite network."
+msgstr "「セントラル カレンダー」は、WordPressマルチサイト ネットワークの基本サイトに紐付けされたカレンダーです。"
+
+#: my-calendar-settings.php:685
+msgid "Site owners may only post to their local calendar"
+msgstr "サイトオーナーは、ローカルカレンダーにだけ投稿できます。"
+
+#: my-calendar-settings.php:686
+msgid "Site owners may only post to the central calendar"
+msgstr "サイトオーナーは、セントラルカレンダーにだけ投稿できます。"
+
+#: my-calendar-settings.php:687
+msgid "Site owners may manage either calendar"
+msgstr "サイトオーナーは、どちらのカレンダーも管理できます。"
+
+#: my-calendar-settings.php:689
+msgid "Changes only effect input permissions. Public-facing calendars will be unchanged."
+msgstr "変更が影響するのは入力権限だけです。公開カレンダーは変更されません。"
+
+#: my-calendar-settings.php:691
+msgid "Sub-site calendars show events from their local calendar."
+msgstr ""
+
+#: my-calendar-settings.php:692
+msgid "Sub-site calendars show events from the central calendar."
+msgstr ""
+
+#: my-calendar-settings.php:696
+msgid "Save Multisite Settings"
+msgstr "マルチサイト設定を保存"
+
+#: my-calendar-settings.php:706
+msgid "My Calendar Permissions"
+msgstr "My Calendar パーミッション"
+
+#: my-calendar-settings.php:755
+msgid "Save Permissions"
+msgstr "パーミッションを保存"
+
+#: my-calendar-settings.php:759
+msgid "My Calendar permission settings are only available to administrators."
+msgstr "My Calendar パーミッションは管理者だけが設定できます。"
+
+#: my-calendar-settings.php:767
+msgid "Calendar Email Settings"
+msgstr "カレンダーのEメール設定"
+
+#: my-calendar-settings.php:775
+msgid "Send Email Notifications when new events are scheduled or reserved."
+msgstr "新規イベントが登録された場合、メールで通知する"
+
+#: my-calendar-settings.php:778
+msgid "Email subject"
+msgstr "メールのタイトル"
+
+#: my-calendar-settings.php:779
+msgid "Message Body"
+msgstr "メール本文"
+
+#: my-calendar-settings.php:779
+msgid "New Event:"
+msgstr "新しいイベント："
+
+#: my-calendar-settings.php:784
+msgid "Save Email Settings"
+msgstr "設定を保存する"
+
+#: my-calendar-locations.php:282
+msgid "Value, Label; one per line"
+msgstr "値とラベル；1行ごと"
+
+#: my-calendar-styles.php:92
+msgid "The stylesheet has been updated."
+msgstr "スタイルシートが更新されました。"
+
+#: my-calendar-styles.php:92
+msgid "Write Error! Please verify write permissions on the style file."
+msgstr "書き込みエラーです。スタイルシートのファイルに書き込み権限があるかを確認してください。"
+
+#: my-calendar-styles.php:106
+msgid "Stylesheet reset to default."
+msgstr "スタイルシートが初期状態にリセットされました。"
+
+#: my-calendar-styles.php:109
+msgid "Style Settings Saved"
+msgstr "スタイルシートの設定を保存しました"
+
+#: my-calendar-styles.php:118
+msgid "New theme selected."
+msgstr "新しいテーマが選択されました。"
+
+#: my-calendar-styles.php:133
+msgid "Sorry. The file you are looking for doesn't appear to exist. Please check your file name and location!"
+msgstr "そのファイルは存在しないようです。ファイル名と場所を確認してください。"
+
+#: my-calendar-styles.php:138
+msgid "My Calendar Styles"
+msgstr "My Calendar のスタイル"
+
+#: my-calendar-styles.php:143
+msgid "Calendar Style Settings"
+msgstr "カレンダーのスタイル設定"
+
+#: my-calendar-styles.php:151
+msgid "Select My Calendar Theme"
+msgstr "My Calendarのテーマを選択する"
+
+#: my-calendar-styles.php:158
+msgid "Your Custom Stylesheets"
+msgstr "カスタム スタイルシート"
+
+#: my-calendar-styles.php:167
+msgid "Installed Stylesheets"
+msgstr "インストール済のスタイルシート"
+
+#: my-calendar-styles.php:174
+msgid "Choose Style"
+msgstr "選択する"
+
+#: my-calendar-styles.php:188
+msgid "My Calendar was unable to update your CSS files during the upgrade. Please check your file permissions if you wish to edit your My Calendar styles. Your previously stored styles are below. This message and these styles will be deleted from the database when you successfully update your stylesheet."
+msgstr "My Calendar は CSS ファイルをアップデートできませんでした。My Calendar スタイルを編集するには、ファイルのパーミッションを確認してください。以前に保存されたスタイルは下記です。スタイルシートを正常にアップデートできれば、このメッセージとスタイルは削除されます。"
+
+#: my-calendar-styles.php:196
+msgid "CSS Style Options"
+msgstr "CSS スタイルオプション"
+
+#: my-calendar-styles.php:201
+msgid "Restore My Calendar stylesheet"
+msgstr "My Calendar スタイルシートを復元する"
+
+#: my-calendar-styles.php:201
+msgid "Disable My Calendar Stylesheet"
+msgstr "My Calendar のスタイルシートを無効にする"
+
+#: my-calendar-styles.php:204
+msgid "Edit the stylesheet for My Calendar"
+msgstr "My Calendar のスタイルシートを編集する"
+
+#: my-calendar-styles.php:217
+msgid "Comparing Your Style with latest installed version of My Calendar"
+msgstr "カスタムスタイルをインストール済の My Calendar のものと比較中"
+
+#: my-calendar-styles.php:221
+msgid "There have been updates to the stylesheet."
+msgstr "スタイルシートが更新されています。"
+
+#: my-calendar-styles.php:221
+msgid "Compare Your Stylesheet with latest installed version of My Calendar."
+msgstr "カスタムスタイルをインストール済の My Calendar のものと比較"
+
+#: my-calendar-styles.php:226
+msgid "Your stylesheet matches that included with My Calendar."
+msgstr "カスタムスタイルシートは My Calendar に含まれているものと一致しました。"
+
+#: my-calendar-styles.php:232
+msgid "Resetting your stylesheet will set your stylesheet to the version of that style currently distributed with the plug-in."
+msgstr "スタイルシートをリセットすると、スタイルシートはプラグインとともに配布されているスタイルと同じバージョンになります。"
+
+#: my-calendar-templates.php:79
+msgid "Map<span> to %s</span>"
+msgstr "<span>%s</span>を地図に表示"
+
+#: my-calendar-templating.php:20
+msgid "Grid Output Template saved"
+msgstr "グリッド表示テンプレートを保存しました"
+
+#: my-calendar-templating.php:36
+msgid "List Output Template saved"
+msgstr "リスト表示テンプレートを保存しました"
+
+#: my-calendar-templating.php:44
+msgid "Mini Output Template saved"
+msgstr "ミニ表示テンプレートを保存しました"
+
+#: my-calendar-templating.php:52
+msgid "Event Details Template saved"
+msgstr "イベント詳細テンプレートを保存しました"
+
+#: my-calendar-templating.php:68
+msgid "My Calendar Information Templates"
+msgstr "My Calendar 情報テンプレート"
+
+#: my-calendar-templating.php:73
+msgid "Advanced users may customize the HTML template for each event. This page lets you create a customized view of your events in each context. All available template tags are documented on the Help page. These default templates are based on the default views with all output enabled. <strong>Custom templates will override any other output rules in your settings.</strong>"
+msgstr "イベント情報を表示する HTML テンプレートをカスタマイズできます。利用可能なテンプレートタグは、[ヘルプ] ページに記載されています。下記のデフォルト テンプレートは、デフォルトのビュー用のものです。<strong>カスタムテンプレートは、他の出力ルールよりも優先されます。</strong>"
+
+#: my-calendar-templating.php:73
+msgid "Templates Help"
+msgstr "テンプレートのヘルプ"
+
+#: my-calendar-templating.php:77
+msgid "My Calendar: Grid Event Template"
+msgstr "My Calendar: グリッド イベントテンプレート"
+
+#: my-calendar-templating.php:82
+msgid "Use this grid event template"
+msgstr "このグリッド イベントテンプレートを使用"
+
+#: my-calendar-templating.php:85
+msgid "Your custom template for events in the calendar grid output."
+msgstr "カレンダー グリッドでのイベント表示用カスタムテンプレート"
+
+#: my-calendar-templating.php:88
+msgid "Save Grid Template"
+msgstr "グリッド テンプレートを保存"
+
+#: my-calendar-templating.php:97
+msgid "My Calendar: List Event Template"
+msgstr "My Calendar: リスト イベントテンプレート"
+
+#: my-calendar-templating.php:102
+msgid "Use this list event template"
+msgstr "このリスト イベントテンプレートを使用"
+
+#: my-calendar-templating.php:105
+msgid "Your custom template for events in calendar list output."
+msgstr "カレンダー リストでのイベント表示用カスタムテンプレート"
+
+#: my-calendar-templating.php:108
+msgid "Save List Template"
+msgstr "リスト テンプレートを保存"
+
+#: my-calendar-templating.php:117
+msgid "My Calendar: Mini Calendar Template"
+msgstr "My Calendar: ミニカレンダー テンプレート"
+
+#: my-calendar-templating.php:122
+msgid "Use this mini event template"
+msgstr "このミニ イベントテンプレートを使用"
+
+#: my-calendar-templating.php:125
+msgid "Your custom template for events in sidebar/mini calendar output."
+msgstr "サイドバー/ミニカレンダーでのイベント表示用カスタムテンプレート"
+
+#: my-calendar-templating.php:128
+msgid "Save Mini Template"
+msgstr "ミニ テンプレートを保存"
+
+#: my-calendar-templating.php:137
+msgid "My Calendar: Event Details Page Template"
+msgstr "My Calendar: イベント詳細ページテンプレート"
+
+#: my-calendar-templating.php:142
+msgid "Use this details template"
+msgstr "この詳細テンプレートを使用"
+
+#: my-calendar-templating.php:145
+msgid "Your custom template for events on the event details page."
+msgstr "イベント詳細ページでのイベント表示用カスタムテンプレート"
+
+#: my-calendar-templating.php:148
+msgid "Save Details Template"
+msgstr "詳細テンプレートを保存"
+
+#: my-calendar-upgrade-db.php:25 my-calendar-upgrade-db.php:33
+msgid "The My Calendar database needs to be updated."
+msgstr "データベースを更新してください"
+
+#: my-calendar-upgrade-db.php:26 my-calendar-upgrade-db.php:33
+#: my-calendar-upgrade-db.php:46
+msgid "Update now"
+msgstr "アップデートする"
+
+#: my-calendar-upgrade-db.php:45
+msgid "You haven't entered any events, so My Calendar can't tell whether your database is up to date. If you can't add events, upgrade your database!"
+msgstr "イベントが入力されていないため、My Calendar はデータベースが最新のものかどうか判断できません。新規イベントを追加できない場合は、データベースをアップデートしてください。"
+
+#: my-calendar-upgrade-db.php:13
+msgid "My Calendar Database is updated."
+msgstr "データベースが更新されました"
+
+#: my-calendar-widgets.php:35
+msgid "My Calendar: Today's Events"
+msgstr "本日のイベント"
+
+#: my-calendar-generator.php:119 my-calendar-widgets.php:82
+#: my-calendar-widgets.php:181
+msgid "Template"
+msgstr "テンプレート"
+
+#: my-calendar-widgets.php:85
+msgid "Add calendar URL to use this option."
+msgstr "カレンダーのURLをオプションとして追加する"
+
+#: my-calendar-widgets.php:91
+msgid "Show this text if there are no events today:"
+msgstr "当日にイベントがない場合に表示するテキスト"
+
+#: my-calendar-widgets.php:95 my-calendar-widgets.php:223
+#: my-calendar-widgets.php:672
+msgid "Category or categories to display:"
+msgstr "表示するカテゴリー(複数選択可):"
+
+#: my-calendar-widgets.php:126
+msgid "My Calendar: Upcoming Events"
+msgstr "My Calendar: 登録済のイベント"
+
+#: my-calendar-widgets.php:185
+msgid "Widget Options"
+msgstr "ウィジェットオプション"
+
+#: my-calendar-widgets.php:193
+msgid "Display upcoming events by:"
+msgstr "登録済のイベントの表示方法："
+
+#: my-calendar-widgets.php:194
+msgid "Events (e.g. 2 past, 3 future)"
+msgstr "イベント単位"
+
+#: my-calendar-widgets.php:195
+msgid "Dates (e.g. 4 days past, 5 forward)"
+msgstr "日数単位"
+
+#: my-calendar-widgets.php:201
+msgid "Skip the first <em>n</em> events"
+msgstr "始めの <em>n</em> 回をスキップ"
+
+#: my-calendar-widgets.php:204
+msgid "Events sort order:"
+msgstr "イベントの並べ替え方法:"
+
+#: my-calendar-widgets.php:205
+msgid "Ascending (near to far)"
+msgstr "昇順(直近が先に)"
+
+#: my-calendar-widgets.php:206
+msgid "Descending (far to near)"
+msgstr "降順(直近が最後に)"
+
+#: my-calendar-widgets.php:216
+msgid "Include today's events"
+msgstr "今日のイベントを含める"
+
+#: my-calendar-widgets.php:219
+msgid "Show this text if there are no events meeting your criteria:"
+msgstr "条件に合致するイベントがない場合に表示するテキスト"
+
+#: my-calendar-widgets.php:626
+msgid "My Calendar: Mini Calendar"
+msgstr "ミニカレンダー"
+
+#: my-calendar-widgets.php:644
+msgid "Calendar"
+msgstr "イベントカレンダー"
+
+#: my-calendar-widgets.php:698
+msgid "Mini-Calendar Timespan:"
+msgstr "ミニカレンダーの表示期間:"
+
+#: my-calendar.php:155
+msgid "Support This Plug-in"
+msgstr "このプラグインのサポート"
+
+#: my-calendar.php:161
+msgid "Help me help you:"
+msgstr ""
+
+#: my-calendar.php:161
+msgid "Buy the My Calendar User's Guide"
+msgstr "My Calendar User's Guide の購入"
+
+#: my-calendar.php:167
+msgid "Make a Donation"
+msgstr "作者に寄付する"
+
+#: my-calendar.php:177
+msgid "Get Help"
+msgstr "ヘルプ"
+
+#: my-calendar.php:182
+msgid "Get Support"
+msgstr "作者サイト"
+
+#: my-calendar-help.php:13 my-calendar.php:183 my-calendar.php:358
+msgid "My Calendar Help"
+msgstr "My Calendar ヘルプ"
+
+#: my-calendar.php:184
+msgid "Check out my other plug-ins"
+msgstr "作者の他のプラグインをチェック"
+
+#: my-calendar.php:185
+msgid "Rate this plug-in 5 stars!"
+msgstr "このプラグインを評価する"
+
+#: my-calendar.php:212
+msgid "Title of the event."
+msgstr "イベントのタイトル"
+
+#: my-calendar.php:215
+msgid "Title of the event as a link if a URL is present, or the title alone if not."
+msgstr "タイトルをリンクとして表示します (URL がない場合はタイトルのみ表示)"
+
+#: my-calendar.php:218
+msgid "Start time for the event."
+msgstr "イベントの開始時刻"
+
+#: my-calendar.php:221
+msgid "Date on which the event begins."
+msgstr "イベントの開始日"
+
+#: my-calendar.php:224
+msgid "Beginning date to end date; excludes end date if same as beginning."
+msgstr "開始日と終了日 (開始日と終了日が同じ場合を除く)"
+
+#: my-calendar.php:227
+msgid "Multi-day events: an unordered list of dates/times. Otherwise, beginning date/time."
+msgstr "複数回実施イベントの場合は日時のリスト、それ以外は開始日時"
+
+#: my-calendar.php:230
+msgid "Author who posted the event."
+msgstr "イベントの登録者"
+
+#: my-calendar.php:233
+msgid "Name of the assigned host for the event."
+msgstr "イベントの主催者に設定された人の名前"
+
+#: my-calendar.php:236
+msgid "Short event description."
+msgstr "イベントの概要"
+
+#: my-calendar.php:239
+msgid "Description of the event."
+msgstr "イベントの説明"
+
+#: my-calendar.php:245
+msgid "URL provided for the event."
+msgstr "イベントのURL"
+
+#: my-calendar.php:248
+msgid "Link to an auto-generated page containing information about the event."
+msgstr "イベント情報の自動生成ページへのリンク"
+
+#: my-calendar.php:251
+msgid "Whether event is currently open for registration."
+msgstr "イベントが登録受付中かどうか"
+
+#: my-calendar.php:254
+msgid "Current status of event: either \"Published\" or \"Reserved.\""
+msgstr "現在のイベントの状態: 「公開済」または「予約済」"
+
+#: my-calendar.php:260
+msgid "Name of the location of the event."
+msgstr "イベントの開催場所"
+
+#: my-calendar.php:263
+msgid "First line of the site address."
+msgstr "住所 (町名・通り名など)"
+
+#: my-calendar.php:266
+msgid "Second line of the site address."
+msgstr "住所 (ビル・マンション名など)"
+
+#: my-calendar.php:278
+msgid "Custom region."
+msgstr "地域 (カスタム)"
+
+#: my-calendar.php:281
+msgid "Country for the event location."
+msgstr "イベント開催場所の国名"
+
+#: my-calendar.php:284
+msgid "Output the URL for the location."
+msgstr "場所の URL を出力"
+
+#: my-calendar.php:287
+msgid "Event address in <a href=\"http://microformats.org/wiki/hcard\">hcard</a> format."
+msgstr "イベント開催場所の住所 (<a href=\"http://microformats.org/wiki/hcard\">hcard</a>形式)"
+
+#: my-calendar.php:290
+msgid "Link to Google Map to the event, if address information is available."
+msgstr "Google Map へのリンク (緯度・経度情報がある場合のみ)"
+
+#: my-calendar.php:296
+msgid "Name of the category of the event."
+msgstr "イベントのカテゴリー名"
+
+#: my-calendar.php:299
+msgid "URL for the event's category icon."
+msgstr "カテゴリアイコンのURL"
+
+#: my-calendar.php:302
+msgid "Hex code for the event's category color."
+msgstr "イベントカテゴリーの色 (16進数コード)"
+
+#: my-calendar.php:305
+msgid "ID of the category of the event."
+msgstr "イベントカテゴリーID"
+
+#: my-calendar.php:327 my-calendar.php:329 my-calendar.php:334
+#: my-calendar.php:336
+msgid "My Calendar"
+msgstr "My Calendar"
+
+#: my-calendar.php:354
+msgid "Style Editor"
+msgstr "CSS 編集"
+
+#: my-calendar.php:356
+msgid "Template Editor"
+msgstr "テンプレート編集"
+
+msgid "http://www.joedolson.com/articles/my-calendar/"
+msgstr "http://www.joedolson.com/articles/my-calendar/"
+
+msgid "Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets."
+msgstr "使い易いイベントカレンダー プラグインです。固定ページ、投稿、ウィジェットにさまざまな形式のカレンダーを表示できます。"
+
+msgid "Joseph C Dolson"
+msgstr "Joseph C Dolson"
+
+msgid "http://www.joedolson.com"
+msgstr "http://www.joedolson.com"
