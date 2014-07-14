@@ -43,7 +43,7 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 = Translations =
 
 Available languages (in order of completeness):
-French, Japanese, Danish, Dutch, German, Italian, Galician, Spanish, Danish, Czech, Hindi, Turkish, Polish, Finnish, Slovenian, Portuguese, Russian, Swedish, Romanian, Basque, Persian
+French, Japanese, Danish, Dutch, Russian, German, Italian, Galician, Spanish, Danish, Czech, Hindi, Turkish, Polish, Finnish, Slovenian, Portuguese, Swedish, Romanian, Basque, Persian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -74,6 +74,19 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    with shortcode options or widget configuration.
 
 == Changelog ==
+
+= 2.3.10 =
+
+* New filter: mc_jumpbox_future_years - alter the number of years into the future shown in the calendar date switcher.
+* New filter: mc_add_events_url - alter URL for Add Events in adminbar; return URL
+* New filter: mc_locate_events_page: alter menu parent of Add Events in admin menu; return menu slug or null
+* Bug fix: ltype and lvalue not passed from shortcode into handler for upcoming events.
+* Bug fix: disable comments by default for event post storage.
+* Bug fix: misnamed variable in filter; resolves notice on line 239 of my-calendar-output.php
+* Added template tag: {linking_title}; same as {link_title}, but falls back to details link if no URL input for event.
+* Change default widget template to use {linking_title}.
+* Security: Two XSS vulnerabilities fixed. Thanks <a href="http://www.timhurley.net/">Tim Hurley</a>
+* Update Translation: Russian
 
 = 2.3.9 =
 
@@ -1268,6 +1281,6 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 == Upgrade Notice ==
 
-= 2.3.0 =
+= 2.3.10 =
 
-This is a MAJOR update. Be sure to backup! 2.3.8: Bug fixes. [All-day events, event copying]
+IMPORTANT SECURITY UPDATE: Please upgrade as soon as possible!

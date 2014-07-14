@@ -324,6 +324,9 @@ function my_calendar_help() { ?>
 		
 		<dt><code>{linking}</code></dt>
 		<dd><?php _e('Provides a link to the defined event URL when present, otherwise the {details} link.','my-calendar'); ?> <strong><?php _e('Requires that the site URL has been provided on the Settings page','my-calendar'); ?></strong>
+
+		<dt><code>{linking_title}</code></dt>
+		<dd><?php _e('Like {link_title}, but uses {linking} instead of {link}.','my-calendar'); ?>
 		
 		<dt><code>{event_open}</code></dt>
 		<dd><?php _e('Displays text indicating whether registration for the event is currently open or closed; displays nothing if that choice is selected in the event.','my-calendar'); ?></dd>

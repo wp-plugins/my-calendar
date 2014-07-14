@@ -239,6 +239,9 @@ function mc_deal_with_deleted_user( $id ) {
 
 // Function to add the javascript to the admin header
 function my_calendar_add_javascript() {
+	wp_register_script( 'mc.tabs', plugins_url( 'js/tabs.js', __FILE__ ), array( 'jquery' ) );
+	wp_register_script( 'mc.sortable', plugins_url( 'js/sortable.js', __FILE__ ), array( 'jquery','jquery-ui-sortable' ) );
+	wp_register_script( 'mc-upload', plugins_url( 'js/upload.js', __FILE__ ), array( 'jquery' ) );
 	if ( isset( $_GET['page'] ) && ( $_GET['page'] == 'my-calendar' || $_GET['page'] == 'my-calendar-groups' || $_GET['page'] == 'my-calendar-locations' ) ) {
 		wp_enqueue_script('jquery-ui-autocomplete');
 		wp_enqueue_script('jquery-ui-accordion');
@@ -273,13 +276,10 @@ function my_calendar_add_javascript() {
 		if ( function_exists('wp_enqueue_media') && !did_action( 'wp_enqueue_media' ) ) {
 			wp_enqueue_media();
 		}
-		wp_register_script( 'mc-upload', plugins_url( 'js/upload.js', __FILE__ ), array( 'jquery' ) );
 		wp_enqueue_script( 'mc-upload' );	
 		wp_localize_script( 'mc-upload', 'thumbHeight', get_option( 'thumbnail_size_h' ) );		
 	}
 	if ( isset($_GET['page']) && ( $_GET['page'] == 'my-calendar-config' || $_GET['page'] == 'my-calendar-help' ) ) {
-		wp_register_script( 'mc.tabs', plugins_url( 'js/tabs.js', __FILE__ ), array( 'jquery' ) );
-		wp_register_script( 'mc.sortable', plugins_url( 'js/sortable.js', __FILE__ ), array( 'jquery','jquery-ui-sortable' ) );
 		wp_enqueue_script( 'mc.tabs' );
 		wp_enqueue_script( 'mc.sortable' );
 		$firstItem = ( $_GET['page'] == 'my-calendar-config' ) ? 'mc_editor' : 'mc_main' ;
@@ -953,6 +953,7 @@ function my_calendar_is_odd( $int ) {
   return( $int & 1 );
 }
 
+/* Unless an admin, authors can only edit their own events if they don't have mc_manage_events capabilities. */
 function mc_can_edit_event( $author_id ) {
 	if ( !is_user_logged_in() ) { return false; }
 	global $user_ID;
@@ -1000,7 +1001,7 @@ add_action( 'admin_bar_menu','my_calendar_admin_bar', 200 );
 function my_calendar_admin_bar() {
 	global $wp_admin_bar;
 	if ( current_user_can( 'mc_add_events' ) ) {
-		$url = admin_url('admin.php?page=my-calendar');
+		$url = apply_filters( 'mc_add_events_url', admin_url( 'admin.php?page=my-calendar' ) );
 		$args = array( 'id'=>'mc-add-event','title'=>__('Add Event','my-calendar'),'href'=>$url );
 		$wp_admin_bar->add_node($args);
 	}
@@ -1242,7 +1243,8 @@ get_currentuserinfo();
 	$mc_uri = get_option('mc_uri');
 	$mc_css = get_option('mc_css_file');
 	
-	$license = ( get_option('mcs_license_key') != '' )?get_option('mcs_license_key'):'none'; 	
+	$license = ( get_option('mcs_license_key') != '' ) ? get_option('mcs_license_key') : 'none' ; 
+	$tickets_license = ( get_option( 'mt_license_key' ) != '' ) ? get_option( 'mt_license_key' ) : 'none' ;
 	// send fields for all plugins
 	$wp_version = get_bloginfo('version');
 	$home_url = home_url();
@@ -1288,7 +1290,7 @@ Version: $version
 DB Version: $mc_db_version
 URI: $mc_uri
 CSS: $mc_css
-License: $license 
+License: Submissions: $license / Ticketing: $tickets_license
 Admin Email: $current_user->user_email
 
 ==WordPress:==
@@ -1745,6 +1747,19 @@ function mc_posttypes_messages( $messages ) {
 		}
 	}
 	return $messages;
+}
+
+/* By default, disable comments on event posts */
+add_filter( 'default_content', 'mc_posttypes_defaults', 10, 2 );
+function mc_posttypes_defaults( $post_content, $post ) {
+    if( $post->post_type ) {
+		switch( $post->post_type ) {
+			case 'mc-events':
+				$post->comment_status = 'closed';
+			break;
+		}
+	}
+    return $post_content;
 }
 
 // Actions are only performed after their respective My Calendar events have been successfully completed.

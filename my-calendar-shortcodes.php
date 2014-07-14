@@ -18,7 +18,7 @@ function my_calendar_insert($atts,$content=null) {
 			), $atts, 'my_calendar' ));
 	if ( $format != 'mini' ) {
 		if ( isset($_GET['format']) ) {
-			$format = esc_sql($_GET['format']);
+			$format = esc_sql( $_GET['format'] );
 		}
 	}
 	global $user_ID;			
@@ -54,7 +54,7 @@ function my_calendar_insert_upcoming($atts) {
 	if ( $host == 'current' ) {
 		$host = apply_filters( 'mc_display_host', $user_ID, 'upcoming' );
 	}	
-	return my_calendar_upcoming_events( $before, $after, $type, $category, $template, $fallback, $order, $skip, $show_today, $author, $host );
+	return my_calendar_upcoming_events( $before, $after, $type, $category, $template, $fallback, $order, $skip, $show_today, $author, $host, $ltype, $lvalue );
 }
 
 function my_calendar_insert_today($atts) {
