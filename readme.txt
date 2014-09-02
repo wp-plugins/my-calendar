@@ -1,11 +1,11 @@
 === My Calendar ===
 Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
-Tags: calendar, dates, times, events, scheduling, event manager, event calendar
+Tags: calendar, dates, times, event, events, scheduling, schedule, event manager, event calendar, class, concert, conference, meeting, venue, location
 Requires at least: 3.7.0
 Tested up to: 3.9.2
 License: GPLv2 or later
-Stable tag: 2.3.10
+Stable tag: 2.3.11
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
@@ -102,6 +102,7 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Filter: headers filter for My Calendar email notifications.
 * Filter: Add detection to pass custom JS from custom directory/theme directory
 * Updated French, Spanish translations.
+* Removed .po files from repository; reduces file size by over 2 MB.
 
 = 2.3.10 =
 
