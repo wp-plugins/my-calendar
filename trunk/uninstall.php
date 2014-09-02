@@ -39,6 +39,7 @@ if ( !defined( 'ABSPATH' ) && !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	delete_option('mc_event_mail_subject');
 	delete_option('mc_event_mail_to');
 	delete_option('mc_event_mail_message');
+	delete_option('mc_event_mail_bcc' );
 	delete_option('mc_event_approve');		
 	delete_option('mc_event_approve_perms');
 	delete_option('mc_no_fifth_week');		

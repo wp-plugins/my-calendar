@@ -1020,7 +1020,7 @@ function mc_form_fields( $data,$mode,$event_id ) {
 			<?php } ?>
 			<fieldset><legend><?php _e('Event Date and Time','my-calendar'); ?></legend>
 			<div id="e_schedule">
-			<div id="event1" class="clonedInput" aria-live="polite">
+			<div id="event1" class="clonedInput" aria-live="assertive">
 			<?php echo apply_filters( 'mc_datetime_inputs', '', $has_data, $data, 'admin' ); ?>
 			</div>
 			<?php if ( $mode != 'edit') { ?>			

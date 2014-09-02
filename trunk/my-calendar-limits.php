@@ -5,7 +5,7 @@ function mc_select_category( $category, $type='event', $group='events' ) {
 $category = urldecode($category);
 global $wpdb;
 	$mcdb = $wpdb;
-	  if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+	  if ( get_option( 'mc_remote' ) == 'true' && function_exists( 'mc_remote_db' ) ) { $mcdb = mc_remote_db(); }
 	$select_category = '';
 	$data = ( $group=='category' ) ? 'category_id' : 'event_category';
 	if ( preg_match('/^all$|^all,|,all$|,all,/i', $category) > 0 ) {
@@ -71,7 +71,7 @@ $key = '';
 if ( $author == '' || $author == 'all' || $author == 'default' || $author == null ) { return; }
 global $wpdb;
 	$mcdb = $wpdb;
-	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists( 'mc_remote_db' ) ) { $mcdb = mc_remote_db(); }
 	$select_author = '';
 	$data = 'event_author';
 	if ( isset( $_GET['mc_auth'] ) ) { $author = $_GET['mc_auth']; }
@@ -136,7 +136,7 @@ $key = '';
 if ( $host == '' || $host == 'all' || $host == 'default' || $host == null ) { return; }
 global $wpdb;
 	$mcdb = $wpdb;
-	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { $mcdb = mc_remote_db(); }
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists( 'mc_remote_db' ) ) { $mcdb = mc_remote_db(); }
 	$select_author = '';
 	$data = 'event_host';
 	if ( isset( $_GET['mc_auth'] ) ) { $host = $_GET['mc_host']; }
@@ -224,10 +224,12 @@ function mc_limit_string( $type='', $ltype='', $lvalue='' ) {
 			case "country" : $location_type = "event_country"; break;
 			case "region" : $location_type = "event_region"; break;
 			default : $location_type = $location;
-		}			
-		if ($current_location != 'all' && $current_location != '') {
-				$limit_string = "$location_type='$current_location' AND";
-				//$limit_string .= ($type=='all')?' AND':"";
+		}
+		if ( in_array( $location_type, array( 'event_label', 'event_city', 'event_state', 'event_postcode', 'event_country', 'event_region' ) ) ) {
+			if ( $current_location != 'all' && $current_location != '' ) {
+					$limit_string = "$location_type='$current_location' AND";
+					//$limit_string .= ($type=='all')?' AND':"";
+			}
 		}
 	}
 	if ( $limit_string != '' ) {

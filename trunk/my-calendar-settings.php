@@ -235,8 +235,10 @@ function edit_my_calendar_config() {
 			}
 			if ( $n == 'stop' ) { break; }			
 		}
-		update_option( 'mc_bottomnav', implode( ',' ,$bottom ) );
-		update_option( 'mc_topnav', implode( ',' ,$top ) );
+		$top = ( empty( $top ) ) ? 'none' : implode( ',', $top );
+		$bottom = ( empty( $bottom ) ) ? 'none' : implode( ',', $bottom );
+		update_option( 'mc_bottomnav', $bottom );
+		update_option( 'mc_topnav', $top );
 		update_option('mc_show_map',( !empty($_POST['mc_show_map']) && $_POST['mc_show_map']=='on')?'true':'false');
 		update_option('mc_gmap',( !empty($_POST['mc_gmap']) && $_POST['mc_gmap']=='on')?'true':'false');
 		update_option('mc_show_address',( !empty($_POST['mc_show_address']) && $_POST['mc_show_address']=='on')?'true':'false'); 
@@ -329,12 +331,14 @@ function edit_my_calendar_config() {
 		$mc_event_mail_from = $_POST['mc_event_mail_from'];
 		$mc_event_mail_subject = $_POST['mc_event_mail_subject'];
 		$mc_event_mail_message = $_POST['mc_event_mail_message'];
-		update_option('mc_event_mail_to',$mc_event_mail_to);
-		update_option('mc_event_mail_from',$mc_event_mail_from);
-		update_option('mc_event_mail_subject',$mc_event_mail_subject);
-		update_option('mc_event_mail_message',$mc_event_mail_message);
-		update_option('mc_event_mail',$mc_event_mail);
-		update_option('mc_html_email',$mc_html_email);
+		$mc_event_mail_bcc = $_POST['mc_event_mail_bcc'];
+		update_option( 'mc_event_mail_to',$mc_event_mail_to );
+		update_option( 'mc_event_mail_from',$mc_event_mail_from );
+		update_option( 'mc_event_mail_subject',$mc_event_mail_subject );
+		update_option( 'mc_event_mail_message',$mc_event_mail_message );
+		update_option( 'mc_event_mail_bcc', $mc_event_mail_bcc );
+		update_option( 'mc_event_mail',$mc_event_mail );
+		update_option( 'mc_html_email',$mc_html_email );
 		echo "<div class=\"updated\"><p><strong>".__( 'Email notice settings saved','my-calendar' ).".</strong></p></div>";
 	}
 	// Custom User Settings
@@ -521,7 +525,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 							'feeds'=> 		'<div class="dashicons dashicons-rss"></div> '.__( 'Links to RSS and iCal output','my-calendar' ),
 							'stop'=> 		'<div class="dashicons dashicons-no"></div> '.__( 'Elements below here will be hidden.' )
 						);
-		echo "<div id='mc-sortable-update' aria-live='polite'></div>";
+		echo "<div id='mc-sortable-update' aria-live='assertive'></div>";
 		echo "<ul id='mc-sortable'>";
 		foreach ( $order as $k) {
 			$k = trim($k);
@@ -737,7 +741,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 		foreach ( $roles as $role=>$rolename ) {
 			if ( $role == 'administrator' ) continue;
 			$role_tabs .= "<li><a href='#mc_$role'>$rolename</a></li>\n";
-			$role_container .= "<div class='wptab mc_$role' id='mc_$role' aria-live='polite'><fieldset id='mc_$role' class='roles'><legend>$rolename</legend>";
+			$role_container .= "<div class='wptab mc_$role' id='mc_$role' aria-live='assertive'><fieldset id='mc_$role' class='roles'><legend>$rolename</legend>";
 			$role_container .= "<input type='hidden' value='none' name='mc_caps[".$role."][none]' />
 			<ul class='mc-settings checkboxes'>";
 			foreach( $caps as $cap=>$name ) {
@@ -777,6 +781,7 @@ if ( get_option( 'ko_calendar_imported' ) != 'true' ) {
 	<li><?php mc_settings_field( 'mc_event_mail', __( 'Send Email Notifications when new events are scheduled or reserved.','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 	<li><?php mc_settings_field( 'mc_event_mail_to', __( 'Notification messages are sent to:','my-calendar' ), get_bloginfo( 'admin_email' ) ); ?></li>	
 	<li><?php mc_settings_field( 'mc_event_mail_from', __( 'Notification messages are sent from:','my-calendar' ), get_bloginfo( 'admin_email' ) ); ?></li>
+	<li><?php mc_settings_field( 'mc_event_mail_bcc', __( 'BCC on notifications (one per line):','my-calendar' ), '', '', array( 'cols'=>60, 'rows'=>6 ), 'textarea' ); ?></li>
 	<li><?php mc_settings_field( 'mc_event_mail_subject', __( 'Email subject','my-calendar' ), get_bloginfo( 'name' ).': '.__( 'New event added', 'my-calendar' ), '', array( 'size'=>60 ) ); ?></li>
 	<li><?php mc_settings_field( 'mc_event_mail_message', __( 'Message Body','my-calendar' ), __( 'New Event:','my-calendar' )."\n{title}: {date}, {time} - {event_status}", "<br /><a href='".admin_url("admin.php?page=my-calendar-help#templates")."'>".__( "Templating Help",'my-calendar' ).'</a>', array( 'cols'=>60, 'rows'=>6 ), 'textarea' ); ?></li>
 	<li><?php mc_settings_field( 'mc_html_email', __( 'Send HTML email','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
