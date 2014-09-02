@@ -2,8 +2,8 @@
 Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, events, scheduling, event manager, event calendar
-Requires at least: 3.4.2
-Tested up to: 3.9.1
+Requires at least: 3.7.0
+Tested up to: 3.9.2
 License: GPLv2 or later
 Stable tag: 2.3.10
 
@@ -15,8 +15,8 @@ My Calendar does WordPress event management with richly customizable ways to dis
 
 Easy to use for anybody, My Calendar provides enormous potential for developers needing a custom calendar interface.
 
-* 	[Buy the User's Guide](http://www.joedolson.com/articles/my-calendar/users-guide/) for extensive help with set up and use.
-*   [Buy My Calendar: Submissions](https://www.joedolson.com/articles/my-calendar/submissions/), the PRO extension for front-end event submissions
+* 	[Buy the User's Guide](http://www.joedolson.com/my-calendar/users-guide/) for extensive help with set up and use.
+*   [Buy My Calendar: Submissions](https://www.joedolson.com/my-calendar/submissions/), the PRO extension for front-end event submissions
 
 = Features: =
 
@@ -38,18 +38,18 @@ Easy to use for anybody, My Calendar provides enormous potential for developers 
 *   Import events from [Kieran O'Shea's Calendar plugin](http://wordpress.org/extend/plugins/calendar/)
 * 	Integrated Help page to guide in use of shortcodes and template tags
 * 	Shortcode Generator to help create customized views of My Calendar
-*   [Developer Documentation](http://www.joedolson.com/articles/doc-category/my-calendar-3/)
+*   [Developer Documentation](http://www.joedolson.com/doc-category/my-calendar-3/)
 
 = Translations =
 
-Available languages (in order of completeness):
-French, Japanese, Danish, Dutch, Russian, German, Italian, Galician, Spanish, Danish, Czech, Hindi, Turkish, Polish, Finnish, Slovenian, Portuguese, Swedish, Romanian, Basque, Persian
+Available translations (in order of completeness):
+French, Japanese, Danish, Dutch, Russian, German, Italian, Spanish, Galician, Danish, Czech, Hindi, Turkish, Polish, Finnish, Slovenian, Portuguese, Swedish, Romanian, Basque, Persian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
 Translating my plug-ins is always appreciated. Visit <a href="http://translate.joedolson.com">my translations site</a> to start getting your language into shape!
 
-<a href="http://www.joedolson.com/articles/translator-credits/">Translator Credits</a>
+<a href="http://www.joedolson.com/translator-credits/">Translator Credits</a>
 
 == Installation ==
 
@@ -64,7 +64,7 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
    My Calendar -> Manage Locations
    My Calendar -> Manage Event Groups
    My Calendar -> Style Editor   
-   My Calendar -> Script Editor
+   My Calendar -> Script Manager
    My Calendar -> Template Editor
    My Calendar -> Settings
    My Calendar -> Help
@@ -75,6 +75,34 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
+= 2.4.0 = [todo]
+
+* Option to post new events into blog posts
+* Add author limit tool
+* Add search documentation
+* Add filters to search query parameters
+* Add function to display event/s currently happening.
+* Create advanced search
+* Add ability to completely remove link on event title in calendar grid.
+* Feature: allow limiting of categories to specific member groups
+
+= 2.3.11 =
+
+* Change: Modified default JS saving so that only custom JS gets handled in editor.
+* Change: toggle to enable/disable custom JS; default to off
+* Change: Moved scripting into files.
+* Notice: admin notice to inform users of need to activate JS if using custom
+* Bug fix: Modify default JS so wpautop doesn't cause problems with toggles.
+* Bug fix: External links displaying is_external boolean instead of classes.
+* Bug fix: mysql error if location_type not defined but location_value is.
+* Bug fix: page_id unset when default permalinks in use. [Ick. Don't use default permalinks.]
+* Bug fix: My Calendar navigation panel could not disable top/bottom navigation.
+* Feature: * Add Bcc notification list
+* Accessibility: improvements to pop-up event details: focus & closing, ARIA
+* Filter: headers filter for My Calendar email notifications.
+* Filter: Add detection to pass custom JS from custom directory/theme directory
+* Updated French, Spanish translations.
+
 = 2.3.10 =
 
 * New filter: mc_jumpbox_future_years - alter the number of years into the future shown in the calendar date switcher.
@@ -83,6 +111,8 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Bug fix: ltype and lvalue not passed from shortcode into handler for upcoming events.
 * Bug fix: disable comments by default for event post storage.
 * Bug fix: misnamed variable in filter; resolves notice on line 239 of my-calendar-output.php
+* Bug fix: do search and replace on default scripting as well when script fields are blank
+* Bug fix: Check default option for import data from remote database; verify the default will be false
 * Added template tag: {linking_title}; same as {link_title}, but falls back to details link if no URL input for event.
 * Change default widget template to use {linking_title}.
 * Security: Two XSS vulnerabilities fixed. Thanks <a href="http://www.timhurley.net/">Tim Hurley</a>
@@ -1256,15 +1286,15 @@ Changes:
 
 = Hey! Why don't you have any Frequently Asked Questions here! =
 
-Because the majority of users end up on my web site asking for help anyway -- and it's simply more difficult to maintain two copies of my Frequently Asked Questions. Please visit [my web site FAQ](http://www.joedolson.com/articles/my-calendar/faq/) to read my Frequently Asked Questions!
+Because the majority of users end up on my web site asking for help anyway -- and it's simply more difficult to maintain two copies of my Frequently Asked Questions. Please visit [my web site FAQ](http://www.joedolson.com/my-calendar/faq/) to read my Frequently Asked Questions!
 
 = This plug-in is really complicated. Why can't you personally help me figure out how to use it? =
 
-I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/articles/my-calendar/users-guide/) for $25. This helps defray the thousand plus hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
+I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/my-calendar/users-guide/) for $25. This helps defray the thousand plus hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
 
 = Can my visitors or members submit events? =
 
-I've written a paid plug-in that adds this feature to My Calendar, called My Calendar: Submissions. [Buy it today](https://www.joedolson.com/articles/my-calendar/submissions/)!
+I've written a paid plug-in that adds this feature to My Calendar, called My Calendar: Submissions. [Buy it today](https://www.joedolson.com/my-calendar/submissions/)!
 
 == Screenshots ==
 
@@ -1281,6 +1311,6 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 == Upgrade Notice ==
 
-= 2.3.10 =
+= 2.3.11 =
 
-IMPORTANT SECURITY UPDATE: Please upgrade as soon as possible!
+If you have been using custom scripts, you will need to re-enable them after this upload. (This is an uncommon scenario.)

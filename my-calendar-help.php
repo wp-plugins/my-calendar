@@ -36,7 +36,7 @@ function my_calendar_help() { ?>
 		<li><?php _e('Select your preferred stylesheet in the Styles Editor','my-calendar'); ?></li>
 	</ul>
 	<p>
-	<?php printf( __('Read more help documentation below or <a href="%s">purchase the My Calendar User\'s Guide</a> to learn more -- but the above is all that you need to do to begin using the calendar.','my-calendar'), 'https://www.joedolson.com/articles/my-calendar/users-guide/' ); ?>
+	<?php printf( __('Read more help documentation below or <a href="%s">purchase the My Calendar User\'s Guide</a> to learn more -- but the above is all that you need to do to begin using the calendar.','my-calendar'), 'https://www.joedolson.com/my-calendar/users-guide/' ); ?>
 	</p>
 	</div>
 </div>
@@ -53,13 +53,13 @@ function my_calendar_help() { ?>
 			<li><a href='#mc_today'><?php _e( 'Today','my-calendar' ); ?></a></li>
 			<?php echo apply_filters( 'mc_generator_tabs', '' ); ?>
 		</ul>
-		<div class='wptab mc_main' id='mc_main' aria-live='polite'>	
+		<div class='wptab mc_main' id='mc_main' aria-live='assertive'>	
 			<?php mc_generator( 'main' ); ?>
 		</div>
-		<div class='wptab mc_upcoming' id='mc_upcoming' aria-live='polite'>
+		<div class='wptab mc_upcoming' id='mc_upcoming' aria-live='assertive'>
 			<?php mc_generator( 'upcoming' ); ?>
 		</div>
-		<div class='wptab mc_today' id='mc_today' aria-live='polite'>
+		<div class='wptab mc_today' id='mc_today' aria-live='assertive'>
 			<?php mc_generator( 'today' ); ?>
 		</div>
 		<?php echo apply_filters( 'mc_generator_tab_content', '' ); ?>

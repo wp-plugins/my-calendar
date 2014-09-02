@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 // define global variables;
-global $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $default_template, $wpdb, $grid_template, $list_template, $rss_template, $mini_template, $single_template, $defaults;
+global $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $default_template, $wpdb, $grid_template, $list_template, $rss_template, $mini_template, $single_template, $defaults;
 
 $defaults = array(
 	'upcoming'=>array(	
@@ -72,76 +72,6 @@ $rss_template = addslashes( "\n<item>
 	<dc:source xmlns:dc='http://purl.org/dc/elements/1.1/'>".home_url()."</dc:source>	
 	{guid}
   </item>\n" );
-
-$initial_ajaxjs = "$(function(){
-	$(document).on('click', '.calendar .my-calendar-nav a', function(e){
-		e.preventDefault();
-		var link = $(this).attr('href');
-		var ref = $(this).attr('rel');
-		$('#'+ref).html('<div class=\"loading\"><span>Loading...</span></div>');
-		$('#'+ref).load(link+' #'+ref+' > *', function() {
-			$('.calendar-event').children().not('h3').hide();
-		});
-	});	
-	$(document).on('click', '.list .my-calendar-nav a', function(e){
-		e.preventDefault();
-		var link = $(this).attr('href');
-        var ref = $(this).attr('rel');
-		$('#'+ref).html('<div class=\"loading\"><span>Loading...</span></div>');
-		$('#'+ref).load(link+' #'+ref+' > *', function() {
-			$('li.mc-events').children().not('.event-date').hide();
-			$('li.current-day').children().show();
-		});
-	});
-	$(document).on('click', '.mini .my-calendar-nav a', function(e){
-		e.preventDefault();
-		var link = $(this).attr('href');
-        var ref = $(this).attr('rel');
-		$('#'+ref).html('<div class=\"loading\"><span>Loading...</span></div>');
-		$('#'+ref).load(link+' #'+ref+' > *', function() {
-			$('.mini .has-events').children().not('.trigger').hide();
-		});
-	});	
-});";
-
-// defaults will go into the options table on a new install
-$initial_caljs = '$(function() {
-  $(".calendar-event").children().not(".event-title").hide();
-  $(document).on("click", ".calendar-event .event-title",
-     function(e) {
-         e.preventDefault(); // remove line if you are using a link in the event title
-		$(this).parent().children().not(".event-title").toggle();
-	 });
-  $(document).on("click", ".calendar-event .close",
-     function(e) {
-         e.preventDefault();
-		$(this).parent().toggle();
-	 });
-	});';  
-
-$initial_listjs = '$(function() {
-  $("li.mc-events").children().not(".event-date").hide();
-  $("li.current-day").children().show();
-  $(document).on("click", ".event-date",
-     function(e) {
-	 e.preventDefault();
-	 $(this).parent().children().not(".event-date").toggle();
-     });
-});';  
-
-$initial_minijs = '$(function() {
-  $(".mini .has-events").children().not(".trigger").hide();
-  $(document).on("click", ".mini .has-events .trigger",
-     function(e) {
-	 e.preventDefault();	 
-	 $(this).parent().children().not(".trigger").toggle(); 
-	 });
-  $(document).on("click", ".mini-event .close",
-     function(e) {
-         e.preventDefault();
-	 $(this).parent().parent().parent().toggle();
-	 });
-});';
 
 $default_template = '<strong>{timerange}, {date}</strong> &#8211; {linking_title}';
 $charset_collate = ''; 
@@ -247,7 +177,7 @@ $initial_loc_db = "CREATE TABLE " . my_calendar_locations_table() . " (
  ) $charset_collate;";
 
 function mc_default_settings() {
-global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $initial_ajaxjs, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $grid_template,$rss_template, $list_template, $mini_template, $single_template, $mc_version, $defaults;
+global $default_template, $initial_db, $initial_occur_db, $initial_loc_db, $initial_cat_db, $grid_template,$rss_template, $list_template, $mini_template, $single_template, $mc_version, $defaults;
 // no arguments
 	add_option( 'mc_location_access', array(
 		'1'=> __('Accessible Entrance','my-calendar'),
@@ -282,42 +212,38 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option( 'mc_version',$mc_version );
 	add_option( 'mc_use_styles','false' );
 	add_option( 'mc_show_months',1 );
-	add_option('mc_show_map','true');
-	add_option('mc_show_address','false');
-	add_option('mc_calendar_javascript',0);
-	add_option('mc_list_javascript',0);
-	add_option('mc_mini_javascript',0);
-	add_option('mc_ajax_javascript',1);
-	add_option('mc_minijs',$initial_minijs);
-	add_option('mc_listjs',$initial_listjs);
-	add_option('mc_caljs',$initial_caljs);
-	add_option('mc_ajaxjs',$initial_ajaxjs);
-	add_option('mc_notime_text','N/A');
-	add_option('mc_hide_icons','false');
-	add_option('mc_event_link_expires','no');
-	add_option('mc_apply_color','background');
-	add_option('mc_inverse_color','true');
-	add_option('mc_input_options',array( 'event_short'=>'off','event_desc'=>'on','event_category'=>'on','event_image'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'off','event_location'=>'on','event_location_dropdown'=>'on','event_specials'=>'on', 'event_access'=>'on' ) );
-	add_option('mc_input_options_administrators','false');
+	add_option( 'mc_show_map','true');
+	add_option( 'mc_show_address','false');
+	add_option( 'mc_calendar_javascript',0 );
+	add_option( 'mc_list_javascript',0 );
+	add_option( 'mc_mini_javascript',0 );
+	add_option( 'mc_ajax_javascript',0 );
+	add_option( 'mc_notime_text','N/A');
+	add_option( 'mc_hide_icons','false');
+	add_option( 'mc_event_link_expires','no');
+	add_option( 'mc_apply_color','background');
+	add_option( 'mc_inverse_color','true');
+	add_option( 'mc_input_options',array( 'event_short'=>'off','event_desc'=>'on','event_category'=>'on','event_image'=>'on','event_link'=>'on','event_recurs'=>'on','event_open'=>'off','event_location'=>'on','event_location_dropdown'=>'on','event_specials'=>'on', 'event_access'=>'on' ) );
+	add_option( 'mc_input_options_administrators','false');
 	add_site_option('mc_multisite', '0' );
-	add_option('mc_event_mail','false');
-	add_option('mc_desc','true');
-	add_option('mc_process_shortcodes','false');
-	add_option('mc_short','false');
-	add_option('mc_event_mail_subject','');
-	add_option('mc_event_mail_to','');
-	add_option('mc_event_mail_message','');
-	add_option('mc_event_approve','false');
-	add_option('mc_event_approve_perms','manage_options');
-	add_option('mc_no_fifth_week','true');
+	add_option( 'mc_event_mail','false');
+	add_option( 'mc_desc','true');
+	add_option( 'mc_process_shortcodes','false');
+	add_option( 'mc_short','false');
+	add_option( 'mc_event_mail_subject','');
+	add_option( 'mc_event_mail_to','');
+	add_option( 'mc_event_mail_message','');
+	add_option( 'mc_event_approve','false');
+	add_option( 'mc_event_approve_perms','manage_options');
+	add_option( 'mc_no_fifth_week','true');
 	add_option( 'mc_week_format', "M j, 'y" );	
-	add_option('mc_location_type','event_state');
-	add_option('mc_user_settings_enabled',false);
-	add_option('mc_user_location_type','state');
-	add_option('mc_show_js','' );
-	add_option('mc_show_css','' );
-	add_option('mc_date_format',get_option('date_format') );
-	add_option('mc_templates', array(
+	add_option( 'mc_location_type','event_state');
+	add_option( 'mc_user_settings_enabled',false);
+	add_option( 'mc_user_location_type','state');
+	add_option( 'mc_show_js','' );
+	add_option( 'mc_show_css','' );
+	add_option( 'mc_date_format',get_option('date_format') );
+	add_option( 'mc_templates', array(
 		'title'=>'{title}',
 		'link'=>'{title}',
 		'grid'=>$grid_template,
@@ -339,7 +265,7 @@ global $default_template, $initial_listjs, $initial_caljs, $initial_minijs, $ini
 	add_option( 'mc_multisite_show', 0 );
 	add_option( 'mc_event_link', 'true' );
 	mc_add_roles();
-	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta($initial_db);
 	dbDelta($initial_occur_db);
 	dbDelta($initial_cat_db);

@@ -263,7 +263,7 @@ function mc_edit_category_form($view='edit',$catID='') {
 function mc_get_category_detail( $cat_id, $field='category_name' ) {
 	global $wpdb, $url;
 	$mcdb = $wpdb;
-    $category = $mcdb->get_row( $wpdb->prepare( "SELECT * FROM " . my_calendar_categories_table() . " WHERE category_id=%d", $cat_id ) );
+    $category = $mcdb->get_row( $mcdb->prepare( "SELECT * FROM " . my_calendar_categories_table() . " WHERE category_id=%d", $cat_id ) );
 	return $category->$field;
 }
 

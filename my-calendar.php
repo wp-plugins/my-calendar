@@ -1,13 +1,13 @@
 <?php
 /*
 Plugin Name: My Calendar
-Plugin URI: http://www.joedolson.com/articles/my-calendar/
+Plugin URI: http://www.joedolson.com/my-calendar/
 Description: Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
 Text Domain: my-calendar
 Domain Path: lang
-Version: 2.3.10
+Version: 2.3.11
 */
 /*  Copyright 2009-2014  Joe Dolson (email : joe@joedolson.com)
 
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 apply_filters("debug", "MC Started");
 
 global $mc_version, $wpdb;
-$mc_version = '2.3.10';
+$mc_version = '2.3.11';
 
 // Define the tables used in My Calendar
 if ( is_multisite() && get_site_option('mc_multisite_show') == 1 ) {
@@ -144,8 +144,8 @@ function mc_show_sidebar( $show='', $add=false, $remove=false ) {
 			<div class="postbox support">
 			<h3><strong><?php _e('My Calendar: Submissions','my-calendar'); ?></strong></h3>
 			<div class="inside resources">
-				<p class="mcsbuy"><?php _e("Buy the <a href='http://www.joedolson.com/articles/my-calendar/submissions/' rel='external'>My Calendar Submissions add-on</a> &mdash; let your audience build your calendar.",'my-calendar'); ?></p>
-				<p class="mc-button"><a href="http://www.joedolson.com/articles/my-calendar/submissions/" rel="external"><?php _e('Learn more!','my-calendar'); ?></a></p>
+				<p class="mcsbuy"><?php _e("Buy the <a href='http://www.joedolson.com/my-calendar/submissions/' rel='external'>My Calendar Submissions add-on</a> &mdash; let your audience build your calendar.",'my-calendar'); ?></p>
+				<p class="mc-button"><a href="http://www.joedolson.com/my-calendar/submissions/" rel="external"><?php _e('Learn more!','my-calendar'); ?></a></p>
 			</div>
 			</div>
 		</div>	
@@ -158,7 +158,7 @@ function mc_show_sidebar( $show='', $add=false, $remove=false ) {
 				<a href="https://twitter.com/intent/follow?screen_name=joedolson" class="twitter-follow-button" data-size="small" data-related="joedolson">Follow @joedolson</a>
 				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 				</p>
-				<p class="mcbuy"><?php _e('Help me help you:','my-calendar'); ?> <a href="http://www.joedolson.com/articles/my-calendar/users-guide/" rel="external"><?php _e("Buy the My Calendar User's Guide",'my-calendar'); ?></a></p>
+				<p class="mcbuy"><?php _e('Help me help you:','my-calendar'); ?> <a href="http://www.joedolson.com/my-calendar/users-guide/" rel="external"><?php _e("Buy the My Calendar User's Guide",'my-calendar'); ?></a></p>
 				<p><?php _e('<strong>Or make a donation today!</strong> Every donation counts - donate $5, $20, or $100 and help me keep this plug-in running!','my-calendar'); ?></p>
 				<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 				<p class="mcd">
@@ -352,7 +352,7 @@ function my_calendar_menu() {
 				add_action( "load-$groups", 'mc_add_screen_option' );
 		}
 		add_submenu_page('my-calendar', __('Style Editor','my-calendar'), __('Style Editor','my-calendar'), 'mc_edit_styles', 'my-calendar-styles', 'edit_my_calendar_styles');
-		add_submenu_page('my-calendar', __('Script Editor','my-calendar'), __('Script Editor','my-calendar'), 'mc_edit_behaviors', 'my-calendar-behaviors', 'edit_my_calendar_behaviors');	
+		add_submenu_page('my-calendar', __('Script Manager','my-calendar'), __('Script Manager','my-calendar'), 'mc_edit_behaviors', 'my-calendar-behaviors', 'edit_my_calendar_behaviors');	
 		add_submenu_page('my-calendar', __('Template Editor','my-calendar'), __('Template Editor','my-calendar'), 'mc_edit_templates', 'my-calendar-templates', 'edit_mc_templates');
 		add_submenu_page('my-calendar', __('Settings','my-calendar'), __('Settings','my-calendar'), 'mc_edit_settings', 'my-calendar-config', 'edit_my_calendar_config');
 		add_submenu_page('my-calendar', __('My Calendar Help','my-calendar'), __('Help','my-calendar'), 'mc_view_help', 'my-calendar-help', 'my_calendar_help');		

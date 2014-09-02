@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function my_calendar_check_db() {
-	if ( get_option( 'mc_remote' ) == 'true' && function_exists('mc_remote_db') ) { return; }
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists( 'mc_remote_db' ) ) { return; }
 	global $wpdb;
 	$mcdb = $wpdb;
 	$row = $mcdb->get_row( 'SELECT * FROM '.my_calendar_table() );
