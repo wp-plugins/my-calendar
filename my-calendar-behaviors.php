@@ -17,10 +17,10 @@ function edit_my_calendar_behaviors() {
 		$use_custom_js = ( isset( $_POST['mc_use_custom_js'] ) ) ? 1 : 0;
 		update_option( 'mc_use_custom_js', $use_custom_js );
 	
-		update_option( 'mc_calendar_js', ( empty( $_POST['calendar_js'] ) ) ? 0 : 1 );
-		update_option( 'mc_list_js', ( empty( $_POST['list_js'] ) ) ? 0 : 1 );
-		update_option( 'mc_mini_js', ( empty( $_POST['mini_js'] ) ) ? 0 : 1 );
-		update_option( 'mc_ajax_js', ( empty( $_POST['ajax_js'] ) ) ? 0 : 1 );
+		update_option( 'mc_calendar_javascript', ( empty( $_POST['calendar_js'] ) ) ? 0 : 1 );
+		update_option( 'mc_list_javascript', ( empty( $_POST['list_js'] ) ) ? 0 : 1 );
+		update_option( 'mc_mini_javascript', ( empty( $_POST['mini_js'] ) ) ? 0 : 1 );
+		update_option( 'mc_ajax_javascript', ( empty( $_POST['ajax_js'] ) ) ? 0 : 1 );
 		// set js
 		if ( isset( $_POST['mc_caljs'] ) ) {
 			update_option( 'mc_listjs',$mc_listjs );
