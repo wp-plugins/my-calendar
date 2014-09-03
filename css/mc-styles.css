@@ -87,7 +87,7 @@ strong.label { font-weight: 400; }
 .generator input[type=text], .generator select { width: 60%; }
 .req { color: red; }
 
-.jd-my-calendar textarea:disabled { color: #333; border: none; box-shadow: none; }
+.jd-my-calendar textarea[readonly="readonly"] { color: #333; border: none; box-shadow: none; }
 .mc-locations label { display: block; }
 .mc-locations .checkboxes label, .checkbox label { display: inline; }
 

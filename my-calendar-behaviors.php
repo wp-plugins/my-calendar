@@ -37,7 +37,7 @@ function edit_my_calendar_behaviors() {
 	$mc_listjs = stripcslashes(get_option('mc_listjs'));
 	$list_js = get_option('mc_list_js');
 	$mc_caljs = stripcslashes(get_option('mc_caljs'));
-	$calendar_js = get_option('mc_calendar_js');
+	$calendar_js = get_option( 'mc_calendar_js' );
 	$mc_minijs = stripcslashes(get_option('mc_minijs'));
 	$mini_js = get_option('mc_mini_js'); 
 	$mc_ajaxjs = stripcslashes(get_option('mc_ajaxjs'));

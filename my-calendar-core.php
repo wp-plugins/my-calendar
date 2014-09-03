@@ -380,19 +380,19 @@ function mc_footer_js() {
 			echo ( $inner != '' )?$top.$inner.$bottom:'';
 		} else {
 			if ( @in_array( $id, $pages ) || get_option( 'mc_show_js' ) == '' ) {
-				if ( get_option( 'mc_calendar_javascript' ) != 1 ) {
+				if ( get_option( 'mc_calendar_js' ) != 1 ) {
 					$url = apply_filters( 'mc_grid_js', plugins_url( 'js/mc-grid.js', __FILE__ ) );
 					wp_enqueue_script( 'mc.grid', $url, array( 'jquery' ) );
 				}
-				if ( get_option( 'mc_list_javascript' ) != 1 ) {
+				if ( get_option( 'mc_list_js' ) != 1 ) {
 					$url = apply_filters( 'mc_list_js', plugins_url( 'js/mc-list.js', __FILE__ ) );
 					wp_enqueue_script( 'mc.list', $url, array( 'jquery' ) );
 				}
-				if ( get_option( 'mc_mini_javascript' ) != 1 ) {
+				if ( get_option( 'mc_mini_js' ) != 1 ) {
 					$url = apply_filters( 'mc_mini_js', plugins_url( 'js/mc-mini.js', __FILE__ ) );
 					wp_enqueue_script( 'mc.mini', $url, array( 'jquery' ) );
 				}
-				if ( get_option( 'mc_ajax_javascript' ) != 1 ) {
+				if ( get_option( 'mc_ajax_js' ) != 1 ) {
 					$url = apply_filters( 'mc_ajax_js', plugins_url( 'js/mc-ajax.js', __FILE__ ) );
 					wp_enqueue_script( 'mc.ajax', $url, array( 'jquery' ) );
 				}

@@ -86,6 +86,13 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Add ability to completely remove link on event title in calendar grid.
 * Feature: allow limiting of categories to specific member groups
 
+
+= 2.3.12 =
+
+* Bug fix: change of option name meant that you couldn't enable/disable scripts.
+* Bug fix: shortcode generator generates a 'readonly' textarea instead of disabled so it can be copied in Firefox.
+* Accessibility: handle assignment of focus on AJAX navigation
+
 = 2.3.11 =
 
 * Change: Modified default JS saving so that only custom JS gets handled in editor.

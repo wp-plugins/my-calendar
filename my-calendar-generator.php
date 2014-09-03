@@ -25,7 +25,7 @@ function mc_generate() {
 		}
 		$output = $shortcode.$string;
 		$output = apply_filters( 'mc_shortcode_generator', $output, $_POST );
-		$return = "<div class='updated'><textarea disabled>[$output]</textarea></div>";
+		$return = "<div class='updated'><textarea readonly='readonly'>[$output]</textarea></div>";
 		echo $return;
 	}
 }
