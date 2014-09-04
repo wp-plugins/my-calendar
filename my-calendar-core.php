@@ -380,7 +380,7 @@ function mc_footer_js() {
 			echo ( $inner != '' )?$top.$inner.$bottom:'';
 		} else {
 			if ( @in_array( $id, $pages ) || get_option( 'mc_show_js' ) == '' ) {
-				if ( get_option( 'mc_calendar_javascript' ) != 1 ) {
+				if ( get_option( 'mc_calendar_javascript' ) != 1 && get_option( 'mc_open_uri' ) != 'true' ) { 
 					$url = apply_filters( 'mc_grid_js', plugins_url( 'js/mc-grid.js', __FILE__ ) );
 					wp_enqueue_script( 'mc.grid', $url, array( 'jquery' ) );
 				}

@@ -155,38 +155,40 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 	$header  = $address = $more = $author = $list_title = $title = $output = $container = $short = $description = $link = $vcal = $gcal = '';
 	$date_format = ( get_option('mc_date_format') != '' ) ? get_option('mc_date_format') : get_option('date_format');
 	$data = mc_create_tags($event);	
-	$details = apply_filters( 'mc_custom_template', false, $data, $event, $type, $process_date, $time, $template );
-	$templates = get_option('mc_templates');	
-	if ( $details === false ) {
-		if ( $template != '' && mc_file_exists( sanitize_file_name( $template ) ) ) {
-			$template = @file_get_contents( mc_get_file( sanitize_file_name( $template ) ) );
-			$details = jd_draw_template( $data, $template );
-		} else {
-			switch ($type) {
-				case 'mini':
-					$template = $templates['mini'];
-					if ( get_option( 'mc_use_mini_template' ) == 1 ) {
-						$details = jd_draw_template( $data, $template );
-					}
-				break;
-				case 'list':
-					$template = $templates['list'];
-					if ( get_option( 'mc_use_list_template' ) == 1 ) {
-						$details = jd_draw_template( $data, $template );
-					}
-				break;
-				case 'single':
-					$template = $templates['details'];
-					if ( get_option( 'mc_use_details_template' ) == 1 ) {
-						$details = jd_draw_template( $data, $template );
-					}
-				break;
-				case 'calendar':
-				default:
-					$template = $templates['grid'];
-					if ( get_option( 'mc_use_grid_template' ) == 1 ) {
-						$details = jd_draw_template( $data, $template );
-					}
+	$templates = get_option('mc_templates');		
+	if ( mc_show_details( $time, $type ) ) {
+		$details = apply_filters( 'mc_custom_template', false, $data, $event, $type, $process_date, $time, $template );
+		if ( $details === false ) {
+			if ( $template != '' && mc_file_exists( sanitize_file_name( $template ) ) ) {
+				$template = @file_get_contents( mc_get_file( sanitize_file_name( $template ) ) );
+				$details = jd_draw_template( $data, $template );
+			} else {
+				switch ($type) {
+					case 'mini':
+						$template = $templates['mini'];
+						if ( get_option( 'mc_use_mini_template' ) == 1 ) {
+							$details = jd_draw_template( $data, $template );
+						}
+					break;
+					case 'list':
+						$template = $templates['list'];
+						if ( get_option( 'mc_use_list_template' ) == 1 ) {
+							$details = jd_draw_template( $data, $template );
+						}
+					break;
+					case 'single':
+						$template = $templates['details'];
+						if ( get_option( 'mc_use_details_template' ) == 1 ) {
+							$details = jd_draw_template( $data, $template );
+						}
+					break;
+					case 'calendar':
+					default:
+						$template = $templates['grid'];
+						if ( get_option( 'mc_use_grid_template' ) == 1 ) {
+							$details = jd_draw_template( $data, $template );
+						}
+				}
 			}
 		}
 	}
@@ -226,139 +228,149 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 	$title = ( $type == 'single' && !is_singular( 'mc-events' ) )?"<h2 class='event-title summary'>$image $event_title</h2>\n":'';
 	$title = apply_filters( 'mc_event_title', $title, $event, $event_title, $image );
 	$header .= $title;
-	if ( $details === false ) {
-		$custom = false;
-		// put together address information as vcard
-		if ( ( $display_address == 'true' || $display_map == 'true' ) ) {
-			$address = mc_hcard( $event, $display_address, $display_map );
-		}
-		// end vcard
-		$close = ( $type == 'calendar' || $type == 'mini' ) ? "<a href=\"#$uid-$day_id-$type\" class='mc-toggle mc-close close'><img src=\"".plugin_dir_url(__FILE__)."images/event-close.png\" alt='".__('Close','my-calendar')."' /></a>" : '' ;
-		$time = mc_time_html( $event, $type, $current_date );
-		if ($type == "list") {
-			$heading_level = apply_filters('mc_heading_level_list','h3',$type,$time,$template );	
-			$list_title = "<$heading_level class='event-title summary' id='$uid-$day_id-$type-title'>$image".$event_title."</$heading_level>\n";
-		}
-		if ( $mc_display_author == 'true' ) {
-			if ( $event->event_author != 0 ) {
-				$e = get_userdata( $event->event_author );
-				$author = '<p class="event-author">'.__('Posted by', 'my-calendar').' <span class="author-name">'.$e->display_name."</span></p>\n";
+	
+	if ( mc_show_details( $time, $type ) ) {
+
+		if ( $details === false ) {
+			$custom = false;
+			// put together address information as vcard
+			if ( ( $display_address == 'true' || $display_map == 'true' ) ) {
+				$address = mc_hcard( $event, $display_address, $display_map );
 			}
-		}
-		if ( $display_details == 'true' && !isset( $_GET['mc_id'] ) ) {
-			$details_label = mc_get_details_label( $event, $data );
-			$details_link = mc_get_details_link( $event );
-			$more = ( get_option( 'mc_uri' ) != '' )?"<p class='mc_details'><a href='$details_link'>$details_label</a></p>\n":'';
-		}
-		// handle link expiration
-		$event_link = mc_event_link( $event );
-
-		if ( function_exists('mc_google_cal') && get_option('mc_show_gcal') == 'true' ) {
-			$gcal_link =  "<p class='gcal'>".jd_draw_template( $data, '{gcal_link}' )."</p>";
-			$gcal = $gcal_link;
-		}
-
-		if ( function_exists('my_calendar_generate_vcal') && get_option('mc_show_event_vcal') == 'true' ) {
-			$nonce = wp_create_nonce('my-calendar-nonce');
-			$vcal_link = "<p class='ical'><a rel='nofollow' href='".home_url()."?vcal=$uid"."'>".__('iCal','my-calendar')."</a></p>\n";
-			$vcal = $vcal_link;
-		}
-		$default_size = apply_filters( 'mc_default_image_size', 'medium' );
-		if ( is_numeric( $event->event_post ) && $event->event_post != 0 && ( isset( $data[$default_size] ) && $data[$default_size] != '' )) {
-			$atts = apply_filters( 'mc_post_thumbnail_atts',  array( 'class'=>'mc-image' ) ); 
-			$image = get_the_post_thumbnail( $event->event_post, $default_size, $atts );
-		} else {
-			$image = ( $event->event_image != '' )?"<img src='$event->event_image' alt='' class='mc-image' />":'';
-		}
-		if ( get_option('mc_desc') == 'true' || $type == 'single' ) {
-			$description = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',stripcslashes($event->event_desc)):wpautop(stripcslashes($event->event_desc),1);
-			$description = "<div class='longdesc'>$description</div>";
-		}
-		if ( get_option('mc_short') == 'true' && $type != 'single' ) {
-			$short = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',stripcslashes($event->event_short)):wpautop(stripcslashes($event->event_short),1);
-			$short = "<div class='shortdesc'>$short</div>";	
-		}
-
-		if ( get_option('mc_event_registration') == 'true' ) {
-			switch ($event->event_open) {
-				case '0':$status = get_option('mc_event_closed');break;
-				case '1':$status = get_option('mc_event_open');break;
-				case '2':$status = '';break;
-				default:$status = '';
+			// end vcard
+			$close = ( $type == 'calendar' || $type == 'mini' ) ? "<a href=\"#$uid-$day_id-$type\" class='mc-toggle mc-close close'><img src=\"".plugin_dir_url(__FILE__)."images/event-close.png\" alt='".__('Close','my-calendar')."' /></a>" : '' ;
+			$time = mc_time_html( $event, $type, $current_date );
+			if ($type == "list") {
+				$heading_level = apply_filters('mc_heading_level_list','h3',$type,$time,$template );	
+				$list_title = "<$heading_level class='event-title summary' id='$uid-$day_id-$type-title'>$image".$event_title."</$heading_level>\n";
 			}
-		} else {
-			$status = '';
-		}
-		
-		// JCD TODO - this is really wonky. What was I thinking?
-		// if the event is a member of a group of events, but not the first, note that.
-		if ( $event->event_group == 1 ) {
-			$info = array();
-			$info[] = $event->event_id;
-			update_option( 'mc_event_groups' , $info );
-		}
-		
-		if ( is_array( get_option( 'mc_event_groups' ) ) ) {
-			if ( in_array ( $event->event_id , get_option( 'mc_event_groups') ) ) {
-				if ( $process_date != $event->event_begin ) {
-					$status = __( "This event is in a series. Register for the first event in this series to attend.",'my-calendar' );
+			if ( $mc_display_author == 'true' ) {
+				if ( $event->event_author != 0 ) {
+					$e = get_userdata( $event->event_author );
+					$author = '<p class="event-author">'.__('Posted by', 'my-calendar').' <span class="author-name">'.$e->display_name."</span></p>\n";
 				}
 			}
-		}
+			if ( $display_details == 'true' && !isset( $_GET['mc_id'] ) ) {
+				$details_label = mc_get_details_label( $event, $data );
+				$details_link = mc_get_details_link( $event );
+				$more = ( get_option( 'mc_uri' ) != '' )?"<p class='mc_details'><a href='$details_link'>$details_label</a></p>\n":'';
+			}
+			// handle link expiration
+			$event_link = mc_event_link( $event );
 
-		$status = ($status != '')?"<p>$status</p>":'';
-		$status = apply_filters( 'mc_registration_state', $status, $event );
-		$return = ($type == 'single')?"<p><a href='".get_option('mc_uri')."'>".__('View full calendar','my-calendar')."</a></p>":'';
+			if ( function_exists('mc_google_cal') && get_option('mc_show_gcal') == 'true' ) {
+				$gcal_link =  "<p class='gcal'>".jd_draw_template( $data, '{gcal_link}' )."</p>";
+				$gcal = $gcal_link;
+			}
 
-		if ( $type == 'calendar' && get_option('mc_open_uri') == 'true' && $time != 'day' ) $description = $short = $status = '';
+			if ( function_exists('my_calendar_generate_vcal') && get_option('mc_show_event_vcal') == 'true' ) {
+				$nonce = wp_create_nonce('my-calendar-nonce');
+				$vcal_link = "<p class='ical'><a rel='nofollow' href='".home_url()."?vcal=$uid"."'>".__('iCal','my-calendar')."</a></p>\n";
+				$vcal = $vcal_link;
+			}
+			$default_size = apply_filters( 'mc_default_image_size', 'medium' );
+			if ( is_numeric( $event->event_post ) && $event->event_post != 0 && ( isset( $data[$default_size] ) && $data[$default_size] != '' )) {
+				$atts = apply_filters( 'mc_post_thumbnail_atts',  array( 'class'=>'mc-image' ) ); 
+				$image = get_the_post_thumbnail( $event->event_post, $default_size, $atts );
+			} else {
+				$image = ( $event->event_image != '' )?"<img src='$event->event_image' alt='' class='mc-image' />":'';
+			}
+			if ( get_option('mc_desc') == 'true' || $type == 'single' ) {
+				$description = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',stripcslashes($event->event_desc)):wpautop(stripcslashes($event->event_desc),1);
+				$description = "<div class='longdesc'>$description</div>";
+			}
+			if ( get_option('mc_short') == 'true' && $type != 'single' ) {
+				$short = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',stripcslashes($event->event_short)):wpautop(stripcslashes($event->event_short),1);
+				$short = "<div class='shortdesc'>$short</div>";	
+			}
 
-		if ( get_option( 'mc_gmap' ) == 'true' ) {
-			$map = ( is_singular( 'mc-event' ) || $type == 'single' ) ? mc_generate_map( $event ) : '' ;
+			if ( get_option('mc_event_registration') == 'true' ) {
+				switch ($event->event_open) {
+					case '0':$status = get_option('mc_event_closed');break;
+					case '1':$status = get_option('mc_event_open');break;
+					case '2':$status = '';break;
+					default:$status = '';
+				}
+			} else {
+				$status = '';
+			}
+			
+			// JCD TODO - this is really wonky. What was I thinking?
+			// if the event is a member of a group of events, but not the first, note that.
+			if ( $event->event_group == 1 ) {
+				$info = array();
+				$info[] = $event->event_id;
+				update_option( 'mc_event_groups' , $info );
+			}
+			
+			if ( is_array( get_option( 'mc_event_groups' ) ) ) {
+				if ( in_array ( $event->event_id , get_option( 'mc_event_groups') ) ) {
+					if ( $process_date != $event->event_begin ) {
+						$status = __( "This event is in a series. Register for the first event in this series to attend.",'my-calendar' );
+					}
+				}
+			}
+
+			$status = ($status != '')?"<p>$status</p>":'';
+			$status = apply_filters( 'mc_registration_state', $status, $event );
+			$return = ($type == 'single')?"<p><a href='".get_option('mc_uri')."'>".__('View full calendar','my-calendar')."</a></p>":'';
+
+			if ( !mc_show_details( $time, $type ) ) $description = $short = $status = '';
+
+			if ( get_option( 'mc_gmap' ) == 'true' ) {
+				$map = ( is_singular( 'mc-event' ) || $type == 'single' ) ? mc_generate_map( $event ) : '' ;
+			} else {
+				$map = '';
+			}
+			
+			if ( $event_link != '' && get_option( 'mc_event_link' ) != 'false' ) {
+				$is_external = mc_external_link( $event_link );	
+				$external_class = ( $is_external ) ? "class='$type-link external'" : "class='$type-link'";
+				$link_template = ( isset($templates['link']))?$templates['link']:'{title}';
+				$link_text = jd_draw_template($data,$link_template);
+				$link = "<p><a href='$event_link' $external_class>".$link_text."</a></p>";
+			}
+			$details = "\n"
+				. $close
+				. $time
+				. $list_title
+				. $image
+				."<div class='location'>"
+				. $map
+				. $address
+				. "</div>"			
+				. $description 
+				. $short 
+				. $link 
+				. $status
+				. $author
+				. "<div class='sharing'>"
+				. $vcal
+				. $gcal
+				. $more
+				. "</div>"
+				. $return;
 		} else {
-			$map = '';
+			$custom = true; 
+			// if a custom template is in use
+			$toggle = ( $type == 'calendar' || $type == 'mini' ) ? "<a href=\"#$uid-$day_id-$type\" class='mc-toggle mc-close close'><img src=\"".plugin_dir_url(__FILE__)."images/event-close.png\" alt='".__('Close','my-calendar')."' /></a>" : '';	
+			$details = $toggle.$details."\n";
 		}
-		
-		if ( $event_link != '' && get_option( 'mc_event_link' ) != 'false' ) {
-			$is_external = mc_external_link( $event_link );	
-			$external_class = ( $is_external ) ? "class='$type-link external'" : "class='$type-link'";
-			$link_template = ( isset($templates['link']))?$templates['link']:'{title}';
-			$link_text = jd_draw_template($data,$link_template);
-			$link = "<p><a href='$event_link' $external_class>".$link_text."</a></p>";
-		}
-		$details = "\n"
-			. $close
-			. $time
-			. $list_title
-			. $image
-			."<div class='location'>"
-			. $map
-			. $address
-			. "</div>"			
-			. $description 
-			. $short 
-			. $link 
-			. $status
-			. $author
-			. "<div class='sharing'>"
-			. $vcal
-			. $gcal
-			. $more
-			. "</div>"
-			. $return;
+		$container = "<div id='$uid-$day_id-$type-details' class='details' role='dialog' aria-labelledby='$uid-$day_id-$type-title'>\n"; 
+			$container = apply_filters( 'mc_before_event', $container, $event, $type, $time );
+			$details = $header . $container . $details;
+			$details .= apply_filters( 'mc_after_event', '', $event, $type, $time );
+			$details .= $close; // second close button
+		$details .= "</div><!--ends .details--></div>";
+		$details = apply_filters( 'mc_event_content', $details, $event, $type, $time );
 	} else {
-		$custom = true; 
-		// if a custom template is in use
-		$toggle = ( $type == 'calendar' || $type == 'mini' ) ? "<a href=\"#$uid-$day_id-$type\" class='mc-toggle mc-close close'><img src=\"".plugin_dir_url(__FILE__)."images/event-close.png\" alt='".__('Close','my-calendar')."' /></a>" : '';	
-		$details = $toggle.$details."\n";
+		$details = $header . "</div>";
 	}
-	$container = "<div id='$uid-$day_id-$type-details' class='details' role='dialog' aria-labelledby='$uid-$day_id-$type-title'>\n"; 
-		$container = apply_filters( 'mc_before_event', $container, $event, $type, $time );
-		$details = $header . $container . $details;
-		$details .= apply_filters( 'mc_after_event', '', $event, $type, $time );
-		$details .= $close; // second close button
-	$details .= "</div><!--ends .details--></div>";
-	$details = apply_filters( 'mc_event_content', $details, $event, $type, $time );
 	return $details;
+}
+
+function mc_show_details( $time, $type ) {
+	return ( $type == 'calendar' && get_option('mc_open_uri') == 'true' && $time != 'day' ) ? false : true;
 }
 
 add_filter( 'mc_after_event', 'mc_edit_panel', 10, 4 );
@@ -380,7 +392,7 @@ function mc_edit_panel( $html, $event, $type, $time ) {
 		}
 		$edit .= "</p></div>";
 	}
-	if ( $type == 'calendar' && get_option('mc_open_uri') == 'true' && $time != 'day' ) { $edit = ''; }
+	if ( mc_show_details( $time, $type ) ) { $edit = ''; }
 	return $html . $edit;
 }
 

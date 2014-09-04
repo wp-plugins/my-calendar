@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, event, events, scheduling, schedule, event manager, event calendar, class, concert, conference, meeting, venue, location
 Requires at least: 3.7.0
-Tested up to: 3.9.2
+Tested up to: 4.0
 License: GPLv2 or later
 Stable tag: 2.3.12
 
@@ -86,6 +86,10 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Add ability to completely remove link on event title in calendar grid.
 * Feature: allow limiting of categories to specific member groups
 
+
+= 2.3.13 =
+
+* Bug fix: Failed to handle "open links to event details" option in updated JS handling.
 
 = 2.3.12 =
 
