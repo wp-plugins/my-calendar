@@ -13,7 +13,7 @@ Accessible WordPress event calendar plugin. Show events from multiple calendars 
 
 My Calendar does WordPress event management with richly customizable ways to display events. The plug-in supports individual event calendars within WordPress Multisite, multiple calendars displayed by categories, locations or author, or simple lists of upcoming events. 
 
-Easy to use for anybody, My Calendar provides enormous potential for developers needing a custom calendar interface.
+Easy to use for anybody, My Calendar provides enormous flexibility for designers and developers needing a custom calendar.
 
 * 	[Buy the User's Guide](http://www.joedolson.com/my-calendar/users-guide/) for extensive help with set up and use.
 *   [Buy My Calendar: Submissions](https://www.joedolson.com/my-calendar/submissions/), the PRO extension for front-end event submissions
