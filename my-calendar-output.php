@@ -392,7 +392,7 @@ function mc_edit_panel( $html, $event, $type, $time ) {
 		}
 		$edit .= "</p></div>";
 	}
-	if ( mc_show_details( $time, $type ) ) { $edit = ''; }
+	if ( !mc_show_details( $time, $type ) ) { $edit = ''; }
 	return $html . $edit;
 }
 
