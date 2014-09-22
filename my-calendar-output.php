@@ -276,7 +276,7 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 				$image = ( $event->event_image != '' )?"<img src='$event->event_image' alt='' class='mc-image' />":'';
 			}
 			if ( get_option('mc_desc') == 'true' || $type == 'single' ) {
-				$description = ( get_option('mc_process_shortcodes') == 'true' )?apply_filters('the_content',stripcslashes($event->event_desc)):wpautop(stripcslashes($event->event_desc),1);
+				$description = ( get_option('mc_process_shortcodes') == 'true' ) ? apply_filters( 'the_content',stripcslashes( $event->event_desc ) ) : wpautop(stripcslashes( $event->event_desc ), 1 );
 				$description = "<div class='longdesc'>$description</div>";
 			}
 			if ( get_option('mc_short') == 'true' && $type != 'single' ) {
@@ -326,7 +326,7 @@ function my_calendar_draw_event( $event, $type="calendar", $process_date, $time,
 			if ( $event_link != '' && get_option( 'mc_event_link' ) != 'false' ) {
 				$is_external = mc_external_link( $event_link );	
 				$external_class = ( $is_external ) ? "class='$type-link external'" : "class='$type-link'";
-				$link_template = ( isset($templates['link']))?$templates['link']:'{title}';
+				$link_template = ( isset( $templates['link'] ) ) ? $templates['link'] : '{title}';
 				$link_text = jd_draw_template($data,$link_template);
 				$link = "<p><a href='$event_link' $external_class>".$link_text."</a></p>";
 			}
@@ -558,13 +558,17 @@ function mc_time_toggle( $format, $time, $toggle, $day, $month, $year ) {
 function mc_date_array( $timestamp, $period, $months=0 ) {
 	switch ( $period ) {
 		case "month":
-				$first = date('N',$timestamp); $n = ( get_option('start_of_week')==1 )?$first-1:$first;
+		case "month+1":
+			if ( $period == 'month+1' ) {
+				$timestamp = strtotime( '+1 month', $timestamp );
+			}
+			$first = date('N', $timestamp); $n = ( get_option('start_of_week')==1 )?$first-1:$first;
 			$from = date( 'Y-m-d', strtotime( "-$n days", $timestamp ) );
-				$endtime = mktime(0,0,0,date('m',$timestamp),date('t',$timestamp),date('Y',$timestamp) );
+			$endtime = mktime(0,0,0,date('m',$timestamp),date('t',$timestamp),date('Y',$timestamp) );
 			//	$endtime = strtotime("+$months months",$endtime); // this allows multiple months displayed. Will figure out splitting tables...
-				$last = date('N', $endtime ); $n = ( get_option('start_of_week')==1 )?7-$last:6-$last;
+			$last = date('N', $endtime ); $n = ( get_option('start_of_week')==1 )?7-$last:6-$last;
 			if ( $n == '-1' && date('N',$endtime ) == '7' ) { $n = 6; }
-			$to =  date('Y-m-d',strtotime( "+$n days", $endtime ) );
+			$to =  date('Y-m-d', strtotime( "+$n days", $endtime ) );
 			return array( 'from'=>$from,'to'=>$to );
 		break;
 		case "week":
@@ -577,21 +581,24 @@ function mc_date_array( $timestamp, $period, $months=0 ) {
 	}
 }		
 // argument: array of event objects
-function mc_events_class( $events ) {
+function mc_events_class( $events, $date=false ) {
 	$class = '';
-	if ( !is_array($events) || !count($events) ) {
+	if ( !is_array( $events ) || !count( $events ) ) {
 		$events_class = "no-events";
 	} else {
 		foreach ( array_keys($events) as $key ) {
-			$an_event =& $events[$key];	
-			$author = ' author'.$an_event->event_author;
+			$event =& $events[$key];	
+			if ( $event->event_endtime == '00:00:00' && date( 'Y-m-d', strtotime( $event->occur_end ) ) == $date && date( 'Y-m-d', strtotime( $event->occur_begin ) ) != $date ) {
+				continue;
+			}
+			$author = ' author'.$event->event_author;
 			if ( strpos ( $class, $author ) === false ) {
 				$class .= $author;
 			}
-			$cat = ' mcat_'.sanitize_title($an_event->category_name);
+			$cat = ' mcat_'.sanitize_title( $event->category_name );
 			if ( strpos ( $class, $cat ) === false ) {
 				$class .= $cat;
-			}			
+			}
 		}
 		$events_class = "has-events$class";
 	}
@@ -746,13 +753,12 @@ function my_calendar( $name, $format, $category, $time='month', $ltype='', $lval
 		$format = esc_attr( $format );
 	}
 	
-	if ( isset($_GET['time']) && in_array( $_GET['time'], array( 'day','week','month' ) )  && $format != 'mini' ) {
+	if ( isset( $_GET['time'] ) && in_array( $_GET['time'], array( 'day','week','month','month+1' ) )  && $format != 'mini' ) {
 		$time = esc_attr( $_GET['time'] );
 	} else {
 		$time = esc_attr( $time );
 	}
 
-	
     global $wpdb;
 	$mcdb = $wpdb;
 	$offset = (60*60*get_option('gmt_offset'));
@@ -871,10 +877,16 @@ function my_calendar( $name, $format, $category, $time='month', $ltype='', $lval
 		
 		if ( $format == "list" && $time != 'week' ) { // grid calendar can't show multiple months
 			if ( $num > 0 && $time != 'day' && $time != 'week' ) {
-				$from = date( 'Y-m-d',mktime(0,0,0,$c_month,1,$c_year) );
-					$next = strtotime( "+$num months",mktime(0,0,0,$c_month,1,$c_year ) );
-					$last = date( 't',$next );
-				$to = date( 'Y-m',$next ).'-'.$last;
+				// grid calendar date calculation
+				if ( $time == 'month+1' ) {
+					$from = date( 'Y-m-d', strtotime( '+1 month', mktime( 0,0,0,$c_month,1,$c_year ) ) );
+					$next = strtotime( "+$num months", strtotime( '+1 month', mktime( 0,0,0,$c_month,1,$c_year ) ) );				
+				} else {
+					$from = date( 'Y-m-d', mktime( 0,0,0,$c_month,1,$c_year ) );
+					$next = strtotime( "+$num months", mktime( 0,0,0,$c_month,1,$c_year ) );
+				}
+				$last = date( 't', $next );
+				$to = date( 'Y-m', $next ).'-'.$last;
 			} else {
 				$from = date( 'Y-m-d',mktime(0,0,0,$c_month,1,$c_year) );
 				$to = date( 'Y-m-d',mktime(0,0,0,$c_month,date( 't',mktime(0,0,0,$c_month,1,$c_year) ),$c_year) );
@@ -984,7 +996,7 @@ function my_calendar( $name, $format, $category, $time='month', $ltype='', $lval
 				$holidays = my_calendar_grab_events( $from, $to, get_option('mc_skip_holidays_category'),$ltype, $lvalue, 'calendar', $author, $host, 'holidays' );
 			}
 			//echo "<pre>".print_r($events,1)."</pre>";
-			$events_class = mc_events_class( $events );
+			$events_class = mc_events_class( $events, $from );
 			$dateclass = mc_dateclass( time()+$offset, mktime(0,0,0,$c_month,$c_day, $c_year ) );
 			$mc_events = '';
 			if ( is_array($events) && count($events) > 0 ) {
@@ -1005,41 +1017,43 @@ function my_calendar( $name, $format, $category, $time='month', $ltype='', $lval
 		} else {
 			apply_filters("debug", "my_calendar( $name ) pre full parsing");
 			// if showing multiple months, figure out how far we're going.
-			$num_months = ($time == 'week')?1:get_option('mc_show_months');
-			$through_date = mktime(0,0,0,$c_month+($num_months-1),$c_day,$c_year);
+			$num_months = ( $time == 'week' ) ? 1 : get_option('mc_show_months');
+			$through_date = mktime( 0,0,0,$c_month+( $num_months-1 ),$c_day,$c_year );
 			$month_format = ( get_option( 'mc_month_format' ) == '' ) ? 'F Y' : get_option( 'mc_month_format' );
-			$current_date_header = date_i18n( $month_format,$current_date);
-			$current_month_header = ( date('Y',$current_date) == date('Y',$through_date) )?date_i18n('F',$current_date):date_i18n('F Y',$current_date);
-			$through_month_header = date_i18n( $month_format, $through_date);
-		
+			if ( $time == 'month+1' ) {
+				$current_date_header = date_i18n( $month_format, strtotime( '+1 month', $current_date ) );
+			} else {
+				$current_date_header = date_i18n( $month_format, $current_date );			
+			}
+			$current_month_header = ( date( 'Y',$current_date ) == date( 'Y',$through_date ) ) ? date_i18n( 'F',$current_date ) : date_i18n( 'F Y',$current_date );
+			$through_month_header = date_i18n( $month_format, $through_date );
+			$values = array( 'date'=>date('Y-m-d',$current_date) );
 			// Adjust the days of the week if week start is not Monday
- 				$and = __("and",'my-calendar');
-				$category_label = ($category != "" && $category != "all")?str_replace("|"," $and ",$category) . ' ':'';
-				// Add the calendar table and heading
-				$caption_text = ' '.stripslashes( trim( get_option('mc_caption') ) ); // this option should be replaced JCD TODO
-				$my_calendar_body .= $mc_topnav; 				
-					if ($format == "calendar" || $format == "mini" ) {
-						$my_calendar_body .= "\n<table class=\"my-calendar-table\">\n";
-							$values = array( 'date'=>date('Y-m-d',$current_date) );
-						$week_template = ( get_option( 'mc_week_caption' ) != '' ) ? get_option( 'mc_week_caption' ) : 'Week of {date format="M jS"}';
-						$week_caption = jd_draw_template( $values, stripslashes( $week_template ) );
-						$caption_heading = ($time != 'week')?$current_date_header.$caption_text:$week_caption.$caption_text;
-						$my_calendar_body .= "<caption class=\"my-calendar-$time\">".$caption_heading."</caption>\n";
-					} else {
-						// determine which header text to show depending on number of months displayed;
-						if ( $time != 'week' && $time != 'day' ) {
-							$list_heading = ($num_months <= 1)?__('Events in','my-calendar').' '.$current_date_header.$caption_text."\n":$current_month_header.'&ndash;'.$through_month_header.$caption_text;
-						} else {
-							$values = array( 'date'=>date('Y-m-d',$current_date) );
-							$list_heading = jd_draw_template( $values, stripslashes(get_option('mc_week_caption')) );
-						}
-						$my_calendar_body .= "<h3 class=\"my-calendar-$time\">$list_heading</h3>\n";
-					}
+			$and = __("and",'my-calendar');
+			$category_label = ($category != "" && $category != "all")?str_replace("|"," $and ",$category) . ' ':'';
+			// Add the calendar table and heading
+			$caption_text = ' '.stripslashes( trim( get_option('mc_caption') ) ); // this option should be replaced JCD TODO
+			$my_calendar_body .= $mc_topnav; 				
+			if ( $format == "calendar" || $format == "mini" ) {
+				$my_calendar_body .= "\n<table class=\"my-calendar-table\">\n";
+				$week_template = ( get_option( 'mc_week_caption' ) != '' ) ? get_option( 'mc_week_caption' ) : 'Week of {date format="M jS"}';
+				$week_caption = jd_draw_template( $values, stripslashes( $week_template ) );
+				$caption_heading = ( $time != 'week' ) ? $current_date_header.$caption_text : $week_caption.$caption_text;
+				$my_calendar_body .= "<caption class=\"my-calendar-$time\">".$caption_heading."</caption>\n";
+			} else {
+				// determine which header text to show depending on number of months displayed;
+				if ( $time != 'week' && $time != 'day' ) {
+					$list_heading = ($num_months <= 1)?__('Events in','my-calendar').' '.$current_date_header.$caption_text."\n":$current_month_header.'&ndash;'.$through_month_header.$caption_text;
+				} else {
+					$list_heading = jd_draw_template( $values, stripslashes( get_option( 'mc_week_caption' ) ) );
+				}
+				$my_calendar_body .= "<h3 class=\"my-calendar-$time\">$list_heading</h3>\n";
+			}
 			// If not a valid time or layout format, skip.
-			if ( in_array( $format, array( 'calendar', 'mini', 'list' ) ) && in_array( $time, array( 'day', 'week', 'month' ) ) ) {
+			if ( in_array( $format, array( 'calendar', 'mini', 'list' ) ) && in_array( $time, array( 'day', 'week', 'month', 'month+1' ) ) ) {
 				// If in a calendar format, print the headings of the days of the week
 				if ( $format == "list" ) {
-					if ( $id == 'jd-calendar' ) { $list_id = 'calendar-list'; } else { $list_id = "list-$id"; }
+					$list_id = ( $id == 'jd-calendar' ) ? 'calendar-list' : "list-$id";
 					$my_calendar_body .= "<ul id='$list_id' class='mc-list'>";
 				} else {
 					$my_calendar_body .= "<thead>\n<tr>\n";
@@ -1085,7 +1099,7 @@ function my_calendar( $name, $format, $category, $time='month', $ltype='', $lval
 								if ( !empty($events) ) {								
 									$event_output = my_calendar_draw_events( $events, $format, $date, $time, $template );
 									if ( $event_output === true ) { $event_output = ' '; }
-									$events_class = ( $event_output != '' )?mc_events_class($events):'no-events';
+									$events_class = ( $event_output != '' ) ? mc_events_class( $events, $date ) : 'no-events';
 									if ($format == 'mini' && $event_output != '' ) {
 										if ( get_option('mc_open_day_uri') == 'true' || get_option('mc_open_day_uri') == 'false' ) { 
 										// yes, this is weird. it's from some old settings...
@@ -1172,7 +1186,7 @@ function my_calendar( $name, $format, $category, $time='month', $ltype='', $lval
 				if ( !in_array( $format, array( 'list', 'calendar', 'mini' ) ) ) {
 					$my_calendar_body .= "<p class='mc-error-format'>".__("Unrecognized calendar format. Please use one of 'list', 'calendar', or 'mini'.",'my-calendar')."</p>";
 				}
-				if ( !in_array( $time, array( 'day', 'week', 'month' ) ) ) {
+				if ( !in_array( $time, array( 'day', 'week', 'month', 'month+1' ) ) ) {
 					$my_calendar_body .= "<p class='mc-error-time'>".__("Unrecognized calendar time period. Please use one of 'day', 'week', or 'month'.",'my-calendar')."</p>";
 				}
 			}

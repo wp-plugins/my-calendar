@@ -1497,7 +1497,7 @@ function mc_check_data( $action, $post, $i ) {
 		$approved = !empty($post['event_approved']) ? $post['event_approved'] : '0';
 		$location_preset = !empty($post['location_preset']) ? $post['location_preset'] : '';
 		$event_author = !empty($post['event_author']) ? $post['event_author'] : $current_user->ID;
-		$event_open = (isset($post['event_open']) && $post['event_open']!==0) ? $post['event_open'] : '2';
+		$event_open = ( isset( $post['event_open']) && $post['event_open']!==0) ? $post['event_open'] : '2';
 		$event_tickets = ( isset( $post['event_tickets'] ) ) ? trim($post['event_tickets']) : '';
 		$event_registration = ( isset( $post['event_registration'] ) ) ? trim( $post['event_registration'] ) : '';
 		$event_group = !empty($post['event_group']) ? 1 : 0;
@@ -1629,8 +1629,8 @@ function mc_check_data( $action, $post, $i ) {
 				'event_begin'=>$begin, 
 				'event_end'=>$end, 
 				'event_title'=>$title, 
-				'event_desc'=>$desc, 			
-				'event_short'=>$short,
+				'event_desc'=>force_balance_tags( $desc ), 			
+				'event_short'=>force_balance_tags( $short ),
 				'event_time'=>$time,
 				'event_endtime'=>$endtime, 				
 				'event_link'=>$event_link,

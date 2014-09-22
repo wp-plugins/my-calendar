@@ -92,6 +92,7 @@ function mc_generator( $type ) { ?>
 					<label for="time"><?php _e('Time Segment', 'my-calendar'); ?></label>
 					<select name="time" id="time">
 						<option value="month" selected="selected"><?php _e( 'Month','my-calendar' ); ?></option> 
+						<option value="month+1"><?php _e( 'Next Month','my-calendar' ); ?></option> 
 						<option value="week"><?php _e( 'Week','my-calendar' ); ?></option>
 						<option value="day"><?php _e( 'Day','my-calendar' ); ?></option>						
 					</select>
@@ -143,11 +144,14 @@ function mc_generator( $type ) { ?>
 					<label for="type"><?php _e('Type of Upcoming Events List','my-calendar'); ?></label>
 					<select name="type" id="type">
 						<option value="events" selected="selected"><?php _e( 'Events','my-calendar' ); ?></option> 
+						<option value="month"><?php _e( 'Current Month','my-calendar' ); ?></option> 
+						<option value="month+1"><?php _e( 'Next Month','my-calendar' ); ?></option> 
+						<option value="year"><?php _e( 'Current Year','my-calendar' ); ?></option> 
 						<option value="days"><?php _e( 'Days','my-calendar' ); ?></option>
 					</select>
 					</p>
 					<p>
-					<label for="order"><?php _e('Time Segment', 'my-calendar'); ?></label>
+					<label for="order"><?php _e('Event Order', 'my-calendar'); ?></label>
 					<select name="order" id="order">
 						<option value="asc" selected="selected"><?php _e( 'Ascending','my-calendar' ); ?></option> 
 						<option value="desc"><?php _e( 'Descending','my-calendar' ); ?></option>

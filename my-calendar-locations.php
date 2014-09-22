@@ -78,7 +78,7 @@ function my_calendar_manage_locations() {
 		$nonce = $_REQUEST['_wpnonce'];
 		if ( !wp_verify_nonce( $nonce,'my-calendar-nonce' ) ) die( "Security check failed" );
 	}
-	if (isset($_POST['mode']) && $_POST['mode'] == 'add') {
+	if ( isset( $_POST['mode']) && $_POST['mode'] == 'add') {
 		$add = array(
 			'location_label'=>$_POST['location_label'],
 			'location_street'=>$_POST['location_street'],
@@ -112,7 +112,7 @@ function my_calendar_manage_locations() {
 		} else {
 			echo "<div class=\"error\"><p><strong>".__('Location could not be deleted','my-calendar')."</strong></p></div>";	  
 		}
-    } else if (isset($_GET['mode']) && isset($_GET['location_id']) && $_GET['mode'] == 'edit' && !isset($_POST['mode'])) {
+    } else if ( isset( $_GET['mode']) && isset($_GET['location_id']) && $_GET['mode'] == 'edit' && !isset($_POST['mode'])) {
 	  $cur_loc = (int) $_GET['location_id'];
       mc_show_location_form('edit', $cur_loc);
     } else if ( isset($_POST['location_id']) && isset($_POST['location_label']) && $_POST['mode'] == 'edit' ) {
@@ -229,11 +229,11 @@ function mc_controlled_field( $this_field ) {
 }
 
 function mc_location_controller( $fieldname, $selected, $context='location' ) {
-	$field = ( $context == 'location' ) ? 'location_'.$fieldname : 'e_'.$fieldname ;
+	$field = ( $context == 'location' ) ? 'location_'.$fieldname : 'event_'.$fieldname ;
 	$selected = trim($selected);
 	$options = get_option('mc_location_controls');
 	$regions = $options['event_'.$fieldname];
-	$form = "<select name='$field' id='$field'>";
+	$form = "<select name='$field' id='e_$fieldname'>";
 	if ( $selected == '' || in_array( $selected, array_keys( $regions ) ) ) {
 		$form .= "<option value='none'>No preference</option>\n";	
 	} else {
@@ -351,7 +351,7 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	$return .= '
 	<p class="checkbox">
 	<label for="e_label">'.__('Name of Location (e.g. <em>Joe\'s Bar and Grill</em>)','my-calendar').'</label>';
-	$cur_label = ( !empty( $data ) ) ? ( stripslashes( $data->{$context.'_label'} ) ):'';	
+	$cur_label = ( !empty( $data ) ) ? ( stripslashes( $data->{$context.'_label'} )  ) : '';	
 	if ( mc_controlled_field( 'label' ) ) {
 		$return .= mc_location_controller( 'label', $cur_label, $context );
 	} else {
@@ -373,7 +373,7 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	</p>		
 	<p>
 	<label for="e_city">'.__('City','my-calendar').'</label> ';
-	$cur_city = ( !empty( $data ) )?( stripslashes( $data->{$context.'_city'} ) ):'';	
+	$cur_city = ( !empty( $data ) )?( stripslashes( $data->{$context.'_city'} )  ) : '';	
 	if ( mc_controlled_field( 'city' ) ) {
 		$return .= mc_location_controller( 'city', $cur_city, $context );
 	} else {
@@ -382,7 +382,7 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	$return .= "</p>
 	<p>";
 	$return .= '<label for="e_state">'.__('State/Province','my-calendar').'</label> ';
-	$cur_state = ( !empty( $data ) )?( stripslashes( $data->{$context.'_state'} ) ):'';	
+	$cur_state = ( !empty( $data ) )?( stripslashes( $data->{$context.'_state'} )  ) : '';	
 	if ( mc_controlled_field( 'state' ) ) {
 		$return .= mc_location_controller( 'state', $cur_state, $context );
 	} else {
@@ -391,7 +391,7 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	$return .= '</p>
 	<p>
 	<label for="e_postcode">'.__('Postal Code','my-calendar').'</label> ';
-	$cur_postcode = ( !empty( $data ) )?( stripslashes( $data->{$context.'_postcode'} ) ):'';	
+	$cur_postcode = ( !empty( $data ) )?( stripslashes( $data->{$context.'_postcode'} )  ) : '';	
 	if ( mc_controlled_field( 'postcode') ) {
 		$return .= mc_location_controller( 'postcode', $cur_postcode, $context );
 	} else {
@@ -400,7 +400,7 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	$return .= "</p>
 	<p>";
 	$return .= '<label for="e_region">'.__('Region','my-calendar').'</label> ';
-	$cur_region = ( !empty( $data ) )?( stripslashes( $data->{$context.'_region'} ) ):'';	
+	$cur_region = ( !empty( $data ) )?( stripslashes( $data->{$context.'_region'} )  ) : '';	
 	if ( mc_controlled_field( 'region' ) ) {
 		$return .= mc_location_controller( 'region', $cur_region, $context );
 	} else {
@@ -409,7 +409,7 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	$return .= '</p>
 	<p>		
 	<label for="e_country">'.__('Country','my-calendar').'</label> ';
-	$cur_country = ( $has_data )?( stripslashes( $data->{$context.'_country'} ) ):'';	
+	$cur_country = ( $has_data )?( stripslashes( $data->{$context.'_country'} )  ) : '';	
 	if ( mc_controlled_field( 'country' ) ) {
 		$return .= mc_location_controller( 'country', $cur_country, $context );
 	} else {

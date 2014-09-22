@@ -32,7 +32,7 @@ function my_calendar_insert($atts,$content=null) {
 }
 
 function my_calendar_insert_upcoming($atts) {
-	extract(shortcode_atts(array(
+	extract( shortcode_atts( array(
 				'before' => 'default',
 				'after' => 'default',
 				'type' => 'default',

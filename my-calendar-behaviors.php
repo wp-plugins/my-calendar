@@ -9,10 +9,6 @@ function edit_my_calendar_behaviors() {
 	if ( isset( $_POST['mc-js-save'] ) ) {
 		$nonce=$_REQUEST['_wpnonce'];
 		if ( !wp_verify_nonce( $nonce,'my-calendar-nonce' ) ) die( "Security check failed" );
-		$mc_caljs = $_POST['mc_caljs'];
-		$mc_listjs = $_POST['mc_listjs'];
-		$mc_minijs = $_POST['mc_minijs'];
-		$mc_ajaxjs = $_POST['mc_ajaxjs'];
 	
 		$use_custom_js = ( isset( $_POST['mc_use_custom_js'] ) ) ? 1 : 0;
 		update_option( 'mc_use_custom_js', $use_custom_js );
@@ -23,6 +19,10 @@ function edit_my_calendar_behaviors() {
 		update_option( 'mc_ajax_javascript', ( empty( $_POST['ajax_js'] ) ) ? 0 : 1 );
 		// set js
 		if ( isset( $_POST['mc_caljs'] ) ) {
+			$mc_caljs = $_POST['mc_caljs'];
+			$mc_listjs = $_POST['mc_listjs'];
+			$mc_minijs = $_POST['mc_minijs'];
+			$mc_ajaxjs = $_POST['mc_ajaxjs'];		
 			update_option( 'mc_listjs',$mc_listjs );
 			update_option( 'mc_minijs',$mc_minijs );
 			update_option( 'mc_caljs',$mc_caljs );
@@ -65,10 +65,10 @@ function edit_my_calendar_behaviors() {
 				</p>  	
 				<div class='controls'>
 					<ul class="checkboxes">
-						<li><input type="checkbox" id="calendar_js" name="calendar_js" value="1" <?php mc_is_checked('mc_calendar_js',1); ?>/> <label for="calendar_js"><?php _e('Disable Grid JS','my-calendar'); ?></label></li>
-						<li><input type="checkbox" id="list_js" name="list_js" value="1" <?php mc_is_checked('mc_list_js',1); ?> /> <label for="list_js"><?php _e('Disable List JS','my-calendar'); ?></label></li>
-						<li><input type="checkbox" id="mini_js" name="mini_js" value="1" <?php mc_is_checked('mc_mini_js',1); ?> /> <label for="mini_js"><?php _e('Disable Mini JS','my-calendar'); ?></label></li>
-						<li><input type="checkbox" id="ajax_js" name="ajax_js" value="1" <?php mc_is_checked('mc_ajax_js',1); ?> /> <label for="ajax_js"><?php _e('Disable AJAX','my-calendar'); ?></label></li>
+						<li><input type="checkbox" id="calendar_js" name="calendar_js" value="1" <?php mc_is_checked('mc_calendar_javascript',1); ?>/> <label for="calendar_js"><?php _e('Disable Grid JS','my-calendar'); ?></label></li>
+						<li><input type="checkbox" id="list_js" name="list_js" value="1" <?php mc_is_checked('mc_list_javascript',1); ?> /> <label for="list_js"><?php _e('Disable List JS','my-calendar'); ?></label></li>
+						<li><input type="checkbox" id="mini_js" name="mini_js" value="1" <?php mc_is_checked('mc_mini_javascript',1); ?> /> <label for="mini_js"><?php _e('Disable Mini JS','my-calendar'); ?></label></li>
+						<li><input type="checkbox" id="ajax_js" name="ajax_js" value="1" <?php mc_is_checked('mc_ajax_javascript',1); ?> /> <label for="ajax_js"><?php _e('Disable AJAX','my-calendar'); ?></label></li>
 					</ul>
 				</div>
 				<?php if ( get_option( 'mc_use_custom_js' ) == 1 ) { ?>

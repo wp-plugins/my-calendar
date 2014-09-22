@@ -10,8 +10,12 @@ function jd_draw_template( $array,$template,$type='list' ) {
 		} else {
 			if ( strpos( $template, "{".$key ) !== false ) {
 				if ( $type != 'list') {
-					if ( $key == 'link' && $value == '' ) { $value = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option( 'mc_uri' ) ) )?get_option( 'mc_uri' ):home_url(); }
-					if ( $key != 'guid') { $value = htmlentities( $value ); }
+					if ( $key == 'link' && $value == '' ) { 
+						$value = ( get_option( 'mc_uri' ) != '' && !is_numeric( get_option( 'mc_uri' ) ) )?get_option( 'mc_uri' ):home_url(); 
+					}
+					if ( $key != 'guid') { 
+						$value = htmlentities( $value ); 
+					}
 				}
 				if ( strpos( $template, "{".$key." " ) !== false ) { // only do preg_match if appropriate
 					preg_match_all('/{'.$key.'\b(?>\s+(?:before="([^"]*)"|after="([^"]*)"|format="([^"]*)")|[^\s]+|\s+){0,2}}/', $template, $matches, PREG_PATTERN_ORDER );
@@ -196,7 +200,7 @@ function mc_create_tags( $event, $context='filters' ) {
 	$e['cat_id'] = $event->event_category;
 	$e['category'] = stripslashes($event->category_name);
 	$e['icon'] = mc_category_icon( $event,'img' );
-	$e['icon_html'] = "<img src='$e[icon]' class='mc-category-icon' alt='".__('Category','my-calendar').": ".esc_attr($event->category_name)."' />";
+	$e['icon_html'] = "<img src='$e[icon]' class='mc-category-icon' alt='".__('Category','my-calendar').": ".esc_attr( $event->category_name)."' />";
 	$e['color'] = $event->category_color;
 	
 	// special
@@ -278,8 +282,6 @@ function mc_create_tags( $event, $context='filters' ) {
 	$ical_link = mc_build_url( array('vcal'=>$event->occur_id), array('month','dy','yr','ltype','loc','mcat','format'), get_option( 'mc_uri' ) );
 	$e['ical'] = $ical_link;
 	$e['ical_html'] = "<a class='ical' rel='nofollow' href='$ical_link'>".__('iCal','my-calendar')."</a>";
-		
-	// get URL, TITLE, LOCATION, DESCRIPTION strings
 	$e = apply_filters( 'mc_filter_shortcodes',$e,$event );
 	return $e;
 }

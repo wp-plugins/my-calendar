@@ -368,16 +368,16 @@ function mc_footer_js() {
 				$top = "
 	<script type='text/javascript'>
 	(function( $ ) { 'use strict'; \n";
-		if ( get_option( 'mc_calendar_javascript' ) != 1 ) {	$inner .= "\n".$cal_js; }
-		if ( get_option( 'mc_list_javascript' ) != 1 ) {	$inner .= "\n".$list_js; }
-		if ( get_option( 'mc_mini_javascript' ) != 1 ) {	$inner .= "\n".$mini_js; }
+		if ( get_option( 'mc_calendar_javascript' ) != 1 ) { $inner .= "\n".$cal_js; }
+		if ( get_option( 'mc_list_javascript' ) != 1 ) { $inner .= "\n".$list_js; }
+		if ( get_option( 'mc_mini_javascript' ) != 1 ) { $inner .= "\n".$mini_js; }
 		if ( get_option( 'mc_ajax_javascript' ) != 1 ) { $inner .= "\n".$ajax_js; }
 		$bottom .= "
 	}(jQuery));
 	</script>";
 			}
 			$inner = apply_filters( 'mc_filter_javascript_footer',$inner );
-			echo ( $inner != '' )?$top.$inner.$bottom:'';
+			echo ( $inner != '' ) ? $top.$inner.$bottom:'';
 		} else {
 			if ( @in_array( $id, $pages ) || get_option( 'mc_show_js' ) == '' ) {
 				if ( get_option( 'mc_calendar_javascript' ) != 1 && get_option( 'mc_open_uri' ) != 'true' ) { 
@@ -925,7 +925,7 @@ global $wp_query;
 
 function mc_month_comparison( $month ) {
 	$current_month = date("n", current_time('timestamp'));
-	if (isset($_GET['yr']) && isset($_GET['month'])) {
+	if ( isset( $_GET['yr']) && isset($_GET['month'])) {
 		if ($month == $_GET['month']) {
 			return ' selected="selected"';
 		  }
@@ -936,7 +936,7 @@ function mc_month_comparison( $month ) {
 
 function mc_year_comparison( $year ) {
 		$current_year = date("Y", current_time('timestamp'));
-		if (isset($_GET['yr']) && isset($_GET['month'])) {
+		if ( isset( $_GET['yr']) && isset($_GET['month'])) {
 			if ($year == $_GET['yr']) {
 				return ' selected="selected"';
 			}

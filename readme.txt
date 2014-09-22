@@ -85,7 +85,20 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Create advanced search
 * Add ability to completely remove link on event title in calendar grid.
 * Feature: allow limiting of categories to specific member groups
+* Import from RSS/iCal [voted]
+* Bug fix: iCal export dates for recurring events [todo]
+* Bug fix: iCal export dates for multi-day events [todo]
 
+= 2.3.15 =
+
+* Bug fix: Controlled locations not input correctly from Add Event form
+* Bug fix: Use force_balance_tags() when saving descriptions & short descriptions to prevent descriptions from breaking layout
+* Bug fix: My Calendar reset stylesheet missing .mc-main on buttons; causing display issues with submit buttons.
+* Bug fix: shortcode generator produced results in disabled form field; changed to readonly because Firefox does not permit selecting text in disabled fields.
+* Bug fix: Widget navigation automatically reset itself if you saved widget form after clearing data
+* Bug fix: category classes for multi-day, all-day events showed on termination date
+* Bug fix: Checkbox states on JS scripts not retained
+* Feature: Default view next month option in calendar and upcoming events lists.
 
 = 2.3.14 =
 
