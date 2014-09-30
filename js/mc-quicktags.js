@@ -1,1 +1,1 @@
-edButtons[edButtons.length] = new edButton( 'My Calendar', 'My Calendar', '[my_calendar]', '', '' );
+edButtons[edButtons.length] = new edButton('My Calendar', 'My Calendar', '[my_calendar]', '', '');

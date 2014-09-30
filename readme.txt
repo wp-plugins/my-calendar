@@ -43,7 +43,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 = Translations =
 
 Available translations (in order of completeness):
-French, Japanese, Danish, Dutch, Russian, German, Italian, Spanish, Galician, Danish, Czech, Hindi, Turkish, Polish, Finnish, Slovenian, Portuguese, Swedish, Romanian, Norwegian, Hungarian, Basque, Persian
+French, Japanese, Danish, Dutch, Russian, German, Spanish, Italian, Galician, Czech, Hindi, Turkish, Finnish, Polish, Swedish, Slovenian, Portuguese, Romanian, Norwegian, Hungarian, Basque, Catalan, Persian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -85,9 +85,7 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Create advanced search
 * Add ability to completely remove link on event title in calendar grid.
 * Feature: allow limiting of categories to specific member groups
-* Import from RSS/iCal [voted]
-* Bug fix: iCal export dates for recurring events [todo]
-* Bug fix: iCal export dates for multi-day events [todo]
+* Import from RSS/iCal
 
 = 2.3.15 =
 
@@ -98,7 +96,15 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Bug fix: Widget navigation automatically reset itself if you saved widget form after clearing data
 * Bug fix: category classes for multi-day, all-day events showed on termination date
 * Bug fix: Checkbox states on JS scripts not retained
+* Bug fix: Show default values in upcoming events widget
+* Bug fix: Default values not saved on new installation
+* Bug fix: Admin event manager should sort by Date/Time instead of Date/Title
+* Documented [my_calendar_search] shortcode
+* Added 'current' option for author/host to shortcode generator.
+* Extensive code clean up
 * Feature: Default view next month option in calendar and upcoming events lists.
+* Deprecated upgrade cycles prior to version 1.10.0.
+* Language updates: Japanese, Dutch, Italian, Spanish, Finnish, Swedish, Norwegian
 
 = 2.3.14 =
 
