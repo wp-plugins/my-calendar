@@ -77,7 +77,7 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 = 2.4.0 = [todo]
 
-* Option to post new events into blog posts
+* Option to post new events as blog posts
 * Add author limit tool
 * Add search documentation
 * Add filters to search query parameters
