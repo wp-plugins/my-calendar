@@ -361,8 +361,7 @@ function mc_manage_categories() {
 		<tr>
 			<th scope="col"><?php echo ( $co == 2 ) ? "<a href='" . admin_url( "admin.php?page=my-calendar-categories&amp;co=1" ) . "'>" : ''; ?><?php _e( 'ID', 'my-calendar' ) ?><?php echo ( $co == 2 ) ? '</a>' : ''; ?></th>
 			<th scope="col"><?php echo ( $co == 1 ) ? "<a href='" . admin_url( "admin.php?page=my-calendar-categories&amp;co=2" ) . "'>" : ''; ?><?php _e( 'Category Name', 'my-calendar' ) ?><?php echo ( $co == 1 ) ? '</a>' : ''; ?></th>
-			<th scope="col"><?php _e( 'Category Color', 'my-calendar' ); ?></th>
-			<th scope="col"><?php _e( 'Category Icon', 'my-calendar' ); ?></th>
+			<th scope="col"><?php _e( 'Color/Icon', 'my-calendar' ); ?></th>
 			<th scope="col"><?php _e( 'Private', 'my-calendar' ); ?></th>
 			<th scope="col"><?php _e( 'Edit', 'my-calendar' ); ?></th>
 			<th scope="col"><?php _e( 'Delete', 'my-calendar' ); ?></th>
@@ -385,8 +384,7 @@ function mc_manage_categories() {
 				if ( $cat->category_id == get_option( 'mc_skip_holidays_category' ) ) {
 					echo ' ' . __( '(Holiday)' );
 				} ?></td>
-			<td style="background-color:<?php echo $background; ?>; color: <?php echo $foreground; ?>"><?php echo $background; ?></td>
-			<td style="background-color:<?php echo $background; ?>;"><img src="<?php echo $icon_src; ?>" alt=""/></td>
+			<td style="background-color:<?php echo $background; ?>;color: <?php echo $foreground; ?>"><img src="<?php echo $icon_src; ?>" alt=""/> <?php echo $background; ?></td>
 			<td><?php echo ( $cat->category_private == 1 ) ? __( 'Yes', 'my-calendar' ) : __( 'No', 'my-calendar' ); ?></td>
 			<td><a
 				href="<?php echo admin_url( "admin.php?page=my-calendar-categories&amp;mode=edit&amp;category_id=$cat->category_id" ); ?>"
