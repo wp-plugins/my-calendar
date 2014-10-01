@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 } // Exit if accessed directly
 
 function mc_private_categories() {
-	$cats = array();
+	$cats = '';
 	if ( ! is_user_logged_in() ) {
 		global $wpdb;
 		$mcdb = $wpdb;

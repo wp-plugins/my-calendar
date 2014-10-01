@@ -168,7 +168,7 @@ class my_calendar_upcoming_widget extends WP_Widget {
 		$the_category   = ( $instance['my_calendar_upcoming_category'] == '' ) ? 'default' : esc_attr( $instance['my_calendar_upcoming_category'] );
 		$author         = ( ! isset( $instance['my_calendar_upcoming_author'] ) || $instance['my_calendar_upcoming_author'] == '' ) ? 'default' : esc_attr( $instance['my_calendar_upcoming_author'] );
 		$host           = ( ! isset( $instance['mc_host'] ) || $instance['mc_host'] == '' ) ? 'default' : esc_attr( $instance['mc_host'] );
-		$widget_link    = ( $instance['my_calendar_upcoming_linked'] == 'yes' ) ? get_option( 'mc_uri' ) : '';
+		$widget_link    = ( isset( $instance['my_calendar_upcoming_linked'] ) && $instance['my_calendar_upcoming_linked'] == 'yes' ) ? get_option( 'mc_uri' ) : '';
 		$widget_link    = ( ! empty( $instance['mc_link'] ) ) ? esc_url( $instance['mc_link'] ) : $widget_link;
 		$widget_title   = empty( $the_title ) ? '' : $the_title;
 		$widget_title   = ( $widget_link == '' ) ? $widget_title : "<a href='$widget_link'>$widget_title</a>";
@@ -273,11 +273,11 @@ class my_calendar_upcoming_widget extends WP_Widget {
 				<input type="text" id="<?php echo $this->get_field_id( 'my_calendar_upcoming_after' ); ?>"
 				       name="<?php echo $this->get_field_name( 'my_calendar_upcoming_after' ); ?>"
 				       value="<?php echo $after; ?>" size="1" maxlength="3"/> <label
-					for="<?php echo $this->get_field_id( 'my_calendar_upcoming_after' ); ?>"><?php printf( __( "%d into the future;", 'my-calendar' ), $type ); ?></label><br/>
+					for="<?php echo $this->get_field_id( 'my_calendar_upcoming_after' ); ?>"><?php printf( __( "%s into the future;", 'my-calendar' ), $type ); ?></label><br/>
 				<input type="text" id="<?php echo $this->get_field_id( 'my_calendar_upcoming_before' ); ?>"
 				       name="<?php echo $this->get_field_name( 'my_calendar_upcoming_before' ); ?>"
 				       value="<?php echo $before; ?>" size="1" maxlength="3"/> <label
-					for="<?php echo $this->get_field_id( 'my_calendar_upcoming_before' ); ?>"><?php printf( __( "%d from the past", 'my-calendar' ), $type ); ?></label>
+					for="<?php echo $this->get_field_id( 'my_calendar_upcoming_before' ); ?>"><?php printf( __( "%s from the past", 'my-calendar' ), $type ); ?></label>
 			</p>
 		<?php } ?>
 		<p>

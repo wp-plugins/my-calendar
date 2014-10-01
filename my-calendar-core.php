@@ -1390,6 +1390,7 @@ function jcd_get_support_form() {
 	// server
 	$php_version = phpversion();
 
+	$admin_email = get_option( 'admin_email' );
 	// theme data
 	$theme         = wp_get_theme();
 	$theme_name    = $theme->Name;
@@ -1418,7 +1419,8 @@ DB Version: $mc_db_version
 URI: $mc_uri
 CSS: $mc_css
 License: Submissions: $license / Ticketing: $tickets_license
-Admin Email: $current_user->user_email
+Requester Email: $current_user->user_email
+Admin Email: $admin_email
 
 ==WordPress:==
 Version: $wp_version

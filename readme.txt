@@ -88,6 +88,11 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Refactor options storage
 * Import from RSS/iCal
 
+= 2.3.16 =
+
+* Bug fix: Upcoming events did not show for logged-in users if site did not have private categories defined.
+* Cleared a PHP notice.
+
 = 2.3.15 =
 
 * Bug fix: Controlled locations not input correctly from Add Event form
