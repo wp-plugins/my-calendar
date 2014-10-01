@@ -263,7 +263,9 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 			if ( ! isset( $_GET['mc_id'] ) ) {
 				$details_label = mc_get_details_label( $event, $data );
 				$details_link  = mc_get_details_link( $event );
-				$more          = ( get_option( 'mc_uri' ) != '' ) ? "<p class='mc_details'><a href='$details_link'>$details_label</a></p>\n" : '';
+				if ( _mc_is_url( $details_link ) ) {
+					$more = ( get_option( 'mc_uri' ) != '' ) ? "<p class='mc_details'><a href='$details_link'>$details_label</a></p>\n" : '';
+				}
 			}
 			// handle link expiration
 			$event_link = mc_event_link( $event );
