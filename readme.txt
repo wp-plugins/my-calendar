@@ -87,6 +87,11 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Feature: allow limiting of categories to specific member groups
 * Refactor options storage
 * Import from RSS/iCal
+* Create a template tag to show the date range for event groups; add support for this type of event set to {daterange}
+
+= 2.3.17 =
+
+* 2.3.6 bug fix was incomplete, triggered new error. Sorry for rushing!
 
 = 2.3.16 =
 

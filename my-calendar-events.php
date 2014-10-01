@@ -13,15 +13,16 @@ function mc_private_categories() {
 		}
 		$query   = "SELECT category_id FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_private = 1";
 		$results = $mcdb->get_results( $query );
+		$categories = array();
 		foreach ( $results as $result ) {
-			$cats[] = $result->category_id;
+			$categories[] = $result->category_id;
 		}
-		$cats = implode( ',', $cats );
+		$cats = implode( ',', $categories );
 		if ( $cats != '' ) {
 			$cats = " AND category_id NOT IN ($cats)";
-
-			return $cats;
 		}
+
+		return $cats;
 	}
 
 	return $cats;
