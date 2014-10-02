@@ -88,6 +88,13 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Refactor options storage
 * Import from RSS/iCal
 * Create a template tag to show the date range for event groups; add support for this type of event set to {daterange}
+* Stop setting allday events to end at midnight; use 11:59:59 and filter output
+
+= 2.3.19 =
+
+* Bug fix: Could not un-check show today's events in Upcoming Events widget
+* Bug fix: Could not turn off event recurrences section in event manager
+* Bug fix: stripped HTML tags out of upcoming events & today's events template fields
 
 = 2.3.18 =
 

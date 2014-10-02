@@ -823,7 +823,7 @@ function mc_show_block( $field, $has_data, $data ) {
 					</p>';
 			}
 			break;
-		case 'event_recur' :
+		case 'event_recurs' :
 			if ( is_object( $data ) ) {
 				$event_recur = ( is_object( $data ) ) ? $data->event_recur : '';
 				$recurs      = str_split( $event_recur, 1 );
@@ -1212,7 +1212,7 @@ function mc_form_fields( $data, $mode, $event_id ) {
 	</div>
 </div>
 <?php
-mc_show_block( 'event_recur', $has_data, $data );
+mc_show_block( 'event_recurs', $has_data, $data );
 mc_show_block( 'event_access', $has_data, $data );
 mc_show_block( 'event_open', $has_data, $data );
 

@@ -31,7 +31,7 @@ class my_calendar_simple_search extends WP_Widget {
 
 	function update( $new, $old ) {
 		$instance          = $old;
-		$instance['title'] = strip_tags( $new['title'] );
+		$instance['title'] = wp_kses_post( $new['title'] );
 
 		return $instance;
 	}
@@ -142,7 +142,7 @@ class my_calendar_today_widget extends WP_Widget {
 	}
 
 	function update( $new, $old ) {
-		$instance = array_map( 'strip_tags', array_merge( $old, $new ) );
+		$instance = array_map( 'wp_kses_post', array_merge( $old, $new ) );
 
 		return $instance;
 	}
@@ -197,7 +197,7 @@ class my_calendar_upcoming_widget extends WP_Widget {
 		$host       = ( isset( $instance['mc_host'] ) ) ? esc_attr( $instance['mc_host'] ) : '';
 		$before     = ( isset( $instance['my_calendar_upcoming_before'] ) ) ? esc_attr( $instance['my_calendar_upcoming_before'] ) : 3;
 		$after      = ( isset( $instance['my_calendar_upcoming_after'] ) ) ? esc_attr( $instance['my_calendar_upcoming_after'] ) : 3;
-		$show_today = ( isset( $instance['my_calendar_upcoming_show_today'] ) ) ? esc_attr( $instance['my_calendar_upcoming_show_today'] ) : '';
+		$show_today = ( isset( $instance['my_calendar_upcoming_show_today'] ) ) ? esc_attr( $instance['my_calendar_upcoming_show_today'] ) : 'no';
 		$type       = ( isset( $instance['my_calendar_upcoming_type'] ) ) ? esc_attr( $instance['my_calendar_upcoming_type'] ) : 'events';
 		$order      = ( isset( $instance['my_calendar_upcoming_order'] ) ) ? esc_attr( $instance['my_calendar_upcoming_order'] ) : 'asc';
 		$linked     = ( isset( $instance['my_calendar_upcoming_linked'] ) ) ? esc_attr( $instance['my_calendar_upcoming_linked'] ) : '';
@@ -283,7 +283,7 @@ class my_calendar_upcoming_widget extends WP_Widget {
 		<p>
 			<input type="checkbox" id="<?php echo $this->get_field_id( 'my_calendar_upcoming_show_today' ); ?>"
 			       name="<?php echo $this->get_field_name( 'my_calendar_upcoming_show_today' ); ?>"
-			       value="yes"<?php echo ( $show_today == 'yes' || $show_today == '' ) ? ' checked="checked"' : ''; ?> />
+			       value="yes"<?php echo ( $show_today == 'yes' ) ? ' checked="checked"' : ''; ?> />
 			<label
 				for="<?php echo $this->get_field_id( 'my_calendar_upcoming_show_today' ); ?>"><?php _e( "Include today's events", 'my-calendar' ); ?></label>
 		</p>
@@ -319,8 +319,10 @@ class my_calendar_upcoming_widget extends WP_Widget {
 	}
 
 	function update( $new, $old ) {
-		$instance = array_map( 'strip_tags', array_merge( $old, $new ) );
-
+		$instance = array_map( 'wp_kses_post', array_merge( $old, $new ) );
+		if ( !isset( $new['my_calendar_upcoming_show_today'] ) ) {
+			$instance['my_calendar_upcoming_show_today'] = 'no';
+		}
 		return $instance;
 	}
 }
@@ -810,9 +812,9 @@ class my_calendar_mini_widget extends WP_Widget {
 	}
 
 	function update( $new, $instance ) {
-		$instance['my_calendar_mini_title']    = strip_tags( $new['my_calendar_mini_title'] );
-		$instance['my_calendar_mini_time']     = strip_tags( $new['my_calendar_mini_time'] );
-		$instance['my_calendar_mini_category'] = strip_tags( $new['my_calendar_mini_category'] );
+		$instance['my_calendar_mini_title']    = wp_kses_post( $new['my_calendar_mini_title'] );
+		$instance['my_calendar_mini_time']     = wp_kses_post( $new['my_calendar_mini_time'] );
+		$instance['my_calendar_mini_category'] = wp_kses_post( $new['my_calendar_mini_category'] );
 		$instance['above']                     = ( isset( $new['above'] ) && $new['above'] != '' ) ? $new['above'] : 'none';
 		$instance['mc_link']                   = $new['mc_link'];
 		$instance['below']                     = ( isset( $new['below'] ) && $new['below'] != '' ) ? $new['below'] : 'none';

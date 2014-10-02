@@ -7,7 +7,7 @@ Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
 Text Domain: my-calendar
 Domain Path: lang
-Version: 2.3.18
+Version: 2.3.19
 */
 /*  Copyright 2009-2014  Joe Dolson (email : joe@joedolson.com)
 
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 apply_filters( "debug", "MC Started" );
 
 global $mc_version, $wpdb;
-$mc_version = '2.3.18';
+$mc_version = '2.3.19';
 
 // Define the tables used in My Calendar
 if ( is_multisite() && get_site_option( 'mc_multisite_show' ) == 1 ) {
@@ -456,7 +456,8 @@ function mc_show_event_editing( $status, $args ) {
 				// don't display options if this user can't use them.
 				$output .= "<input type='hidden' name='mc_show_on_page[$key]' value='off' />";
 			} else {
-				if ( isset( $input_labels[ $key ] ) ) { // don't show if label doesn't exist. That means I removed the option.
+				if ( isset( $input_labels[ $key ] ) ) {
+					// don't show if label doesn't exist. That means I removed the option.
 					$output .= "<label for='mci_$key'><input type='checkbox' id='mci_$key' name='mc_show_on_page[$key]' value='on' $checked /> $input_labels[$key]</label>";
 				}
 			}
