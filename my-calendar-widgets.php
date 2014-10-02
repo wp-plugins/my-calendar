@@ -142,7 +142,7 @@ class my_calendar_today_widget extends WP_Widget {
 	}
 
 	function update( $new, $old ) {
-		$instance = array_map( 'strip_tags', array_merge( $new, $old ) );
+		$instance = array_map( 'strip_tags', array_merge( $old, $new ) );
 
 		return $instance;
 	}

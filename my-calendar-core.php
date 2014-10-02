@@ -401,7 +401,7 @@ function mc_footer_js() {
 				if ( get_option( 'mc_ajax_javascript' ) != 1 ) {
 					$inner .= "\n" . $ajax_js;
 				}
-				$top = "
+				$script = "
 <script type='text/javascript'>
 (function( /$ ) { 'use strict';
 	$inner
@@ -409,7 +409,7 @@ function mc_footer_js() {
 </script>";
 			}
 			$inner = apply_filters( 'mc_filter_javascript_footer', $inner );
-			echo ( $inner != '' ) ? $top . $inner . $bottom : '';
+			echo ( $inner != '' ) ? $script : '';
 		} else {
 			if ( @in_array( $id, $pages ) || get_option( 'mc_show_js' ) == '' ) {
 				if ( get_option( 'mc_calendar_javascript' ) != 1 && get_option( 'mc_open_uri' ) != 'true' ) {

@@ -89,9 +89,14 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Import from RSS/iCal
 * Create a template tag to show the date range for event groups; add support for this type of event set to {daterange}
 
+= 2.3.18 =
+
+* Bug in rendering of custom JS causing visible rendering of code.
+* Bug in saving Today's Events widget settings
+
 = 2.3.17 =
 
-* 2.3.6 bug fix was incomplete, triggered new error. Sorry for rushing!
+* 2.3.16 bug fix was incomplete, triggered new error. Sorry for rushing!
 
 = 2.3.16 =
 
