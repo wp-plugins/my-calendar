@@ -401,12 +401,12 @@ function mc_footer_js() {
 				if ( get_option( 'mc_ajax_javascript' ) != 1 ) {
 					$inner .= "\n" . $ajax_js;
 				}
-				$script = "
-<script type='text/javascript'>
-(function( /$ ) { 'use strict';
+				$script = '
+<script type="text/javascript">
+(function( $ ) { \'use strict\';'.
 	$inner
-}(jQuery));
-</script>";
+.'}(jQuery));
+</script>';
 			}
 			$inner = apply_filters( 'mc_filter_javascript_footer', $inner );
 			echo ( $inner != '' ) ? $script : '';
@@ -598,6 +598,7 @@ function mc_add_roles( $add = false, $manage = false, $approve = false ) {
 function my_calendar_exists() {
 	global $wpdb;
 	$mcdb = $wpdb;
+	$my_calendar_exists = false;
 	$tables = $mcdb->get_results( "show tables;" );
 	foreach ( $tables as $table ) {
 		foreach ( $table as $value ) {
@@ -607,6 +608,7 @@ function my_calendar_exists() {
 			}
 		}
 	}
+	return $my_calendar_exists;
 }
 
 // Function to check what version of My Calendar is installed and install or upgrade if needed
@@ -1821,11 +1823,11 @@ function mc_get_details_link( $event ) {
 	// if available, and not querying remotely, use permalink.
 	$permalinks   = apply_filters( 'mc_use_permalinks', get_option( 'mc_use_permalinks' ) );
 	$permalinks   = ( $permalinks === 1 || $permalinks === true || $permalinks === 'true' ) ? true : false;
-	$details_link = $event->event_link;
+	$details_link = mc_event_link( $event );
 	if ( $event->event_post != 0 && get_option( 'mc_remote' ) != 'true' && $permalinks ) {
 		$details_link = add_query_arg( 'mc_id', $event->occur_id, get_permalink( $event->event_post ) );
 	} else {
-		if ( get_option( 'mc_uri' ) != '' && ! is_numeric( get_option( 'mc_uri' ) ) ) {
+		if ( get_option( 'mc_uri' ) != '' && _mc_is_url( get_option( 'mc_uri' ) ) ) {
 			$details_link = mc_build_url( array( 'mc_id' => $event->occur_id ), array(
 					'month',
 					'dy',

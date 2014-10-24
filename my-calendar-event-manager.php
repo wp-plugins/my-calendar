@@ -206,7 +206,7 @@ function manage_my_calendar() {
 	}
 
 	// Approve and show an Event ...originally by Roland
-	if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'approve' ) {
+	if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'publish' ) {
 		if ( current_user_can( 'mc_approve_events' ) ) {
 			$sql = "UPDATE " . my_calendar_table() . " SET event_approved = 1 WHERE event_id=" . (int) $_GET['event_id'];
 			$mcdb->get_results( $sql, ARRAY_A );

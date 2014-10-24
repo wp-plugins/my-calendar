@@ -260,11 +260,14 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 					$author = '<p class="event-author">' . __( 'Posted by', 'my-calendar' ) . ' <span class="author-name">' . $e->display_name . "</span></p>\n";
 				}
 			}
+
 			if ( ! isset( $_GET['mc_id'] ) ) {
 				$details_label = mc_get_details_label( $event, $data );
 				$details_link  = mc_get_details_link( $event );
 				if ( _mc_is_url( $details_link ) ) {
-					$more = ( get_option( 'mc_uri' ) != '' ) ? "<p class='mc_details'><a href='$details_link'>$details_label</a></p>\n" : '';
+					$more = "<p class='mc_details'><a href='$details_link'>$details_label</a></p>\n";
+				} else {
+					$more = '';
 				}
 			}
 			// handle link expiration
@@ -613,7 +616,7 @@ function mc_date_array( $timestamp, $period ) {
 
 // argument: array of event objects
 function mc_events_class( $events, $date = false ) {
-	$class = '';
+	$class = $events_class = '';
 	if ( ! is_array( $events ) || ! count( $events ) ) {
 		$events_class = "no-events";
 	} else {
@@ -631,7 +634,9 @@ function mc_events_class( $events, $date = false ) {
 				$class .= $cat;
 			}
 		}
-		$events_class = "has-events$class";
+		if ( $class ) {
+			$events_class = "has-events$class";
+		}
 	}
 
 	return $events_class;
@@ -1822,7 +1827,7 @@ function my_calendar_show_locations( $datatype = 'name', $template = '' ) {
 	return '';
 }
 
-function my_calendar_searchform( $type, $url ) {
+function my_calendar_searchform( $type, $url=false ) {
 	$query = ( isset( $_GET['mcs'] ) ) ? esc_attr( $_GET['mcs'] ) : '';
 	if ( $type == 'simple' ) {
 		if ( !$url ) {

@@ -165,6 +165,7 @@ function mc_create_tags( $event, $context = 'filters' ) {
 	// date & time fields
 	$dtstart           = mc_format_timestamp( strtotime( $event->occur_begin ) );
 	$dtend             = mc_format_timestamp( strtotime( $event->occur_end ) );
+
 	$real_end_date     = $event->occur_end;
 	$e['date_utc']     = date_i18n( apply_filters( 'mc_date_format', $date_format, 'template_begin_ts' ), $event->ts_occur_begin );
 	$e['date_end_utc'] = date_i18n( apply_filters( 'mc_date_format', $date_format, 'template_end_ts' ), $event->ts_occur_end );
@@ -217,7 +218,6 @@ function mc_create_tags( $event, $context = 'filters' ) {
 	$e['event_status'] = ( $event->event_approved == 1 ) ? __( 'Published', 'my-calendar' ) : __( 'Reserved', 'my-calendar' );
 
 	// general text fields
-	$strip_desc                = mc_newline_replace( strip_tags( $event->event_desc ) );
 	$e['title']                = stripslashes( $event->event_title );
 	$e['description']          = ( get_option( 'mc_process_shortcodes' ) == 'true' && $context == 'filters' ) ? apply_filters( 'the_content', $event->event_desc ) : wpautop( stripslashes( $event->event_desc ) );
 	$e['description_raw']      = stripslashes( $event->event_desc );
@@ -260,6 +260,7 @@ function mc_create_tags( $event, $context = 'filters' ) {
 	$e['linking_title'] = ( $e['linking'] != '' ) ? "<a href='" . $e['linking'] . "'>" . $e['title'] . "</a>" : $e['title'];
 
 	// location fields
+	$strip_desc           = mc_newline_replace( strip_tags( $event->event_desc ) );
 	$e['location']        = stripslashes( $event->event_label );
 	$e['street']          = stripslashes( $event->event_street );
 	$e['street2']         = stripslashes( $event->event_street2 );

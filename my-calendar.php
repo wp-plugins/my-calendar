@@ -7,7 +7,7 @@ Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
 Text Domain: my-calendar
 Domain Path: lang
-Version: 2.3.19
+Version: 2.3.20
 */
 /*  Copyright 2009-2014  Joe Dolson (email : joe@joedolson.com)
 
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 apply_filters( "debug", "MC Started" );
 
 global $mc_version, $wpdb;
-$mc_version = '2.3.19';
+$mc_version = '2.3.20';
 
 // Define the tables used in My Calendar
 if ( is_multisite() && get_site_option( 'mc_multisite_show' ) == 1 ) {
@@ -154,8 +154,7 @@ function mc_show_sidebar( $show = '', $add = false, $remove = false ) {
 						<div class="inside resources">
 							<p class="mcsbuy"><?php _e( "Buy the <a href='http://www.joedolson.com/my-calendar/submissions/' rel='external'>My Calendar Submissions add-on</a> &mdash; let your audience build your calendar.", 'my-calendar' ); ?></p>
 
-							<p class="mc-button"><a href="http://www.joedolson.com/my-calendar/submissions/"
-							                        rel="external"><?php _e( 'Learn more!', 'my-calendar' ); ?></a>
+							<p class="mc-button"><a href="http://www.joedolson.com/my-calendar/submissions/" rel="external"><?php _e( 'Learn more!', 'my-calendar' ); ?></a>
 							</p>
 						</div>
 					</div>
@@ -185,7 +184,7 @@ function mc_show_sidebar( $show = '', $add = false, $remove = false ) {
 								rel="external"><?php _e( "Buy the My Calendar User's Guide", 'my-calendar' ); ?></a>
 						</p>
 
-						<p><?php _e( '<strong>Or make a donation today!</strong> Every donation counts - donate $5, $20, or $100 and help me keep this plug-in running!', 'my-calendar' ); ?></p>
+						<p><?php _e( '<strong>Make a donation today!</strong> Every donation helps - donate $5, $20, or $100 and keep this plug-in running!', 'my-calendar' ); ?></p>
 
 						<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 							<p class="mcd">

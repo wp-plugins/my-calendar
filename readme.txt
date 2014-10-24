@@ -43,7 +43,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 = Translations =
 
 Available translations (in order of completeness):
-French, Japanese, Danish, Dutch, Russian, German, Spanish, Italian, Galician, Czech, Hindi, Turkish, Finnish, Polish, Swedish, Slovenian, Portuguese, Romanian, Norwegian, Hungarian, Basque, Catalan, Persian
+French, Japanese, Danish, Dutch, Russian, German, Spanish, Italian, Galician, Czech, Hindi, Turkish, Finnish, Swedish, Polish, Slovenian, Portuguese, Romanian, Norwegian, Hungarian, Basque, Catalan, Persian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -88,7 +88,18 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Refactor options storage
 * Import from RSS/iCal
 * Create a template tag to show the date range for event groups; add support for this type of event set to {daterange}
-* Stop setting allday events to end at midnight; use 11:59:59 and filter output
+* Stop setting all day events to end at midnight; use 11:59:59 and filter output
+* Create selectable event details templates
+
+= 2.3.20 =
+
+* Bug fix: Escaped $ variable in custom JS wrapper
+* Bug fix: has-events class appearing in calendar on days after all-day events
+* Bug fix: Reset stylesheet applied outside calendar HTML. Eliminated elements not used by MC.
+* Bug fix: Missing required argument for My Calendar search form widget
+* Bug fix: 'Approve' link broken
+* Bug fix: Details link could return expired event links.
+* Translation updates: Spanish, Slovenian
 
 = 2.3.19 =
 
