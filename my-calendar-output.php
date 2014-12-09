@@ -237,6 +237,7 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 	$header .= $title;
 
 	if ( mc_show_details( $time, $type ) ) {
+		$close = ( $type == 'calendar' || $type == 'mini' ) ? "<a href=\"#$uid-$day_id-$type\" aria-controls='$uid-$day_id-$type-details' class='mc-toggle mc-close close'><img src=\"" . plugin_dir_url( __FILE__ ) . "images/event-close.png\" alt='" . __( 'Close', 'my-calendar' ) . "' /></a>" : '';
 
 		if ( $details === false ) {
 			// put together address information as vcard
@@ -244,7 +245,6 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 				$address = mc_hcard( $event, $display_address, $display_map );
 			}
 			// end vcard
-			$close = ( $type == 'calendar' || $type == 'mini' ) ? "<a href=\"#$uid-$day_id-$type\" aria-controls='$uid-$day_id-$type-details' class='mc-toggle mc-close close'><img src=\"" . plugin_dir_url( __FILE__ ) . "images/event-close.png\" alt='" . __( 'Close', 'my-calendar' ) . "' /></a>" : '';
 			$time  = mc_time_html( $event, $type, $current_date );
 			if ( $type == "list" ) {
 				$heading_level = apply_filters( 'mc_heading_level_list', 'h3', $type, $time, $template );

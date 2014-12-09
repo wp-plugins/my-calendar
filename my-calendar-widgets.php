@@ -11,27 +11,36 @@ class my_calendar_simple_search extends WP_Widget {
 	function widget( $args, $instance ) {
 		extract( $args );
 		$widget_title = apply_filters( 'widget_title', $instance['title'], $instance, $args );
+		$widget_url = ( isset( $instance['url'] ) ) ? $instance['url'] : false;
 		echo $before_widget;
 		echo ( $instance['title'] != '' ) ? $widget_title : '';
-		echo my_calendar_searchform( 'simple' );
+		echo my_calendar_searchform( 'simple', $widget_url );
 		echo $after_widget;
 	}
 
 	function form( $instance ) {
-		$widget_title = ( isset( $instance['title'] ) ) ? esc_attr( $instance['title'] ) : '';
+		$widget_title = ( isset( $instance['title'] ) ) ? $instance['title'] : '';
+		$widget_url = ( isset( $instance['url'] ) ) ? $instance['url'] : '';
 		?>
 		<p>
 			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title', 'my-calendar' ); ?>
 				:</label><br/>
 			<input class="widefat" type="text" id="<?php echo $this->get_field_id( 'title' ); ?>"
-			       name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $widget_title; ?>"/>
+			       name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo esc_attr( $widget_title ); ?>"/>
 		</p>
+		<p>
+			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Search Results Page', 'my-calendar' ); ?>
+				:</label><br/>
+			<input class="widefat" type="text" id="<?php echo $this->get_field_id( 'url' ); ?>"
+			       name="<?php echo $this->get_field_name( 'url' ); ?>" value="<?php echo esc_url( $widget_url ); ?>"/>
+		</p>		
 	<?php
 	}
 
 	function update( $new, $old ) {
 		$instance          = $old;
 		$instance['title'] = wp_kses_post( $new['title'] );
+		$instance['url']   = esc_url_raw( $new['url'] );
 
 		return $instance;
 	}

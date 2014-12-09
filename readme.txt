@@ -99,16 +99,10 @@ ISSUES
 BUG FIXES
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
 * Bug with deleting instances: checking a 'delete' option does not delete recurrence in list of dates.
-* Create DBs with MyISAM engine
-
-DOCS
-* Add search documentation
-* Better documentation on API (API shortcode of some sort?)
 
 = 2.3.21 =
 
 * Plug-in conflict fix: CSS override to fix conflict with Ultimate Social Media Icons
-* Add filter: number of months shown in list view filterable on 'mc_show_months'
 * Bug fix: Allow {image_url} to fall back to thumbnail size if no medium / create _url equivalents for each size.
 * Bug fix: Allow location controls to be entered with only keys.
 * Bug fix: Entering default value for controlled locations is empty value, instead of 'none'.
@@ -119,9 +113,12 @@ DOCS
 * Bug fix: Limiting locations did not work in Upcoming Events using 'events' mode.
 * Bug fix: Allow limiting locations but all event location fields.
 * Bug fix: Limiting locations accepts numeric values for limiting.
-* Bug fix: {recurs} template tag indicates ferquency ("Weekly", vs "every 3 weeks")
+* Bug fix: {recurs} template tag indicates frequency ("Weekly", vs "every 3 weeks")
+* Bug fix: fixed templating issue when custom templates used a tag multiple times with different attribute parameters.
 * Add filter to modify the title information shown in list view to hint at hidden events ('mc_list_event_title_hint')
-* Add shortcode/function to display the current event. [my_calendar_now] [needs testing]
+* Add filter: number of months shown in list view filterable on 'mc_show_months'
+* Feature: Add shortcode/function to display a current event. [my_calendar_now]
+* Feature: Add search results page option to calendar search widget.
 * Removed all remaining code related to user settings, which are no longer in use.
 * Language updates: French, Danish, Russian, Swedish, Portuguese/Brazil, Portuguese/Portugal, Norwegian Bokmal, Hungarian
 

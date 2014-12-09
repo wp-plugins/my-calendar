@@ -22,15 +22,18 @@ function jd_draw_template( $array, $template, $type = 'list' ) {
 				if ( strpos( $template, "{" . $key . " " ) !== false ) { // only do preg_match if appropriate
 					preg_match_all( '/{' . $key . '\b(?>\s+(?:before="([^"]*)"|after="([^"]*)"|format="([^"]*)")|[^\s]+|\s+){0,2}}/', $template, $matches, PREG_PATTERN_ORDER );
 					if ( $matches ) {
-						$before = @$matches[1][0];
-						$after  = @$matches[2][0];
-						$format = @$matches[3][0];
-						if ( $format != '' ) {
-							$value = date_i18n( stripslashes( $format ), strtotime( stripslashes( $value ) ) );
+						$number = count( $matches[0] );
+						for ( $i=0; $i<=$number; $i++ ) {
+							$before = @$matches[1][$i];
+							$after  = @$matches[2][$i];
+							$format = @$matches[3][$i];								
+							if ( $format != '' ) {
+								$value = date_i18n( stripslashes( $format ), strtotime( stripslashes( $value ) ) );
+							}
+							$value    = ( $value == '' ) ? '' : $before . $value . $after;
+							$search   = @$matches[0][$i];
+							$template = str_replace( $search, $value, $template );
 						}
-						$value    = ( $value == '' ) ? '' : $before . $value . $after;
-						$search   = @$matches[0][0];
-						$template = str_replace( $search, $value, $template );
 					}
 				} else { // don't do preg match (never required for RSS)
 					$template = stripcslashes( str_replace( "{" . $key . "}", $value, $template ) );

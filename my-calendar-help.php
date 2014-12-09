@@ -172,6 +172,12 @@ function my_calendar_help() {
 			<p>
 				<?php _e( 'Simple search form to search all events. <code>url</code> attribute to pass a custom search results page, otherwise your My Calendar URL.', 'my-calendar' ); ?>
 			</p>
+			
+			<textarea readonly='readonly'>[my_calendar_now category='default' template='']</textarea>
+
+			<p>
+				<?php _e( 'Show an event happening right now. Will only ever show one event, which will be the first event returned by checking which events are happening at the moment. Pass a category ID or name to limit by category.', 'my-calendar' ); ?>
+			</p>			
 
 			<textarea readonly='readonly'>[my_calendar_access show="list"]</textarea>
 
