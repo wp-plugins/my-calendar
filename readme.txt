@@ -17,6 +17,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 
 * 	[Buy the User's Guide](http://www.joedolson.com/my-calendar/users-guide/) for extensive help with set up and use.
 *   [Buy My Calendar: Submissions](https://www.joedolson.com/my-calendar/submissions/), the PRO extension for front-end event submissions
+*   [Buy My Tickets](https://www.joedolson.com/my-tickets/) to sell tickets for your My Calendar events
 
 = Features: =
 
