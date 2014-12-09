@@ -5,7 +5,8 @@
         $(document).on("click", ".calendar-event .event-title",
             function (e) {
                 e.preventDefault(); // remove line if you are using a link in the event title
-                $(this).parent().children().not(".event-title").toggle().attr("tabindex", "-1").focus();
+                $(this).parent().children().not(".event-title").toggle().attr("tabindex", "-1");
+				$(this).parent().focus();
             });
         $(document).on("click", ".calendar-event .close",
             function (e) {

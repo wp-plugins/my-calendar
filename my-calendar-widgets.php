@@ -370,7 +370,6 @@ function my_calendar_upcoming_events( $before = 'default', $after = 'default', $
 		}
 		$from = apply_filters( 'mc_upcoming_date_from', $from );
 		$to   = apply_filters( 'mc_upcoming_date_to', $to );
-
 		$event_array = my_calendar_events( $from, $to, $category, $ltype, $lvalue, 'upcoming', $author, $host );
 		if ( count( $event_array ) != 0 ) {
 			foreach ( $event_array as $key => $value ) {

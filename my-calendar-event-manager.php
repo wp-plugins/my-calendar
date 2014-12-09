@@ -194,7 +194,7 @@ function manage_my_calendar() {
 					<input type="hidden" name="event_id" value="<?php echo (int) $_GET['event_id']; ?>"/>
 					<input type="submit" name="submit" class="button-secondary delete"
 					       value="<?php _e( 'Delete', 'my-calendar' );
-					       echo " &quot;" . stripslashes( $result[0]['event_title'] ) . "&quot;$instance_date"; ?>"/>
+					       echo " &quot;" . stripslashes( $result[0]['event_title'] ) . "&quot; $instance_date"; ?>"/>
 			</form>
 			</div><?php
 		} else {
@@ -242,7 +242,7 @@ function manage_my_calendar() {
 		if ( ! wp_verify_nonce( $nonce, 'my-calendar-nonce' ) ) {
 			die( "Security check failed" );
 		}
-		$events  = $_POST['mass_edit'];
+		$events  = $_POST['mass_edit'];		
 		$i       = $total = 0;
 		$deleted = $ids = array();
 		foreach ( $events as $value ) {
@@ -838,12 +838,12 @@ function mc_show_block( $field, $has_data, $data ) {
 				$every = 1;
 				$prev  = '';
 			}
+			if ( is_object( $data ) && $data->event_repeats != null ) {
+				$repeats = $data->event_repeats;
+			} else {
+				$repeats = 0;
+			}			
 			if ( $show_block && empty( $_GET['date'] ) ) {
-				if ( is_object( $data ) && $data->event_repeats != null ) {
-					$repeats = $data->event_repeats;
-				} else {
-					$repeats = 0;
-				}
 				$return = $pre . '
 							<h3>' . __( 'Recurring', 'my-calendar' ) . '</h3>
 								<div class="inside">' . $prev . '
@@ -862,11 +862,16 @@ function mc_show_block( $field, $has_data, $data ) {
 								</div>
 							' . $post;
 			} else {
+				if ( $every == '' && $repeats == '' ) {
+					$every = 'S';
+					$repeats = '0';
+				}				
 				$return = '
 				<div>' .
 				          $prev . '		
-					<input type="hidden" name="event_repeats" value="0" />
-					<input type="hidden" name="event_recur" value="S" />
+					<input type="hidden" name="event_repeats" value="' . $repeats . '" />
+					<input type="hidden" name="event_every" value="' . $every . '" />
+					<input type="hidden" name="event_recur" value="' . $recur . '" />
 				</div>';
 			}
 			break;
@@ -999,7 +1004,14 @@ function mc_form_fields( $data, $mode, $event_id ) {
 		<?php
 		if ( isset( $_GET['mode'] ) && $_GET['mode'] == 'edit' ) {
 			$text   = __( 'Edit Event', 'my-calendar' );
-			$delete = " &middot; <a href='" . admin_url( "admin.php?page=my-calendar-manage&amp;mode=delete&amp;event_id=$data->event_id" ) . "' class='delete'>" . __( 'Delete', 'my-calendar' ) . "</a>";
+			$args = '';
+			if ( isset( $_GET['date'] ) ) {
+				$id   = ( is_numeric( $_GET['date'] ) ) ? $_GET['date'] : false;
+				if ( $id ) {
+					$args = "&amp;date=$id";
+				}
+			}			
+			$delete = " &middot; <a href='" . admin_url( "admin.php?page=my-calendar-manage&amp;mode=delete&amp;event_id=$data->event_id$args" ) . "' class='delete'>" . __( 'Delete', 'my-calendar' ) . "</a>";
 		} else {
 			$text   = __( 'Add Event', 'my-calendar' );
 			$delete = '';
@@ -1864,7 +1876,7 @@ function mc_check_data( $action, $post, $i ) {
 		$event_hide_end     = ( ! empty( $post['event_hide_end'] ) ) ? (int) $post['event_hide_end'] : 0;
 		$event_hide_end     = ( $time == '' || $time == '00:00:00' ) ? 1 : $event_hide_end; // hide end time automatically on all day events
 		// set location
-		if ( $location_preset != 'none' ) {
+		if ( $location_preset != 'none' && is_numeric( $location_preset ) ) {
 			$sql             = "SELECT * FROM " . my_calendar_locations_table() . " WHERE location_id = $location_preset";
 			$location        = $mcdb->get_row( $sql );
 			$event_label     = $location->location_label;
@@ -2198,11 +2210,11 @@ function mc_instance_list( $id, $occur = false, $template = '<h3>{title}</h3>{de
 				$current      = "<em>" . __( 'Editing: ', 'my-calendar' ) . "</em>";
 				$end          = '';
 			} else {
-				$form_control = "<input type='checkbox' name='delete_occurrences[]' id='delete_$result->occur_id' value='$result->occur_id' aria-labelledby='occur_label occur_date' /> <label id='occur_label' for='delete_$result->occur_id'>Delete</label> ";
+				$form_control = "<input type='checkbox' name='delete_occurrences[]' id='delete_$result->occur_id' value='$result->occur_id' aria-labelledby='occur_label occur_date_$result->occur_id' /> <label id='occur_label' for='delete_$result->occur_id'>Delete</label> ";
 				$current      = "<a href='" . admin_url( 'admin.php?page=my-calendar' ) . "&amp;mode=edit&amp;event_id=$id&amp;date=$result->occur_id'>";
 				$end          = "</a>";
 			}
-			$begin = "<span id='occur_date'>" . date_i18n( get_option( 'mc_date_format' ), strtotime( $result->occur_begin ) ) . ', ' . date( get_option( 'mc_time_format' ), strtotime( $result->occur_begin ) ) . "</span>";
+			$begin = "<span id='occur_date_$result->occur_id'>" . date_i18n( get_option( 'mc_date_format' ), strtotime( $result->occur_begin ) ) . ', ' . date( get_option( 'mc_time_format' ), strtotime( $result->occur_begin ) ) . "</span>";
 			$output .= "<li>$form_control$current$begin$end</li>";
 		}
 	} else {

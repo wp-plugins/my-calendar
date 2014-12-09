@@ -475,7 +475,7 @@ function mc_csv_to_array( $csv, $delimiter = ',', $enclosure = '"', $escape = '\
 	foreach ( $rows as $row ) {
 		if ( trim( $row ) ) {
 			$values          = explode( $delimiter, $row );
-			$r[ $values[0] ] = str_replace( array( $enclosure, $escape ), '', $values[1] );
+			$r[ $values[0] ] = ( isset( $values[1] ) ) ? str_replace( array( $enclosure, $escape ), '', $values[1] ) : $values[0] ;
 		}
 	}
 

@@ -167,7 +167,7 @@ function my_calendar_help() {
 				<?php _e( 'List of event categories, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>.', 'my-calendar' ); ?>
 			</p>
 
-			<textarea readonly='readonly'>[my_calendar_search url='false']</textarea>
+			<textarea readonly='readonly'>[my_calendar_search]</textarea>
 
 			<p>
 				<?php _e( 'Simple search form to search all events. <code>url</code> attribute to pass a custom search results page, otherwise your My Calendar URL.', 'my-calendar' ); ?>
@@ -261,12 +261,6 @@ function my_calendar_help() {
 		<dt><code>{runtime}</code></dt>
 		<dd><?php _e( 'Human language estimate of how long an event will run.', 'my-calendar' ); ?></dd>
 
-		<dt><code>{usertime}</code></dt>
-		<dd><?php _e( 'Displays the start time for the event adjusted to the current user\'s time zone settings. Returns <code>{time}</code> if user settings are disabled or if the user has not selected a preferred time zone.', 'my-calendar' ); ?></dd>
-
-		<dt><code>{endusertime}</code></dt>
-		<dd><?php _e( 'Displays the end time for the event adjusted to the current user\'s time zone settings. Returns <code>{endtime}</code> if user settings are disabled or if the user has not selected a preferred time zone.', 'my-calendar' ); ?></dd>
-
 		<dt><code>{date}</code></dt>
 		<dd><?php _e( 'Displays the date on which the event begins.', 'my-calendar' ); ?></dd>
 
@@ -345,8 +339,8 @@ function my_calendar_help() {
 		$sizes = get_intermediate_image_sizes();
 		foreach ( $sizes as $size ) {
 			?>
-			<dt><code>{<?php echo $size; ?>}</code></dt>
-			<dd><?php printf( __( 'Event post thumbnail, %s size, full HTML', 'my-calendar' ), $size ); ?></dd>
+			<dt><code>{<?php echo $size; ?>}</code> / <code>{<?php echo $size; ?>_url}</code></dt>
+			<dd><?php printf( __( 'Event post thumbnail, %s size, full HTML / image URL only', 'my-calendar' ), $size ); ?></dd>
 		<?php
 		}
 		?>

@@ -38,7 +38,7 @@ function mc_get_all_events( $category, $before, $after, $today, $author, $host, 
 	}
 	$exclude_categories = mc_private_categories();
 	$select_category    = ( $category != 'default' ) ? mc_select_category( $category ) : '';
-	$limit_string       = mc_limit_string();
+	$limit_string       = mc_limit_string( '', $ltype, $lvalue );
 	$select_author      = ( $author != 'default' ) ? mc_select_author( $author ) : '';
 	$select_host        = ( $host != 'default' ) ? mc_select_host( $host ) : '';
 	$date               = date( 'Y', current_time( 'timestamp' ) ) . '-' . date( 'm', current_time( 'timestamp' ) ) . '-' . date( 'd', current_time( 'timestamp' ) );
@@ -305,6 +305,44 @@ function my_calendar_events( $from, $to, $category, $ltype, $lvalue, $source, $a
 	}
 
 	return $event_array;
+}
+
+function my_calendar_events_now( $category = 'default', $template = '<strong>{link_title}</strong> {timerange}' ) {
+	global $wpdb;
+	$mcdb = $wpdb;
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists( 'mc_remote_db' ) ) {
+		$mcdb = mc_remote_db();
+	}
+	$arr_events = array();
+	$limit_string = "event_flagged <> 1 AND event_approved = 1";
+	$select_category = ( $category != 'default' ) ? mc_select_category( $category ) : '';
+	$select_location = $select_author = $select_host = '';
+	$from = date( 'Y-m-d h:00:s', current_time( 'timestamp' ) );
+	$to   = date( 'Y-m-d h:00:s', strtotime( '+1 hour', current_time( 'timestamp' ) ) ); 
+	$event_query = "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end
+					FROM " . MY_CALENDAR_EVENTS_TABLE . " 
+					JOIN " . MY_CALENDAR_TABLE . "
+					ON (event_id=occur_event_id) 					
+					JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
+					ON (event_category=category_id) 
+					WHERE $select_category $select_location $select_author $select_host $limit_string  
+					AND ( occur_begin BETWEEN CAST('$from' AS DATETIME) AND CAST('$to' AS DATETIME) 
+						OR occur_end BETWEEN CAST('$from' AS DATETIME) AND CAST('$to' AS DATETIME) ) 
+						ORDER BY occur_begin, " . apply_filters( 'mc_secondary_sort', 'event_title ASC' );
+	$events      = $mcdb->get_results( $event_query );
+	if ( ! empty( $events ) ) {
+		foreach ( array_keys( $events ) as $key ) {
+			$event        =& $events[ $key ];
+			$arr_events[] = $event;
+		}
+	}
+	if ( !empty( $arr_events ) ) {
+		$event = mc_create_tags( $arr_events[0] );
+		
+		return jd_draw_template( $event, apply_filters( 'mc_happening_now_template', $template, $event ) );
+	} else {
+		return '';
+	}
 }
 
 // Grab all events for the requested date from calendar

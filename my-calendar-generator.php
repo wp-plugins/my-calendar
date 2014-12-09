@@ -6,36 +6,38 @@ if ( ! defined( 'ABSPATH' ) ) {
 function mc_generate() {
 	if ( isset( $_POST['generator'] ) ) {
 		$string = '';
-		switch ( $_POST['shortcode'] ) {
-			case 'main':
-				$shortcode = 'my_calendar';
-				break;
-			case 'upcoming':
-				$shortcode = 'my_calendar_upcoming';
-				break;
-			case 'today':
-				$shortcode = 'my_calendar_today';
-				break;
-			default:
-				$shortcode = 'my_calendar';
-		}
-		foreach ( $_POST as $key => $value ) {
-			if ( $key != 'generator' && $key != 'shortcode' ) {
-				if ( is_array( $value ) ) {
-					if ( in_array( 'all', $value ) ) {
-						unset( $value[0] );
+		$output = apply_filters( 'mc_shortcode_generator', false, $_POST );
+		if ( !$output ) {
+			switch ( $_POST['shortcode'] ) {
+				case 'main':
+					$shortcode = 'my_calendar';
+					break;
+				case 'upcoming':
+					$shortcode = 'my_calendar_upcoming';
+					break;
+				case 'today':
+					$shortcode = 'my_calendar_today';
+					break;
+				default:
+					$shortcode = 'my_calendar';
+			}
+			foreach ( $_POST as $key => $value ) {
+				if ( $key != 'generator' && $key != 'shortcode' ) {
+					if ( is_array( $value ) ) {		
+						if ( in_array( 'all', $value ) ) {
+							unset( $value[0] );
+						}
+						$v = implode( ',', $value );
+					} else {
+						$v = $value;
 					}
-					$v = implode( ',', $value );
-				} else {
-					$v = $value;
-				}
-				if ( $v != '' ) {
-					$string .= " $key=&quot;$v&quot;";
+					if ( $v != '' ) {
+						$string .= " $key=&quot;$v&quot;";
+					}
 				}
 			}
+			$output = $shortcode . $string;	
 		}
-		$output = $shortcode . $string;
-		$output = apply_filters( 'mc_shortcode_generator', $output, $_POST );
 		$return = "<div class='updated'><textarea readonly='readonly'>[$output]</textarea></div>";
 		echo $return;
 	}

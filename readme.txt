@@ -43,7 +43,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 = Translations =
 
 Available translations (in order of completeness):
-French, Japanese, Danish, Dutch, Russian, German, Spanish, Italian, Galician, Czech, Hindi, Turkish, Finnish, Swedish, Polish, Slovenian, Portuguese, Romanian, Norwegian, Hungarian, Basque, Catalan, Persian
+French, Danish, Japanese, Russian, Dutch, Swedish, German, Spanish, Italian, Galician, Portuguese (Brazil), Czech, Hindi, Turkish, Finnish, Polish, Portuguese (Portugal), Slovenian, Romanian, Norwegian (Bokmal), Hungarian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -77,19 +77,53 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 = 2.4.0 = [todo]
 
+FEATURES [2.4.0]
 * Option to post new events as blog posts
 * Add author limit tool
-* Add search documentation
-* Add filters to search query parameters
 * Add function to display event/s currently happening.
 * Create advanced search
-* Add ability to completely remove link on event title in calendar grid.
+* Support hiding 'Host' field as option.
 * Feature: allow limiting of categories to specific member groups
 * Refactor options storage
 * Import from RSS/iCal
 * Create a template tag to show the date range for event groups; add support for this type of event set to {daterange}
-* Stop setting all day events to end at midnight; use 11:59:59 and filter output
 * Create selectable event details templates
+* Add filters to search query parameters
+* Check: Delete event post is event is deleted
+* Update event taxonomies if category changed/source event taxonomy data from post?
+* Permanently retire #jd_calendar and generate custom IDs. [breaking change]
+
+ISSUES
+* Consider transportability of data for moving My Calendar to another installation without moving all data. (Yikes!)
+
+BUG FIXES
+* Stop setting all day events to end at midnight; use 11:59:59 and filter output
+* Bug with deleting instances: checking a 'delete' option does not delete recurrence in list of dates.
+* Create DBs with MyISAM engine
+
+DOCS
+* Add search documentation
+* Better documentation on API (API shortcode of some sort?)
+
+= 2.3.21 =
+
+* Plug-in conflict fix: CSS override to fix conflict with Ultimate Social Media Icons
+* Add filter: number of months shown in list view filterable on 'mc_show_months'
+* Bug fix: Allow {image_url} to fall back to thumbnail size if no medium / create _url equivalents for each size.
+* Bug fix: Allow location controls to be entered with only keys.
+* Bug fix: Entering default value for controlled locations is empty value, instead of 'none'.
+* Bug fix: If value of location field is 'none', don't display.
+* Bug fix: Use Location URL as map link if URL is provided and no other mappable location information
+* Bug fix: if editing single instance, delete link will delete just that instance.
+* Bug fix: If recurring event fields were hidden, but event recurred, recurrences would be deleted.
+* Bug fix: Limiting locations did not work in Upcoming Events using 'events' mode.
+* Bug fix: Allow limiting locations but all event location fields.
+* Bug fix: Limiting locations accepts numeric values for limiting.
+* Bug fix: {recurs} template tag indicates ferquency ("Weekly", vs "every 3 weeks")
+* Add filter to modify the title information shown in list view to hint at hidden events ('mc_list_event_title_hint')
+* Add shortcode/function to display the current event. [my_calendar_now] [needs testing]
+* Removed all remaining code related to user settings, which are no longer in use.
+* Language updates: French, Danish, Russian, Swedish, Portuguese/Brazil, Portuguese/Portugal, Norwegian Bokmal, Hungarian
 
 = 2.3.20 =
 

@@ -7,7 +7,7 @@ Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
 Text Domain: my-calendar
 Domain Path: lang
-Version: 2.3.20
+Version: 2.3.21
 */
 /*  Copyright 2009-2014  Joe Dolson (email : joe@joedolson.com)
 
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 apply_filters( "debug", "MC Started" );
 
 global $mc_version, $wpdb;
-$mc_version = '2.3.20';
+$mc_version = '2.3.21';
 
 // Define the tables used in My Calendar
 if ( is_multisite() && get_site_option( 'mc_multisite_show' ) == 1 ) {
@@ -146,20 +146,35 @@ function mc_show_sidebar( $show = '', $add = false, $remove = false ) {
 		<div class="postbox-container jcd-narrow">
 		<div class="metabox-holder">
 		<?php if ( ! $remove ) { ?>
+			<?php if ( ! function_exists( 'mt_valid' ) ) { ?>
+				<div class="ui-sortable meta-box-sortables">
+					<div class="postbox my-tickets">
+						<h3 class='sales'><strong><?php _e( 'My Tickets', 'my-calendar' ); ?></strong></h3>
+
+						<div class="inside resources">
+							<p class="mcsbuy"><?php _e( "Do you sell tickets to your events? <a href='https://www.joedolson.com/my-tickets/' rel='external'>Buy My Tickets</a> and sell directly from My Calendar.", 'my-calendar' ); ?></p>
+							<p><?php _e( 'My Tickets is a stand-alone ticket sales platform that integrates with My Calendar or sells tickets on any post.', 'my-tickets' ); ?></p>
+
+							<p class="mc-button"><a href="https://www.joedolson.com/my-tickets/" rel="external"><?php _e( 'My Tickets', 'my-calendar' ); ?></a>
+							</p>
+						</div>
+					</div>
+				</div>
+			<?php } ?>			
 			<?php if ( ! function_exists( 'mcs_submit_exists' ) ) { ?>
 				<div class="ui-sortable meta-box-sortables">
 					<div class="postbox support">
-						<h3><strong><?php _e( 'My Calendar: Submissions', 'my-calendar' ); ?></strong></h3>
+						<h3 class='sales'><strong><?php _e( 'My Calendar: Submissions', 'my-calendar' ); ?></strong></h3>
 
 						<div class="inside resources">
-							<p class="mcsbuy"><?php _e( "Buy the <a href='http://www.joedolson.com/my-calendar/submissions/' rel='external'>My Calendar Submissions add-on</a> &mdash; let your audience build your calendar.", 'my-calendar' ); ?></p>
+							<p class="mcsbuy"><?php _e( "Buy the <a href='https://www.joedolson.com/my-calendar/submissions/' rel='external'>My Calendar Submissions add-on</a> &mdash; let your audience build your calendar.", 'my-calendar' ); ?></p>
 
 							<p class="mc-button"><a href="http://www.joedolson.com/my-calendar/submissions/" rel="external"><?php _e( 'Learn more!', 'my-calendar' ); ?></a>
 							</p>
 						</div>
 					</div>
 				</div>
-			<?php } ?>
+			<?php } ?>		
 			<div class="ui-sortable meta-box-sortables">
 				<div class="postbox support">
 					<h3><strong><?php _e( 'Support This Plug-in', 'my-calendar' ); ?></strong></h3>
@@ -184,7 +199,7 @@ function mc_show_sidebar( $show = '', $add = false, $remove = false ) {
 								rel="external"><?php _e( "Buy the My Calendar User's Guide", 'my-calendar' ); ?></a>
 						</p>
 
-						<p><?php _e( '<strong>Make a donation today!</strong> Every donation helps - donate $5, $20, or $100 and keep this plug-in running!', 'my-calendar' ); ?></p>
+						<p><strong><?php _e( 'Make a donation today!', 'my-calendar' ); ?></strong></p>
 
 						<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 							<p class="mcd">
@@ -522,5 +537,6 @@ add_shortcode( 'mc_filters', 'my_calendar_filters' );
 add_shortcode( 'my_calendar_show_locations', 'my_calendar_show_locations_list' );
 add_shortcode( 'my_calendar_event', 'my_calendar_show_event' );
 add_shortcode( 'my_calendar_search', 'my_calendar_search' );
+add_shortcode( 'my_calendar_now', 'my_calendar_now' );
 
 apply_filters( "debug", "MC Loaded" );

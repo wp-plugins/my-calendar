@@ -139,8 +139,17 @@ function my_calendar_show_event( $atts ) {
 function my_calendar_search( $atts ) {
 	extract( shortcode_atts( array(
 		'type' => 'simple',
-		'url' => 'false'
+		'url' => ''
 	), $atts, 'my_calendar_search' ) );
 
 	return my_calendar_searchform( $type, $url );
+}
+
+function my_calendar_now( $atts ) {
+	extract( shortcode_atts( array(
+		'category' => '',
+		'template' => '<strong>{link_title}</strong> {timerange}'
+	), $atts, 'my_calendar_now' ) );
+	
+	return my_calendar_events_now( $category, $template );
 }

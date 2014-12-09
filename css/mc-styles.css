@@ -481,6 +481,16 @@ strong.label {
     float: right;
 }
 
+.sales {
+	background: #e25822;
+	color: #fff; 
+	text-shadow: 1px 0 0 #000;
+}
+
+#my-calendar .inside div iframe {
+	float: none; 
+}
+
 @media (max-width: 1140px) {
     .mc-locations .locations-container input {
         max-width: 70%;

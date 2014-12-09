@@ -105,7 +105,7 @@ function my_calendar_manage_locations() {
 			'location_zoom'      => $_POST['location_zoom'],
 			'location_phone'     => $_POST['location_phone'],
 			'location_phone2'    => $_POST['location_phone2'],
-			'location_access'    => serialize( $_POST['location_access'] )
+			'location_access'    => isset( $_POST['location_access'] ) ? serialize( $_POST['location_access'] ) : ''
 		);
 		$results = mc_insert_location( $add );
 		do_action( 'mc_save_location', $results, $add );
@@ -142,7 +142,7 @@ function my_calendar_manage_locations() {
 			'location_zoom'      => $_POST['location_zoom'],
 			'location_phone'     => $_POST['location_phone'],
 			'location_phone2'    => $_POST['location_phone2'],
-			'location_access'    => serialize( $_POST['location_access'] )
+			'location_access'    => isset( $_POST['location_access'] ) ? serialize( $_POST['location_access'] ) : ''
 		);
 		$where   = array(
 			'location_id' => (int) $_POST['location_id']
@@ -261,7 +261,7 @@ function mc_location_controller( $fieldname, $selected, $context = 'location' ) 
 	$regions  = $options[ 'event_' . $fieldname ];
 	$form     = "<select name='$field' id='e_$fieldname'>";
 	if ( $selected == '' || in_array( $selected, array_keys( $regions ) ) ) {
-		$form .= "<option value='none'>No preference</option>\n";
+		$form .= "<option value=''>". __( 'None', 'my-calendar' )."</option>\n";
 	} else {
 		$form .= "<option value='$selected'>$selected " . __( '(Not a controlled value)', 'my-calendar' ) . "</option>\n";
 	}

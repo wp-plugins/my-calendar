@@ -50,6 +50,7 @@ function jd_draw_template( $array, $template, $type = 'list' ) {
 
 // setup string version of address data
 function mc_map_string( $event, $source = 'event' ) {
+	$event = mc_clean_location( $event, $source );
 	if ( $source == 'event' ) {
 		$map_string = $event->event_street . ' ' . $event->event_street2 . ' ' . $event->event_city . ' ' . $event->event_state . ' ' . $event->event_postcode . ' ' . $event->event_country;
 	} else {
@@ -57,6 +58,57 @@ function mc_map_string( $event, $source = 'event' ) {
 	}
 
 	return $map_string;
+}
+
+/**
+ * Clean up my errors from assigning location values as 'none'
+ *
+ * @object $event
+ * @string source (event,location)
+ *
+ * @return object $event
+*/
+function mc_clean_location( $event, $source = 'event' ) {
+	if ( $source == 'event' ) {
+		if ( strtolower( $event->event_city ) == 'none' ) {
+			$event->event_city = '';
+		}
+		if ( strtolower( $event->event_state ) == 'none' ) {
+			$event->event_state = '';
+		}
+		if ( strtolower( $event->event_country ) == 'none' ) {
+			$event->event_country = '';
+		}
+		if ( strtolower( $event->event_postcode ) == 'none' ) {
+			$event->event_postcode = '';
+		}
+		if ( strtolower( $event->event_region ) == 'none' ) {
+			$event->event_region = '';
+		}
+		if ( strtolower( $event->event_location ) == 'none' ) {
+			$event->event_location = '';
+		}
+	} else {
+		if ( strtolower( $event->location_city ) == 'none' ) {
+			$event->location_city = '';
+		}
+		if ( strtolower( $event->location_state ) == 'none' ) {
+			$event->location_state = '';
+		}
+		if ( strtolower( $event->location_country ) == 'none' ) {
+			$event->location_country = '';
+		}
+		if ( strtolower( $event->location_postcode ) == 'none' ) {
+			$event->location_postcode = '';
+		}
+		if ( strtolower( $event->location_region ) == 'none' ) {
+			$event->location_region = '';
+		}
+		if ( strtolower( $event->location_label ) == 'none' ) {
+			$event->location_label = '';
+		}
+	}
+	return $event;
 }
 
 // set up link to Google Maps
@@ -67,11 +119,15 @@ function mc_maplink( $event, $request = 'map', $source = 'event' ) {
 			return $map_string;
 		}
 		$zoom       = ( $event->event_zoom != 0 ) ? $event->event_zoom : '15';
+		$url        = $event->event_url;
+		$map_label = stripslashes( ( $event->event_label != "" ) ? $event->event_label : $event->event_title );		
 		$map_string = str_replace( " ", "+", $map_string );
 		if ( $event->event_longitude != '0.000000' && $event->event_latitude != '0.000000' ) {
 			$map_string = "$event->event_latitude,$event->event_longitude";
 		}
 	} else {
+		$url        = $event->location_url;
+		$map_label  = stripslashes( ( $event->location_label != "" ) ? $event->location_label : $event->event_title );				
 		$zoom       = ( $event->location_zoom != 0 ) ? $event->location_zoom : '15';
 		$map_string = str_replace( " ", "+", $map_string );
 		if ( $event->location_longitude != '0.000000' && $event->location_latitude != '0.000000' ) {
@@ -80,16 +136,19 @@ function mc_maplink( $event, $request = 'map', $source = 'event' ) {
 	}
 	if ( strlen( trim( $map_string ) ) > 6 ) {
 		$map_url = "http://maps.google.com/maps?z=$zoom&amp;daddr=$map_string";
-		if ( $request == 'url' || $source == 'location' ) {
-			return $map_url;
-		}
-		$map_label = stripslashes( ( $event->event_label != "" ) ? $event->event_label : $event->event_title );
-		$map       = "<a href=\"$map_url\" class='map-link external'>" . sprintf( __( 'Map<span> to %s</span>', 'my-calendar' ), $map_label ) . "</a>";
+		$map     = "<a href=\"$map_url\" class='map-link external'>" . sprintf( __( 'Map<span> to %s</span>', 'my-calendar' ), $map_label ) . "</a>";
+	} else if ( esc_url( $url ) ) {
+		$map_url = $url;
+		$map     = "<a href=\"$map_url\" class='map-link external map-url'>" . sprintf( __( 'Map<span> to %s</span>', 'my-calendar' ), $map_label ) . "</a>";
 	} else {
-		$map = "";
+		$map_url = '';
+		$map     = '';
 	}
-
-	return $map;
+	if ( $request == 'url' || $source == 'location' ) {
+		return $map_url;
+	} else {
+		return $map;
+	}
 }
 
 // set up link to push events into Google Calendar.
@@ -109,6 +168,7 @@ function mc_google_cal( $dtstart, $dtend, $url, $title, $location, $description 
 // set up hCard formatted address.
 function mc_hcard( $event, $address = 'true', $map = 'true', $source = 'event', $context = 'event' ) {
 	$the_map = mc_maplink( $event, 'url', $source );
+	$event   = mc_clean_location( $event, $source );	
 	$url     = ( $source == 'event' ) ? $event->event_url : $event->location_url;
 	$label   = stripslashes( ( $source == 'event' ) ? $event->event_label : $event->location_label );
 	$street  = stripslashes( ( $source == 'event' ) ? $event->event_street : $event->location_street );
@@ -150,6 +210,7 @@ function mc_hcard( $event, $address = 'true', $map = 'true', $source = 'event', 
 
 // Produces the array of event details used for drawing templates
 function mc_create_tags( $event, $context = 'filters' ) {
+	$event              = mc_clean_location( $event, 'event' );
 	$e                  = array();
 	$e['post']          = $event->event_post;
 	$date_format        = ( get_option( 'mc_date_format' ) != '' ) ? get_option( 'mc_date_format' ) : get_option( 'date_format' );
@@ -173,17 +234,7 @@ function mc_create_tags( $event, $context = 'filters' ) {
 	$e['time24']       = ( date( 'G:i', strtotime( $event->occur_begin ) ) == '00:00:00' ) ? get_option( 'mc_notime_text' ) : date( get_option( 'mc_time_format' ), strtotime( $event->occur_begin ) );
 	$endtime           = date( 'H:i:s', strtotime( $event->occur_end ) );
 	$e['endtime']      = ( $event->occur_end == $event->occur_begin || $event->event_hide_end == 1 ) ? '' : date_i18n( get_option( 'mc_time_format' ), strtotime( $endtime ) );
-	$tz                = mc_user_timezone();
 	$e['runtime']      = mc_runtime( $event->ts_occur_begin, $event->ts_occur_end, $event );
-	if ( $tz != '' ) {
-		$local_begin      = date_i18n( get_option( 'mc_time_format' ), strtotime( $event->occur_begin . "+$tz hours" ) );
-		$local_end        = date_i18n( get_option( 'mc_time_format' ), strtotime( $event->occur_end . "+$tz hours" ) );
-		$e['usertime']    = "$local_begin";
-		$e['endusertime'] = ( $local_begin == $local_end ) ? '' : "$local_end";
-	} else {
-		$e['usertime']    = $e['time'];
-		$e['endusertime'] = ( $e['time'] == $e['endtime'] ) ? '' : $e['endtime'];
-	}
 	$e['dtstart'] = date( 'Y-m-d\TH:i:s', strtotime( $event->occur_begin ) );// hcal formatted
 	$e['dtend']   = date( 'Y-m-d\TH:i:s', strtotime( $event->occur_end ) );    //hcal formatted end
 	$e['rssdate'] = date( 'D, d M Y H:i:s +0000', strtotime( $event->event_added ) );
@@ -560,14 +611,23 @@ function mc_auto_excerpt( $e, $event ) {
 add_filter( 'mc_filter_image_data', 'mc_image_data', 10, 2 );
 function mc_image_data( $e, $event ) {
 	$atts      = apply_filters( 'mc_post_thumbnail_atts', array( 'class' => 'mc-image' ) );
-	$e['full'] = get_the_post_thumbnail( $event->event_post );
-	$sizes     = get_intermediate_image_sizes();
-	foreach ( $sizes as $size ) {
-		$e[ $size ] = get_the_post_thumbnail( $event->event_post, $size, $atts );
-	}
-	if ( is_numeric( $event->event_post ) && ( isset( $e['medium'] ) && $e['medium'] != '' ) ) {
-		$e['image_url'] = strip_tags( $e['medium'] );
-		$e['image']     = $e['medium'];
+	if ( isset( $event->event_post ) && is_numeric( $event->event_post ) ) {
+		$e['full'] = get_the_post_thumbnail( $event->event_post );
+		$sizes     = get_intermediate_image_sizes();
+		$attach    = get_post_thumbnail_id( $event->event_post );
+		foreach ( $sizes as $size ) {
+			$src                 = wp_get_attachment_image_src( $attach, $size );
+			$e[ $size ]          = get_the_post_thumbnail( $event->event_post, $size, $atts );
+			$e[ $size . '_url' ] = $src[0];
+		}	
+		if ( isset( $e['medium'] ) && $e['medium'] != '' ) {
+			$e['image_url'] = strip_tags( $e['medium'] );
+			$e['image']     = $e['medium'];
+		} else {
+			$image_size = apply_filters( 'mc_default_image_size', 'thumbnail' );
+			$e['image_url'] = strip_tags( $e[$image_size] );
+			$e['image'] = $e[$image_size];
+		}
 	} else {
 		$e['image_url'] = ( $event->event_image != '' ) ? $event->event_image : '';
 		$e['image']     = ( $event->event_image != '' ) ? "<img src='$event->event_image' alt='' class='mc-image' />" : '';
@@ -579,6 +639,7 @@ function mc_image_data( $e, $event ) {
 function mc_event_recur_string( $event ) {
 	$recurs      = str_split( $event->event_recur, 1 );
 	$recur       = $recurs[0];
+	$every       = $recurs[1];
 	$month_date  = date( 'dS', strtotime( $event->occur_begin ) );
 	$day_name    = date_i18n( 'l', strtotime( $event->occur_begin ) );
 	$week_number = mc_ordinal( week_of_month( date( 'j', strtotime( $event->occur_begin ) ) ) + 1 );
@@ -587,25 +648,41 @@ function mc_event_recur_string( $event ) {
 			$event_recur = __( 'Does not recur', 'my-calendar' );
 			break;
 		case 'D':
-			$event_recur = __( 'Daily', 'my-calendar' );
+			if ( $every == 1 ) {
+				$event_recur = __( 'Daily', 'my-calendar' );
+			} else {
+				$event_recur = sprintf( __( 'Every %d days', 'my-calendar' ), $every );
+			}
 			break;
 		case 'E':
 			$event_recur = __( 'Daily, weekdays only', 'my-calendar' );
 			break;
 		case 'W':
-			$event_recur = __( 'Weekly', 'my-calendar' );
+			if ( $every == 1 ) {		
+				$event_recur = __( 'Weekly', 'my-calendar' );
+			} else {
+				$event_recur = sprintf( __( 'Every %d weeks', 'my-calendar' ), $every );
+			}
 			break;
 		case 'B':
 			$event_recur = __( 'Bi-weekly', 'my-calendar' );
 			break;
 		case 'M':
-			$event_recur = sprintf( __( 'the %s of each month', 'my-calendar' ), $month_date );
+			if ( $every == 1 ) {		
+				$event_recur = sprintf( __( 'the %s of each month', 'my-calendar' ), $month_date );
+			} else {
+				$event_recur = sprintf( __( 'the %$1s of every %$2s months', 'my-calendar' ), $month_date, mc_ordinal( $every ) );
+			}		
 			break;
 		case 'U':
 			$event_recur = sprintf( __( 'the %s %s of each month', 'my-calendar' ), $week_number, $day_name );
 			break;
 		case 'Y':
-			$event_recur = __( 'Annually', 'my-calendar' );
+			if ( $every == 1 ) {		
+				$event_recur = __( 'Annually', 'my-calendar' );
+			} else {
+				$event_recur = sprintf( __( 'Every %d years', 'my-calendar' ), $every );
+			}	
 			break;
 		default:
 			$event_recur = '';

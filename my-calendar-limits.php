@@ -214,20 +214,20 @@ function mc_select_host( $host, $type = 'event' ) {
 	}
 }
 
+
+/**
+ * Function to limit event query by location. 
+ *
+ * @string $type {deprecated}
+ * @string $ltype {location type}
+ * @mixed (string/integer) $lvalue {location value}
+*/
 function mc_limit_string( $type = '', $ltype = '', $lvalue = '' ) {
 	global $user_ID;
-	$user_settings = get_option( 'mc_user_settings' );
 	$limit_string  = $location = $current_location = "";
-	if ( ( get_option( 'mc_user_settings_enabled' ) == 'true' && isset( $user_settings['my_calendar_location_default']['enabled'] ) && $user_settings['my_calendar_location_default']['enabled'] == 'on' ) || isset( $_GET['loc'] ) && isset( $_GET['ltype'] ) || ( $ltype != '' && $lvalue != '' ) ) {
+	if ( isset( $_GET['loc'] ) && isset( $_GET['ltype'] ) || ( $ltype != '' && $lvalue != '' ) ) {
 		if ( ! isset( $_GET['loc'] ) && ! isset( $_GET['ltype'] ) ) {
-			if ( $ltype == '' && $lvalue == '' ) {
-				if ( is_user_logged_in() ) {
-					get_currentuserinfo();
-					$current_settings = get_user_meta( $user_ID, 'my_calendar_user_settings' );
-					$current_location = $current_settings['my_calendar_location_default'];
-					$location         = get_option( 'mc_location_type' );
-				}
-			} else if ( $ltype != '' && $lvalue != '' ) {
+			if ( $ltype != '' && $lvalue != '' ) {
 				$location         = $ltype;
 				$current_location = esc_sql( $lvalue );
 			}
@@ -263,11 +263,23 @@ function mc_limit_string( $type = '', $ltype = '', $lvalue = '' ) {
 				'event_state',
 				'event_postcode',
 				'event_country',
-				'event_region'
+				'event_region',
+				'event_location', 
+				'event_street',
+				'event_street2', 
+				'event_url',
+				'event_longitude',
+				'event_latitude',
+				'event_zoom',
+				'event_phone',
+				'event_phone2'
 			) ) ) {
 			if ( $current_location != 'all' && $current_location != '' ) {
-				$limit_string = "$location_type='$current_location' AND";
-				//$limit_string .= ($type=='all')?' AND':"";
+				if ( is_numeric( $current_location ) ) {
+					$limit_string = "$location_type = $current_location AND";				
+				} else {
+					$limit_string = "$location_type = '$current_location' AND";
+				}
 			}
 		}
 	}
@@ -320,7 +332,7 @@ function mc_secondary_limit( $ltype = '', $lvalue = '' ) {
 	}
 	if ( $current_location != 'all' && $current_location != '' ) {
 		$limit_string = " $location_type='$current_location' AND ";
-		//$limit_string .= ($type=='all')?' AND':"";
+		// $limit_string .= ($type=='all')?' AND':"";
 	}
 
 	return $limit_string;
