@@ -1,11 +1,11 @@
 === My Calendar ===
 Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
-Tags: calendar, dates, times, event, events, scheduling, schedule, event manager, event calendar, class, concert, conference, meeting, venue, location
+Tags: calendar, dates, times, event, events, scheduling, schedule, event manager, event calendar, class, concert, conference, meeting, venue, location, ticketing, sales, registration, tickets
 Requires at least: 3.7.0
 Tested up to: 4.0
 License: GPLv2 or later
-Stable tag: 2.3.20
+Stable tag: 2.3.21
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
