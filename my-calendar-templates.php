@@ -674,7 +674,7 @@ function mc_event_recur_string( $event ) {
 			if ( $every == 1 ) {		
 				$event_recur = sprintf( __( 'the %s of each month', 'my-calendar' ), $month_date );
 			} else {
-				$event_recur = sprintf( __( 'the %$1s of every %$2s months', 'my-calendar' ), $month_date, mc_ordinal( $every ) );
+				$event_recur = sprintf( __( 'the %1$s of every %2$s months', 'my-calendar' ), $month_date, mc_ordinal( $every ) );
 			}		
 			break;
 		case 'U':

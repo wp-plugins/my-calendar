@@ -851,7 +851,7 @@ function mc_show_block( $field, $has_data, $data ) {
 									<legend>' . __( 'Recurring Events', 'my-calendar' ) . '</legend>
 										<p>
 											<label for="e_repeats">' . __( 'Repeats', 'my-calendar' ) . ' <input type="text" name="event_repeats" aria-labelledby="e_repeats_label" id="e_repeats" size="1" value="' . $repeats . '" /> <span id="e_repeats_label">' . __( 'times', 'my-calendar' ) . '</span>, </label>
-											<label for="e_every">' . __( 'every', 'my-calendar' ) . '</label> <input type="number" name="event_every" id="e_every" size="1" min="1" max="9" maxlength="1" value="' . $every . '" /> 
+											<label for="e_every">' . __( 'every', 'my-calendar' ) . '</label> <input type="number" name="event_every" id="e_every" size="1" min="1" max="12" maxlength="1" value="' . $every . '" /> 
 											<label for="e_recur" class="screen-reader-text">' . __( 'Units', 'my-calendar' ) . '</label> 
 											<select name="event_recur" id="e_recur">
 												' . mc_recur_options( $recur ) . '
@@ -865,7 +865,7 @@ function mc_show_block( $field, $has_data, $data ) {
 				if ( $every == '' && $repeats == '' ) {
 					$every = 'S';
 					$repeats = '0';
-				}				
+				}
 				$return = '
 				<div>' .
 				          $prev . '		

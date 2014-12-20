@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, event, events, scheduling, schedule, event manager, event calendar, class, concert, conference, meeting, venue, location
 Requires at least: 3.7.0
-Tested up to: 4.0
+Tested up to: 4.1
 License: GPLv2 or later
 Stable tag: 2.3.21
 
@@ -44,7 +44,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 = Translations =
 
 Available translations (in order of completeness):
-French, Danish, Japanese, Russian, Dutch, Swedish, German, Spanish, Italian, Galician, Portuguese (Brazil), Czech, Hindi, Turkish, Finnish, Polish, Portuguese (Portugal), Slovenian, Romanian, Norwegian (Bokmal), Hungarian
+Portuguese (Portugal), French, Danish, Japanese, Russian, Dutch, Swedish, German, Spanish (Spain), Italian, Galician, Portuguese (Brazil), Czech, Hindi, Turkish, Finnish, Polish, Slovenian, Romanian, Norwegian (Bokmal), Ukrainian, Hungarian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -100,6 +100,12 @@ ISSUES
 BUG FIXES
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
 * Bug with deleting instances: checking a 'delete' option does not delete recurrence in list of dates.
+
+= 2.3.22 = 
+
+* Edit: Allow integers up to 12 in the 'every' field for recurring events. (Previously 9)
+* Bug fix: Incorrect sprintf call in {recurs} template, effecting recurring events by month.
+* Language updates: German, Russian, Portugues (Portugal), Hungarian, Ukrainian
 
 = 2.3.21 =
 
@@ -1413,6 +1419,6 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 == Upgrade Notice ==
 
-= 2.3.11 =
+= 2.3.22 =
 
-If you have been using custom scripts, you will need to re-enable them after this upload. (This is an uncommon scenario.)
+Bug fix to {recurs} template tag; language updates.
