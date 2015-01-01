@@ -1,8 +1,8 @@
 === My Calendar ===
 Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
-Tags: calendar, dates, times, event, events, scheduling, schedule, event manager, event calendar, class, concert, conference, meeting, venue, location
-Requires at least: 3.7.0
+Tags: calendar, dates, times, event, events, scheduling, schedule, event manager, event calendar, class, concert, conference, meeting, venue, location, box office, tickets, registration
+Requires at least: 3.8.5
 Tested up to: 4.1
 License: GPLv2 or later
 Stable tag: 2.3.22
@@ -17,7 +17,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 
 * 	[Buy the User's Guide](http://www.joedolson.com/my-calendar/users-guide/) for extensive help with set up and use.
 *   [Buy My Calendar: Submissions](https://www.joedolson.com/my-calendar/submissions/), the PRO extension for front-end event submissions
-*   [Buy My Tickets](https://www.joedolson.com/my-tickets/) to sell tickets for your My Calendar events
+*   [Buy My Tickets](https://www.joedolson.com/my-tickets/) and sell tickets to your My Calendar events
 
 = Features: =
 
@@ -107,6 +107,7 @@ BUG FIXES
 * Bug fix: Set Holiday category when adding new categories.
 * Bug fix: Search widget title heading HTML not rendered.
 * Bug fix: mc-ajax.js was not compatible with heading filter for output.
+* Language updates: French, Spanish, Ukrainian
 
 = 2.3.22 = 
 
