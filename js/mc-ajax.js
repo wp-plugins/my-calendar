@@ -7,7 +7,7 @@
             var ref = $(this).attr('data-rel');
             $('#' + ref).html('<div class=\"loading\"><span>Loading...</span></div>');
             $('#' + ref).load(link + ' #' + ref + ' > *', function () {
-                $('.calendar-event').children().not('h3').hide();
+                $('.calendar-event').children().not('.event-title').hide();
                 $('#' + ref).attr('tabindex', '-1').focus();
             });
         });

@@ -101,6 +101,13 @@ BUG FIXES
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
 * Bug with deleting instances: checking a 'delete' option does not delete recurrence in list of dates.
 
+= 2.3.23 =
+
+* Bug fix: Calendar rendering 2014 at beginning of 2015.
+* Bug fix: Set Holiday category when adding new categories.
+* Bug fix: Search widget title heading HTML not rendered.
+* Bug fix: mc-ajax.js was not compatible with heading filter for output.
+
 = 2.3.22 = 
 
 * Edit: Allow integers up to 12 in the 'every' field for recurring events. (Previously 9)

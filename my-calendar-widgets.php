@@ -11,9 +11,11 @@ class my_calendar_simple_search extends WP_Widget {
 	function widget( $args, $instance ) {
 		extract( $args );
 		$widget_title = apply_filters( 'widget_title', $instance['title'], $instance, $args );
+		$widget_title = ( $widget_title != '' ) ? $before_title . $widget_title . $after_title : '';		
 		$widget_url = ( isset( $instance['url'] ) ) ? $instance['url'] : false;
 		echo $before_widget;
 		echo ( $instance['title'] != '' ) ? $widget_title : '';
+		
 		echo my_calendar_searchform( 'simple', $widget_url );
 		echo $after_widget;
 	}

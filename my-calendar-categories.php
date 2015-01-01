@@ -106,16 +106,22 @@ function my_calendar_manage_categories() {
 			$add     = apply_filters( 'mc_pre_add_category', $add, $_POST );
 			$results = $mcdb->insert( my_calendar_categories_table(), $add, $formats );
 			do_action( 'mc_post_add_category', $add, $results, $_POST );
+			$cat_ID = $mcdb->insert_id;
 
 			if ( isset( $_POST['mc_default_category'] ) ) {
-				$cat_ID = $mcdb->insert_id;
 				update_option( 'mc_default_category', $cat_ID );
 				$append = __( 'Default category changed.', 'my-calendar' );
 			} else {
 				$append = '';
 			}
+			
+			if ( isset( $_POST['mc_skip_holidays_category'] ) ) {
+				update_option( 'mc_skip_holidays_category', $cat_ID );
+				$append .= __( 'Holiday category changed.', 'my-calendar' );
+			}
+			
 			if ( $results ) {
-				echo "<div class=\"updated\"><p><strong>" . __( 'Category added successfully', 'my-calendar' ) . " $append</strong></p></div>";
+				echo "<div class=\"updated\"><p><strong>" . __( 'Category added successfully', 'my-calendar' ) . ". $append</strong></p></div>";
 			} else {
 				echo "<div class=\"updated error\"><p><strong>" . __( 'Category addition failed.', 'my-calendar' ) . "</strong></p></div>";
 			}

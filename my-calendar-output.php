@@ -920,10 +920,14 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			$c_year = (int) $_GET['yr'];
 		} else {
 			// weeks suck. seriously.
-			if ( date( "Y", current_time( 'timestamp' ) ) == date( "Y", strtotime( date( 'Y-m-d', current_time( 'timestamp' ) ) . '- 6 days' ) ) || $is_start_of_week ) {
-				$c_year = ( date( "Y", current_time( 'timestamp' ) ) );
+			if ( $time == 'week' && !isset( $_GET['dy'] ) ) {
+				if ( date( "Y", current_time( 'timestamp' ) ) == date( "Y", strtotime( date( 'Y-m-d', current_time( 'timestamp' ) ) . '- 6 days' ) ) || $is_start_of_week ) {
+					$c_year = ( date( "Y", current_time( 'timestamp' ) ) );
+				} else {
+					$c_year = ( date( "Y", current_time( 'timestamp' ) ) ) - 1;
+				}
 			} else {
-				$c_year = ( date( "Y", current_time( 'timestamp' ) ) ) - 1;
+				$c_year = ( date( "Y", current_time( 'timestamp' ) ) );
 			}
 		}
 		// Years get funny if we exceed 3000, so we use this check
