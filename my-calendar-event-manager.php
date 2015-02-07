@@ -328,10 +328,39 @@ function manage_my_calendar() {
 			mc_delete_cache();
 			// argument: array of event IDs
 			do_action( 'mc_mass_archive_events', $archived );
-			$message = "<div class='updated'><p>" . sprintf( __( '%1$d events archived successfully out of %2$d selected.', 'my-calendar' ), $i, $total ) . "</p></div>";
+			$message = "<div class='updated'><p>" . sprintf( __( '%1$d events archived successfully out of %2$d selected.', 'my-calendar' ), $i, $total ) . ' ' . __( 'Archived events remain on your calendar, but are removed from the event manager.', 'my-calendar' ) . "</p></div>";
 		}
 		echo $message;
 	}
+	
+	if ( ! empty( $_POST['mass_edit'] ) && isset( $_POST['mass_undo_archive'] ) ) {
+		$nonce = $_REQUEST['_wpnonce'];
+		if ( ! wp_verify_nonce( $nonce, 'my-calendar-nonce' ) ) {
+			die( "Security check failed" );
+		}
+		$events   = $_POST['mass_edit'];
+		$sql      = 'UPDATE ' . my_calendar_table() . ' SET event_status = 1 WHERE event_id IN (';
+		$i        = $total = 0;
+		$archived = array();
+		foreach ( $events as $value ) {
+			$total = count( $events );
+			$sql .= (int) $value . ',';
+			$archived[] = $value;
+			$i ++;
+		}
+		$sql = substr( $sql, 0, - 1 );
+		$sql .= ')';
+		$result = $mcdb->query( $sql );
+		if ( $result == 0 || $result == false ) {
+			$message = "<div class='error'><p><strong>" . __( 'Error', 'my-calendar' ) . ":</strong>" . __( 'Could not undo the archive status on those events.', 'my-calendar' ) . "</p></div>";
+		} else {
+			mc_delete_cache();
+			// argument: array of event IDs
+			do_action( 'mc_mass_undo_archive_events', $archived );
+			$message = "<div class='updated'><p>" . sprintf( __( '%1$d events removed from archive successfully out of %2$d selected.', 'my-calendar' ), $i, $total ) . "</p></div>";
+		}
+		echo $message;
+	}	
 	?>
 	<div class='wrap jd-my-calendar'>
 		<div id="icon-edit" class="icon32"></div>
@@ -940,18 +969,40 @@ function mc_show_block( $field, $has_data, $data ) {
 	echo apply_filters( 'mc_show_block', $return, $data, $field );
 }
 
+
+/**
+ * Test whether an event has an invalid overlap.
+ * 
+ * @object $data Event object
+ *
+ * @return string Warning text about problem with event.
+ */
+function mc_test_occurrence_overlap( $data, $return = false ) {
+	$warning = '';
+	// if this event is single, skip query
+	$single_recur = ( $data->event_recur == 'S' || $data->event_recur == 'S1' ) ? true : false;
+	// if event starts and ends on same day, skip query
+	$start_end = ( $data->event_begin == $data->event_end ) ? true : false;
+	// only run test when an event is set up to recur & starts/ends on different days. 
+	if ( !$single_recur && !$start_end ) {
+		$check = mc_increment_event( $data->event_id, array(), 'test' );
+		if ( my_calendar_date_xcomp( $check['occur_begin'], $data->event_end . '' . $data->event_endtime ) ) {
+			$warning = "<div class='error'><span class='problem-icon dashicons dashicons-performance'></span> <p><strong>" . __( 'Event hidden from public view.', 'my-calendar' ) . "</strong> " . __( 'This event ends after the next occurrence begins. Events must end <strong>before</strong> the next occurrence begins.', 'my-calendar' ) . "</p><p>" . sprintf( __( 'Event end date: <strong>%s %s</strong>. Next occurrence starts: <strong>%s</strong>', 'my-calendar' ), $data->event_end, $data->event_endtime, $check['occur_begin'] ) . "</p></div>";
+		}
+	}
+	if ( $return ) {
+		return $warning;
+	} else {
+		echo $warning;
+	}
+}
+
 function mc_form_fields( $data, $mode, $event_id ) {
 	global $wpdb, $user_ID;
 	$mcdb     = $wpdb;
 	$has_data = ( empty( $data ) ) ? false : true;
 	if ( $data ) {
-		if ( ! ( $data->event_recur == 'S' || $data->event_recur == 'S1' ) ) {
-			$check = mc_increment_event( $data->event_id, array(), 'test' );
-			if ( my_calendar_date_xcomp( $check['occur_begin'], $data->event_end . '' . $data->event_endtime ) ) {
-				$warning = "<div class='updated'><p>" . __( 'This event ends after the next occurrence begins. Events must end <strong>before</strong> the next occurrence begins.', 'my-calendar' ) . "</p><p>" . sprintf( __( 'Event end date: <strong>%s %s</strong>. Next occurrence starts: <strong>%s</strong>', 'my-calendar' ), $data->event_end, $data->event_endtime, $check['occur_begin'] ) . "</p></div>";
-				echo $warning;
-			}
-		}
+		$test = mc_test_occurrence_overlap( $data );
 	}
 	$instance = ( isset( $_GET['date'] ) ) ? (int) $_GET['date'] : false;
 	if ( $instance ) {
@@ -1193,6 +1244,7 @@ function mc_form_fields( $data, $mode, $event_id ) {
 								<h4><?php _e( 'Scheduled dates for this event', 'my-calendar' ); ?></h4>
 								<div>
 									<?php _e( 'Editing a single date of an event changes only that date. Editing the root event changes all events in the series.', 'my-calendar' ); ?>
+									<div class='mc_response' aria-live='assertive'></div>
 									<ul class="columns">
 										<?php if ( isset( $_GET['date'] ) ) {
 											$date = (int) $_GET['date'];
@@ -1521,7 +1573,7 @@ function mc_list_events() {
 			</li>
 			<li>
 				<a <?php echo ( isset( $_GET['limit'] ) && $_GET['limit'] == 'all' || ! isset( $_GET['limit'] ) ) ? 'class="active-link"' : ''; ?>
-					href="<?php echo admin_url( 'admin.php?page=my-calendar-manage&amp;limit=archived' ); ?>"><?php _e( 'Archived', 'my-calendar' ); ?></a>
+					href="<?php echo admin_url( 'admin.php?page=my-calendar-manage&amp;restrict=archived' ); ?>"><?php _e( 'Archived', 'my-calendar' ); ?></a>
 			</li>
 			<li>
 				<a <?php echo ( isset( $_GET['limit'] ) && $_GET['limit'] == 'all' || ! isset( $_GET['limit'] ) ) ? 'class="active-link"' : ''; ?>
@@ -1558,6 +1610,9 @@ function mc_list_events() {
 				<?php if ( ! ( isset( $_GET['restrict'] ) && $_GET['restrict'] == 'archived' ) ) { ?>
 					<input type="submit" class="button-secondary mc-archive" name="mass_archive"
 					       value="<?php _e( 'Archive events', 'my-calendar' ); ?>"/>
+				<?php } else { ?>
+					<input type="submit" class="button-secondary mc-archive" name="mass_undo_archive"
+					       value="<?php _e( 'Remove from archive', 'my-calendar' ); ?>"/>				
 				<?php } ?>
 			</div>
 
@@ -1592,7 +1647,7 @@ function mc_list_events() {
 
 				foreach ( array_keys( $events ) as $key ) {
 					$event   =& $events[ $key ];
-					$class   = ( $class == 'alternate' ) ? '' : 'alternate';
+					$class   = ( $class == 'alternate' ) ? 'even' : 'alternate';
 					$pending = ( $event->event_approved == 0 ) ? 'pending' : '';
 					$author  = ( $event->event_author != 0 ) ? get_userdata( $event->event_author ) : 'Public Submitter';
 					$title   = $event->event_title;
@@ -1605,9 +1660,15 @@ function mc_list_events() {
 						$spam       = '';
 						$spam_label = '';
 					}
+					$edit_url = admin_url( "admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id" );
+					$copy_url = admin_url( "admin.php?page=my-calendar&amp;mode=copy&amp;event_id=$event->event_id" );
+					$group_url = admin_url( "admin.php?page=my-calendar-groups&amp;mode=edit&amp;event_id=$event->event_id&amp;group_id=$event->event_group_id" );
+					$delete_url = admin_url( "admin.php?page=my-calendar-manage&amp;mode=delete&amp;event_id=$event->event_id" );
+					$check = mc_test_occurrence_overlap( $event, true );
+					$problem = ( $check != '' ) ? 'problem' : ''; 
 					if ( current_user_can( 'mc_manage_events' ) || current_user_can( 'mc_approve_events' ) || mc_can_edit_event( $event->event_author ) ) {
 						?>
-						<tr class="<?php echo "$class $spam $pending"; ?>">
+						<tr class="<?php echo "$class $spam $pending $problem"; ?>">
 							<th scope="row"><input type="checkbox" value="<?php echo $event->event_id; ?>"
 							                       name="mass_edit[]"
 							                       id="mc<?php echo $event->event_id; ?>" <?php echo ( $event->event_flagged == 1 ) ? 'checked="checked"' : ''; ?> />
@@ -1615,29 +1676,28 @@ function mc_list_events() {
 									for="mc<?php echo $event->event_id; ?>"><?php echo $event->event_id; ?></label>
 							</th>
 							<td title="<?php echo esc_attr( substr( strip_tags( stripslashes( $event->event_desc ) ), 0, 240 ) ); ?>">
-								<strong><?php if (mc_can_edit_event( $event->event_author )) { ?>
-									<a href="<?php echo admin_url( "admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id" ); ?>"
+								<strong><?php if ( mc_can_edit_event( $event->event_author ) ) { ?>
+									<a href="<?php echo $edit_url; ?>"
 									   class='edit'>
 										<?php } ?>
 										<?php echo $spam_label;
 										echo stripslashes( $title ); ?>
 									<?php if ( mc_can_edit_event( $event->event_author ) ) {
 										echo "</a>";
+										if ( $check != '' ) {
+											echo '<br /><strong class="error">' . sprintf( __( 'There is a problem with this event. <a href="%s">View</a>', 'my-calendar' ), $edit_url ) . '</strong>';
+										}
 									} ?></strong>
 
 								<div class='row-actions' style="visibility:visible;">
-									<a href="<?php echo admin_url( "admin.php?page=my-calendar&amp;mode=copy&amp;event_id=$event->event_id" ); ?>"
+									<a href="<?php echo $copy_url; ?>"
 									   class='copy'><?php _e( 'Copy', 'my-calendar' ); ?></a> |
 									<?php if ( mc_can_edit_event( $event->event_author ) ) { ?>
-										<a href="<?php echo admin_url( "admin.php?page=my-calendar&amp;mode=edit&amp;event_id=$event->event_id" ); ?>"
-										   class='edit'><?php _e( 'Edit', 'my-calendar' ); ?></a> <?php if ( mc_event_is_grouped( $event->event_group_id ) ) { ?>
-											| <a
-												href="<?php echo admin_url( "admin.php?page=my-calendar-groups&amp;mode=edit&amp;event_id=$event->event_id&amp;group_id=$event->event_group_id" ); ?>"
-												class='edit group'><?php _e( 'Edit Group', 'my-calendar' ); ?></a>
+										<a href="<?php echo $edit_url; ?>" class='edit'><?php _e( 'Edit', 'my-calendar' ); ?></a> 
+										<?php if ( mc_event_is_grouped( $event->event_group_id ) ) { ?>
+											| <a href="<?php echo $group_url; ?>" class='edit group'><?php _e( 'Edit Group', 'my-calendar' ); ?></a>
 										<?php } ?>
-										| <a
-											href="<?php echo admin_url( "admin.php?page=my-calendar-manage&amp;mode=delete&amp;event_id=$event->event_id" ); ?>"
-											class="delete"><?php _e( 'Delete', 'my-calendar' ); ?></a>
+										| <a href="<?php echo $delete_url; ?>" class="delete"><?php _e( 'Delete', 'my-calendar' ); ?></a>
 									<?php
 									} else {
 										_e( "Not editable.", 'my-calendar' );
@@ -2205,17 +2265,17 @@ function mc_instance_list( $id, $occur = false, $template = '<h3>{title}</h3>{de
 	$results = $wpdb->get_results( $sql );
 	if ( is_array( $results ) && is_admin() ) {
 		foreach ( $results as $result ) {
+			$begin = "<span id='occur_date_$result->occur_id'>" . date_i18n( get_option( 'mc_date_format' ), strtotime( $result->occur_begin ) ) . ', ' . date( get_option( 'mc_time_format' ), strtotime( $result->occur_begin ) ) . "</span>";
 			if ( $result->occur_id == $occur ) {
 				$form_control = '';
 				$current      = "<em>" . __( 'Editing: ', 'my-calendar' ) . "</em>";
 				$end          = '';
 			} else {
-				$form_control = "<input type='checkbox' name='delete_occurrences[]' id='delete_$result->occur_id' value='$result->occur_id' aria-labelledby='occur_label occur_date_$result->occur_id' /> <label id='occur_label' for='delete_$result->occur_id'>Delete</label> ";
+				$form_control = "<button class='delete_occurrence' data-value='$result->occur_id' />Delete $begin</button> ";
 				$current      = "<a href='" . admin_url( 'admin.php?page=my-calendar' ) . "&amp;mode=edit&amp;event_id=$id&amp;date=$result->occur_id'>";
-				$end          = "</a>";
+				$end          = "Edit<span class='screen-reader-text'> $begin</span></a>";
 			}
-			$begin = "<span id='occur_date_$result->occur_id'>" . date_i18n( get_option( 'mc_date_format' ), strtotime( $result->occur_begin ) ) . ', ' . date( get_option( 'mc_time_format' ), strtotime( $result->occur_begin ) ) . "</span>";
-			$output .= "<li>$form_control$current$begin$end</li>";
+			$output .= "<li>$form_control$current$end</li>";
 		}
 	} else {
 		$details = '';

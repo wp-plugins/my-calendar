@@ -9,7 +9,7 @@ Text Domain: my-calendar
 Domain Path: lang
 Version: 2.3.23
 */
-/*  Copyright 2009-2014  Joe Dolson (email : joe@joedolson.com)
+/*  Copyright 2009-2015  Joe Dolson (email : joe@joedolson.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -152,10 +152,10 @@ function mc_show_sidebar( $show = '', $add = false, $remove = false ) {
 						<h3 class='sales'><strong><?php _e( 'My Tickets', 'my-calendar' ); ?></strong></h3>
 
 						<div class="inside resources">
-							<p class="mcsbuy"><?php _e( "Do you sell tickets to your events? <a href='https://www.joedolson.com/my-tickets/' rel='external'>Buy My Tickets</a> and sell directly from My Calendar.", 'my-calendar' ); ?></p>
+							<p class="mcsbuy"><?php _e( "Do you sell tickets to your events? <a href='https://wordpress.org/plugins/my-tickets/' rel='external'>Use My Tickets</a> and sell directly from My Calendar.", 'my-calendar' ); ?></p>
 							<p><?php _e( 'My Tickets is a stand-alone ticket sales platform that integrates with My Calendar or sells tickets on any post.', 'my-tickets' ); ?></p>
 
-							<p class="mc-button"><a href="https://www.joedolson.com/my-tickets/" rel="external"><?php _e( 'My Tickets', 'my-calendar' ); ?></a>
+							<p class="mc-button"><a href="https://www.joedolson.com/my-tickets/" rel="external"><?php _e( 'Read about My Tickets', 'my-calendar' ); ?></a>
 							</p>
 						</div>
 					</div>

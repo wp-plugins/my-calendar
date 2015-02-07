@@ -1,9 +1,9 @@
 jQuery(document).ready(function ($) {
     var tabs = $('.mc-tabs .wptab').length;
     $('.mc-tabs .tabs a[href="#' + firstItem + '"]').addClass('active');
-    if (tabs > 1) {
-        $('.mc-tabs .wptab').not('#' + firstItem).hide();
-        $('.mc-tabs .tabs a').on('click', function (e) {
+    if ( tabs > 1 ) {
+        $( '.mc-tabs .wptab' ).not( '#' + firstItem ).hide();
+        $( '.mc-tabs .tabs a' ).on( 'click', function (e) {
             e.preventDefault();
             $('.mc-tabs .tabs a').removeClass('active');
             $(this).addClass('active');
@@ -11,5 +11,5 @@ jQuery(document).ready(function ($) {
             $('.mc-tabs .wptab').not(target).hide();
             $(target).show();
         });
-    }
+    }	
 });

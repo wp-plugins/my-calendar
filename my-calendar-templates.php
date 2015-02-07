@@ -642,7 +642,7 @@ function mc_image_data( $e, $event ) {
 function mc_event_recur_string( $event ) {
 	$recurs      = str_split( $event->event_recur, 1 );
 	$recur       = $recurs[0];
-	$every       = $recurs[1];
+	$every       = ( isset( $recurs[1] ) ) ? $recurs[1] : 1;
 	$month_date  = date( 'dS', strtotime( $event->occur_begin ) );
 	$day_name    = date_i18n( 'l', strtotime( $event->occur_begin ) );
 	$week_number = mc_ordinal( week_of_month( date( 'j', strtotime( $event->occur_begin ) ) ) + 1 );

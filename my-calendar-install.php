@@ -24,28 +24,28 @@ $defaults = array(
 	)
 );
 
-$grid_template = addslashes( '<span class="event-time dtstart" title="{dtstart}">{time}<span class="time-separator"> - </span>{endtime before="<span class=\'end-time dtend\' title=\'{dtend}\'>" after="</span>"}</span>
+$grid_template = addslashes( '<span class="event-time dtstart value-title" title="{dtstart}">{time}<span class="time-separator"> - </span>{endtime before="<span class=\'end-time dtend\' title=\'{dtend}\'>" after="</span>"}</span>
 
 <div class="sub-details">
 {hcard}
 {details before="<p class=\'mc_details\'>" after="</p>"}
 <p><a href="{linking}" class="event-link external">{title}</a></p></div>' );
 
-$list_template = addslashes( '<span class="event-time dtstart" title="{dtstart}">{time}<span class="time-separator"> - </span>{endtime before="<span class=\'end-time dtend\' title=\'{dtend}\'>" after="</span>"}</span>
+$list_template = addslashes( '<span class="event-time dtstart value-title" title="{dtstart}">{time}<span class="time-separator"> - </span>{endtime before="<span class=\'end-time dtend value-title\' title=\'{dtend}\'>" after="</span>"}</span>
 
 <div class="sub-details">
 {hcard}
 {details before="<p class=\'mc_details\'>" after="</p>"}
 <p><a href="{linking}" class="event-link external">{title}</a></p></div>' );
 
-$mini_template = addslashes( '<span class="event-time dtstart" title="{dtstart}">{time}<span class="time-separator"> - </span>{endtime before="<span class=\'end-time dtend\' title=\'{dtend}\'>" after="</span>"}</span>
+$mini_template = addslashes( '<span class="event-time dtstart value-title" title="{dtstart}">{time}<span class="time-separator"> - </span>{endtime before="<span class=\'end-time dtend value-title\' title=\'{dtend}\'>" after="</span>"}</span>
 
 <div class="sub-details">
 {excerpt before="<div class=\'excerpt\'>" after="</div>"}
 {hcard}
 <p><a href="{linking}" class="event-link external">{title}</a></p></div>' );
 
-$single_template = addslashes( '<span class="event-time dtstart" title="{dtstart}">{time}<span class="time-separator"> - </span><span class="end-time dtend" title="{dtend}">{endtime}</span></span>
+$single_template = addslashes( '<span class="event-time dtstart value-title" title="{dtstart}">{time}<span class="time-separator"> - </span><span class="end-time dtend value-title" title="{dtend}">{endtime}</span></span>
 
 <div class="sub-details">
 {hcard}

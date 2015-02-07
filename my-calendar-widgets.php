@@ -727,8 +727,8 @@ class my_calendar_mini_widget extends WP_Widget {
 			$widget_link = ( ! isset( $instance['mc_link'] ) || $instance['mc_link'] == '' ) ? '' : esc_url( $instance['mc_link'] );
 			$above       = ( empty( $instance['above'] ) ) ? 'none' : esc_attr( $instance['above'] );
 			$below       = ( empty( $instance['below'] ) ) ? 'none' : esc_attr( $instance['below'] );
-			$author      = ( $instance['author'] == '' ) ? null : esc_attr( $instance['author'] );
-			$host        = ( $instance['host'] == '' ) ? null : esc_attr( $instance['host'] );
+			$author      = ( !isset( $instance['author'] ) || $instance['author'] == '' ) ? null : esc_attr( $instance['author'] );
+			$host        = ( !isset( $instance['host'] ) || $instance['host'] == '' ) ? null : esc_attr( $instance['host'] );
 		} else {
 			$the_title = $category = $time = $widget_link = $above = $below = '';
 		}

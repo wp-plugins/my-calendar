@@ -318,7 +318,7 @@ function my_calendar_events_now( $category = 'default', $template = '<strong>{li
 	$select_category = ( $category != 'default' ) ? mc_select_category( $category ) : '';
 	// may add support for location/author/host later.
 	$select_location = $select_author = $select_host = '';
-	$now = date( 'Y-m-d h:i:s', current_time( 'timestamp' ) );
+	$now = date( 'Y-m-d H:i:s', current_time( 'timestamp' ) );
 	$event_query = "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end
 					FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 					JOIN " . MY_CALENDAR_TABLE . "
@@ -327,7 +327,7 @@ function my_calendar_events_now( $category = 'default', $template = '<strong>{li
 					ON (event_category=category_id) 
 					WHERE $select_category $select_location $select_author $select_host $limit_string  
 					AND ( CAST('$now' AS DATETIME) BETWEEN occur_begin AND occur_end ) 
-						ORDER BY occur_begin, " . apply_filters( 'mc_secondary_sort', 'event_title ASC' );	
+						ORDER BY occur_begin, " . apply_filters( 'mc_secondary_sort', 'event_title ASC' );
 	$events      = $mcdb->get_results( $event_query );
 	if ( ! empty( $events ) ) {
 		foreach ( array_keys( $events ) as $key ) {

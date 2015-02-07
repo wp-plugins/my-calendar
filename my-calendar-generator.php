@@ -168,7 +168,7 @@ function mc_generator( $type ) {
 				<p>
 					<label for="type"><?php _e( 'Type of Upcoming Events List', 'my-calendar' ); ?></label>
 					<select name="type" id="type">
-						<option value="events" selected="selected"><?php _e( 'Events', 'my-calendar' ); ?></option>
+						<option value="event" selected="selected"><?php _e( 'Events', 'my-calendar' ); ?></option>
 						<option value="month"><?php _e( 'Current Month', 'my-calendar' ); ?></option>
 						<option value="month+1"><?php _e( 'Next Month', 'my-calendar' ); ?></option>
 						<option value="year"><?php _e( 'Current Year', 'my-calendar' ); ?></option>

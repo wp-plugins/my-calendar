@@ -1297,11 +1297,53 @@ function mc_scripts() {
 	if ( $current_screen->id == 'toplevel_page_my-calendar' && function_exists( 'jd_doTwitterAPIPost' ) ) {
 		wp_enqueue_script( 'charCount', plugins_url( 'wp-to-twitter/js/jquery.charcount.js' ), array( 'jquery' ) );
 	}
+	if ( $current_screen->id == 'toplevel_page_my-calendar' ) {
+		if ( current_user_can( 'mc_manage_events' ) ) {
+			wp_enqueue_script( 'mc.ajax', plugins_url( 'js/ajax.js', __FILE__ ), array( 'jquery' ) );
+			wp_localize_script( 'mc.ajax', 'mc_data', array(
+				'action'   => 'delete_occurrence',
+				'security' => wp_create_nonce( 'mc-delete-nonce' )
+			) );
+		}
+	}
+	
 	if ( $current_screen->id == 'my-calendar_page_my-calendar-categories' ) {
 		wp_enqueue_style( 'wp-color-picker' );
 		wp_enqueue_script( 'mc-color-picker', plugins_url( 'js/color-picker.js', __FILE__ ), array( 'wp-color-picker' ), false, true );
 	}
 }
+
+add_action( 'wp_ajax_delete_occurrence', 'mc_ajax_delete_occurrence' );
+/**
+ * Delete a single occurrence of an event from the event manager.
+ *
+ * @return string Confirmation message indicating success or failure.
+ */
+function mc_ajax_delete_occurrence() {
+	if ( ! check_ajax_referer( 'mc-delete-nonce', 'security', false ) ) {
+		wp_send_json( array( 'success'=>0, 'response' => __( "Invalid Security Check", 'my-calendar' ) ) );
+	}
+
+	if ( current_user_can( 'mc_manage_events' ) ) {
+		
+		global $wpdb;
+		$mcdb    = $wpdb;		
+		$occur_id = (int) $_REQUEST['occur_id'];
+				
+		$delete = "DELETE FROM " . my_calendar_event_table() . " WHERE occur_id = $occur_id";
+		$result = $mcdb->query( $delete );
+				
+		if ( $result ) {
+			wp_send_json( array( 'success'=>1, 'response' => __( 'Event instance has been deleted.', 'my-calendar' ) ) );
+		} else {
+			wp_send_json( array( 'success'=>0, 'response' => __( 'Event instance was not deleted.', 'my-calendar' ) ) );
+		}
+
+	} else {
+		wp_send_json( array( 'success'=>0, 'response' => __( 'You are not authorized to perform this action', 'my-calendar' ) ) );
+	}
+}
+
 
 function mc_newline_replace( $string ) {
 	return (string) str_replace( array( "\r", "\r\n", "\n" ), '', $string );
@@ -1731,53 +1773,64 @@ function mc_increment_event( $id, $post = array(), $test = false ) {
 					}
 					break;
 				case "U": //important to keep track of which date variables are strings and which are timestamps
-					$week_of_event = week_of_month( date( 'd', strtotime( $event->event_begin ) ) );
-					$newbegin      = my_calendar_add_date( $orig_begin, 28, 0, 0 );
-					$newend        = my_calendar_add_date( $orig_end, 28, 0, 0 );
-					$fifth_week    = $event->event_fifth_week;
-					$data          = array(
-						'occur_event_id' => $id,
-						'occur_begin'    => date( 'Y-m-d  H:i:s', strtotime( $orig_begin ) ),
-						'occur_end'      => date( 'Y-m-d  H:i:s', strtotime( $orig_end ) ),
-						'occur_group_id' => $group_id
-					);
-					if ( $test == 'test' ) {
-						return $data;
-					}
-					if ( ! $test ) {
-						$wpdb->insert( my_calendar_event_table(), $data, $format );
-					}
-					$numforward = $numforward - 1;
-					for ( $i = 0; $i <= $numforward; $i ++ ) {
-						$next_week_diff = ( date( 'm', $newbegin ) == date( 'm', my_calendar_add_date( date( 'Y-m-d', $newbegin ), 7, 0, 0 ) ) ) ? false : true;
-						$move_event     = ( ( $fifth_week == 1 ) && ( $week_of_event == ( week_of_month( date( 'd', $newbegin ) ) + 1 ) ) && $next_week_diff == true ) ? true : false;
-						if ( $week_of_event == week_of_month( date( 'd', $newbegin ) ) || $move_event == true ) {
-							// continue;
-						} else {
-							$newbegin   = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newbegin ), 7, 0, 0 );
-							$newend     = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newend ), 7, 0, 0 );
-							$move_event = ( $fifth_week == 1 && $week_of_event == week_of_month( date( 'd', $newbegin ) ) + 1 ) ? true : false;
-							if ( $week_of_event == week_of_month( date( 'd', $newbegin ) ) || $move_event == true ) {
-								// continue;
-							} else {
-								$newbegin = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newbegin ), 14, 0, 0 );
-								$newend   = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newend ), 14, 0, 0 );
-							}
-						}
-						$data = array(
+					// This pattern handles monthly events.
+					if ( $every != 1 ) {
+						// return an error?
+						// handle patterns that are something *other* than every month
+						/*
+						    Idea: use mod to identify which months need to be checked. Check which date in each month. 
+						*/
+					} else {
+						$week_of_event = week_of_month( date( 'd', strtotime( $event->event_begin ) ) );
+						$newbegin      = my_calendar_add_date( $orig_begin, 28, 0, 0 );
+						$newend        = my_calendar_add_date( $orig_end, 28, 0, 0 );
+						$fifth_week    = $event->event_fifth_week;
+						$data          = array(
 							'occur_event_id' => $id,
-							'occur_begin'    => date( 'Y-m-d  H:i:s', $newbegin ),
-							'occur_end'      => date( 'Y-m-d  H:i:s', $newend ),
+							'occur_begin'    => date( 'Y-m-d  H:i:s', strtotime( $orig_begin ) ),
+							'occur_end'      => date( 'Y-m-d  H:i:s', strtotime( $orig_end ) ),
 							'occur_group_id' => $group_id
 						);
+						/*
 						if ( $test == 'test' && $i > 0 ) {
 							return $data;
 						}
+						*/
 						if ( ! $test ) {
 							$wpdb->insert( my_calendar_event_table(), $data, $format );
 						}
-						$newbegin = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newbegin ), 28, 0, 0 );
-						$newend   = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newend ), 28, 0, 0 );
+						$numforward = $numforward - 1;
+						for ( $i = 0; $i <= $numforward; $i ++ ) {
+							$next_week_diff = ( date( 'm', $newbegin ) == date( 'm', my_calendar_add_date( date( 'Y-m-d', $newbegin ), 7, 0, 0 ) ) ) ? false : true;
+							$move_event     = ( ( $fifth_week == 1 ) && ( $week_of_event == ( week_of_month( date( 'd', $newbegin ) ) + 1 ) ) && $next_week_diff == true ) ? true : false;
+							if ( $week_of_event == week_of_month( date( 'd', $newbegin ) ) || $move_event == true ) {
+								// continue;
+							} else {
+								$newbegin   = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newbegin ), 7, 0, 0 );
+								$newend     = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newend ), 7, 0, 0 );
+								$move_event = ( $fifth_week == 1 && $week_of_event == week_of_month( date( 'd', $newbegin ) ) + 1 ) ? true : false;
+								if ( $week_of_event == week_of_month( date( 'd', $newbegin ) ) || $move_event == true ) {
+									// continue;
+								} else {
+									$newbegin = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newbegin ), 14, 0, 0 );
+									$newend   = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newend ), 14, 0, 0 );
+								}
+							}
+							$data = array(
+								'occur_event_id' => $id,
+								'occur_begin'    => date( 'Y-m-d  H:i:s', $newbegin ),
+								'occur_end'      => date( 'Y-m-d  H:i:s', $newend ),
+								'occur_group_id' => $group_id
+							);
+							if ( $test == 'test' && $i > 0 ) {
+								return $data;
+							}
+							if ( ! $test ) {
+								$wpdb->insert( my_calendar_event_table(), $data, $format );
+							}
+							$newbegin = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newbegin ), 28, 0, 0 );
+							$newend   = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newend ), 28, 0, 0 );
+						}
 					}
 					break;
 				case "Y":
@@ -1845,7 +1898,7 @@ function mc_get_details_link( $event ) {
 		}
 	}
 
-	return $details_link;
+	return apply_filters( 'mc_customize_details_link', $details_link, $event );
 }
 
 // Actions -- these are action hooks attached to My Calendar events, usable to add additional actions during those events.

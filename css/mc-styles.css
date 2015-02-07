@@ -487,6 +487,33 @@ strong.label {
 	text-shadow: 1px 0 0 #000;
 }
 
+.jd-my-calendar .error .button-secondary {
+	vertical-align: baseline;
+}
+
+.mc_response {
+	padding: .25em;
+	background: #ffa;
+	color: #000;
+}
+
+tr.problem {
+	background-color: #ffa;
+}
+
+tr.problem .error {
+	color: #a00;
+}
+
+.problem-icon {
+	font-size: 64px;
+	float: left; 
+	margin-right: .25em;
+	height: 64px;
+	width: 64px;
+	display: block;
+}
+
 #my-calendar .inside div iframe {
 	float: none; 
 }

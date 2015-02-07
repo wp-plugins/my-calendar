@@ -47,13 +47,13 @@ function my_calendar_check_db() {
 		<div class='upgrade-db error'>
 		<form method="post" action="<?php echo admin_url( "admin.php?page=my-calendar-config" ); ?>">
 			<div>
-				<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'my-calendar-nonce' ); ?>"/>
-				<input type="hidden" name="upgrade" value="true"/>
+				<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'my-calendar-nonce' ); ?>" />
+				<input type="hidden" name="upgrade" value="true" />
 			</div>
 			<p>
 				<?php _e( 'You haven\'t entered any events, so My Calendar can\'t tell whether your database is up to date. If you can\'t add events, upgrade your database!', 'my-calendar' ); ?>
 				<input type="submit" value="<?php _e( 'Update now', 'my-calendar' ); ?>" name="update-calendar"
-				       class="button-primary"/>
+				       class="button-primary" />
 			</p>
 		</form>
 		</div><?php

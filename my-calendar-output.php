@@ -42,7 +42,6 @@ function mc_set_date_array( $events ) {
 }
 
 function my_calendar_draw_events( $events, $type, $process_date, $time, $template = '' ) {
-	apply_filters( 'debug', "my_calendar( $type ) begin draw events" );
 
 	if ( $type == 'mini' && ( get_option( 'mc_open_day_uri' ) == 'true' || get_option( 'mc_open_day_uri' ) == 'listanchor' || get_option( 'mc_open_day_uri' ) == 'calendaranchor' ) ) {
 		return true;
@@ -56,7 +55,10 @@ function my_calendar_draw_events( $events, $type, $process_date, $time, $templat
 		}
 		foreach ( array_keys( $events ) as $key ) {
 			$event          =& $events[ $key ];
-			$output_array[] = my_calendar_draw_event( $event, $type, $process_date, $time, $template );
+			$check = mc_test_occurrence_overlap( $event, true );
+			if ( $check == '' ) {
+				$output_array[] = my_calendar_draw_event( $event, $type, $process_date, $time, $template );
+			}
 		}
 		if ( is_array( $output_array ) ) {
 			foreach ( array_keys( $output_array ) as $key ) {
@@ -86,20 +88,26 @@ function mc_get_template( $template ) {
 }
 
 function mc_time_html( $event, $type, $current_date ) {
-	$id_start = date( 'Y-m-d', strtotime( $event->event_begin ) );
-	$id_end   = date( 'Y-m-d', strtotime( $event->event_end ) );
+	$id_start = date( 'Y-m-d', strtotime( $event->occur_begin ) );
+	$id_end   = date( 'Y-m-d', strtotime( $event->occur_end ) );
 	$cur_date = ( $type == 'list' ) ? '' : "<span class='mc-event-date'>$current_date</span>";
 
 	$time = "<div class='time-block'>";
 	$time .= "<p>$cur_date";
 	if ( $event->event_time != "00:00:00" && $event->event_time != '' ) {
-		$time .= "\n<span class='event-time dtstart'><time datetime='" . $id_start . 'T' . $event->event_time . "'>" . date_i18n( get_option( 'mc_time_format' ), strtotime( $event->event_time ) ) . '</time>';
+		$time .= "\n
+		<span class='event-time dtstart'>
+			<time class='value-title' datetime='" . $id_start . 'T' . $event->event_time . "' title='" . $id_start . 'T' . $event->event_time . "'>" . date_i18n( get_option( 'mc_time_format' ), strtotime( $event->event_time ) ) . '</time>
+		</span>';
 		if ( $event->event_hide_end == 0 ) {
 			if ( $event->event_endtime != '' && $event->event_endtime != $event->event_time ) {
-				$time .= "<span class='time-separator'> &ndash; </span><time class='end-time dtend' datetime='" . $id_end . 'T' . $event->event_endtime . "'>" . date_i18n( get_option( 'mc_time_format' ), strtotime( $event->event_endtime ) ) . "</time>";
+				$time .= "
+					<span class='time-separator'> &ndash; </span>
+					<span class='end-time dtend'>
+						<time class='value-title' datetime='" . $id_end . 'T' . $event->event_endtime . "' title='" . $id_end . 'T' . $event->event_endtime . "'>" . date_i18n( get_option( 'mc_time_format' ), strtotime( $event->event_endtime ) ) . "</time>
+					</span>";
 			}
 		}
-		$time .= "</span>\n";
 	} else {
 		$time .= "<span class='event-time'>";
 		if ( get_option( 'mc_notime_text' ) == '' || get_option( 'mc_notime_text' ) == "N/A" ) {
@@ -217,10 +225,10 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 	if ( strpos( $event_title, 'href' ) === false && $type != 'mini' && $type != 'list' ) {
 		if ( get_option( 'mc_open_uri' ) == 'true' ) {
 			$details_link = mc_get_details_link( $event );
-			$wrap         = "<a href='$details_link'>";
+			$wrap         = "<a href='$details_link' class='url summary'>";
 			$balance      = "</a>";
 		} else {
-			$wrap    = "<a href='#$uid-$day_id-$type-details'>";
+			$wrap    = "<a href='#$uid-$day_id-$type-details' class='url summary'>";
 			$balance = "</a>";
 		}
 	} else {
@@ -287,10 +295,10 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 			}
 			$default_size = apply_filters( 'mc_default_image_size', $default_size );
 			if ( is_numeric( $event->event_post ) && $event->event_post != 0 && ( isset( $data[ $default_size ] ) && $data[ $default_size ] != '' ) ) {
-				$atts  = apply_filters( 'mc_post_thumbnail_atts', array( 'class' => 'mc-image' ) );
+				$atts  = apply_filters( 'mc_post_thumbnail_atts', array( 'class' => 'mc-image photo' ) );
 				$image = get_the_post_thumbnail( $event->event_post, $default_size, $atts );
 			} else {
-				$image = ( $event->event_image != '' ) ? "<img src='$event->event_image' alt='' class='mc-image' />" : '';
+				$image = ( $event->event_image != '' ) ? "<img src='$event->event_image' alt='' class='mc-image photo' />" : '';
 			}
 			if ( get_option( 'mc_desc' ) == 'true' || $type == 'single' ) {
 				$description = ( get_option( 'mc_process_shortcodes' ) == 'true' ) ? apply_filters( 'the_content', stripcslashes( $event->event_desc ) ) : wpautop( stripcslashes( $event->event_desc ), 1 );
@@ -778,10 +786,10 @@ add_filter( 'the_content', 'mc_show_event_template', 100 );
 function mc_show_event_template( $content ) {
 	global $post;
 	if ( $post->post_type == 'mc-events' ) {
-		$content .= do_shortcode( get_post_meta( $post->ID, '_mc_event_shortcode', true ) ); // -> triggers an infinite loop when shortcode filters enabled in settings. If you're using this view, you have no reason to allow the_content filters.
+		$new_content = do_shortcode( get_post_meta( $post->ID, '_mc_event_shortcode', true ) ); // -> triggers an infinite loop when shortcode filters enabled in settings. If you're using this view, you have no reason to allow the_content filters.
 	}
 
-	return $content;
+	return apply_filters( 'mc_event_content', $new_content, $content, $post );
 }
 
 // Actually do the printing of the calendar
@@ -917,17 +925,33 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 
 		$is_start_of_week = ( date( 'N', current_time( 'timestamp' ) ) == get_option( 'start_of_week' ) ) ? true : false;
 		if ( isset( $_GET['yr'] ) && $main_class == $cid ) {
-			$c_year = (int) $_GET['yr'];
+			$c_year = (int) $_GET['yr'];			
 		} else {
 			// weeks suck. seriously.
 			if ( $time == 'week' && !isset( $_GET['dy'] ) ) {
-				if ( date( "Y", current_time( 'timestamp' ) ) == date( "Y", strtotime( date( 'Y-m-d', current_time( 'timestamp' ) ) . '- 6 days' ) ) || $is_start_of_week ) {
-					$c_year = ( date( "Y", current_time( 'timestamp' ) ) );
+				if ( $is_start_of_week ) {
+					$c_year = ( date( "Y", current_time( 'timestamp' ) ) );			
 				} else {
-					$c_year = ( date( "Y", current_time( 'timestamp' ) ) ) - 1;
+					$today = date( 'N', current_time( 'timestamp' ) ); // current day number
+					$todate = date( 'j', current_time( 'timestamp' ) ); // current date number				
+					if ( get_option( 'start_of_week' ) == 1 ) { // start of week is Monday
+						$diff = $today - get_option( 'start_of_week' );
+						if ( $todate <= $diff ) {
+							$c_year = ( date( "Y", current_time( 'timestamp' ) ) ) - 1;				
+						} else {
+							$c_year = ( date( "Y", current_time( 'timestamp' ) ) );
+						}
+					} else { // treat as Sunday if not set to Monday
+						$diff = abs( $today - get_option( 'start_of_week' ) );
+						if ( $todate <= $diff ) {
+							$c_year = ( date( "Y", current_time( 'timestamp' ) ) ) - 1;				
+						} else {
+							$c_year = ( date( "Y", current_time( 'timestamp' ) ) );
+						}
+					}
 				}
 			} else {
-				$c_year = ( date( "Y", current_time( 'timestamp' ) ) );
+				$c_year = ( date( "Y", current_time( 'timestamp' ) ) );				
 			}
 		}
 		// Years get funny if we exceed 3000, so we use this check
@@ -1153,7 +1177,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 				$week_template   = ( get_option( 'mc_week_caption' ) != '' ) ? get_option( 'mc_week_caption' ) : 'Week of {date format="M jS"}';
 				$week_caption    = jd_draw_template( $values, stripslashes( $week_template ) );
 				$caption_heading = ( $time != 'week' ) ? $current_date_header . $caption_text : $week_caption . $caption_text;
-				$my_calendar_body .= "<caption class=\"my-calendar-$time\">" . $caption_heading . "</caption>\n";
+				$my_calendar_body .= "<caption class=\"heading my-calendar-$time\">" . $caption_heading . "</caption>\n";
 			} else {
 				// determine which header text to show depending on number of months displayed;
 				if ( $time != 'week' && $time != 'day' ) {
@@ -1161,7 +1185,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 				} else {
 					$list_heading = jd_draw_template( $values, stripslashes( get_option( 'mc_week_caption' ) ) );
 				}
-				$my_calendar_body .= "<h3 class=\"my-calendar-$time\">$list_heading</h3>\n";
+				$my_calendar_body .= "<h3 class=\"heading my-calendar-$time\">$list_heading</h3>\n";
 			}
 			// If not a valid time or layout format, skip.
 			if ( in_array( $format, array( 'calendar', 'mini', 'list' ) ) && in_array( $time, array(

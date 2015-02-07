@@ -17,7 +17,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 
 * 	[Buy the User's Guide](http://www.joedolson.com/my-calendar/users-guide/) for extensive help with set up and use.
 *   [Buy My Calendar: Submissions](https://www.joedolson.com/my-calendar/submissions/), the PRO extension for front-end event submissions
-*   [Buy My Tickets](https://www.joedolson.com/my-tickets/) and sell tickets to your My Calendar events
+*   [Use My Tickets](https://wordpress.org/plugins/my-tickets/) and sell tickets to your My Calendar events
 
 = Features: =
 
@@ -44,7 +44,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 = Translations =
 
 Available translations (in order of completeness):
-Portuguese (Portugal), French, Danish, Japanese, Russian, Dutch, Swedish, German, Spanish (Spain), Italian, Galician, Portuguese (Brazil), Czech, Hindi, Turkish, Finnish, Polish, Slovenian, Romanian, Norwegian (Bokmal), Ukrainian, Hungarian
+Portuguese (Portugal), Spanish (Spain), French, Danish, Japanese, Dutch, German, Russian, Swedish, Italian, Galician, Portuguese (Brazil), Czech, Hindi, Turkish, Finnish, Polish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal),  Hungarian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -81,7 +81,6 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 FEATURES [2.4.0]
 * Option to post new events as blog posts
 * Add author limit tool
-* Add function to display event/s currently happening.
 * Create advanced search
 * Support hiding 'Host' field as option.
 * Feature: allow limiting of categories to specific member groups
@@ -90,16 +89,30 @@ FEATURES [2.4.0]
 * Create a template tag to show the date range for event groups; add support for this type of event set to {daterange}
 * Create selectable event details templates
 * Add filters to search query parameters
-* Check: Delete event post is event is deleted
 * Update event taxonomies if category changed/source event taxonomy data from post?
 * Permanently retire #jd_calendar and generate custom IDs. [breaking change]
+* Custom link targets using mc_customize_details_link & template_redirect filter as pointer.
 
 ISSUES
 * Consider transportability of data for moving My Calendar to another installation without moving all data. (Yikes!)
 
 BUG FIXES
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
-* Bug with deleting instances: checking a 'delete' option does not delete recurrence in list of dates.
+
+= 2.3.24 =
+
+* Bug fix: Improved fix to year rendering (roughly fixed in 2.3.23)
+* Bug fix: Improved rendering of structured event data.
+* Bug fix: [my_calendar_now] incorrectly checked the current time.
+* Bug fix: "Archive" link pointed to wrong location in event manager.
+* Bug fix: Was no way to reverse archiving an event; added method
+* Bug fix: Shortcode generator produced incorrect Upcoming Events shortcode.
+* Bug fix: Overlapping occurrences warning inappropriately showed on events recurring on a month by day basis
+* Feature add: AJAX control to delete individual instances of a recurring event from the event editor.
+* Feature change: Events post type content filter now replaces content instead of repeating. Use 'mc_event_content' filter to override.
+* Improvement: Show overlapping occurrences warnings in manage events view.
+* Performance fix: Hide overlapping recurring events on front-end. (They can consume massive amounts of memory.)
+* Language updates: French, Spanish, Japanese, Dutch, German, Ukrainian, Swedish
 
 = 2.3.23 =
 
@@ -113,7 +126,7 @@ BUG FIXES
 
 * Edit: Allow integers up to 12 in the 'every' field for recurring events. (Previously 9)
 * Bug fix: Incorrect sprintf call in {recurs} template, effecting recurring events by month.
-* Language updates: German, Russian, Portugues (Portugal), Hungarian, Ukrainian
+* Language updates: German, Russian, Portuguese (Portugal), Hungarian, Ukrainian
 
 = 2.3.21 =
 
