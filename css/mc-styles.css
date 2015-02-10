@@ -477,6 +477,12 @@ strong.label {
     max-width: 90%;
 }
 
+.mc_recur_notice {
+	padding: 5px 10px;
+	background: #ffc;
+	color: #000;
+}
+
 .mc-search {
     float: right;
 }

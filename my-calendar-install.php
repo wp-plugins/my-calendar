@@ -250,7 +250,8 @@ function mc_default_settings() {
 	add_option( 'mc_user_settings_enabled', false );
 	add_option( 'mc_user_location_type', 'state' );
 	add_option( 'mc_date_format', get_option( 'date_format' ) );
-	add_option( 'mc_templates', array(
+	// This option *must* be complete, if it's partial we get errors. So use update instead of add.
+	update_option( 'mc_templates', array(
 		'title'   => '{title}',
 		'link'    => '{title}',
 		'grid'    => $grid_template,
@@ -261,7 +262,7 @@ function mc_default_settings() {
 		'label'   => addslashes( 'More<span class="screen-reader-text"> about {title}</span>' )
 	) );
 	add_option( 'mc_skip_holidays', 'false' );
-	add_option( 'mc_css_file', 'twentyfourteen.css' );
+	add_option( 'mc_css_file', 'twentyfifteen.css' );
 	add_option( 'mc_time_format', get_option( 'time_format' ) );
 	add_option( 'mc_widget_defaults', $defaults );
 	add_option( 'mc_show_weekends', 'true' );
@@ -270,6 +271,8 @@ function mc_default_settings() {
 	add_option( 'mc_week_caption', "The week's events" );
 	add_option( 'mc_multisite_show', 0 );
 	add_option( 'mc_event_link', 'true' );
+	add_option( 'mc_topnav', 'toggle,timeframe,jump,nav' );
+	add_option( 'mc_bottomnav', 'key,category,feeds' );	
 	mc_add_roles();
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $initial_db );
@@ -391,8 +394,10 @@ function mc_transition_db() {
 				$term_id = $term['term_id'];
 				mc_update_category( 'category_term', $term_id, $category->category_id );
 			} else {
-				$term_id = $term->error_data['term_exists'];
-				mc_update_category( 'category_term', $term_id, $category->category_id );
+				if ( isset( $term->error_data['term_exists'] ) ) {
+					$term_id = $term->error_data['term_exists'];
+					mc_update_category( 'category_term', $term_id, $category->category_id );
+				}
 			}
 		}
 		$results = $wpdb->get_results( 'SELECT * FROM ' . my_calendar_table(), ARRAY_A );

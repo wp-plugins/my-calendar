@@ -146,7 +146,7 @@ add_action( 'wp_enqueue_scripts', 'mc_register_styles' );
 function mc_register_styles() {
 	global $wp_query;
 	$stylesheet = mc_get_style_path( get_option( 'mc_css_file' ), 'url' );
-	wp_register_style( 'my-calendar-style', $stylesheet );
+	wp_register_style( 'my-calendar-style', $stylesheet, array( 'dashicons' ) );
 	$admin_stylesheet = plugins_url( 'css/mc-admin.css', __FILE__ );
 	wp_register_style( 'my-calendar-admin-style', $admin_stylesheet );
 	if ( current_user_can( 'mc_manage_events' ) ) {
@@ -597,18 +597,16 @@ function mc_add_roles( $add = false, $manage = false, $approve = false ) {
 
 function my_calendar_exists() {
 	global $wpdb;
-	$mcdb = $wpdb;
-	$my_calendar_exists = false;
-	$tables = $mcdb->get_results( "show tables;" );
+	$tables = $wpdb->get_results( "show tables;" );
 	foreach ( $tables as $table ) {
 		foreach ( $table as $value ) {
 			if ( $value == MY_CALENDAR_TABLE ) {
 				// if the table exists, then My Calendar was already installed.
-				$my_calendar_exists = true;
+				return true;
 			}
 		}
 	}
-	return $my_calendar_exists;
+	return false;
 }
 
 // Function to check what version of My Calendar is installed and install or upgrade if needed
@@ -1773,14 +1771,14 @@ function mc_increment_event( $id, $post = array(), $test = false ) {
 					}
 					break;
 				case "U": //important to keep track of which date variables are strings and which are timestamps
-					// This pattern handles monthly events.
-					if ( $every != 1 ) {
+					// This pattern handles monthly events by day.
+					//if ( $every != 1 ) {
 						// return an error?
 						// handle patterns that are something *other* than every month
 						/*
 						    Idea: use mod to identify which months need to be checked. Check which date in each month. 
 						*/
-					} else {
+					//} else {
 						$week_of_event = week_of_month( date( 'd', strtotime( $event->event_begin ) ) );
 						$newbegin      = my_calendar_add_date( $orig_begin, 28, 0, 0 );
 						$newend        = my_calendar_add_date( $orig_end, 28, 0, 0 );
@@ -1830,7 +1828,7 @@ function mc_increment_event( $id, $post = array(), $test = false ) {
 							}
 							$newbegin = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newbegin ), 28, 0, 0 );
 							$newend   = my_calendar_add_date( date( 'Y-m-d  H:i:s', $newend ), 28, 0, 0 );
-						}
+						//}
 					}
 					break;
 				case "Y":
@@ -1904,7 +1902,6 @@ function mc_get_details_link( $event ) {
 // Actions -- these are action hooks attached to My Calendar events, usable to add additional actions during those events.
 add_action( 'init', 'mc_register_actions' );
 function mc_register_actions() {
-	apply_filters( "debug", 'my_calendar add actions/filters' );
 	add_filter( 'mc_event_registration', 'mc_standard_event_registration', 10, 4 );
 	add_filter( 'mc_datetime_inputs', 'mc_standard_datetime_input', 10, 4 );
 	add_action( 'mc_transition_event', 'mc_tweet_approval', 10, 2 );

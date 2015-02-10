@@ -1,5 +1,6 @@
 (function ($) {
     $(function () {
+		// Delete single instances of recurring events.
 		$( '.mc_response' ).hide();
         $('button.delete_occurrence').on( 'click', function (e) {
             e.preventDefault();
@@ -16,5 +17,17 @@
                 $('.mc_response').text( response.response ).show( 300 );
             }, "json" );
         });
+		// display notice informing users of lack of support for recur month by day
+		$( '.mc_recur_notice' ).hide();
+		$( '#e_recur' ).on( 'change', function (e) {
+			var recur = $(this).val();
+			if ( recur == 'U' ) {
+				$( '#e_every' ).attr( 'max', 1 ).val( 1 );
+				$( '.mc_recur_notice' ).show( 300 );
+			} else {
+				$( '.mc_recur_notice' ).hide();
+			}
+		});
+		
     });
 }(jQuery));

@@ -874,21 +874,22 @@ function mc_show_block( $field, $has_data, $data ) {
 			}			
 			if ( $show_block && empty( $_GET['date'] ) ) {
 				$return = $pre . '
-							<h3>' . __( 'Recurring', 'my-calendar' ) . '</h3>
-								<div class="inside">' . $prev . '
-									<fieldset>
-									<legend>' . __( 'Recurring Events', 'my-calendar' ) . '</legend>
-										<p>
-											<label for="e_repeats">' . __( 'Repeats', 'my-calendar' ) . ' <input type="text" name="event_repeats" aria-labelledby="e_repeats_label" id="e_repeats" size="1" value="' . $repeats . '" /> <span id="e_repeats_label">' . __( 'times', 'my-calendar' ) . '</span>, </label>
-											<label for="e_every">' . __( 'every', 'my-calendar' ) . '</label> <input type="number" name="event_every" id="e_every" size="1" min="1" max="12" maxlength="1" value="' . $every . '" /> 
-											<label for="e_recur" class="screen-reader-text">' . __( 'Units', 'my-calendar' ) . '</label> 
-											<select name="event_recur" id="e_recur">
-												' . mc_recur_options( $recur ) . '
-											</select><br />
-											' . __( 'Your entry is the number of events after the first occurrence of the event: a recurrence of <em>2</em> means the event will happen three times.', 'my-calendar' ) . '
-										</p>
-									</fieldset>	
-								</div>
+<h3>' . __( 'Recurring', 'my-calendar' ) . '</h3>
+	<div class="inside">' . $prev . '
+		<fieldset>
+		<legend class="screen-reader-text">' . __( 'Recurring Events', 'my-calendar' ) . '</legend>
+			<p>
+				<label for="e_repeats">' . __( 'Repeats', 'my-calendar' ) . ' <input type="text" name="event_repeats" aria-labelledby="e_repeats_label" id="e_repeats" size="1" value="' . $repeats . '" /> <span id="e_repeats_label">' . __( 'times', 'my-calendar' ) . '</span>, </label>
+				<label for="e_every">' . __( 'every', 'my-calendar' ) . '</label> <input type="number" name="event_every" id="e_every" size="1" min="1" max="12" maxlength="1" value="' . $every . '" /> 
+				<label for="e_recur" class="screen-reader-text">' . __( 'Units', 'my-calendar' ) . '</label> 
+				<select name="event_recur" id="e_recur">
+					' . mc_recur_options( $recur ) . '
+				</select><br />
+				' . __( 'Your entry is the number of events after the first occurrence of the event: a recurrence of <em>2</em> means the event will happen three times.', 'my-calendar' ) . '
+				<div class="mc_recur_notice" aria-live="polite"><p><span class="dashicons dashicons-no"></span>' . __( 'Month by day events currently only support monthly recurrances.', 'my-calendar' ) . '</p></div>
+			</p>
+		</fieldset>	
+	</div>
 							' . $post;
 			} else {
 				if ( $every == '' && $repeats == '' ) {
@@ -921,7 +922,7 @@ function mc_show_block( $field, $has_data, $data ) {
 				<h3>' . __( 'Event Registration Settings', 'my-calendar' ) . '</h3>
 				<div class="inside">
 					<fieldset>
-					<legend>' . __( 'Event Registration', 'my-calendar' ) . '</legend>
+					<legend class="screen-reader-text">' . __( 'Event Registration', 'my-calendar' ) . '</legend>
 					' . apply_filters( 'mc_event_registration', '', $has_data, $data, 'admin' ) . '		
 					</fieldset>
 				</div>
@@ -1097,7 +1098,7 @@ function mc_form_fields( $data, $mode, $event_id ) {
 			}
 			?>
 			<fieldset>
-				<legend><?php _e( 'Event Details', 'my-calendar' ); ?></legend>
+				<legend class="screen-reader-text"><?php _e( 'Event Details', 'my-calendar' ); ?></legend>
 				<p>
 					<label for="e_title"><?php _e( 'Event Title', 'my-calendar' ); ?> <span
 							class='required'><?php _e( '(required)', 'my-calendar' ); ?></span></label><br/><input
@@ -1212,7 +1213,7 @@ function mc_form_fields( $data, $mode, $event_id ) {
 				<input type="hidden" name="prev_event_endtime" value="<?php echo $data->event_endtime; ?>"/>
 			<?php } ?>
 			<fieldset>
-				<legend><?php _e( 'Event Date and Time', 'my-calendar' ); ?></legend>
+				<legend class="screen-reader-text"><?php _e( 'Event Date and Time', 'my-calendar' ); ?></legend>
 				<div id="e_schedule">
 					<div id="event1" class="clonedInput" aria-live="assertive">
 						<?php echo apply_filters( 'mc_datetime_inputs', '', $has_data, $data, 'admin' ); ?>
@@ -1280,7 +1281,7 @@ mc_show_block( 'event_recurs', $has_data, $data );
 mc_show_block( 'event_access', $has_data, $data );
 mc_show_block( 'event_open', $has_data, $data );
 
-if (mc_show_edit_block( 'event_location' ) || mc_show_edit_block( 'event_location_dropdown' )) {
+if ( mc_show_edit_block( 'event_location' ) || mc_show_edit_block( 'event_location_dropdown' ) ) {
 ?>
 
 <div class="ui-sortable meta-box-sortables">
@@ -1289,20 +1290,27 @@ if (mc_show_edit_block( 'event_location' ) || mc_show_edit_block( 'event_locatio
 
 		<div class="inside location_form">
 			<fieldset>
-				<legend><?php _e( 'Event Location', 'my-calendar' ); ?></legend><?php
+				<legend class='screen-reader-text'><?php _e( 'Event Location', 'my-calendar' ); ?></legend><?php
 				}
 				if ( mc_show_edit_block( 'event_location_dropdown' ) ) {
+					$current_location = '';
 					$locs = $mcdb->get_results( "SELECT location_id,location_label FROM " . my_calendar_locations_table() . " ORDER BY location_label ASC" );
 					if ( ! empty( $locs ) ) {
 						?>
 						<p>
 						<label for="l_preset"><?php _e( 'Choose a preset location:', 'my-calendar' ); ?></label> <select
-							name="location_preset" id="l_preset">
+							name="location_preset" id="l_preset" aria-describedby='mc-current-location'>
 							<option value="none"> --</option><?php
 							foreach ( $locs as $loc ) {
-								echo "<option value=\"" . $loc->location_id . "\">" . stripslashes( $loc->location_label ) . "</option>";
+								if ( is_object( $loc ) ) {
+									echo "<option value=\"" . $loc->location_id . "\">" . stripslashes( $loc->location_label ) . "</option>";
+									if ( $loc->location_id == $data->event_location ) {
+										$current_location = "<span id='mc-current-location'>" . sprintf( __( 'Current location: %s', 'my-calendar' ), $loc->location_label ) . "</span>";
+									}
+								}
 							} ?>
 						</select>
+						<?php echo $current_location; ?>
 						</p><?php
 					} else {
 						?>
@@ -1331,7 +1339,7 @@ if ( mc_show_edit_block( 'event_specials' ) ) {
 
 		<div class="inside">
 			<fieldset>
-				<legend><?php _e( 'Special Options', 'my-calendar' ); ?></legend>
+				<legend class="screen-reader-text"><?php _e( 'Special Options', 'my-calendar' ); ?></legend>
 				<p>
 					<label
 						for="e_holiday"><?php _e( 'Cancel this event if it occurs on a date with an event in the Holidays category', 'my-calendar' ); ?></label>

@@ -1,7 +1,7 @@
 (function ($) {
     'use strict';
     $(function () {
-        $(".mini .has-events").children().not(".trigger").hide();
+        $(".mini .has-events").children().not(".trigger, .mc-date, .event-date").hide();
         $(document).on("click", ".mini .has-events .trigger", function (e) {
             e.preventDefault();
             $(this).parent().children().not(".trigger").toggle().attr("tabindex", "-1").focus();

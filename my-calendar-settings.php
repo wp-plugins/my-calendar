@@ -371,9 +371,9 @@ function edit_my_calendar_config() {
 
 	// pull templates for passing into functions.
 	$templates         = get_option( 'mc_templates' );
-	$mc_title_template = esc_attr( stripslashes( $templates['title'] ) );
-	$mc_details_label  = esc_attr( stripslashes( $templates['label'] ) );
-	$mc_link_label     = esc_attr( stripslashes( $templates['link'] ) );
+	$mc_title_template = ( isset( $templates['title'] ) ) ? esc_attr( stripslashes( $templates['title'] ) ) : '';
+	$mc_details_label  = ( isset( $templates['label'] ) ) ? esc_attr( stripslashes( $templates['label'] ) ) : '';
+	$mc_link_label     = ( isset( $templates['link'] ) ) ? esc_attr( stripslashes( $templates['link'] ) ) : '';
 	?>
 
 	<div class="wrap jd-my-calendar mc-settings-page" id="mc_settings">

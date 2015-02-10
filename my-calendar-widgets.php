@@ -778,14 +778,19 @@ class my_calendar_mini_widget extends WP_Widget {
 				for="<?php echo $this->get_field_name( 'above' ); ?>"><?php _e( 'Navigation above calendar', 'my-calendar' ); ?></label>
 			<input type="text" class="widefat" name="<?php echo $this->get_field_name( 'above' ); ?>"
 			       id="<?php echo $this->get_field_name( 'above' ); ?>"
-			       value="<?php echo ( $above == '' ) ? 'nav,jump,print' : $above; ?>"/>
+			       value="<?php echo ( $above == '' ) ? 'nav,jump,print' : $above; ?>"
+				   aria-describedby='<?php echo $this->get_field_name( 'below' ); ?>-navigation-fields' />
 		</p>
 		<p>
 			<label
 				for="<?php echo $this->get_field_name( 'below' ); ?>"><?php _e( 'Navigation below calendar', 'my-calendar' ); ?></label>
 			<input type="text" class="widefat" name="<?php echo $this->get_field_name( 'below' ); ?>"
 			       id="<?php echo $this->get_field_name( 'below' ); ?>"
-			       value="<?php echo ( $below == '' ) ? 'key' : $below; ?>"/>
+			       value="<?php echo ( $below == '' ) ? 'key' : $below; ?>"
+				   aria-describedby='<?php echo $this->get_field_name( 'below' ); ?>-navigation-fields' />
+		</p>
+		<p id='<?php echo $this->get_field_name( 'below' ); ?>-navigation-fields'>
+			<?php _e( 'Navigation options:', 'my-calendar' ); ?> <code>nav,jump,print,key,feeds,none</code>
 		</p>
 		<p>
 			<label

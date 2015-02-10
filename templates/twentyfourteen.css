@@ -46,7 +46,7 @@
 }
 
 .mc-main table .current-day .mc-date {
-    background: rgba(0, 0, 0, .8);
+    background: rgba(0, 0, 0, .8) !important;
     color: #fff;
 }
 
@@ -87,7 +87,6 @@
     position: absolute;
     left: 5%;
     width: 90%;
-    padding: 5px;
     z-index: 3;
     background: rgba(255, 255, 255, .98);
     padding: 2em;
@@ -407,7 +406,7 @@
     height: auto;
 }
 
-.mc-main.mini .has-events {
+.mc-main.mini .has-events, .mc-main.mini .has-events .mc-date {
     background: #fff;
     font-weight: 700;
 }

@@ -101,6 +101,7 @@ BUG FIXES
 
 = 2.3.24 =
 
+* Bug fix: In mini widget, date is not displayed if only event on date is private
 * Bug fix: Improved fix to year rendering (roughly fixed in 2.3.23)
 * Bug fix: Improved rendering of structured event data.
 * Bug fix: [my_calendar_now] incorrectly checked the current time.
@@ -108,11 +109,20 @@ BUG FIXES
 * Bug fix: Was no way to reverse archiving an event; added method
 * Bug fix: Shortcode generator produced incorrect Upcoming Events shortcode.
 * Bug fix: Overlapping occurrences warning inappropriately showed on events recurring on a month by day basis
+* Bug fix: If only event on date is private, don't add class 'has-events'
+* Bug fix: Save default values for top/bottom nav on install.
+* Bug fix: Restore default template array when plug-in is deleted and re-installed
+* Minor style change to twentyfourteen.css
+* New default theme: twentyfifteen.css
 * Feature add: AJAX control to delete individual instances of a recurring event from the event editor.
 * Feature change: Events post type content filter now replaces content instead of repeating. Use 'mc_event_content' filter to override.
 * Improvement: Show overlapping occurrences warnings in manage events view.
+* Improvement: List/Grid button only shows on month and week views. 
+* Misc. UI improvements.
 * Performance fix: Hide overlapping recurring events on front-end. (They can consume massive amounts of memory.)
 * Language updates: French, Spanish, Japanese, Dutch, German, Ukrainian, Swedish
+
+ISSUE: What's causing templates to not be set?
 
 = 2.3.23 =
 

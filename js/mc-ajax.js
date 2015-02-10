@@ -28,7 +28,7 @@
             var ref = $(this).attr('data-rel');
             $('#' + ref).html('<div class=\"loading\"><span>Loading...</span></div>');
             $('#' + ref).load(link + ' #' + ref + ' > *', function () {
-                $('.mini .has-events').children().not('.trigger').hide();
+                $('.mini .has-events').children().not('.trigger, .mc-date, .event-date').hide();
                 $('#' + ref).attr('tabindex', '-1').focus();
             });
         });
