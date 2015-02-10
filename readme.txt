@@ -1450,6 +1450,4 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 == Upgrade Notice ==
 
-= 2.3.22 =
-
-Bug fix to {recurs} template tag; language updates.
+* 2.3.24 - Bug fixes and UI improvements; new default theme.
