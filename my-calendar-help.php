@@ -54,19 +54,19 @@ function my_calendar_help() {
 
 			<div class="inside mc-tabs">
 				<?php mc_generate(); ?>
-				<ul class='tabs'>
-					<li><a href='#mc_main'><?php _e( 'Main', 'my-calendar' ); ?></a></li>
-					<li><a href='#mc_upcoming'><?php _e( 'Upcoming', 'my-calendar' ); ?></a></li>
-					<li><a href='#mc_today'><?php _e( 'Today', 'my-calendar' ); ?></a></li>
+				<ul class='tabs' role="tablist">
+					<li><a href='#mc_main' role="tab" id='tab_mc_main' aria-controls='mc_main'><?php _e( 'Main', 'my-calendar' ); ?></a></li>
+					<li><a href='#mc_upcoming' role="tab" id='tab_mc_upcoming' aria-controls='mc_upcoming'><?php _e( 'Upcoming', 'my-calendar' ); ?></a></li>
+					<li><a href='#mc_today' role="tab" id='tab_mc_today' aria-controls='mc_today'><?php _e( 'Today', 'my-calendar' ); ?></a></li>
 					<?php echo apply_filters( 'mc_generator_tabs', '' ); ?>
 				</ul>
-				<div class='wptab mc_main' id='mc_main' aria-live='assertive'>
+				<div class='wptab mc_main' id='mc_main' aria-live='assertive' aria-labelledby='tab_mc_main' role="tabpanel">
 					<?php mc_generator( 'main' ); ?>
 				</div>
-				<div class='wptab mc_upcoming' id='mc_upcoming' aria-live='assertive'>
+				<div class='wptab mc_upcoming' id='mc_upcoming' aria-live='assertive' aria-labelledby='tab_mc_upcoming' role="tabpanel">
 					<?php mc_generator( 'upcoming' ); ?>
 				</div>
-				<div class='wptab mc_today' id='mc_today' aria-live='assertive'>
+				<div class='wptab mc_today' id='mc_today' aria-live='assertive' aria-labelledby='tab_mc_today' role="tabpanel">
 					<?php mc_generator( 'today' ); ?>
 				</div>
 				<?php echo apply_filters( 'mc_generator_tab_content', '' ); ?>

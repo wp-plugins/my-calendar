@@ -67,6 +67,7 @@ if ( ! defined( 'ABSPATH' ) && ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	delete_option( 'mc_show_weekends' );
 	delete_option( 'mc_convert' );
 	delete_option( 'mc_uri' );
+	delete_option( 'mc_uri_id' );
 	delete_option( 'mc_location_control' );
 	delete_option( 'mc_use_mini_template' );
 	delete_option( 'mc_use_list_template' );

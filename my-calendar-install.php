@@ -75,7 +75,7 @@ $rss_template = addslashes( "\n<item>
 	{guid}
   </item>\n" );
 
-$default_template = '<strong>{timerange}, {date}</strong> &#8211; {linking_title}';
+$default_template = '<strong>{timerange after=", "}{daterange}</strong> &#8211; {linking_title}';
 $charset_collate  = '';
 if ( ! empty( $wpdb->charset ) ) {
 	$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
@@ -273,13 +273,44 @@ function mc_default_settings() {
 	add_option( 'mc_event_link', 'true' );
 	add_option( 'mc_topnav', 'toggle,timeframe,jump,nav' );
 	add_option( 'mc_bottomnav', 'key,category,feeds' );	
+	update_option( 'mc_update_notice', 1 );
 	mc_add_roles();
+	$has_uri = mc_guess_calendar();
+	if ( $has_uri['response'] == false ) {
+		// if mc_guess_calendar returns a string, no valid URI was found.
+		$slug = sanitize_title( __( 'my-calendar', 'my-calendar' ) );
+		mc_generate_calendar_page( $slug );
+	}
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $initial_db );
 	dbDelta( $initial_occur_db );
 	dbDelta( $initial_cat_db );
 	dbDelta( $initial_loc_db );
 
+}
+
+function mc_generate_calendar_page( $slug ) {
+	global $current_user;
+	get_currentuserinfo();
+	if ( ! is_page( $slug ) ) {
+		$page      = array(
+			'post_title'  => __( 'My Calendar', 'my-calendar' ),
+			'post_status' => 'publish',
+			'post_type'   => 'page',
+			'post_author' => $current_user->ID,
+			'ping_status' => 'closed',
+			'post_content' => '[my_calendar]'
+		);
+		$post_ID   = wp_insert_post( $page );
+		$post_slug = wp_unique_post_slug( $slug, $post_ID, 'publish', 'page', 0 );
+		wp_update_post( array( 'ID' => $post_ID, 'post_name' => $post_slug ) );
+	} else {
+		$post    = get_page_by_path( $slug );
+		$post_ID = $post->ID;
+	}
+	update_option( 'mc_uri', get_permalink( $post_ID ) );
+	update_option( 'mc_uri_id', $post_ID );
+	return $post_ID;	
 }
 
 function mc_migrate_db() {

@@ -167,6 +167,10 @@
 	padding-top: 60px;
 }
 
+.mc-main.calendar .single-event .details.no-image {
+	padding-top: 0;
+}
+
 .mc-main .details {
 	padding: 10px;
 }
@@ -265,6 +269,10 @@
 	right: .5em;
 	background: rgba( 255, 255, 255, .7 );
 	padding: 0 10px !important;
+}
+.mc-main .single-event .time-block p {
+	position: static;
+	padding: 0!important;
 }
 
 .mc-main .time-block p:before {
@@ -448,6 +456,7 @@
 
 .single-event .event-title img {
     margin-right: 10px;
+	position: static;
 }
 
 /* Mini */

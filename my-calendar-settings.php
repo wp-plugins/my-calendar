@@ -447,7 +447,7 @@ function edit_my_calendar_config() {
 						<div><input type="hidden" name="_wpnonce"
 						            value="<?php echo wp_create_nonce( 'my-calendar-nonce' ); ?>"/></div>
 						<fieldset>
-							<legend><?php _e( 'Management', 'my-calendar' ); ?></legend>
+							<legend class="screen-reader-text"><?php _e( 'Management', 'my-calendar' ); ?></legend>
 							<ul>
 								<li><?php mc_settings_field( 'mc_remote', __( 'Get data (events, categories and locations) from a remote database.', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 								<?php if ( get_option( 'mc_remote' ) == 'true' ) { ?>
@@ -511,7 +511,7 @@ function edit_my_calendar_config() {
 					<div><input type="hidden" name="_wpnonce"
 					            value="<?php echo wp_create_nonce( 'my-calendar-nonce' ); ?>"/></div>
 					<fieldset>
-						<legend><?php _e( 'Customize Text Fields', 'my-calendar' ); ?></legend>
+						<legend class="screen-reader-text"><?php _e( 'Customize Text Fields', 'my-calendar' ); ?></legend>
 						<ul>
 							<li><?php mc_settings_field( 'mc_notime_text', __( 'Label for all-day events', 'my-calendar' ), 'N/A' ); ?></li>
 							<li><?php mc_settings_field( 'mc_previous_events', __( 'Previous events link', 'my-calendar' ), __( 'Previous', 'my-calendar' ), __( 'Use <code>{date}</code> to display date in navigation.', 'my-calendar' ) ); ?></li>
@@ -548,7 +548,7 @@ function edit_my_calendar_config() {
 						<ul>
 							<?php /* <li><?php mc_settings_field( 'mc_use_permalinks', __( 'Use Pretty Permalinks for Events','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li> This just isn't ready; add in a point release. */ ?>
 							<?php $guess = mc_guess_calendar(); ?>
-							<li><?php mc_settings_field( 'mc_uri', __( 'Where is your main calendar page?', 'my-calendar' ), '', "<br /><small>" . __( 'Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.', 'my-calendar' ) . " $guess</small>", array( 'size' => '60' ), 'url' ); ?></li>
+							<li><?php mc_settings_field( 'mc_uri', __( 'Where is your main calendar page?', 'my-calendar' ), '', "<br /><small>" . __( 'Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.', 'my-calendar' ) . " $guess[message]</small>", array( 'size' => '60' ), 'url' ); ?></li>
 							<li><?php mc_settings_field( 'mc_mini_uri', __( 'Target <abbr title="Uniform resource locator">URL</abbr> for mini calendar date links:', 'my-calendar' ), '', "<br /><small>" . __( 'Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.', 'my-calendar' ) . "</small>", array( 'size' => '60' ), 'url' ); ?></li>
 							<li><?php mc_settings_field( 'mc_open_uri', __( 'Open calendar links to event details URL', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 							<?php
@@ -627,7 +627,6 @@ function edit_my_calendar_config() {
 							<li><?php mc_settings_field( 'mc_display_author', __( 'Author\'s name', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 							<li><?php mc_settings_field( 'mc_show_event_vcal', __( 'Link to single event iCal download', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 							<li><?php mc_settings_field( 'mc_show_gcal', __( 'Link to submit event to Google Calendar', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
-							<li><?php mc_settings_field( 'mc_hide_icons', __( 'Hide Category icons', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 							<li><?php mc_settings_field( 'mc_show_map', __( 'Link to Google Map', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 							<li><?php mc_settings_field( 'mc_gmap', __( 'Google Map (single event view only)', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 							<li><?php mc_settings_field( 'mc_show_address', __( 'Event Address', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
@@ -647,6 +646,7 @@ function edit_my_calendar_config() {
 									'background' => __( 'Titles have category color as background.', 'my-calendar' )
 								), 'default', '', array(), 'radio' ); ?>
 							<li><?php mc_settings_field( 'mc_inverse_color', __( 'Optimize contrast for category colors.', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
+							<li><?php mc_settings_field( 'mc_hide_icons', __( 'Hide Category icons', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 						</ul>
 						<?php // End Event Options // ?>
 					</fieldset>
@@ -706,14 +706,14 @@ function edit_my_calendar_config() {
 
 	<div class="ui-sortable meta-box-sortables">
 		<div class="postbox" id="my-calendar-input">
-			<h3><?php _e( 'Calendar Input Settings', 'my-calendar' ); ?></h3>
+			<h3><?php _e( 'Calendar Input Fields', 'my-calendar' ); ?></h3>
 
 			<div class="inside">
 				<form method="post" action="<?php echo admin_url( "admin.php?page=my-calendar-config" ); ?>">
 					<div><input type="hidden" name="_wpnonce"
 					            value="<?php echo wp_create_nonce( 'my-calendar-nonce' ); ?>"/></div>
 					<fieldset>
-						<legend><?php _e( 'Select which input fields will be available when adding or editing events.', 'my-calendar' ); ?></legend>
+						<legend><?php _e( 'Show in event manager', 'my-calendar' ); ?></legend>
 						<div><input type='hidden' name='mc_input' value='true'/></div>
 						<ul class="checkboxes">
 							<?php
@@ -855,8 +855,8 @@ function edit_my_calendar_config() {
 							if ( $role == 'administrator' ) {
 								continue;
 							}
-							$role_tabs .= "<li><a href='#mc_$role'>$rolename</a></li>\n";
-							$role_container .= "<div class='wptab mc_$role' id='mc_$role' aria-live='assertive'><fieldset id='mc_$role' class='roles'><legend>$rolename</legend>";
+							$role_tabs .= "<li role='tab' id='tab_$role' aria-controls='mc_$role'><a href='#mc_$role'>$rolename</a></li>\n";
+							$role_container .= "<div class='wptab mc_$role' aria-labbelledby='tab_$role' role='tabpanel' id='mc_$role' aria-live='assertive'><fieldset id='mc_$role' class='roles'><legend>$rolename</legend>";
 							$role_container .= "<input type='hidden' value='none' name='mc_caps[" . $role . "][none]' />
 			<ul class='mc-settings checkboxes'>";
 							foreach ( $caps as $cap => $name ) {
@@ -866,7 +866,7 @@ function edit_my_calendar_config() {
 			</ul></fieldset></div>\n";
 						}
 						echo "
-		<ul class='tabs'>
+		<ul class='tabs' role='tablist'>
 			$role_tabs
 		</ul>
 		$role_container";
@@ -897,6 +897,7 @@ function edit_my_calendar_config() {
 						<div><input type='hidden' name='mc_email' value='true'/></div>
 						<ul>
 							<li><?php mc_settings_field( 'mc_event_mail', __( 'Send Email Notifications when new events are scheduled or reserved.', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
+							<li><?php mc_settings_field( 'mc_html_email', __( 'Send HTML email', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>	
 							<li><?php mc_settings_field( 'mc_event_mail_to', __( 'Notification messages are sent to:', 'my-calendar' ), get_bloginfo( 'admin_email' ) ); ?></li>
 							<li><?php mc_settings_field( 'mc_event_mail_from', __( 'Notification messages are sent from:', 'my-calendar' ), get_bloginfo( 'admin_email' ) ); ?></li>
 							<li><?php mc_settings_field( 'mc_event_mail_bcc', __( 'BCC on notifications (one per line):', 'my-calendar' ), '', '', array(
@@ -908,7 +909,6 @@ function edit_my_calendar_config() {
 										'cols' => 60,
 										'rows' => 6
 									), 'textarea' ); ?></li>
-							<li><?php mc_settings_field( 'mc_html_email', __( 'Send HTML email', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 						</ul>
 					</fieldset>
 					<p>

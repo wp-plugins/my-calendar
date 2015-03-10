@@ -171,6 +171,17 @@ function mc_generator( $type ) {
 						<option value="event" selected="selected"><?php _e( 'Events', 'my-calendar' ); ?></option>
 						<option value="month"><?php _e( 'Current Month', 'my-calendar' ); ?></option>
 						<option value="month+1"><?php _e( 'Next Month', 'my-calendar' ); ?></option>
+						<option value="month+2"><?php _e( '2nd Month Out', 'my-calendar' ); ?></option>
+						<option value="month+3"><?php _e( '3rd Month Out', 'my-calendar' ); ?></option>
+						<option value="month+4"><?php _e( '4th Month Out', 'my-calendar' ); ?></option>
+						<option value="month+5"><?php _e( '5th Month Out', 'my-calendar' ); ?></option>
+						<option value="month+6"><?php _e( '6th Month Out', 'my-calendar' ); ?></option>
+						<option value="month+7"><?php _e( '7th Month Out', 'my-calendar' ); ?></option>
+						<option value="month+8"><?php _e( '8th Month Out', 'my-calendar' ); ?></option>
+						<option value="month+9"><?php _e( '9th Month Out', 'my-calendar' ); ?></option>
+						<option value="month+10"><?php _e( '10th Month Out', 'my-calendar' ); ?></option>
+						<option value="month+11"><?php _e( '11th Month Out', 'my-calendar' ); ?></option>
+						<option value="month+12"><?php _e( '12th Month Out', 'my-calendar' ); ?></option>						
 						<option value="year"><?php _e( 'Current Year', 'my-calendar' ); ?></option>
 						<option value="days"><?php _e( 'Days', 'my-calendar' ); ?></option>
 					</select>

@@ -615,6 +615,10 @@ function check_my_calendar() {
 	$mcdb = $wpdb;
 	mc_if_needs_permissions();
 	$current_version = ( get_option( 'mc_version' ) == '' ) ? get_option( 'my_calendar_version' ) : get_option( 'mc_version' );
+	if ( version_compare( $current_version, '2.3.12', '>=' ) ) {
+		// if current is a version higher than 2.3.11, they've already seen this notice and handled it.
+		update_option( 'mc_update_notice', 1 );
+	}
 	// If current version matches, don't bother running this.
 	if ( $current_version == $mc_version ) {
 		return true;
@@ -625,7 +629,7 @@ function check_my_calendar() {
 
 	if ( my_calendar_exists() && $current_version == '' ) {
 		// If the table exists, but I don't know what version it is, I have to run the full cycle of upgrades. 
-		$current_version = '1.9.9';
+		$current_version = '1.10.7';
 	}
 
 	if ( !my_calendar_exists() ) {
@@ -634,8 +638,6 @@ function check_my_calendar() {
 		// for each release requiring an upgrade path, add a version compare. 
 		// Loop will run every relevant upgrade cycle.
 		$valid_upgrades = array(
-			'1.10.0',
-			'1.10.7',
 			'1.11.0',
 			'1.11.1',
 			'2.0.0',
@@ -777,12 +779,6 @@ function mc_do_upgrades( $upgrade_path ) {
 				delete_option( 'mc_can_manage_events' );
 				delete_option( 'mc_event_edit_perms' );
 				delete_option( 'mc_event_approve_perms' );
-				break;
-			case '1.10.7':
-				update_option( 'mc_multisite_show', 0 );
-				break;
-			case '1.10.0':
-				update_option( 'mc_week_caption', "The week's events" );
 				break;
 			default:
 				break;
@@ -1398,18 +1394,34 @@ function mc_guess_calendar() {
 		'eventi',
 		'classi'
 	);
-	foreach ( $my_guesses as $guess ) {
-		$value = $mcdb->get_var( "SELECT id FROM $mcdb->posts WHERE post_title LIKE '%$guess%' AND post_status = 'publish'" );
-		if ( $value && get_option( 'mc_uri' ) == '' ) {
-			$link = get_permalink( $value );
-			update_option( 'mc_uri', $link );
-			$return = __( 'Is this your calendar page?', 'my-calendar' ) . ' <code>' . $link . '</code>';
-
-			return $return;
+	$current_uri = get_option( 'mc_uri' );
+	// check whether calendar page is a valid URL.
+	if ( $current_uri ) { 
+		$response = wp_remote_head( $current_uri );
+		$http = $response['response']['code'];
+		if ( $http != 200 ) {
+			$current_uri = '';
 		}
 	}
+	if ( $current_uri == '' ) {
+		foreach ( $my_guesses as $guess ) {
+			$post_ID = $mcdb->get_var( "SELECT id FROM $mcdb->posts WHERE post_title LIKE '%$guess%' AND post_status = 'publish'" );
+			if ( $post_ID ) {
+				$link = get_permalink( $post_ID );
+				update_option( 'mc_uri', $link );
+				update_option( 'mc_uri_id', $post_ID );
+				$return = array( 'response' => true, 'message'=> __( 'Is this your calendar page?', 'my-calendar' ) . ' <code>' . $link . '</code>' );
 
-	return '';
+				return $return;
+			} else {
+				update_option( 'mc_uri', '' );
+				update_option( 'mc_uri_id', '' );
+				$return = array( 'response' => false, 'message' => __( 'No valid calendar detected. Please provide a URL!', 'my-calendar' ) );
+				return $return;
+			}
+		}
+	}
+	return;
 }
 
 function jcd_get_support_form() {

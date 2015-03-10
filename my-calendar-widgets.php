@@ -258,6 +258,28 @@ class my_calendar_upcoming_widget extends WP_Widget {
 				<option
 					value="month+1" <?php echo ( $type == 'month+1' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show next month', 'my-calendar' ) ?></option>
 				<option
+					value="month+2" <?php echo ( $type == 'month+2' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show 2nd month out', 'my-calendar' ) ?></option>
+				<option
+					value="month+3" <?php echo ( $type == 'month+3' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show 3rd month out', 'my-calendar' ) ?></option>
+				<option
+					value="month+4" <?php echo ( $type == 'month+4' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show 4th month out', 'my-calendar' ) ?></option>
+				<option
+					value="month+5" <?php echo ( $type == 'month+5' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show 5th month out', 'my-calendar' ) ?></option>
+				<option
+					value="month+6" <?php echo ( $type == 'month+6' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show 6th month out', 'my-calendar' ) ?></option>
+				<option
+					value="month+7" <?php echo ( $type == 'month+7' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show 7th month out', 'my-calendar' ) ?></option>
+				<option
+					value="month+8" <?php echo ( $type == 'month+8' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show 8th month out', 'my-calendar' ) ?></option>
+				<option
+					value="month+9" <?php echo ( $type == 'month+9' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show 9th month out', 'my-calendar' ) ?></option>
+				<option
+					value="month+10" <?php echo ( $type == 'month+10' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show 10th month out', 'my-calendar' ) ?></option>
+				<option
+					value="month+11" <?php echo ( $type == 'month+11' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show 11th month out', 'my-calendar' ) ?></option>
+				<option
+					value="month+12" <?php echo ( $type == 'month+12' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show 12th month out', 'my-calendar' ) ?></option>
+				<option
 					value="year" <?php echo ( $type == 'year' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show current year', 'my-calendar' ) ?></option>
 			</select>
 		</p>
@@ -342,7 +364,7 @@ class my_calendar_upcoming_widget extends WP_Widget {
 function my_calendar_upcoming_events( $before = 'default', $after = 'default', $type = 'default', $category = 'default', $template = 'default', $substitute = '', $order = 'asc', $skip = 0, $show_today = 'yes', $author = 'default', $host = 'default', $ltype = '', $lvalue = '' ) {
 	global $default_template;
 	$output                = '';
-	$widget_defaults       = (array) get_option( 'mc_widget_defaults' );
+	$widget_defaults       = ( array ) get_option( 'mc_widget_defaults' );
 	$display_upcoming_type = ( $type == 'default' ) ? $widget_defaults['upcoming']['type'] : $type;
 	$display_upcoming_type = ( $display_upcoming_type == '' ) ? 'event' : $display_upcoming_type;
 	// Get number of units we should go into the future
@@ -371,10 +393,55 @@ function my_calendar_upcoming_events( $before = 'default', $after = 'default', $
 			$from = date( 'Y-m-1' );
 			$to   = date( 'Y-m-t' );
 		}
+		/* Yes, this is crude. But sometimes simplicity works best. There are only 12 possibilities, after all. */
 		if ( $display_upcoming_type == 'month+1' ) {
 			$from = date( 'Y-m-1', strtotime( '+1 month' ) );
 			$to   = date( 'Y-m-t', strtotime( '+1 month' ) );
 		}
+		if ( $display_upcoming_type == 'month+2' ) {
+			$from = date( 'Y-m-1', strtotime( '+2 month' ) );
+			$to   = date( 'Y-m-t', strtotime( '+2 month' ) );
+		}
+		if ( $display_upcoming_type == 'month+3' ) {
+			$from = date( 'Y-m-1', strtotime( '+3 month' ) );
+			$to   = date( 'Y-m-t', strtotime( '+3 month' ) );
+		}
+		if ( $display_upcoming_type == 'month+4' ) {
+			$from = date( 'Y-m-1', strtotime( '+4 month' ) );
+			$to   = date( 'Y-m-t', strtotime( '+4 month' ) );
+		}
+		if ( $display_upcoming_type == 'month+5' ) {
+			$from = date( 'Y-m-1', strtotime( '+5 month' ) );
+			$to   = date( 'Y-m-t', strtotime( '+5 month' ) );
+		}
+		if ( $display_upcoming_type == 'month+6' ) {
+			$from = date( 'Y-m-1', strtotime( '+6 month' ) );
+			$to   = date( 'Y-m-t', strtotime( '+6 month' ) );
+		}
+		if ( $display_upcoming_type == 'month+7' ) {
+			$from = date( 'Y-m-1', strtotime( '+7 month' ) );
+			$to   = date( 'Y-m-t', strtotime( '+7 month' ) );
+		}
+		if ( $display_upcoming_type == 'month+8' ) {
+			$from = date( 'Y-m-1', strtotime( '+8 month' ) );
+			$to   = date( 'Y-m-t', strtotime( '+8 month' ) );
+		}
+		if ( $display_upcoming_type == 'month+9' ) {
+			$from = date( 'Y-m-1', strtotime( '+9 month' ) );
+			$to   = date( 'Y-m-t', strtotime( '+9 month' ) );
+		}
+		if ( $display_upcoming_type == 'month+10' ) {
+			$from = date( 'Y-m-1', strtotime( '+10 month' ) );
+			$to   = date( 'Y-m-t', strtotime( '+10 month' ) );
+		}
+		if ( $display_upcoming_type == 'month+11' ) {
+			$from = date( 'Y-m-1', strtotime( '+11 month' ) );
+			$to   = date( 'Y-m-t', strtotime( '+11 month' ) );
+		}
+		if ( $display_upcoming_type == 'month+12' ) {
+			$from = date( 'Y-m-1', strtotime( '+12 month' ) );
+			$to   = date( 'Y-m-t', strtotime( '+12 month' ) );
+		}		
 		if ( $display_upcoming_type == "year" ) {
 			$from = date( 'Y-1-1' );
 			$to   = date( 'Y-12-31' );

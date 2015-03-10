@@ -29,6 +29,10 @@ function mc_event_post( $action, $data, $event_id ) {
 		} else {
 			$post_id = $_POST['event_post'];
 		}
+		// If, after all that, the post doesn't exist, create it.
+		if ( ! get_post_status( $post_id ) ) {
+			mc_create_event_post( $data, $event_id );
+		}
 		$term              = mc_get_category_detail( $data['event_category'], 'category_term' );
 		$privacy           = ( mc_get_category_detail( $data['event_category'], 'category_private' ) == 1 ) ? 'private' : 'publish';
 		$title             = $data['event_title'];
@@ -1677,19 +1681,15 @@ function mc_list_events() {
 					if ( current_user_can( 'mc_manage_events' ) || current_user_can( 'mc_approve_events' ) || mc_can_edit_event( $event->event_author ) ) {
 						?>
 						<tr class="<?php echo "$class $spam $pending $problem"; ?>">
-							<th scope="row"><input type="checkbox" value="<?php echo $event->event_id; ?>"
-							                       name="mass_edit[]"
-							                       id="mc<?php echo $event->event_id; ?>" <?php echo ( $event->event_flagged == 1 ) ? 'checked="checked"' : ''; ?> />
-								<label
-									for="mc<?php echo $event->event_id; ?>"><?php echo $event->event_id; ?></label>
+							<th scope="row">
+								<input type="checkbox" value="<?php echo $event->event_id; ?>" name="mass_edit[]" id="mc<?php echo $event->event_id; ?>" <?php echo ( $event->event_flagged == 1 ) ? 'checked="checked"' : ''; ?> />
+								<label for="mc<?php echo $event->event_id; ?>"><?php echo $event->event_id; ?></label>
 							</th>
 							<td title="<?php echo esc_attr( substr( strip_tags( stripslashes( $event->event_desc ) ), 0, 240 ) ); ?>">
 								<strong><?php if ( mc_can_edit_event( $event->event_author ) ) { ?>
-									<a href="<?php echo $edit_url; ?>"
-									   class='edit'>
+									<a href="<?php echo $edit_url; ?>" class='edit'>
 										<?php } ?>
-										<?php echo $spam_label;
-										echo stripslashes( $title ); ?>
+										<?php echo $spam_label; echo stripslashes( $title ); ?>
 									<?php if ( mc_can_edit_event( $event->event_author ) ) {
 										echo "</a>";
 										if ( $check != '' ) {
@@ -1709,11 +1709,11 @@ function mc_list_events() {
 									<?php
 									} else {
 										_e( "Not editable.", 'my-calendar' );
-									} ?>
-									<?php if ( get_option( 'mc_event_approve' ) == 'true' ) { ?>
+									} 
+									if ( get_option( 'mc_event_approve' ) == 'true' ) { ?>
 										|
-										<?php if ( current_user_can( 'mc_approve_events' ) ) { // Added by Roland P.?>
-											<?php if ( $event->event_approved == '1' ) {
+										<?php if ( current_user_can( 'mc_approve_events' ) ) { // Added by Roland P.
+											if ( $event->event_approved == '1' ) {
 												$mo = 'reject';
 												$te = __( 'Reject', 'my-calendar' );
 											} else {
@@ -1738,13 +1738,9 @@ function mc_list_events() {
 									} ?>
 								</div>
 							</td>
-							<td><?php if ( $event->event_label != '' ) { ?><a class='mc_filter'
-							                                                  href='<?php $elabel = urlencode( $event->event_label );
-							                                                  echo admin_url( "admin.php?page=my-calendar-manage&amp;filter=$elabel&amp;restrict=where" ); ?>'
-							                                                  title="<?php _e( 'Filter by location', 'my-calendar' ); ?>">
-									<span
-										class="screen-reader-text"><?php _e( 'Show only: ', 'my-calendar' ); ?></span><?php echo stripslashes( $event->event_label ); ?>
-									</a><?php } ?></td>
+							<td>
+								<?php if ( $event->event_label != '' ) { ?><a class='mc_filter' href='<?php $elabel = urlencode( $event->event_label ); echo admin_url( "admin.php?page=my-calendar-manage&amp;filter=$elabel&amp;restrict=where" ); ?>' title="<?php _e( 'Filter by location', 'my-calendar' ); ?>"><span class="screen-reader-text"><?php _e( 'Show only: ', 'my-calendar' ); ?></span><?php echo stripslashes( $event->event_label ); ?></a><?php } ?>
+							</td>
 							<?php if ( $event->event_time != "00:00:00" ) {
 								$eventTime = date_i18n( get_option( 'mc_time_format' ), strtotime( $event->event_time ) );
 							} else {

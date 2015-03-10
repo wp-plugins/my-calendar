@@ -936,22 +936,10 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 				if ( $is_start_of_week ) {
 					$c_year = ( date( "Y", current_time( 'timestamp' ) ) );			
 				} else {
-					$today = date( 'N', current_time( 'timestamp' ) ); // current day number
-					$todate = date( 'j', current_time( 'timestamp' ) ); // current date number				
-					if ( get_option( 'start_of_week' ) == 1 ) { // start of week is Monday
-						$diff = $today - get_option( 'start_of_week' );
-						if ( $todate <= $diff ) {
-							$c_year = ( date( "Y", current_time( 'timestamp' ) ) ) - 1;				
-						} else {
-							$c_year = ( date( "Y", current_time( 'timestamp' ) ) );
-						}
-					} else { // treat as Sunday if not set to Monday
-						$diff = abs( $today - get_option( 'start_of_week' ) );
-						if ( $todate <= $diff ) {
-							$c_year = ( date( "Y", current_time( 'timestamp' ) ) ) - 1;				
-						} else {
-							$c_year = ( date( "Y", current_time( 'timestamp' ) ) );
-						}
+					$current_year = date( 'Y', current_time( 'timestamp' ) );
+					$c_year = ( $dm[1] == 0 ) ? $current_year : false;
+					if ( !$c_year ) {
+						$c_year = ( date( 'Y', strtotime( '-1 month' ) ) == $current_year ) ? $current_year : $current_year - 1;
 					}
 				}
 			} else {
@@ -1861,10 +1849,11 @@ function my_calendar_searchform( $type, $url ) {
 			$url = ( get_option( 'mc_uri' ) != '' ) ? get_option( 'mc_uri' ) : home_url();
 		}
 		return '
-		<form role="search" method="get" id="mcsearchform" action="' . apply_filters( 'mc_search_page', $url ) . '" >
-		<div><label class="screen-reader-text" for="mcs">' . __( 'Search Events', 'my-calendar' ) . '</label>
-		<input type="text" value="' . stripslashes( $query ) . '" name="mcs" id="mcs" />
-		<input type="submit" id="searchsubmit" value="' . __( 'Search Events', 'my-calendar' ) . '" />
+		<form role="search" method="get" action="' . apply_filters( 'mc_search_page', esc_url( $url ) ) . '" >
+		<div class="mc-search">
+			<label class="screen-reader-text" for="mcs">' . __( 'Search Events', 'my-calendar' ) . '</label>
+			<input type="text" value="' . stripslashes( $query ) . '" name="mcs" id="mcs" />
+			<input type="submit" id="searchsubmit" value="' . __( 'Search Events', 'my-calendar' ) . '" />
 		</div>
 		</form>';
 	}

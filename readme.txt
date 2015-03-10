@@ -92,12 +92,30 @@ FEATURES [2.4.0]
 * Update event taxonomies if category changed/source event taxonomy data from post?
 * Permanently retire #jd_calendar and generate custom IDs. [breaking change]
 * Custom link targets using mc_customize_details_link & template_redirect filter as pointer.
+* Make only portions of events private (e.g., time and location for children's events, etc.)
+* Handle stylesheet editing as additive (child styles), rather than editing the original stylesheet.
 
 ISSUES
 * Consider transportability of data for moving My Calendar to another installation without moving all data. (Yikes!)
 
-BUG FIXES
+MAJOR BUG FIXES
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
+
+= 2.3.25 =
+
+* Bug fix: Escape URL for search form request URL
+* Bug fix in check whether event had a valid post container.
+* Bug fix to handle problem with weeks calculation on the first of the month.
+* Bug fix: Display problem in single-page event view in twentyfifteen.css
+* Bug fix: If My Calendar URL is invalid, re-check when settings page is loaded.
+* Bug fix: Don't display update notice on new installs.
+* Change: My Calendar automatically generates calendar page on installation.
+* Change to Upcoming Events default template to make usage more robust.
+* Change: mc-mini JS to auto close all open panels if a new one is opened.
+* Rearrange a few settings for better usability.
+* Added ability to use Upcoming Events widget to show the nth future month. (e.g., show events for the 6th month out from today.)
+* Deprecated upgrade cycles prior to version 1.11.0.
+* Improve accessibility of tab panels used in My Calendar UI.
 
 = 2.3.24 =
 
@@ -1450,4 +1468,4 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 == Upgrade Notice ==
 
-* 2.3.24 - Bug fixes and UI improvements; new default theme.
+* 2.3.25 - Fixes issue with week calculation when crossing months. Upgrade before April 1st! :)
