@@ -3,9 +3,9 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, event, events, scheduling, schedule, event manager, event calendar, class, concert, conference, meeting, venue, location, box office, tickets, registration
 Requires at least: 3.8.5
-Tested up to: 4.1
+Tested up to: 4.1.1
 License: GPLv2 or later
-Stable tag: 2.3.24
+Stable tag: 2.3.25
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
@@ -44,7 +44,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 = Translations =
 
 Available translations (in order of completeness):
-Portuguese (Portugal), Spanish (Spain), French, Danish, Japanese, Dutch, German, Russian, Swedish, Italian, Galician, Portuguese (Brazil), Czech, Hindi, Turkish, Finnish, Polish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal),  Hungarian
+Portuguese (Portugal), Spanish (Spain), French, Danish, Japanese, Russian, Dutch, German, Swedish, Italian, Galician, Portuguese (Brazil), Czech, Hindi, Turkish, Finnish, Polish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Afrikaans, Hungarian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -116,6 +116,7 @@ MAJOR BUG FIXES
 * Added ability to use Upcoming Events widget to show the nth future month. (e.g., show events for the 6th month out from today.)
 * Deprecated upgrade cycles prior to version 1.11.0.
 * Improve accessibility of tab panels used in My Calendar UI.
+* Language updates: Updated Russian, Added Afrikaans
 
 = 2.3.24 =
 
