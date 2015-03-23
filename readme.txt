@@ -94,6 +94,7 @@ FEATURES [2.4.0]
 * Custom link targets using mc_customize_details_link & template_redirect filter as pointer.
 * Make only portions of events private (e.g., time and location for children's events, etc.)
 * Handle stylesheet editing as additive (child styles), rather than editing the original stylesheet.
+* Update pickadate to version 3.6, if it's out. 
 
 ISSUES
 * Consider transportability of data for moving My Calendar to another installation without moving all data. (Yikes!)
