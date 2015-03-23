@@ -856,7 +856,7 @@ function edit_my_calendar_config() {
 								continue;
 							}
 							$role_tabs .= "<li role='tab' id='tab_$role' aria-controls='mc_$role'><a href='#mc_$role'>$rolename</a></li>\n";
-							$role_container .= "<div class='wptab mc_$role' aria-labbelledby='tab_$role' role='tabpanel' id='mc_$role' aria-live='assertive'><fieldset id='mc_$role' class='roles'><legend>$rolename</legend>";
+							$role_container .= "<div class='wptab mc_$role' aria-labelledby='tab_$role' role='tabpanel' id='mc_$role' aria-live='assertive'><fieldset id='mc_$role' class='roles'><legend>$rolename</legend>";
 							$role_container .= "<input type='hidden' value='none' name='mc_caps[" . $role . "][none]' />
 			<ul class='mc-settings checkboxes'>";
 							foreach ( $caps as $cap => $name ) {

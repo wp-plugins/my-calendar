@@ -330,7 +330,7 @@ function mc_create_tags( $event, $context = 'filters' ) {
 	$e['map']             = mc_generate_map( $event );
 	$url                  = ( get_option( 'mc_uri' ) != '' && ! is_numeric( get_option( 'mc_uri' ) ) ) ? $e_link : $event->event_url;
 	$e['gcal']            = mc_google_cal( $dtstart, $dtend, $url, stripcslashes( $event->event_title ), mc_maplink( $event, 'gcal' ), $strip_desc );
-	$e['gcal_link']       = "<a href='" . mc_google_cal( $dtstart, $dtend, $url, stripcslashes( $event->event_title ), mc_maplink( $event, 'gcal' ), $strip_desc ) . "'>" . sprintf( __( 'Send <span class="screen-reader-text">%1$s </span>to Google Calendar', 'my-calendar' ), stripcslashes( $event->event_title ) ) . "</a>";
+	$e['gcal_link']       = "<a href='" . mc_google_cal( $dtstart, $dtend, $url, stripcslashes( $event->event_title ), mc_maplink( $event, 'gcal' ), $strip_desc ) . "' class='gcal external'>" . sprintf( __( 'Send <span class="screen-reader-text">%1$s </span>to Google Calendar', 'my-calendar' ), stripcslashes( $event->event_title ) ) . "</a>";
 	$e['location_access'] = mc_expand( unserialize( mc_location_data( 'location_access', $event->event_location ) ) );
 	$e['location_source'] = $event->event_location;
 
@@ -632,6 +632,12 @@ function mc_image_data( $e, $event ) {
 			$e['image'] = $e[$image_size];
 		}
 	} else {
+		$sizes     = get_intermediate_image_sizes();
+		// create empty array values so that template tags will be removed even if post doesn't exist.
+		foreach ( $sizes as $size ) {
+			$e[ $size ]          = '';
+			$e[ $size . '_url' ] = '';
+		}			
 		$e['image_url'] = ( $event->event_image != '' ) ? $event->event_image : '';
 		$e['image']     = ( $event->event_image != '' ) ? "<img src='$event->event_image' alt='' class='mc-image' />" : '';
 	}

@@ -1398,9 +1398,11 @@ function mc_guess_calendar() {
 	// check whether calendar page is a valid URL.
 	if ( $current_uri ) { 
 		$response = wp_remote_head( $current_uri );
-		$http = $response['response']['code'];
-		if ( $http != 200 ) {
-			$current_uri = '';
+		if ( !is_wp_error( $response ) ) {
+			$http = $response['response']['code'];
+			if ( $http != 200 ) {
+				$current_uri = '';
+			}
 		}
 	}
 	if ( $current_uri == '' ) {

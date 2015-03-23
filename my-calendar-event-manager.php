@@ -1129,7 +1129,7 @@ function mc_form_fields( $data, $mode, $event_id ) {
 							} else { // case: editing, approval enabled, user cannot approve 
 								?>
 								<input type="hidden" value="0"
-								       name="event_approved"/><?php _e( 'An administrator must approve your new event.', 'my-calendar' );
+								       name="event_approved" /><?php _e( 'An administrator must approve your new event.', 'my-calendar' );
 							}
 						} else { // Case: editing, approval system is disabled - auto approve 
 							?>
@@ -1306,7 +1306,7 @@ if ( mc_show_edit_block( 'event_location' ) || mc_show_edit_block( 'event_locati
 							name="location_preset" id="l_preset" aria-describedby='mc-current-location'>
 							<option value="none"> --</option><?php
 							foreach ( $locs as $loc ) {
-								if ( is_object( $loc ) ) {
+								if ( is_object( $loc ) && is_object( $data ) ) {
 									echo "<option value=\"" . $loc->location_id . "\">" . stripslashes( $loc->location_label ) . "</option>";
 									if ( $loc->location_id == $data->event_location ) {
 										$current_location = "<span id='mc-current-location'>" . sprintf( __( 'Current location: %s', 'my-calendar' ), $loc->location_label ) . "</span>";

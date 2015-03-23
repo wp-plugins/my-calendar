@@ -101,6 +101,18 @@ ISSUES
 MAJOR BUG FIXES
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
 
+= 2.3.26 =
+
+* Typo in aria-labelledby.
+* Bug fix: fatal error if wp_remote returns WP_error.
+* Bug fix: could not set calendar URI if site is password protected.
+* Bug fix: category key fetched icons using a different path generation than main calendar that could result in a broken link.
+* Bug fix: ensure that all image template tags exist in the array, even if the event post does not exist.
+* Bug fix: make print view respect current category/location filters
+* Bug fix: make iCal download respect current category/location filters
+* Added class on event data container for root ID of events.
+* Added 'current' class for currently selected category in category key if category filter applied.
+
 = 2.3.25 =
 
 * Bug fix: Escape URL for search form request URL

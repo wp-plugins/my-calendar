@@ -216,7 +216,7 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 
 	$image = mc_category_icon( $event );
 	$has_image = ( $image != '' ) ? ' has-image' : '';
-	$header .= "<div id='$uid-$day_id-$type' class='$type-event " . "mc_" . sanitize_title( $event->category_name ) . " vevent'>\n";
+	$header .= "<div id='$uid-$day_id-$type' class='mc-$uid $type-event " . "mc_" . sanitize_title( $event->category_name ) . " vevent'>\n";
 
 	$title_template = ( $templates['title'] == '' ) ? '{title}' : $templates['title'];
 	$event_title    = jd_draw_template( $data, $title_template );
@@ -274,6 +274,7 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 					$more = '';
 				}
 			}
+			$more = apply_filters( 'mc_details_grid_link', $more, $event );
 			// handle link expiration
 			$event_link = mc_event_link( $event );
 
@@ -291,7 +292,7 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 			if ( in_array( 'medium', $sizes ) ) {
 				$default_size = 'medium';
 			} else {
-				$default_size = 'thumbnail';		
+				$default_size = 'thumbnail';
 			}
 			$default_size = apply_filters( 'mc_default_image_size', $default_size );
 			if ( is_numeric( $event->event_post ) && $event->event_post != 0 && ( isset( $data[ $default_size ] ) && $data[ $default_size ] != '' ) ) {
@@ -800,6 +801,9 @@ function mc_show_event_template( $content ) {
 // Actually do the printing of the calendar
 function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $lvalue = '', $id = 'jd-calendar', $template = '', $content = '', $author = null, $host = null, $above = '', $below = '' ) {
 	check_my_calendar();
+	// category key needs to receive the original category settings.
+	$original_category = $category;
+	$category = ( isset( $_GET['mcat'] ) ) ? (int) $_GET['mcat'] : $category;
 	$mc_toporder    = array( 'nav', 'toggle', 'jump', 'print', 'timeframe' );
 	$mc_bottomorder = array( 'key', 'feeds' );
 	if ( $above != '' || $below != '' ) {
@@ -868,7 +872,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 		$my_calendar_body .= mc_get_event( $mc_id, 'html' );
 	} else {
 		if ( $category == "" ) {
-			$category = null;
+			$category = 'all';
 		}
 		// Deal with the week not starting on a monday
 		$name_days = array(
@@ -1042,7 +1046,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			$timeframe = mc_time_toggle( $format, $time, 'yes', $day, $c_month, $c_year );
 		}
 		// set up category key
-		$key = ( in_array( 'key', $used ) ) ? my_category_key( $category ) : '';
+		$key = ( in_array( 'key', $used ) ) ? my_category_key( $original_category ) : '';
 		// set up navigation links
 		if ( in_array( 'nav', $used ) ) {
 			$pLink         = my_calendar_prev_link( $c_year, $c_month, $c_day, $format, $time, $mc_show_months );
@@ -1072,7 +1076,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 		if ( $format != 'mini' ) {
 			$ical_m = ( isset( $_GET['month'] ) ) ? (int) $_GET['month'] : date( 'n' );
 			$ical_y = ( isset( $_GET['yr'] ) ) ? (int) $_GET['yr'] : date( 'Y' );
-			$feeds  = mc_rss_links( $ical_y, $ical_m, $nLink );
+			$feeds  = mc_rss_links( $ical_y, $ical_m, $nLink, $add, $subtract );
 		}
 		// set up date switcher
 		if ( in_array( 'jump', $used ) ) {
@@ -1364,7 +1368,6 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 function my_category_key( $category ) {
 	global $wpdb;
 	$url  = plugin_dir_url( __FILE__ );
-	$dir  = plugin_dir_path( __FILE__ );
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists( 'mc_remote_db' ) ) {
 		$mcdb = mc_remote_db();
@@ -1375,11 +1378,14 @@ function my_category_key( $category ) {
 	$categories = $mcdb->get_results( $sql );
 	$key .= '<div class="category-key">
 	<h3>' . __( 'Categories', 'my-calendar' ) . "</h3>\n<ul>\n";
-	$subpath = ( is_custom_icon() ) ? 'my-calendar-custom/' : 'my-calendar/images/icons/';
-	$path    = str_replace( basename( $dir ) . '/', '', $url ) . $subpath;
+	$path = ( is_custom_icon() ) ? str_replace( 'my-calendar', 'my-calendar-custom', $url ) : plugins_url( 'images/icons', __FILE__ ) . '/';
+
 	foreach ( $categories as $cat ) {
 		$hex   = ( strpos( $cat->category_color, '#' ) !== 0 ) ? '#' : '';
 		$class = sanitize_title( $cat->category_name );
+		if ( isset( $_GET['mcat'] ) && $_GET['mcat'] == $cat->category_id ) {
+			$class .= " current";
+		}
 		if ( $cat->category_private == 1 ) {
 			$class .= " private";
 		}
@@ -1399,12 +1405,16 @@ function my_category_key( $category ) {
 	return $key;
 }
 
-function mc_rss_links( $y, $m, $next ) {
+
+function mc_rss_links( $y, $m, $next, $add, $subtract ) {
 	global $wp_rewrite;
+	$add['yr'] = $y;
+	$add['month'] = $m;
+	$add['nyr'] = $next['yr'];
+	$add['nmonth'] = $next['month'];
+	
 	$feed       = mc_feed_base() . 'my-calendar-rss';
-	$end        = "&amp;nyr=$next[yr]&amp;nmonth=$next[month]";
-	$ics_extend = ( $wp_rewrite->using_permalinks() ) ? "my-calendar-ics/?yr=$y&amp;month=$m" . $end : "my-calendar-ics&amp;yr=$y&amp;month=$m" . $end;
-	$ics        = mc_feed_base() . $ics_extend;
+	$ics 		= mc_build_url( $add, $subtract,  mc_feed_base() . 'my-calendar-ics' );
 	$rss        = "\n	<li class='rss'><a href='" . $feed . "'>" . __( '<span class="maybe-hide">Subscribe by </span><abbr title="Really Simple Syndication">RSS</abbr>', 'my-calendar' ) . "</a></li>";
 	$ical       = "\n	<li class='ics'><a href='" . $ics . "'>" . __( '<span class="maybe-hide">Download as </span><abbr title="iCal Events Export">iCal</abbr>', 'my-calendar' ) . "</a></li>";
 	$output     = "\n
