@@ -102,6 +102,10 @@ ISSUES
 MAJOR BUG FIXES
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
 
+= 2.3.27 =
+
+* Bug fix: Things that happen when you failed to write down a minor change - you don't test it. Couldn't choose a preset location when creating an event in 2.3.26. 
+
 = 2.3.26 =
 
 * Typo in aria-labelledby.
