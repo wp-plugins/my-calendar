@@ -667,8 +667,8 @@ function mc_produce_upcoming_events( $events, $template, $type = 'list', $order 
 
 		foreach ( reverse_array( $temp_array, true, $order ) as $details ) {
 			if ( ! in_array( $details['group'], $groups ) ) {
-				$date  = date( 'Y-m-d', strtotime( $details['dtstart'] ) );
-				$class = ( my_calendar_date_comp( $date, $today ) === true ) ? "past-event" : "future-event";
+				$date  = date( 'Y-m-d H:i:s', strtotime( $details['dtstart'] ) );
+				$class = ( my_calendar_date_comp( $date, $today . date( 'H:i', current_time( 'timestamp' ) ) ) === true ) ? "past-event" : "future-event";
 				if ( my_calendar_date_equal( $date, $today ) ) {
 					$class = "today";
 				}

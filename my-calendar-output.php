@@ -141,13 +141,15 @@ function mc_category_icon( $event, $html = 'html' ) {
 	return $image;
 }
 
-add_filter( 'the_title', 'mc_category_icon_title' );
-function mc_category_icon_title( $title ) {
+add_filter( 'the_title', 'mc_category_icon_title', 10, 2 );
+function mc_category_icon_title( $title, $post_id = null ) {
 	if ( is_singular( 'mc-events' ) && in_the_loop() ) {
-		$event_id = get_post_meta( get_the_ID(), '_mc_event_id', true );
-		$event    = mc_get_event_core( $event_id );
-		$icon     = mc_category_icon( $event );
-		$title    = $icon . ' ' . $title;
+		if ( $post_id ) {
+			$event_id = ( isset( $_GET['mc_id'] ) && is_numeric( $_GET['mc_id'] ) ) ? $_GET['mc_id'] : get_post_meta( $post_id, '_mc_event_id', true );
+			$event    = mc_get_event_core( $event_id );
+			$icon     = mc_category_icon( $event );
+			$title    = $icon . ' ' . $title;
+		}
 	}
 
 	return $title;

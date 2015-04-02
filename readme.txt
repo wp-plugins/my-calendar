@@ -79,28 +79,32 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 = 2.4.0 = [todo]
 
 FEATURES [2.4.0]
-* Option to post new events as blog posts
 * Add author limit tool
-* Create advanced search
+* Create advanced search [PRO]
+* Option to post new events as blog posts [PRO]
+* Feature: allow limiting of categories to specific member groups [PRO]
+* Import from RSS/iCal [PRO]
+* Create selectable event details templates [PRO]
+* Make only portions of events private (e.g., time and location for children's events, etc.) [PRO]
+* Option to set default sort direction 
 * Support hiding 'Host' field as option.
-* Feature: allow limiting of categories to specific member groups
 * Refactor options storage
-* Import from RSS/iCal
 * Create a template tag to show the date range for event groups; add support for this type of event set to {daterange}
-* Create selectable event details templates
 * Add filters to search query parameters
 * Update event taxonomies if category changed/source event taxonomy data from post?
 * Permanently retire #jd_calendar and generate custom IDs. [breaking change]
 * Custom link targets using mc_customize_details_link & template_redirect filter as pointer.
-* Make only portions of events private (e.g., time and location for children's events, etc.)
 * Handle stylesheet editing as additive (child styles), rather than editing the original stylesheet.
 * Update pickadate to version 3.6, if it's out. 
-
-ISSUES
-* Consider transportability of data for moving My Calendar to another installation without moving all data. (Yikes!)
+* Add option to set event alarm or notification in .ics outputs [PRO]
 
 MAJOR BUG FIXES
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
+
+= 2.4.0 =
+
+* Set upcoming event class based on time, rather than date.
+* Add past/present class to today's events widget [todo]
 
 = 2.3.27 =
 
