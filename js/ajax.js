@@ -29,5 +29,19 @@
 			}
 		});
 		
+		var is_checked = $( 'input[id="e_allday"]' ).prop( "checked" );
+		if ( ! is_checked ) {
+			$( '.event_time_label' ).hide();
+		}
+		
+		$( 'input[id="e_allday"]' ).change( function() {
+			var checked = $(this).prop( "checked" );
+			if ( checked ) {
+				$( '.event_time_label' ).show();
+			} else {
+				$( '.event_time_label' ).hide();
+			}
+		});
+		
     });
 }(jQuery));

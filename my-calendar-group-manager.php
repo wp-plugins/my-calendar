@@ -1075,7 +1075,7 @@ function mc_list_groups() {
 			<?php if ( $event->event_time != "00:00:00" ) {
 				$eventTime = date_i18n( get_option( 'mc_time_format' ), strtotime( $event->event_time ) );
 			} else {
-				$eventTime = get_option( 'mc_notime_text' );
+				$eventTime = mc_notime_label( $event );
 			} ?>
 			<td><?php echo "$event->event_begin<br />$eventTime"; ?></td>
 			<td>

@@ -684,10 +684,15 @@ function mc_do_upgrades( $upgrade_path ) {
 	foreach ( $upgrade_path as $upgrade ) {
 		switch ( $upgrade ) {
 			// only upgrade db on most recent version
+			case '2.4.0':
+				$input_options = get_option( 'mc_input_options' );
+				$input_options['event_host'] = 'on';
+				update_option( 'mc_input_options', $input_options );
+				mc_upgrade_db();
+				break;
 			case '2.3.15':
 				delete_option( 'mc_event_groups' );
 				delete_option( 'mc_details' );
-				mc_upgrade_db();
 				break;
 			case '2.3.11':
 				add_option( 'mc_use_custom_js', 0 );
@@ -1396,11 +1401,12 @@ function mc_guess_calendar() {
 	);
 	$current_uri = get_option( 'mc_uri' );
 	// check whether calendar page is a valid URL.
-	if ( $current_uri ) { 
+	if ( $current_uri ) {
 		$response = wp_remote_head( $current_uri );
 		if ( !is_wp_error( $response ) ) {
 			$http = $response['response']['code'];
-			if ( $http != 200 ) {
+			// Only modify the value if it's explicitly missing. Redirects or secured pages are fine.
+			if ( $http == 404 ) {
 				$current_uri = '';
 			}
 		}

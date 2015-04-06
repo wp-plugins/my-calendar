@@ -520,6 +520,12 @@ tr.problem .error {
 	display: block;
 }
 
+.event_time_label {
+	display: inline-block;
+	padding: .25em;
+	background: #ffc;
+}
+
 #my-calendar .inside div iframe {
 	float: none; 
 }

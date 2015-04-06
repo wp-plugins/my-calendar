@@ -304,7 +304,8 @@ function edit_my_calendar_config() {
 			'event_location'          => ( ! empty( $_POST['mci_event_location'] ) && $_POST['mci_event_location'] ) ? 'on' : 'off',
 			'event_location_dropdown' => ( ! empty( $_POST['mci_event_location_dropdown'] ) && $_POST['mci_event_location_dropdown'] ) ? 'on' : 'off',
 			'event_specials'          => ( ! empty( $_POST['mci_event_specials'] ) && $_POST['mci_event_specials'] ) ? 'on' : 'off',
-			'event_access'            => ( ! empty( $_POST['mci_event_access'] ) && $_POST['mci_event_access'] ) ? 'on' : 'off'
+			'event_access'            => ( ! empty( $_POST['mci_event_access'] ) && $_POST['mci_event_access'] ) ? 'on' : 'off',
+			'event_host'	          => ( ! empty( $_POST['mci_event_host'] ) && $_POST['mci_event_host'] ) ? 'on' : 'off'
 		);
 		update_option( 'mc_input_options', $mc_input_options );
 		update_option( 'mc_input_options_administrators', $mc_input_options_administrators );
@@ -729,7 +730,8 @@ function edit_my_calendar_config() {
 								'event_open'              => __( 'Event Registration options', 'my-calendar' ),
 								'event_location'          => __( 'Event Location fields', 'my-calendar' ),
 								'event_specials'          => __( 'Set Special Scheduling options', 'my-calendar' ),
-								'event_access'            => __( "Event Accessibility", 'my-calendar' )
+								'event_access'            => __( 'Event Accessibility', 'my-calendar' ),
+								'event_host'              => __( 'Event Host', 'my-calendar' )
 							);
 							$output        = '';
 							// if input options isn't an array, we'll assume that this plugin wasn't upgraded properly, and reset them to the default.
@@ -745,7 +747,8 @@ function edit_my_calendar_config() {
 										'event_location'          => 'off',
 										'event_location_dropdown' => 'on',
 										'event_specials'          => 'on',
-										'event_access'            => 'on'
+										'event_access'            => 'on',
+										'event_host'              => 'on'
 									) );
 								$input_options = get_option( 'mc_input_options' );
 							}
@@ -775,28 +778,23 @@ function edit_my_calendar_config() {
 				<h3><?php _e( 'Multisite Settings (Network Administrators only)', 'my-calendar' ); ?></h3>
 
 				<div class="inside">
+					<p><?php _e( 'The central calendar is the calendar associated with the primary site in your WordPress Multisite network.', 'my-calendar' ); ?></p>
 					<form method="post" action="<?php echo admin_url( "admin.php?page=my-calendar-config" ); ?>">
-						<div><input type="hidden" name="_wpnonce"
-						            value="<?php echo wp_create_nonce( 'my-calendar-nonce' ); ?>"/></div>
-						<div><input type='hidden' name='mc_network' value='true'/></div>
+						<div>
+							<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'my-calendar-nonce' ); ?>"/>
+							<input type='hidden' name='mc_network' value='true'/>
+						</div>
 						<fieldset>
 							<legend><?php _e( 'WP MultiSite configurations', 'my-calendar' ); ?></legend>
-							<p><?php _e( 'The central calendar is the calendar associated with the primary site in your WordPress Multisite network.', 'my-calendar' ); ?></p>
 							<ul>
-								<li><input type="radio" value="0" id="ms0"
-								           name="mc_multisite"<?php echo jd_option_selected( get_site_option( 'mc_multisite' ), '0' ); ?> />
-									<label
-										for="ms0"><?php _e( 'Site owners may only post to their local calendar', 'my-calendar' ); ?></label>
+								<li>
+									<input type="radio" value="0" id="ms0" name="mc_multisite"<?php echo jd_option_selected( get_site_option( 'mc_multisite' ), '0' ); ?> /> <label for="ms0"><?php _e( 'Site owners may only post to their local calendar', 'my-calendar' ); ?></label>
 								</li>
-								<li><input type="radio" value="1" id="ms1"
-								           name="mc_multisite"<?php echo jd_option_selected( get_site_option( 'mc_multisite' ), '1' ); ?> />
-									<label
-										for="ms1"><?php _e( 'Site owners may only post to the central calendar', 'my-calendar' ); ?></label>
+								<li>
+									<input type="radio" value="1" id="ms1" name="mc_multisite"<?php echo jd_option_selected( get_site_option( 'mc_multisite' ), '1' ); ?> /> <label for="ms1"><?php _e( 'Site owners may only post to the central calendar', 'my-calendar' ); ?></label>
 								</li>
-								<li><input type="radio" value="2" id="ms2"
-								           name="mc_multisite"<?php echo jd_option_selected( get_site_option( 'mc_multisite' ), 2 ); ?> />
-									<label
-										for="ms2"><?php _e( 'Site owners may manage either calendar', 'my-calendar' ); ?></label>
+								<li>
+									<input type="radio" value="2" id="ms2" name="mc_multisite"<?php echo jd_option_selected( get_site_option( 'mc_multisite' ), 2 ); ?> /> <label for="ms2"><?php _e( 'Site owners may manage either calendar', 'my-calendar' ); ?></label>
 								</li>
 							</ul>
 							<p class="notice">

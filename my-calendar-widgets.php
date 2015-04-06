@@ -802,7 +802,7 @@ class my_calendar_mini_widget extends WP_Widget {
 		$title      = empty( $the_title ) ? __( 'Calendar', 'my-calendar' ) : $the_title;
 		$title      = ( $widget_link != '' ) ? "<a href='$widget_link'>$title</a>" : $title;
 		$title      = ( $title != '' ) ? $before_title . $title . $after_title : '';
-		$the_events = my_calendar( $name, $format, $category, $time, '', '', 'jd-calendar', '', '', $author, $host, $above, $below );
+		$the_events = my_calendar( $name, $format, $category, $time, '', '', 'mini-calendar', '', '', $author, $host, $above, $below );
 		if ( $the_events != '' ) {
 			echo $before_widget . $title . $the_events . $after_widget;
 		}

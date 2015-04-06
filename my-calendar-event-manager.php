@@ -88,6 +88,7 @@ function mc_add_post_meta_data( $post_id, $post, $data, $event_id ) {
 	update_post_meta( $post_id, '_mc_event_id', $event_id );
 	update_post_meta( $post_id, '_mc_event_desc', $data['event_desc'] );
 	update_post_meta( $post_id, '_mc_event_image', $data['event_image'] );
+	update_post_meta( $post_id, '_event_time_label', ( isset( $_POST['event_time_label'] ) ) ? $_POST['event_time_label'] : '' );
 	$location_id = ( isset( $post['location_preset'] ) ) ? (int) $post['location_preset'] : 0;
 	if ( $location_id ) { // only change location ID if dropdown set.
 		update_post_meta( $post_id, '_mc_event_location', $location_id );
@@ -97,39 +98,51 @@ function mc_add_post_meta_data( $post_id, $post, $data, $event_id ) {
 }
 
 function mc_create_event_post( $data, $event_id ) {
-	$term              = mc_get_category_detail( $data['event_category'], 'category_term' );
-	$privacy           = ( mc_get_category_detail( $data['event_category'], 'category_private' ) == 1 ) ? 'private' : 'publish';
-	$title             = $data['event_title'];
-	$template          = apply_filters( 'mc_post_template', 'details', $term );
-	$data['shortcode'] = "[my_calendar_event event='$event_id' template='$template' list='']";
-	$description       = $data['event_desc'];
-	$excerpt           = $data['event_short'];
-	$location_id       = ( isset( $_POST['location_preset'] ) ) ? (int) $_POST['location_preset'] : 0;
-	$post_status       = $privacy;
-	$auth              = $data['event_author'];
-	$type              = 'mc-events';
-	$my_post           = array(
-		'post_title'   => $title,
-		'post_content' => $description,
-		'post_status'  => $post_status,
-		'post_author'  => $auth,
-		'post_name'    => sanitize_title( $title ),
-		'post_date'    => date( 'Y-m-d H:i:s', current_time( 'timestamp' ) ),
-		'post_type'    => $type,
-		'post_excerpt' => $excerpt
-	);
-	$post_id           = wp_insert_post( $my_post );
-	wp_set_object_terms( $post_id, (int) $term, 'mc-event-category' );
-	$attachment_id = ( isset( $_POST['event_image_id'] ) && is_numeric( $_POST['event_image_id'] ) ) ? $_POST['event_image_id'] : false;
-	if ( $attachment_id ) {
-		set_post_thumbnail( $post_id, $attachment_id );
+	$post_id               = mc_get_event_post( $event_id );
+	if ( ! $post_id ) {
+		$term              = mc_get_category_detail( $data['event_category'], 'category_term' );
+		$privacy           = ( mc_get_category_detail( $data['event_category'], 'category_private' ) == 1 ) ? 'private' : 'publish';
+		$title             = $data['event_title'];
+		$template          = apply_filters( 'mc_post_template', 'details', $term );
+		$data['shortcode'] = "[my_calendar_event event='$event_id' template='$template' list='']";
+		$description       = $data['event_desc'];
+		$excerpt           = $data['event_short'];
+		$location_id       = ( isset( $_POST['location_preset'] ) ) ? (int) $_POST['location_preset'] : 0;
+		$post_status       = $privacy;
+		$auth              = $data['event_author'];
+		$type              = 'mc-events';
+		$my_post           = array(
+			'post_title'   => $title,
+			'post_content' => $description,
+			'post_status'  => $post_status,
+			'post_author'  => $auth,
+			'post_name'    => sanitize_title( $title ),
+			'post_date'    => date( 'Y-m-d H:i:s', current_time( 'timestamp' ) ),
+			'post_type'    => $type,
+			'post_excerpt' => $excerpt
+		);
+		$post_id           = wp_insert_post( $my_post );
+		wp_set_object_terms( $post_id, (int) $term, 'mc-event-category' );
+		$attachment_id = ( isset( $_POST['event_image_id'] ) && is_numeric( $_POST['event_image_id'] ) ) ? $_POST['event_image_id'] : false;
+		if ( $attachment_id ) {
+			set_post_thumbnail( $post_id, $attachment_id );
+		}
+		mc_update_event( 'event_post', $post_id, $event_id );
+		mc_update_event( 'event_location', $location_id, $event_id );
+		do_action( 'mc_update_event_post', $post_id, $_POST, $data, $event_id );
+		wp_publish_post( $post_id );	
 	}
-	mc_update_event( 'event_post', $post_id, $event_id );
-	mc_update_event( 'event_location', $location_id, $event_id );
-	do_action( 'mc_update_event_post', $post_id, $_POST, $data, $event_id );
-	wp_publish_post( $post_id );
-
 	return $post_id;
+}
+
+function mc_get_event_post( $event_id ) {
+	$event = mc_get_event_core( $event_id );
+	if ( is_object( $event ) ) {
+		if ( property_exists( $event, 'event_post' ) && get_post_status( $event->event_post ) ) {
+			return $event->event_post;
+		}
+	}
+	return false;
 }
 
 function mc_update_event( $field, $data, $event, $type = '%d' ) {
@@ -609,8 +622,8 @@ function my_calendar_save( $action, $output, $event_id = false ) {
 				$update['event_begin'] != $_POST['prev_event_begin'] ||
 				date( "H:i:00", strtotime( $update['event_time'] ) ) != $_POST['prev_event_time'] ||
 				$update['event_end'] != $_POST['prev_event_end'] ||
-				( date( "H:i:00", strtotime( $update['event_endtime'] ) ) != $_POST['prev_event_endtime'] && ( $_POST['prev_event_endtime'] != '' && date( "H:i:00", strtotime( $update['event_endtime'] ) ) != '00:00:00' ) ) )
-				? true : false;
+				( date( "H:i:00", strtotime( $update['event_endtime'] ) ) != $_POST['prev_event_endtime'] && ( $_POST['prev_event_endtime'] != '' && date( "H:i:00", strtotime( $update['event_endtime'] ) ) != '23:59:59' ) ) ) 
+				? true : false; // this may need to be 00:00:00; will have to verify JCD TODO
 			if ( isset( $_POST['event_instance'] ) ) {
 				$is_changed     = mc_compare( $update, $event_id );// compares the information sent to the information saved for a given event.
 				$event_instance = (int) $_POST['event_instance'];
@@ -782,11 +795,35 @@ function mc_show_edit_block( $field ) {
 }
 
 function mc_show_block( $field, $has_data, $data ) {
+	global $user_ID;
 	$return     = $checked = $value = '';
 	$show_block = mc_show_edit_block( $field );
 	$pre        = '<div class="ui-sortable meta-box-sortables"><div class="postbox">';
 	$post       = '</div></div>';
 	switch ( $field ) {
+		case 'event_host' :
+			if ( $show_block ) {
+				$users = my_calendar_getUsers();
+				$select = '';
+				foreach ( $users as $u ) {
+					$display_name = ( $u->display_name == '' ) ? $u->user_nicename : $u->display_name;
+					if ( is_object( $data ) && $data->event_host == $u->ID ) {
+						$selected = ' selected="selected"';
+					} else if ( is_object( $u ) && $u->ID == $user_ID && empty( $data->event_host ) ) {
+						$selected = ' selected="selected"';
+					} else {
+						$selected = '';
+					}
+					$select .= "<option value='$u->ID'$selected>$display_name</option>\n";
+				}
+				echo '
+					<p>
+					<label for="e_host">' . __( 'Host', 'my-calendar' ) . '</label>
+					<select id="e_host" name="event_host">' .
+						$select
+					. '</select>
+				</p>';
+			}
 		case 'event_desc' :
 			if ( $show_block ) {
 				// because wp_editor cannot return a value, event_desc fields cannot be filtered if its enabled.
@@ -1174,28 +1211,7 @@ function mc_form_fields( $data, $mode, $event_id ) {
 				mc_show_block( 'event_desc', $has_data, $data );
 				mc_show_block( 'event_short', $has_data, $data );
 				mc_show_block( 'event_image', $has_data, $data );
-				?>
-				<p>
-					<label for="e_host"><?php _e( 'Host', 'my-calendar' ); ?></label>
-					<select id="e_host" name="event_host">
-						<?php
-						// Grab all the categories and list them
-						$users = my_calendar_getUsers();
-						foreach ( $users as $u ) {
-							$display_name = ( $u->display_name == '' ) ? $u->user_nicename : $u->display_name;
-							if ( is_object( $data ) && $data->event_host == $u->ID ) {
-								$selected = ' selected="selected"';
-							} else if ( is_object( $u ) && $u->ID == $user_ID && empty( $data->event_host ) ) {
-								$selected = ' selected="selected"';
-							} else {
-								$selected = '';
-							}
-							echo "<option value='$u->ID'$selected>$display_name</option>\n";
-						}
-						?>
-					</select>
-				</p>
-				<?php
+				mc_show_block( 'event_host', $has_data, $data );
 				mc_show_block( 'event_category', $has_data, $data );
 				mc_show_block( 'event_link', $has_data, $data );
 				echo apply_filters( 'mc_event_details', '', $has_data, $data, 'admin' );
@@ -1743,10 +1759,10 @@ function mc_list_events() {
 							<td>
 								<?php if ( $event->event_label != '' ) { ?><a class='mc_filter' href='<?php $elabel = urlencode( $event->event_label ); echo admin_url( "admin.php?page=my-calendar-manage&amp;filter=$elabel&amp;restrict=where" ); ?>' title="<?php _e( 'Filter by location', 'my-calendar' ); ?>"><span class="screen-reader-text"><?php _e( 'Show only: ', 'my-calendar' ); ?></span><?php echo stripslashes( $event->event_label ); ?></a><?php } ?>
 							</td>
-							<?php if ( $event->event_time != "00:00:00" ) {
+							<?php if ( $event->event_endtime != "23:59:59" ) {
 								$eventTime = date_i18n( get_option( 'mc_time_format' ), strtotime( $event->event_time ) );
 							} else {
-								$eventTime = get_option( 'mc_notime_text' );
+								$eventTime = mc_notime_label( $event );
 							} ?>
 							<td><?php
 								$date_format = ( get_option( 'mc_date_format' ) == '' ) ? get_option( 'date_format' ) : get_option( 'mc_date_format' );
@@ -1906,18 +1922,14 @@ function mc_check_data( $action, $post, $i ) {
 		$begin   = date( 'Y-m-d', strtotime( $begin ) );// regardless of entry format, convert.
 		$time    = ! empty( $post['event_time'][ $i ] ) ? trim( $post['event_time'][ $i ] ) : '';
 		$endtime = ! empty( $post['event_endtime'][ $i ] ) ? trim( $post['event_endtime'][ $i ] ) : date( 'H:i:s', strtotime( $time . '+1 hour' ) );
-		$endtime = ( $time == '' || $time == '00:00:00' ) ? '00:00:00' : $endtime; // set at midnight if all day.
-		$endtime = ( $endtime == '' ) ? '00:00:00' : date( 'H:i:00', strtotime( $endtime ) );
-		// if the end time is midnight but the date is empty, change to tomorrow.
-		if ( $endtime == '00:00:00' && $action != 'edit' ) { // cascading problem if this happens on edits!
-			$end = date( 'Y-m-d', strtotime( $end . ' +1 day' ) );
-		}
+		$endtime = ( $time == '' || $time == '00:00:00' ) ? '23:59:59' : $endtime; // set at 23:59:59 if all day.
+		$endtime = ( $endtime == '' ) ? '23:59:00' : date( 'H:i:00', strtotime( $endtime ) );
 		// prevent setting enddate to incorrect value on copy.
 		if ( strtotime( $end ) < strtotime( $begin ) && $action == 'copy' ) {
 			$end = date( 'Y-m-d', ( strtotime( $begin ) + ( strtotime( $post['prev_event_end'] ) - strtotime( $post['prev_event_begin'] ) ) ) );
 		}
 		if ( isset( $post['event_allday'] ) && (int) $post['event_allday'] !== 0 ) {
-			$time = $endtime = '00:00:00';
+			$time = '00:00:00'; $endtime = '23:59:59';
 		}
 		$end                = date( 'Y-m-d', strtotime( $end ) ); // regardless of entry format, convert.			
 		$repeats            = ( ! empty( $post['event_repeats'] ) || trim( $post['event_repeats'] ) == '' ) ? trim( $post['event_repeats'] ) : 0;
@@ -1940,7 +1952,7 @@ function mc_check_data( $action, $post, $i ) {
 		$event_group_id     = ( ( is_array( $post['event_begin'] ) && count( $post['event_begin'] ) > 1 ) || mc_event_is_grouped( $group_id_submitted ) ) ? $group_id_submitted : 0;
 		$event_span         = ( ! empty( $post['event_span'] ) && $event_group_id != 0 ) ? 1 : 0;
 		$event_hide_end     = ( ! empty( $post['event_hide_end'] ) ) ? (int) $post['event_hide_end'] : 0;
-		$event_hide_end     = ( $time == '' || $time == '00:00:00' ) ? 1 : $event_hide_end; // hide end time automatically on all day events
+		$event_hide_end     = ( $time == '' || $time == '23:59:59' ) ? 1 : $event_hide_end; // hide end time automatically on all day events
 		// set location
 		if ( $location_preset != 'none' && is_numeric( $location_preset ) ) {
 			$sql             = "SELECT * FROM " . my_calendar_locations_table() . " WHERE location_id = $location_preset";
@@ -2026,7 +2038,7 @@ function mc_check_data( $action, $post, $i ) {
 		}
 
 		// We check for a valid time, or an empty one
-		$time            = ( $time == '' ) ? '00:00:00' : date( 'H:i:00', strtotime( $time ) );
+		$time            = ( $time == '' ) ? '23:59:59' : date( 'H:i:00', strtotime( $time ) );
 		$time_format_one = '/^([0-1][0-9]):([0-5][0-9]):([0-5][0-9])$/';
 		$time_format_two = '/^([2][0-3]):([0-5][0-9]):([0-5][0-9])$/';
 		if ( preg_match( $time_format_one, $time ) || preg_match( $time_format_two, $time ) || $time == '' ) {
@@ -2121,6 +2133,7 @@ function mc_check_data( $action, $post, $i ) {
 		$event_access = ( is_array( $event_access ) ) ? serialize( $event_access ) : '';
 		// The form is going to be rejected due to field validation issues, so we preserve the users entries here
 		// all submitted data should be in this object, regardless of data destination.
+		$users_entries->event_id           = ( isset( $_GET['event_id'] ) && is_numeric( $_GET['event_id'] ) ) ? $_GET['event_id'] : false;
 		$users_entries->event_title        = $title;
 		$users_entries->event_desc         = $desc;
 		$users_entries->event_begin        = $begin;
@@ -2325,6 +2338,10 @@ function mc_event_is_grouped( $group_id ) {
 	}
 }
 
+function mc_is_all_day( $event ) {
+	return ( $event->event_time == "00:00:00" && $event->event_endtime == "23:59:59" ) ? true : false;
+}
+
 function mc_standard_datetime_input( $form, $has_data, $data, $instance, $context = 'admin' ) {
 	if ( $has_data ) {
 		$event_begin = esc_attr( $data->event_begin );
@@ -2337,14 +2354,14 @@ function mc_standard_datetime_input( $form, $has_data, $data, $instance, $contex
 				$event_end = '';
 			};
 		}
-		$starttime = ( $data->event_time == "00:00:00" && $data->event_endtime == "00:00:00" ) ? '' : date( "h:i A", strtotime( $data->event_time ) );
-		$endtime   = ( $data->event_endtime == "00:00:00" && $data->event_time == "00:00:00" ) ? '' : date( "h:i A", strtotime( $data->event_endtime ) );
+		$starttime = ( mc_is_all_day( $data ) ) ? '' : date( "h:i A", strtotime( $data->event_time ) );
+		$endtime   = ( mc_is_all_day( $data ) ) ? '' : date( "h:i A", strtotime( $data->event_endtime ) );
 	} else {
 		$event_begin = date( "Y-m-d" );
 		$event_end   = $starttime = $endtime = '';
 	}
 	$allday = $hide = '';
-	if ( $has_data && ( $data->event_time == '00:00:00' && $data->event_endtime == '00:00:00' ) ) {
+	if ( $has_data && ( mc_is_all_day( $data ) ) ) {
 		$allday = " checked=\"checked\"";
 	}
 	if ( $has_data && $data->event_hide_end == '1' ) {
@@ -2368,6 +2385,11 @@ jQuery(document).ready(function($) {
 //]]>
 </script>';
 	$form .= $scripting;
+	if ( $has_data ) {
+		$allday_label = mc_notime_label( $data );
+	} else {
+		$allday_label = get_option( 'mc_notime_text' );
+	}
 	$form .= '<p>
 		<label for="e_begin" id="eblabel">' . __( 'Date (YYYY-MM-DD)', 'my-calendar' ) . '</label> <input type="text" id="e_begin" name="event_begin[]" size="10" value="" data-value="' . $event_begin . '" />
 		<label for="e_time">' . __( 'From', 'my-calendar' ) . '</label> 
@@ -2376,7 +2398,7 @@ jQuery(document).ready(function($) {
 		<input type="text" id="e_endtime" name="event_endtime[]" size="8" value="' . $endtime . '" />
 	</p>
 	<ul>
-		<li><input type="checkbox" value="1" id="e_allday" name="event_allday"' . $allday . ' /> <label for="e_allday">' . __( 'All day event', 'my-calendar' ) . '</label> </li>
+		<li><input type="checkbox" value="1" id="e_allday" name="event_allday"' . $allday . ' /> <label for="e_allday">' . __( 'All day event', 'my-calendar' ) . '</label> <span class="event_time_label"><label for="e_time_label">' . __( 'Time label:', 'my-calendar' ) . '</label> <input type="text" name="event_time_label" id="e_time_label" value="' . esc_attr( $allday_label ) . '" /> </li>
 		<li><input type="checkbox" value="1" id="e_hide_end" name="event_hide_end"' . $hide . ' /> <label for="e_hide_end">' . __( 'Hide end time', 'my-calendar' ) . '</label></li>
 	</ul>
 	<p>

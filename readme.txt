@@ -5,7 +5,7 @@ Tags: calendar, dates, times, event, events, scheduling, schedule, event manager
 Requires at least: 3.8.5
 Tested up to: 4.1.1
 License: GPLv2 or later
-Stable tag: 2.3.27
+Stable tag: 2.3.28
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
@@ -44,7 +44,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 = Translations =
 
 Available translations (in order of completeness):
-Portuguese (Portugal), Spanish (Spain), French, Danish, Japanese, Russian, Dutch, German, Swedish, Italian, Galician, Portuguese (Brazil), Czech, Hindi, Turkish, Finnish, Polish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Afrikaans, Hungarian
+Portuguese (Portugal), Spanish (Spain), French, Danish, Japanese, German, Russian, Dutch, Swedish, Italian, Galician, Portuguese (Brazil), Czech, Hindi, Turkish, Finnish, Polish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Catalan, Afrikaans, Hungarian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -79,32 +79,47 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 = 2.4.0 = [todo]
 
 FEATURES [2.4.0]
-* Add author limit tool
+* Add author limit tool [What is this?]
 * Create advanced search [PRO]
 * Option to post new events as blog posts [PRO]
+* Option to post new events while creating a page/post [PRO]
 * Feature: allow limiting of categories to specific member groups [PRO]
 * Import from RSS/iCal [PRO]
 * Create selectable event details templates [PRO]
 * Make only portions of events private (e.g., time and location for children's events, etc.) [PRO]
+* Add option to set event alarm or notification in .ics outputs [PRO]
+* Provide notifications of new events by category (to specific users or to lists of users; set up as user meta option?) [PRO]
+
 * Option to set default sort direction 
-* Support hiding 'Host' field as option.
 * Refactor options storage
+* Add [day] select field to jumpbox; only visible if in 'day' time mode.
 * Create a template tag to show the date range for event groups; add support for this type of event set to {daterange}
 * Add filters to search query parameters
 * Update event taxonomies if category changed/source event taxonomy data from post?
-* Permanently retire #jd_calendar and generate custom IDs. [breaking change]
 * Custom link targets using mc_customize_details_link & template_redirect filter as pointer.
 * Handle stylesheet editing as additive (child styles), rather than editing the original stylesheet.
 * Update pickadate to version 3.6, if it's out. 
-* Add option to set event alarm or notification in .ics outputs [PRO]
-
-MAJOR BUG FIXES
-* Stop setting all day events to end at midnight; use 11:59:59 and filter output
 
 = 2.4.0 =
 
+New features:
 * Set upcoming event class based on time, rather than date.
 * Add past/present class to today's events widget [todo]
+* Assign Custom All Day label for each event.
+* Support hiding 'Host' field as option. [needs testing; must update settings before will work]
+
+Bug fixes:
+* Stop setting all day events to end at midnight; use 11:59:59 and filter output
+
+Important Changes:
+* Remove references to #jd_calendar and generate custom IDs. [breaking change]
+
+
+= 2.3.28 =
+
+* Bug fix: Problem saving My Calendar URI if My Calendar is intended for use behind a secured location.
+* Update languages: French, German, Catalan
+
 
 = 2.3.27 =
 

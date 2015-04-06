@@ -458,7 +458,8 @@ function mc_show_event_editing( $status, $args ) {
 			'event_open'              => __( 'Event Registration options', 'my-calendar' ),
 			'event_location'          => __( 'Event Location fields', 'my-calendar' ),
 			'event_specials'          => __( 'Set Special Scheduling options', 'my-calendar' ),
-			'event_access'            => __( 'Event Accessibility' )
+			'event_access'            => __( 'Event Accessibility', 'my-calendar' ),
+			'event_host'              => __( 'Event Host', 'my-calendar' )
 		);
 		$output       = '';
 		foreach ( $input_options as $key => $value ) {

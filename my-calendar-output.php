@@ -109,10 +109,11 @@ function mc_time_html( $event, $type, $current_date ) {
 		}
 	} else {
 		$time .= "<span class='event-time'>";
-		if ( get_option( 'mc_notime_text' ) == '' || get_option( 'mc_notime_text' ) == "N/A" ) {
+		$notime = mc_notime_label( $event );
+		if ( $notime == "N/A" ) {
 			$time .= "<abbr title='" . __( 'Not Applicable', 'my-calendar' ) . "'>" . __( 'N/A', 'my-calendar' ) . "</abbr>\n";
 		} else {
-			$time .= get_option( 'mc_notime_text' );
+			$time .= $notime;
 		}
 		$time .= "</span></p>";
 	}
@@ -801,7 +802,7 @@ function mc_show_event_template( $content ) {
 }
 
 // Actually do the printing of the calendar
-function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $lvalue = '', $id = 'jd-calendar', $template = '', $content = '', $author = null, $host = null, $above = '', $below = '' ) {
+function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $lvalue = '', $id = '', $template = '', $content = '', $author = null, $host = null, $above = '', $below = '' ) {
 	check_my_calendar();
 	// category key needs to receive the original category settings.
 	$original_category = $category;
@@ -859,6 +860,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 	$cid        = ( isset( $_GET['cid'] ) ) ? esc_attr( strip_tags( $_GET['cid'] ) ) : $main_class;
 
 	// mc body wrapper
+	$id = ( !$id ) ? "my-calendar-$format" : $id;
 	$mc_wrapper = "<div id=\"$id\" class=\"mc-main $format $time $main_class\" aria-live='assertive' aria-atomic='true'>";
 	$mc_closer  = "</div>";
 
@@ -1191,8 +1193,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			) {
 				// If in a calendar format, print the headings of the days of the week
 				if ( $format == "list" ) {
-					$list_id = ( $id == 'jd-calendar' ) ? 'calendar-list' : "list-$id";
-					$my_calendar_body .= "<ul id='$list_id' class='mc-list'>";
+					$my_calendar_body .= "<ul id='$id' class='mc-list'>";
 				} else {
 					$my_calendar_body .= "<thead>\n<tr>\n";
 					for ( $i = 0; $i <= 6; $i ++ ) {

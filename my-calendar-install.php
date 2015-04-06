@@ -234,7 +234,8 @@ function mc_default_settings() {
 	                                       'event_location'          => 'off',
 	                                       'event_location_dropdown' => 'on',
 	                                       'event_specials'          => 'on',
-	                                       'event_access'            => 'on'
+	                                       'event_access'            => 'on',
+										   'event_host'              => 'on'
 		) );
 	add_option( 'mc_input_options_administrators', 'false' );
 	add_site_option( 'mc_multisite', '0' );
@@ -299,7 +300,7 @@ function mc_generate_calendar_page( $slug ) {
 			'post_type'   => 'page',
 			'post_author' => $current_user->ID,
 			'ping_status' => 'closed',
-			'post_content' => '[my_calendar]'
+			'post_content' => '[my_calendar id="my-calendar"]'
 		);
 		$post_ID   = wp_insert_post( $page );
 		$post_slug = wp_unique_post_slug( $slug, $post_ID, 'publish', 'page', 0 );
