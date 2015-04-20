@@ -164,7 +164,6 @@ function mc_get_rss_events( $cat_id = false ) {
 			$groups[] = $event->occur_group_id;
 		}
 	}
-
 	return $output;
 }
 
@@ -320,15 +319,15 @@ function my_calendar_events_now( $category = 'default', $template = '<strong>{li
 	$select_location = $select_author = $select_host = '';
 	$now = date( 'Y-m-d H:i:s', current_time( 'timestamp' ) );
 	$event_query = "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end
-					FROM " . MY_CALENDAR_EVENTS_TABLE . " 
-					JOIN " . MY_CALENDAR_TABLE . "
+					FROM " . MY_CALENDAR_EVENTS_TABLE . " AS e 
+					JOIN " . MY_CALENDAR_TABLE . " AS t 
 					ON (event_id=occur_event_id) 					
-					JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
+					JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " AS c 
 					ON (event_category=category_id) 
 					WHERE $select_category $select_location $select_author $select_host $limit_string  
 					AND ( CAST('$now' AS DATETIME) BETWEEN occur_begin AND occur_end ) 
-						ORDER BY occur_begin, " . apply_filters( 'mc_secondary_sort', 'event_title ASC' );
-	$events      = $mcdb->get_results( $event_query );
+						ORDER BY " . apply_filters( 'occur_begin', 'mc_primary_sort' ) . ", " . apply_filters( 'mc_secondary_sort', 'event_title ASC' );
+	$events      = $mcdb->get_results( esc_sql( $event_query ) );
 	if ( ! empty( $events ) ) {
 		foreach ( array_keys( $events ) as $key ) {
 			$event        =& $events[ $key ];

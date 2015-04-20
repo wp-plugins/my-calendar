@@ -52,7 +52,11 @@ VERSION:2.0
 METHOD:PUBLISH
 PRODID:-//Accessible Web Design//My Calendar//http://www.joedolson.com//v' . $mc_version . '//EN';
 	// to do : add support for other arguments
-	$events = my_calendar_grab_events( $from, $to );
+	$events = my_calendar_grab_events( $from, $to, $category, $ltype, $lvalue, $source, $author, $host );
+	// my calendar grab events returns a flat array, but doesn't eliminate holiday cancellations; my-calendar_events eliminates those, but isn't a flat array. 
+	// rewrite array navigation so that this works.
+	// $events = my_calendar_events( $from, $to, $category, $ltype, $lvalue, $source, $author, $host );
+
 	if ( is_array( $events ) && ! empty( $events ) ) {
 		foreach ( array_keys( $events ) as $key ) {
 			$event =& $events[ $key ];

@@ -302,7 +302,7 @@ function mc_manage_locations() {
 
 	if ( ! empty( $locations ) ) {
 		?>
-	<form action="<?php echo add_query_arg( $_GET, admin_url( 'admin.php' ) ); ?>" method="post">
+	<form action="<?php echo esc_url( add_query_arg( $_GET, admin_url( 'admin.php' ) ) ); ?>" method="post">
 		<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'my-calendar-nonce' ); ?>"/></div>
 		<div class='mc-actions'>
 			<input type="submit" class="button-secondary delete" name="mass_delete"

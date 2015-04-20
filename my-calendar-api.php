@@ -150,70 +150,76 @@ function my_calendar_rss( $events = array() ) {
 		$events = mc_get_rss_events( $cat_id );
 	}
 	$output = mc_format_rss( $events );
-	header( 'Content-type: application/rss+xml' );
-	header( "Pragma: no-cache" );
-	header( "Expires: 0" );
-	echo $output;
+	if ( $output ) {
+		header( 'Content-type: application/rss+xml' );
+		header( "Pragma: no-cache" );
+		header( "Expires: 0" );
+		echo $output;
+	}
 }
 
 function mc_format_rss( $events ) {
-	$template = "\n<item>
-		<title>{rss_title}</title>
-		<link>{details_link}</link>
-		<pubDate>{rssdate}</pubDate>
-		<dc:creator>{author}</dc:creator>  	
-		<description><![CDATA[{rss_description}]]></description>
-		<date>{dtstart}</date>
-		<dateSubmitted>{rssdate}</dateSubmitted>
-		<content:encoded><![CDATA[<div class='vevent'>
-		<h1 class='summary'>{rss_title}</h1>
-		<div class='description'>{rss_description}</div>
-		<p class='dtstart' title='{ical_start}'>Begins: {time} on {date}</p>
-		<p class='dtend' title='{ical_end}'>Ends: {endtime} on {enddate}</p>	
-		<p>Recurrance: {recurs}</p>
-		<p>Repetition: {repeats} times</p>
-		<div class='location'>{rss_hcard}</div>
-		{rss_link_title}
-		</div>]]></content:encoded>
-		<dc:format xmlns:dc='http://purl.org/dc/elements/1.1/'>text/html</dc:format>
-		<dc:source xmlns:dc='http://purl.org/dc/elements/1.1/'>" . home_url() . "</dc:source>
-		{guid}
-	  </item>\n";
+	if ( is_array( $events ) && !empty( $events ) ) {
+		$template = "\n<item>
+			<title>{rss_title}</title>
+			<link>{details_link}</link>
+			<pubDate>{rssdate}</pubDate>
+			<dc:creator>{author}</dc:creator>  	
+			<description><![CDATA[{rss_description}]]></description>
+			<date>{dtstart}</date>
+			<dateSubmitted>{rssdate}</dateSubmitted>
+			<content:encoded><![CDATA[<div class='vevent'>
+			<h1 class='summary'>{rss_title}</h1>
+			<div class='description'>{rss_description}</div>
+			<p class='dtstart' title='{ical_start}'>Begins: {time} on {date}</p>
+			<p class='dtend' title='{ical_end}'>Ends: {endtime} on {enddate}</p>	
+			<p>Recurrance: {recurs}</p>
+			<p>Repetition: {repeats} times</p>
+			<div class='location'>{rss_hcard}</div>
+			{rss_link_title}
+			</div>]]></content:encoded>
+			<dc:format xmlns:dc='http://purl.org/dc/elements/1.1/'>text/html</dc:format>
+			<dc:source xmlns:dc='http://purl.org/dc/elements/1.1/'>" . home_url() . "</dc:source>
+			{guid}
+		  </item>\n";
 
-	if ( get_option( 'mc_use_rss_template' ) == 1 ) {
-		$templates = get_option( 'mc_templates' );
-		$template  = $templates['rss'];
-	}
-
-	$charset = get_bloginfo( 'charset' );
-	$output  = '<?xml version="1.0" encoding="' . $charset . '"?>
-	<rss version="2.0"
-		xmlns:content="http://purl.org/rss/1.0/modules/content/"
-		xmlns:dc="http://purl.org/dc/elements/1.1/"
-		xmlns:atom="http://www.w3.org/2005/Atom"
-		xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
-		xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
-		>
-	<channel>
-	  <title>' . get_bloginfo( 'name' ) . ' Calendar</title>
-	  <link>' . home_url() . '</link>
-	  <description>' . get_bloginfo( 'description' ) . ': My Calendar Events</description>
-	  <language>' . get_bloginfo( 'language' ) . '</language>
-	  <managingEditor>' . get_bloginfo( 'admin_email' ) . ' (' . get_bloginfo( 'name' ) . ' Admin)</managingEditor>
-	  <generator>My Calendar WordPress Plugin http://www.joedolson.com/my-calendar/</generator>
-	  <lastBuildDate>' . mysql2date( 'D, d M Y H:i:s +0000', current_time( 'timestamp' ) ) . '</lastBuildDate>
-	  <atom:link href="' . htmlentities( add_query_arg( $_GET, mc_get_current_url() ) ) . '" rel="self" type="application/rss+xml" />';
-	foreach ( $events as $date ) {
-		foreach ( array_keys( $date ) as $key ) {
-			$event =& $date[ $key ];
-			$array = mc_create_tags( $event );
-			$output .= jd_draw_template( $array, $template, 'rss' );
+		if ( get_option( 'mc_use_rss_template' ) == 1 ) {
+			$templates = get_option( 'mc_templates' );
+			$template  = $templates['rss'];
 		}
-	}
-	$output .= '</channel>
-	</rss>';
 
-	return mc_strip_to_xml( $output );
+		$charset = get_bloginfo( 'charset' );
+		$output  = '<?xml version="1.0" encoding="' . $charset . '"?>
+		<rss version="2.0"
+			xmlns:content="http://purl.org/rss/1.0/modules/content/"
+			xmlns:dc="http://purl.org/dc/elements/1.1/"
+			xmlns:atom="http://www.w3.org/2005/Atom"
+			xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+			xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+			>
+		<channel>
+		  <title>' . get_bloginfo( 'name' ) . ' Calendar</title>
+		  <link>' . home_url() . '</link>
+		  <description>' . get_bloginfo( 'description' ) . ': My Calendar Events</description>
+		  <language>' . get_bloginfo( 'language' ) . '</language>
+		  <managingEditor>' . get_bloginfo( 'admin_email' ) . ' (' . get_bloginfo( 'name' ) . ' Admin)</managingEditor>
+		  <generator>My Calendar WordPress Plugin http://www.joedolson.com/my-calendar/</generator>
+		  <lastBuildDate>' . mysql2date( 'D, d M Y H:i:s +0000', current_time( 'timestamp' ) ) . '</lastBuildDate>
+		  <atom:link href="' . htmlentities( esc_url( add_query_arg( $_GET, mc_get_current_url() )  ) ) . '" rel="self" type="application/rss+xml" />';
+		foreach ( $events as $date ) {
+			foreach ( array_keys( $date ) as $key ) {
+				$event =& $date[ $key ];
+				$array = mc_create_tags( $event );
+				$output .= jd_draw_template( $array, $template, 'rss' );
+			}
+		}
+		$output .= '</channel>
+		</rss>';
+
+		return mc_strip_to_xml( $output );
+	} else {
+		return false;
+	}
 }
 
 // just a double check to try to ensure that the XML feed can be rendered.

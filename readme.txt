@@ -5,7 +5,7 @@ Tags: calendar, dates, times, event, events, scheduling, schedule, event manager
 Requires at least: 3.8.5
 Tested up to: 4.1.1
 License: GPLv2 or later
-Stable tag: 2.3.28
+Stable tag: 2.3.29
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
@@ -99,6 +99,9 @@ FEATURES [2.4.0]
 * Custom link targets using mc_customize_details_link & template_redirect filter as pointer.
 * Handle stylesheet editing as additive (child styles), rather than editing the original stylesheet.
 * Update pickadate to version 3.6, if it's out. 
+* Remove display of event management options if user does not have privileges to perform those actions
+
+https://wordpress.org/support/topic/widget-showing-current-events-when-set-to-next-month-on-mobile?replies=2#post-6792046
 
 = 2.4.0 =
 
@@ -107,19 +110,25 @@ New features:
 * Add past/present class to today's events widget [todo]
 * Assign Custom All Day label for each event.
 * Support hiding 'Host' field as option. [needs testing; must update settings before will work]
+* Made primary sort order of events filterable filter: 'mc_primary_sort'
 
 Bug fixes:
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
+* Rewrite iCal output so that the iCal download eliminates Holiday cancellations [todo]
+* Bug fix: Prevent extraneous variables from leaking into the navigation output.
 
 Important Changes:
-* Remove references to #jd_calendar and generate custom IDs. [breaking change]
+* Removed references to #jd_calendar and generate custom IDs. [breaking change]
 
+
+= 2.3.29 =
+
+* Security Fix: XSS issue applying to improper use of add_query_arg(). See https://yoast.com/tools/wrong-use-of-add_query_arg-and-remove_query_arg-causing-xss/
 
 = 2.3.28 =
 
 * Bug fix: Problem saving My Calendar URI if My Calendar is intended for use behind a secured location.
 * Update languages: French, German, Catalan
-
 
 = 2.3.27 =
 
@@ -1505,4 +1514,4 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 == Upgrade Notice ==
 
-* 2.3.25 - Fixes issue with week calculation when crossing months. Upgrade before April 1st! :)
+* 2.3.29 - Important security update! https://yoast.com/tools/wrong-use-of-add_query_arg-and-remove_query_arg-causing-xss/

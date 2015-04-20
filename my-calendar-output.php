@@ -1095,7 +1095,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 		}
 
 		foreach ( $mc_toporder as $value ) {
-			if ( $value != 'none' ) {
+			if ( $value != 'none' && in_array( $value, $used ) ) {
 				$value = trim( $value );
 				$mc_topnav .= @${$value};
 			}
@@ -1111,7 +1111,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			$mc_bottomorder = explode( ',', $below );
 		}
 		foreach ( $mc_bottomorder as $value ) {
-			if ( $value != 'none' && $value != 'stop' ) {
+			if ( $value != 'none' && $value != 'stop' && in_array( $value, $used )  ) {
 				$value = trim( $value );
 				$mc_bottomnav .= @${$value};
 			}

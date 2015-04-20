@@ -1575,7 +1575,7 @@ function mc_list_events() {
 		}
 		?>
 		<div class='mc-search'>
-			<form action="<?php echo add_query_arg( $_GET, admin_url( 'admin.php' ) ); ?>" method="post">
+			<form action="<?php echo esc_url( add_query_arg( $_GET, admin_url( 'admin.php' ) ) ); ?>" method="post">
 				<div><input type="hidden" name="_wpnonce"
 				            value="<?php echo wp_create_nonce( 'my-calendar-nonce' ); ?>"/>
 				</div>
@@ -1627,7 +1627,7 @@ function mc_list_events() {
 		}
 		if ( ! empty( $events ) ) {
 			?>
-			<form action="<?php echo add_query_arg( $_GET, admin_url( 'admin.php' ) ); ?>" method="post">
+			<form action="<?php echo esc_url( add_query_arg( $_GET, admin_url( 'admin.php' ) ) ); ?>" method="post">
 			<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'my-calendar-nonce' ); ?>"/>
 			</div>
 			<div class='mc-actions'>
