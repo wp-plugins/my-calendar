@@ -3,9 +3,9 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, event, events, scheduling, schedule, event manager, event calendar, class, concert, conference, meeting, venue, location, box office, tickets, registration
 Requires at least: 3.8.5
-Tested up to: 4.1.1
+Tested up to: 4.2.2
 License: GPLv2 or later
-Stable tag: 2.3.29
+Stable tag: 2.3.30
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
@@ -44,7 +44,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 = Translations =
 
 Available translations (in order of completeness):
-Portuguese (Portugal), Spanish (Spain), French, Danish, Japanese, German, Russian, Dutch, Swedish, Italian, Galician, Portuguese (Brazil), Czech, Hindi, Turkish, Finnish, Polish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Catalan, Afrikaans, Hungarian
+Polish, Spanish (Spain), Portuguese (Portugal), French, Danish, Czech, Japanese, German, Russian, Dutch, Swedish, Italian, Hebrew, Galician, Portuguese (Brazil), Hindi, Turkish, Slovak, Finnish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Catalan, Afrikaans, Icelandic, Hungarian
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -89,6 +89,7 @@ FEATURES [2.4.0]
 * Make only portions of events private (e.g., time and location for children's events, etc.) [PRO]
 * Add option to set event alarm or notification in .ics outputs [PRO]
 * Provide notifications of new events by category (to specific users or to lists of users; set up as user meta option?) [PRO]
+* Responsive mode [PRO]
 
 * Option to set default sort direction 
 * Refactor options storage
@@ -100,6 +101,7 @@ FEATURES [2.4.0]
 * Handle stylesheet editing as additive (child styles), rather than editing the original stylesheet.
 * Update pickadate to version 3.6, if it's out. 
 * Remove display of event management options if user does not have privileges to perform those actions
+* Add option to customize permalink slug on permalink page
 
 https://wordpress.org/support/topic/widget-showing-current-events-when-set-to-next-month-on-mobile?replies=2#post-6792046
 
@@ -111,15 +113,34 @@ New features:
 * Assign Custom All Day label for each event.
 * Support hiding 'Host' field as option. [needs testing; must update settings before will work]
 * Made primary sort order of events filterable filter: 'mc_primary_sort'
+* Added action to location saving handling updated locations
+* Added arguments to from/to filters in Upcoming Events
+* Enabled option to turn on permalinks
+* Custom canonical URL for event pages
+*
 
 Bug fixes:
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
 * Rewrite iCal output so that the iCal download eliminates Holiday cancellations [todo]
 * Bug fix: Prevent extraneous variables from leaking into the navigation output.
+* Rendering post template in permalinks only applies within Loop.
+* Template attribute preg_match could only pick up 2 parameters
+* Prevent an invalid mc_id value from returning errors.
 
 Important Changes:
 * Removed references to #jd_calendar and generate custom IDs. [breaking change]
 
+Translations:
+
+
+= 2.3.30 =
+
+* Security Fix: Arbitrary File Override
+* Security Fix: Reflected XSS
+* Thanks for Tim Coen for responsibly disclosing these issues.
+* All issues apply for authenticated users with access to My Calendar settings pages.
+* Language updates: Updated Polish, Swedish, Galician, Czech, Norwegian, Italian
+* Added Slovak, Icelandic, Hebrew
 
 = 2.3.29 =
 
@@ -1514,4 +1535,4 @@ I've written a paid plug-in that adds this feature to My Calendar, called My Cal
 
 == Upgrade Notice ==
 
-* 2.3.29 - Important security update! https://yoast.com/tools/wrong-use-of-add_query_arg-and-remove_query_arg-causing-xss/
+* 2.3.30 - Important security update! Update now!
