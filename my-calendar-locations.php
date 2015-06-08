@@ -148,6 +148,7 @@ function my_calendar_manage_locations() {
 			'location_id' => (int) $_POST['location_id']
 		);
 		$results = mc_modify_location( $update, $where );
+		do_action( 'mc_modify_location', $where, $update );
 		if ( $results === false ) {
 			echo "<div class=\"error\"><p><strong>" . __( 'Location could not be edited.', 'my-calendar' ) . "</strong></p></div>";
 		} else if ( $results == 0 ) {
@@ -256,7 +257,7 @@ function mc_controlled_field( $this_field ) {
 
 function mc_location_controller( $fieldname, $selected, $context = 'location' ) {
 	$field    = ( $context == 'location' ) ? 'location_' . $fieldname : 'event_' . $fieldname;
-	$selected = trim( $selected );
+	$selected = esc_attr( trim( $selected ) );
 	$options  = get_option( 'mc_location_controls' );
 	$regions  = $options[ 'event_' . $fieldname ];
 	$form     = "<select name='$field' id='e_$fieldname'>";
@@ -266,7 +267,8 @@ function mc_location_controller( $fieldname, $selected, $context = 'location' ) 
 		$form .= "<option value='$selected'>$selected " . __( '(Not a controlled value)', 'my-calendar' ) . "</option>\n";
 	}
 	foreach ( $regions as $key => $value ) {
-		$key       = trim( $key );
+		$key       = esc_attr( trim( $key ) );
+		$value    = esc_html( $value );
 		$aselected = ( $selected == $key ) ? " selected='selected'" : '';
 		$form .= "<option value='$key'$aselected>$value</option>\n";
 	}
@@ -530,7 +532,7 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 		if ( is_array( $location_access ) ) {
 			$checked = ( in_array( $a, $location_access ) || in_array( $k, $location_access ) ) ? " checked='checked'" : '';
 		}
-		$item = sprintf( '<li><input type="checkbox" id="%1$s" name="' . $context . '_access[]" value="%4$s" class="checkbox" %2$s /> <label for="%1$s">%3$s</label></li>', $id, $checked, $label, $a );
+		$item = sprintf( '<li><input type="checkbox" id="%1$s" name="' . $context . '_access[]" value="%4$s" class="checkbox" %2$s /> <label for="%1$s">%3$s</label></li>', esc_attr( $id ), $checked, esc_html( $label ), esc_attr( $a ) );
 		$access_list .= $item;
 	}
 	$return .= $access_list;

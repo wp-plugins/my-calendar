@@ -269,13 +269,13 @@ function mc_edit_category_form( $view = 'edit', $catID = '' ) {
 									class="mc-color-input"
 									size="10"
 									maxlength="7"
-									value="<?php echo $color; ?>"/><br/>
+									value="<?php esc_attr_e( $color ); ?>"/><br/>
 								<label for="cat_icon"><?php _e( 'Category Icon', 'my-calendar' ); ?>:</label> <select
 									name="category_icon" id="cat_icon">
 									<?php
 									foreach ( $iconlist as $value ) {
 										$selected = ( ( ! empty( $cur_cat ) && is_object( $cur_cat ) ) && $cur_cat->category_icon == $value ) ? " selected='selected'" : '';
-										echo "<option value='$value'$selected style='background: url(" . str_replace( 'my-calendar/', '', $url ) . "$path/$value) left 50% no-repeat;'>$value</option>";
+										echo "<option value='" . esc_attr( $value ) . "'$selected style='background: url(" . str_replace( 'my-calendar/', '', esc_url( $url . "$path/$value" ) ) . ") left 50% no-repeat;'>$value</option>";
 									}
 									?>
 								</select>

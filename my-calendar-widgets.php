@@ -28,7 +28,7 @@ class my_calendar_simple_search extends WP_Widget {
 			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title', 'my-calendar' ); ?>
 				:</label><br/>
 			<input class="widefat" type="text" id="<?php echo $this->get_field_id( 'title' ); ?>"
-			       name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo esc_attr( $widget_title ); ?>"/>
+			       name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php esc_attr_e( $widget_title ); ?>"/>
 		</p>
 		<p>
 			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Search Results Page', 'my-calendar' ); ?>
@@ -363,6 +363,7 @@ class my_calendar_upcoming_widget extends WP_Widget {
 // Widget upcoming events
 function my_calendar_upcoming_events( $before = 'default', $after = 'default', $type = 'default', $category = 'default', $template = 'default', $substitute = '', $order = 'asc', $skip = 0, $show_today = 'yes', $author = 'default', $host = 'default', $ltype = '', $lvalue = '' ) {
 	global $default_template;
+	$args                  = array( 'before'=>$before, 'after'=>$after, 'type'=>$type, 'category'=>$category, 'template'=>$template, 'fallback'=> $substitute, 'order' => $asc, 'skip' => $skip, 'show_today'=> $show_today, 'author'=> $author, 'host'=>$host, 'ltype'=>$ltype, 'lvalue'=>$lvalue );
 	$output                = '';
 	$widget_defaults       = ( array ) get_option( 'mc_widget_defaults' );
 	$display_upcoming_type = ( $type == 'default' ) ? $widget_defaults['upcoming']['type'] : $type;
@@ -446,8 +447,8 @@ function my_calendar_upcoming_events( $before = 'default', $after = 'default', $
 			$from = date( 'Y-1-1' );
 			$to   = date( 'Y-12-31' );
 		}
-		$from = apply_filters( 'mc_upcoming_date_from', $from );
-		$to   = apply_filters( 'mc_upcoming_date_to', $to );
+		$from = apply_filters( 'mc_upcoming_date_from', $from, $args );
+		$to   = apply_filters( 'mc_upcoming_date_to', $to, $args );
 		$event_array = my_calendar_events( $from, $to, $category, $ltype, $lvalue, 'upcoming', $author, $host );
 		if ( count( $event_array ) != 0 ) {
 			foreach ( $event_array as $key => $value ) {
@@ -809,11 +810,11 @@ class my_calendar_mini_widget extends WP_Widget {
 	}
 
 	function form( $instance ) {
-		$title           = esc_attr( empty( $instance['my_calendar_mini_title'] ) ? '' : $instance['my_calendar_mini_title'] );
-		$widget_time     = esc_attr( empty( $instance['my_calendar_mini_time'] ) ? '' : $instance['my_calendar_mini_time'] );
-		$widget_category = esc_attr( empty( $instance['my_calendar_mini_category'] ) ? '' : $instance['my_calendar_mini_category'] );
-		$above           = ( isset( $instance['above'] ) ) ? esc_attr( $instance['above'] ) : 'none';
-		$below           = ( isset( $instance['below'] ) ) ? esc_attr( $instance['below'] ) : 'none';
+		$title           = empty( $instance['my_calendar_mini_title'] ) ? '' : $instance['my_calendar_mini_title'];
+		$widget_time     = empty( $instance['my_calendar_mini_time'] ) ? '' : $instance['my_calendar_mini_time'];
+		$widget_category = empty( $instance['my_calendar_mini_category'] ) ? '' : $instance['my_calendar_mini_category'];
+		$above           = ( isset( $instance['above'] ) ) ? $instance['above'] : 'none';
+		$below           = ( isset( $instance['below'] ) ) ? $instance['below'] : 'none';
 		$widget_link     = ( isset( $instance['mc_link'] ) ) ? esc_url( $instance['mc_link'] ) : '';
 		$host            = ( isset( $instance['host'] ) ) ? $instance['host'] : '';
 		$author          = ( isset( $instance['author'] ) ) ? $instance['author'] : '';
@@ -824,28 +825,28 @@ class my_calendar_mini_widget extends WP_Widget {
 				:</label><br/>
 			<input class="widefat" type="text" id="<?php echo $this->get_field_id( 'my_calendar_mini_title' ); ?>"
 			       name="<?php echo $this->get_field_name( 'my_calendar_mini_title' ); ?>"
-			       value="<?php echo $title; ?>"/>
+			       value="<?php esc_attr_e( $title ); ?>"/>
 		</p>
 		<p>
 			<label
 				for="<?php echo $this->get_field_id( 'mc_link' ); ?>"><?php _e( 'Widget Title Link', 'my-calendar' ); ?>
 				:</label><br/>
 			<input class="widefat" type="text" id="<?php echo $this->get_field_id( 'mc_link' ); ?>"
-			       name="<?php echo $this->get_field_name( 'mc_link' ); ?>" value="<?php echo $widget_link; ?>"/>
+			       name="<?php echo $this->get_field_name( 'mc_link' ); ?>" value="<?php echo esc_url( $widget_link ); ?>"/>
 		</p>
 		<p>
 			<label
 				for="<?php echo $this->get_field_id( 'my_calendar_mini_category' ); ?>"><?php _e( 'Category or categories to display:', 'my-calendar' ); ?></label><br/>
 			<input class="widefat" type="text" id="<?php echo $this->get_field_id( 'my_calendar_mini_category' ); ?>"
 			       name="<?php echo $this->get_field_name( 'my_calendar_mini_category' ); ?>"
-			       value="<?php echo $widget_category; ?>"/>
+			       value="<?php esc_attr_e( $widget_category ); ?>"/>
 		</p>
 		<p>
 			<label
 				for="<?php echo $this->get_field_name( 'above' ); ?>"><?php _e( 'Navigation above calendar', 'my-calendar' ); ?></label>
 			<input type="text" class="widefat" name="<?php echo $this->get_field_name( 'above' ); ?>"
 			       id="<?php echo $this->get_field_name( 'above' ); ?>"
-			       value="<?php echo ( $above == '' ) ? 'nav,jump,print' : $above; ?>"
+			       value="<?php echo ( $above == '' ) ? 'nav,jump,print' : esc_attr( $above ); ?>"
 				   aria-describedby='<?php echo $this->get_field_name( 'below' ); ?>-navigation-fields' />
 		</p>
 		<p>
@@ -853,7 +854,7 @@ class my_calendar_mini_widget extends WP_Widget {
 				for="<?php echo $this->get_field_name( 'below' ); ?>"><?php _e( 'Navigation below calendar', 'my-calendar' ); ?></label>
 			<input type="text" class="widefat" name="<?php echo $this->get_field_name( 'below' ); ?>"
 			       id="<?php echo $this->get_field_name( 'below' ); ?>"
-			       value="<?php echo ( $below == '' ) ? 'key' : $below; ?>"
+			       value="<?php echo ( $below == '' ) ? 'key' : esc_attr( $below ); ?>"
 				   aria-describedby='<?php echo $this->get_field_name( 'below' ); ?>-navigation-fields' />
 		</p>
 		<p id='<?php echo $this->get_field_name( 'below' ); ?>-navigation-fields'>

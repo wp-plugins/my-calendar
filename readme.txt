@@ -5,7 +5,7 @@ Tags: calendar, dates, times, event, events, scheduling, schedule, event manager
 Requires at least: 3.8.5
 Tested up to: 4.2.2
 License: GPLv2 or later
-Stable tag: 2.3.31
+Stable tag: 2.3.32
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
@@ -102,6 +102,7 @@ FEATURES [2.4.0]
 * Update pickadate to version 3.6, if it's out. 
 * Remove display of event management options if user does not have privileges to perform those actions
 * Add option to customize permalink slug on permalink page
+* Bug fix: when adding a location and creating multiple occurrences, multiple locations are added in manager.
 
 https://wordpress.org/support/topic/widget-showing-current-events-when-set-to-next-month-on-mobile?replies=2#post-6792046
 
@@ -117,7 +118,6 @@ New features:
 * Added arguments to from/to filters in Upcoming Events
 * Enabled option to turn on permalinks
 * Custom canonical URL for event pages
-*
 
 Bug fixes:
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
@@ -126,12 +126,20 @@ Bug fixes:
 * Rendering post template in permalinks only applies within Loop.
 * Template attribute preg_match could only pick up 2 parameters
 * Prevent an invalid mc_id value from returning errors.
+* Prevent deprecation notice when getting text_direction
 
 Important Changes:
 * Removed references to #jd_calendar and generate custom IDs. [breaking change]
 
 Translations:
 
+= 2.3.32 =
+
+* Bug fix: end time for events auto-toggled to midnight, instead of +1 hour when end time omitted.
+
+= 2.3.31 =
+
+* Added escaping in 2.3.30 broke location & category limits (escape placed on wrong string.)
 
 = 2.3.30 =
 

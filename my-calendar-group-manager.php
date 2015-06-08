@@ -262,7 +262,7 @@ function mc_group_form( $group_id, $type = 'break' ) {
 	$group .= $warning;
 	$group .= ( $type == 'apply' ) ? "<fieldset><legend>" . __( 'Apply these changes to:', 'my-calendar' ) . "</legend>" : '';
 	$group .= ( $type == 'break' ) ? "<form method='post' action='" . admin_url( "admin.php?page=my-calendar-groups&amp;mode=edit&amp;event_id=$event_id&amp;group_id=$group_id" ) . "'>
-	<div><input type='hidden' value='$group_id' name='group_id' /><input type='hidden' value='$type' name='event_action' /><input type='hidden' name='_wpnonce' value='$nonce' />
+	<div><input type='hidden' value='" . esc_attr( $group_id ) . "' name='group_id' /><input type='hidden' value='" . esc_attr( $type ) . "' name='event_action' /><input type='hidden' name='_wpnonce' value='$nonce' />
 	</div>" : '';
 	$group .= "<ul class='checkboxes'>";
 	$checked = ( $type == 'apply' ) ? ' checked="checked"' : '';
@@ -318,10 +318,10 @@ function my_calendar_print_group_fields( $data, $mode, $event_id, $group_id = ''
 		} else {
 			echo mc_group_id();
 		} ?>"/>
-		<input type="hidden" name="event_action" value="<?php echo $mode; ?>"/>
-		<input type="hidden" name="event_id" value="<?php echo $event_id; ?>"/>
-		<input type="hidden" name="event_author" value="<?php echo $user_ID; ?>"/>
-		<input type="hidden" name="event_post" value="<?php echo $data->event_post; ?>"/>
+		<input type="hidden" name="event_action" value="<?php esc_attr_e( $mode ); ?>"/>
+		<input type="hidden" name="event_id" value="<?php esc_attr_e( $event_id ); ?>"/>
+		<input type="hidden" name="event_author" value="<?php esc_attr_e( $user_ID ); ?>"/>
+		<input type="hidden" name="event_post" value="<?php esc_attr_e( $data->event_post ); ?>"/>
 		<input type="hidden" name="event_nonce_name" value="<?php echo wp_create_nonce( 'event_nonce' ); ?>"/>
 	</div>
 	<div class="ui-sortable meta-box-sortables">
@@ -359,7 +359,7 @@ function my_calendar_print_group_fields( $data, $mode, $event_id, $group_id = ''
 								} ?></label>
 						</p>
 					<?php } else { ?>
-						<div><input type='hidden' name='event_span' value='<?php echo $data->event_span; ?>'/></div>
+						<div><input type='hidden' name='event_span' value='<?php esc_attr_e( $data->event_span ); ?>'/></div>
 					<?php } ?>
 					<?php if ( $mc_input['event_desc'] == 'on' || $mc_input_administrator ) { ?>
 						<div id="group_description"><?php
@@ -506,7 +506,7 @@ function my_calendar_print_group_fields( $data, $mode, $event_id, $group_id = ''
 		</div>
 	<?php } else { ?>
 		<div>
-			<input type="hidden" name="event_open" value="<?php echo ( $has_data ) ? $data->event_open : '2'; ?>"/>
+			<input type="hidden" name="event_open" value="<?php echo ( $has_data ) ? esc_attr( $data->event_open ) : '2'; ?>"/>
 			<input type="hidden" name="event_tickets"
 			       value="<?php echo ( $has_data ) ? esc_attr( $data->event_tickets ) : ''; ?>"/>
 			<input type="hidden" name="event_registration"
@@ -536,7 +536,7 @@ function my_calendar_print_group_fields( $data, $mode, $event_id, $group_id = ''
 									<option value="none"> --</option>
 									<?php
 									foreach ( $locations as $location ) {
-										echo "<option value=\"" . $location->location_id . "\">" . stripslashes( $location->location_label ) . "</option>";
+										echo "<option value=\"" . $location->location_id . "\">" . esc_html( stripslashes( $location->location_label ) ) . "</option>";
 									}
 									?>
 								</select>
@@ -704,7 +704,7 @@ function my_calendar_print_group_fields( $data, $mode, $event_id, $group_id = ''
 									if ( is_array( $location_access ) ) {
 										$checked = ( in_array( $k, $location_access ) ) ? " checked='checked'" : '';
 									}
-									$item = sprintf( '<li><input type="checkbox" id="%1$s" name="event_access[]" value="%4$s" class="checkbox" %2$s /> <label for="%1$s">%3$s</label></li>', $id, $checked, $label, $k );
+									$item = sprintf( '<li><input type="checkbox" id="%1$s" name="event_access[]" value="%4$s" class="checkbox" %2$s /> <label for="%1$s">%3$s</label></li>', esc_attr( $id ), $checked, esc_html( $label ), esc_attr( $k ) );
 									$access_list .= $item;
 								}
 								echo $access_list;

@@ -229,11 +229,11 @@ function mc_limit_string( $type = '', $ltype = '', $lvalue = '' ) {
 		if ( ! isset( $_GET['loc'] ) && ! isset( $_GET['ltype'] ) ) {
 			if ( $ltype != '' && $lvalue != '' ) {
 				$location         = $ltype;
-				$current_location = esc_sql( $lvalue );
+				$current_location = $lvalue;
 			}
 		} else {
+			$location         = urldecode( $_GET['ltype'] );			
 			$current_location = urldecode( $_GET['loc'] );
-			$location         = urldecode( $_GET['ltype'] );
 		}
 		switch ( $location ) {
 			case "name" :
@@ -292,7 +292,7 @@ function mc_limit_string( $type = '', $ltype = '', $lvalue = '' ) {
 		$limit_string .= mc_access_limit( $_GET['access'] );
 	}
 
-	return $limit_string;
+	return esc_sql( $limit_string );
 }
 
 function mc_access_limit( $access ) {

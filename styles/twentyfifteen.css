@@ -270,7 +270,7 @@
 	background: rgba( 255, 255, 255, .7 );
 	padding: 0 10px !important;
 }
-.mc-main .single-event .time-block p {
+.mc-main .single-event .time-block p, .mc-main.list .time-block p {
 	position: static;
 	padding: 0!important;
 }

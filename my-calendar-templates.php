@@ -20,7 +20,7 @@ function jd_draw_template( $array, $template, $type = 'list' ) {
 					}
 				}
 				if ( strpos( $template, "{" . $key . " " ) !== false ) { // only do preg_match if appropriate
-					preg_match_all( '/{' . $key . '\b(?>\s+(?:before="([^"]*)"|after="([^"]*)"|format="([^"]*)")|[^\s]+|\s+){0,2}}/', $template, $matches, PREG_PATTERN_ORDER );
+					preg_match_all( '/{' . $key . '\b(?>\s+(?:before="([^"]*)"|after="([^"]*)"|format="([^"]*)")|[^\s]+|\s+){0,3}}/', $template, $matches, PREG_PATTERN_ORDER );
 					if ( $matches ) {
 						$number = count( $matches[0] );
 						for ( $i=0; $i<=$number; $i++ ) {

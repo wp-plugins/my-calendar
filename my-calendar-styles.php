@@ -64,23 +64,43 @@ function mc_default_style( $filename = false, $return = 'content' ) {
 }
 
 function mc_write_styles( $stylefile, $my_calendar_style ) {
-	if ( function_exists( 'wp_is_writable' ) ) {
-		$is_writable = wp_is_writable( $stylefile );
-	} else {
-		$is_writable = is_writeable( $stylefile );
-	}
-	if ( $is_writable ) {
-		$f = fopen( $stylefile, 'w+' );
-		fwrite( $f, $my_calendar_style ); // number of bytes to write, max.
-		fclose( $f );
-
-		return true;
-	} else {
+	if ( defined( 'DISALLOW_FILE_EDIT' ) && DISALLOW_FILE_EDIT == true ) {
 		return false;
 	}
+	
+	$standard        = dirname( __FILE__ ) . '/styles/';
+	$files = my_csslist( $standard );
+	foreach ( $files as $file ) {
+		$filepath = mc_get_style_path( $file );
+		$path = pathinfo( $filepath );
+		if ( $path['extension'] == 'css' ) {
+			$styles_whitelist[] = $filepath;
+		}
+	}
+	
+	if ( in_array( $stylefile, $styles_whitelist ) ) {
+		if ( function_exists( 'wp_is_writable' ) ) {
+			$is_writable = wp_is_writable( $stylefile );
+		} else {
+			$is_writable = is_writeable( $stylefile );
+		}
+		if ( $is_writable ) {
+			$f = fopen( $stylefile, 'w+' );
+			fwrite( $f, $my_calendar_style ); // number of bytes to write, max.
+			fclose( $f );
+
+			return true;
+		} else {
+			return false;
+		}
+	}
+	return false;
 }
 
 function edit_my_calendar_styles() {
+	if ( defined( 'DISALLOW_FILE_EDIT' ) && DISALLOW_FILE_EDIT == true ) {
+		exit;
+	}
 	$dir = plugin_dir_path( __FILE__ );
 	if ( isset( $_POST['mc_edit_style'] ) ) {
 		$nonce = $_REQUEST['_wpnonce'];
@@ -171,17 +191,25 @@ function edit_my_calendar_styles() {
 										if ( ! empty( $files ) ) {
 											echo "<optgroup label='" . __( 'Your Custom Stylesheets', 'my-calendar' ) . "'>\n";
 											foreach ( $files as $value ) {
-												$test     = "mc_custom_" . $value;
-												$selected = ( get_option( 'mc_css_file' ) == $test ) ? " selected='selected'" : "";
-												echo "<option value='mc_custom_$value'$selected>$value</option>\n";
+												$filepath = mc_get_style_path( $value );
+												$path = pathinfo( $filepath );
+												if ( $path['extension'] == 'css' ) {												
+													$test     = "mc_custom_" . $value;
+													$selected = ( get_option( 'mc_css_file' ) == $test ) ? " selected='selected'" : "";
+													echo "<option value='mc_custom_$value'$selected>$value</option>\n";
+												}
 											}
 											echo "</optgroup>";
 										}
 										$files = my_csslist( $directory );
 										echo "<optgroup label='" . __( 'Installed Stylesheets', 'my-calendar' ) . "'>\n";
 										foreach ( $files as $value ) {
-											$selected = ( get_option( 'mc_css_file' ) == $value ) ? " selected='selected'" : "";
-											echo "<option value='$value'$selected>$value</option>\n";
+											$filepath = mc_get_style_path( $value );
+											$path = pathinfo( $filepath );
+											if ( $path['extension'] == 'css' ) {
+												$selected = ( get_option( 'mc_css_file' ) == $value ) ? " selected='selected'" : "";
+												echo "<option value='$value'$selected>$value</option>\n";
+											}
 										}
 										echo "</optgroup>"; ?>
 									</select>
@@ -196,26 +224,15 @@ function edit_my_calendar_styles() {
 							            value="<?php echo wp_create_nonce( 'my-calendar-nonce' ); ?>"/></div>
 							<div><input type="hidden" value="true" name="mc_edit_style"/>
 								<input type="hidden" name="mc_css_file"
-								       value="<?php echo get_option( 'mc_css_file' ); ?>"/>
+								       value="<?php esc_attr_e( get_option( 'mc_css_file' ) ); ?>"/>
 							</div>
-							<?php
-							// update from pre version 1.7.0
-							if ( get_option( 'mc_file_permissions' ) == 'false' ) {
-								echo "<div id='my_calendar_old_styles'>
-					<p>" . __( 'My Calendar was unable to update your CSS files during the upgrade. Please check your file permissions if you wish to edit your My Calendar styles. Your previously stored styles are below. This message and these styles will be deleted from the database when you successfully update your stylesheet.', 'my-calendar' ) . "</p><pre>";
-								echo stripcslashes( get_option( 'mc_style' ) );
-								echo get_option( 'mc_file_permission' );
-								echo "</pre>
-					</div>";
-							}
-							?>
 							<fieldset style="position:relative;">
 								<legend><?php _e( 'CSS Style Options', 'my-calendar' ); ?></legend>
 								<p>
 									<label
 										for="mc_show_css"><?php _e( 'Apply CSS on these pages (comma separated IDs)', 'my-calendar' ); ?></label>
 									<input type="text" id="mc_show_css" name="mc_show_css"
-									       value="<?php echo $mc_show_css; ?>"/>
+									       value="<?php esc_attr_e( $mc_show_css ); ?>"/>
 								</p>
 
 								<p>
@@ -229,16 +246,20 @@ function edit_my_calendar_styles() {
 									<label
 										for="use_styles"><?php _e( 'Disable My Calendar Stylesheet', 'my-calendar' ); ?></label>
 								</p>
-
-								<p>
+								<p>						
+								<?php if ( mc_is_custom_style( get_option( 'mc_css_file' ) ) ) {
+									_e( 'The editor is not available for custom CSS files. You should edit your custom CSS locally, then upload your changes.', 'my-calendar' );
+								} else {
+								?>
 									<label
 										for="style"><?php _e( 'Edit the stylesheet for My Calendar', 'my-calendar' ); ?></label><br/><textarea
 										class="style-editor" id="style" name="style" rows="30"
 										cols="80"<?php if ( get_option( 'mc_use_styles' ) == 'true' ) {
 										echo "disabled='disabled'";
 									} ?>><?php echo $my_calendar_style; ?></textarea>
-								</p>
 
+								<?php } ?>
+								</p>
 								<p>
 									<input type="submit" name="save" class="button-primary button-adjust"
 									       value="<?php _e( 'Save Changes', 'my-calendar' ); ?>"/>

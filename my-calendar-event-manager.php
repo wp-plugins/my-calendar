@@ -850,11 +850,11 @@ function mc_show_block( $field, $has_data, $data ) {
 			break;
 		case 'event_image' :
 			if ( $show_block ) {
-				$value  = ( $has_data ) ? esc_attr( $data->event_image ) : '';
+				$value  = ( $has_data ) ? $data->event_image : '';
 				$return = '
 				<div class="mc-image-upload field-holder">
 					<input type="hidden" name="event_image_id" value="" class="textfield" id="e_image_id" />
-					<label for="e_image">' . __( "Add an image:", 'my-calendar' ) . '</label><br /><input type="text" name="event_image" id="e_image" size="60" value="' . $value . '" placeholder="http://yourdomain.com/image.jpg" /> <a href="#" class="button textfield-field">' . __( "Upload", 'my-calendar' ) . '</a>';
+					<label for="e_image">' . __( "Add an image:", 'my-calendar' ) . '</label><br /><input type="text" name="event_image" id="e_image" size="60" value="' . esc_attr( $value ) . '" placeholder="http://yourdomain.com/image.jpg" /> <a href="#" class="button textfield-field">' . __( "Upload", 'my-calendar' ) . '</a>';
 				if ( ! empty( $data->event_image ) ) {
 					$return .= '<div class="event_image"><img src="' . esc_attr( $data->event_image ) . '" alt="" /></div>';
 				} else {
@@ -862,7 +862,7 @@ function mc_show_block( $field, $has_data, $data ) {
 				}
 				$return .= '</div>';
 			} else {
-				$return = '<input type="hidden" name="event_image" value="' . $value . '" />';
+				$return = '<input type="hidden" name="event_image" value="' . esc_attr( $value ) . '" />';
 			}
 			break;
 		case 'event_category' :
@@ -920,8 +920,8 @@ function mc_show_block( $field, $has_data, $data ) {
 		<fieldset>
 		<legend class="screen-reader-text">' . __( 'Recurring Events', 'my-calendar' ) . '</legend>
 			<p>
-				<label for="e_repeats">' . __( 'Repeats', 'my-calendar' ) . ' <input type="text" name="event_repeats" aria-labelledby="e_repeats_label" id="e_repeats" size="1" value="' . $repeats . '" /> <span id="e_repeats_label">' . __( 'times', 'my-calendar' ) . '</span>, </label>
-				<label for="e_every">' . __( 'every', 'my-calendar' ) . '</label> <input type="number" name="event_every" id="e_every" size="1" min="1" max="12" maxlength="1" value="' . $every . '" /> 
+				<label for="e_repeats">' . __( 'Repeats', 'my-calendar' ) . ' <input type="text" name="event_repeats" aria-labelledby="e_repeats_label" id="e_repeats" size="1" value="' . esc_attr( $repeats ) . '" /> <span id="e_repeats_label">' . __( 'times', 'my-calendar' ) . '</span>, </label>
+				<label for="e_every">' . __( 'every', 'my-calendar' ) . '</label> <input type="number" name="event_every" id="e_every" size="1" min="1" max="12" maxlength="1" value="' . esc_attr( $every ) . '" /> 
 				<label for="e_recur" class="screen-reader-text">' . __( 'Units', 'my-calendar' ) . '</label> 
 				<select name="event_recur" id="e_recur">
 					' . mc_recur_options( $recur ) . '
@@ -940,9 +940,9 @@ function mc_show_block( $field, $has_data, $data ) {
 				$return = '
 				<div>' .
 				          $prev . '		
-					<input type="hidden" name="event_repeats" value="' . $repeats . '" />
-					<input type="hidden" name="event_every" value="' . $every . '" />
-					<input type="hidden" name="event_recur" value="' . $recur . '" />
+					<input type="hidden" name="event_repeats" value="' . esc_attr( $repeats ) . '" />
+					<input type="hidden" name="event_every" value="' . esc_attr( $every ) . '" />
+					<input type="hidden" name="event_recur" value="' . esc_attr( $recur ) . '" />
 				</div>';
 			}
 			break;
@@ -969,8 +969,8 @@ function mc_show_block( $field, $has_data, $data ) {
 				</div>
 				' . $post;
 			} else {
-				$open         = ( $has_data ) ? $data->event_open : '2';
-				$tickets      = ( $has_data ) ? esc_attr( esc_url( $data->event_tickets ) ) : '';
+				$open         = ( $has_data ) ? esc_attr( $data->event_open ) : '2';
+				$tickets      = ( $has_data ) ? esc_url( $data->event_tickets ) : '';
 				$registration = ( $has_data ) ? esc_attr( $data->event_registration ) : '';
 				$return       = '
 				<div>
@@ -988,19 +988,19 @@ function mc_show_block( $field, $has_data, $data ) {
 					$return = "
 				<div>
 					<input type='hidden' name='event_label' value='" . esc_attr( stripslashes( $data->event_label ) ) . "' />
-					<input type='hidden' name='event_street' value='" . ( stripslashes( $data->event_street ) ) . "' />
-					<input type='hidden' name='event_street2' value='" . ( stripslashes( $data->event_street2 ) ) . "' />
-					<input type='hidden' name='event_phone' value='" . ( stripslashes( $data->event_phone ) ) . "' />
-					<input type='hidden' name='event_phone2' value='" . ( stripslashes( $data->event_phone2 ) ) . "' />
-					<input type='hidden' name='event_city' value='" . ( stripslashes( $data->event_city ) ) . "' />
-					<input type='hidden' name='event_state' value='" . ( stripslashes( $data->event_state ) ) . "' />
-					<input type='hidden' name='event_postcode' value='" . ( stripslashes( $data->event_postcode ) ) . "' />
-					<input type='hidden' name='event_region' value='" . ( stripslashes( $data->event_region ) ) . "' />
-					<input type='hidden' name='event_country' value='" . ( stripslashes( $data->event_country ) ) . "' />
-					<input type='hidden' name='event_zoom' value='" . ( stripslashes( $data->event_zoom ) ) . "' />
-					<input type='hidden' name='event_url' value='" . ( stripslashes( $data->event_url ) ) . "' />
-					<input type='hidden' name='event_latitude' value='" . ( stripslashes( $data->event_latitude ) ) . "' />
-					<input type='hidden' name='event_longitude' value='" . ( stripslashes( $data->event_longitude ) ) . "' />
+					<input type='hidden' name='event_street' value='" . esc_attr( stripslashes( $data->event_street ) ) . "' />
+					<input type='hidden' name='event_street2' value='" . esc_attr( stripslashes( $data->event_street2 ) ) . "' />
+					<input type='hidden' name='event_phone' value='" . esc_attr( stripslashes( $data->event_phone ) ) . "' />
+					<input type='hidden' name='event_phone2' value='" . esc_attr( stripslashes( $data->event_phone2 ) ) . "' />
+					<input type='hidden' name='event_city' value='" . esc_attr( stripslashes( $data->event_city ) ) . "' />
+					<input type='hidden' name='event_state' value='" . esc_attr( stripslashes( $data->event_state ) ) . "' />
+					<input type='hidden' name='event_postcode' value='" . esc_attr( stripslashes( $data->event_postcode ) ) . "' />
+					<input type='hidden' name='event_region' value='" . esc_attr( stripslashes( $data->event_region ) ) . "' />
+					<input type='hidden' name='event_country' value='" . esc_attr( stripslashes( $data->event_country ) ) . "' />
+					<input type='hidden' name='event_zoom' value='" . esc_attr( stripslashes( $data->event_zoom ) ) . "' />
+					<input type='hidden' name='event_url' value='" . esc_attr( stripslashes( $data->event_url ) ) . "' />
+					<input type='hidden' name='event_latitude' value='" . esc_attr( stripslashes( $data->event_latitude ) ) . "' />
+					<input type='hidden' name='event_longitude' value='" . esc_attr( stripslashes( $data->event_longitude ) ) . "' />
 				</div>";
 				}
 			}
@@ -1076,7 +1076,7 @@ function mc_form_fields( $data, $mode, $event_id ) {
 	} else {
 		echo mc_group_id();
 	} ?>"/>
-	<input type="hidden" name="event_action" value="<?php echo $mode; ?>"/>
+	<input type="hidden" name="event_action" value="<?php esc_attr_e( $mode ); ?>"/>
 	<?php if ( ! empty( $_GET['date'] ) ) { ?>
 		<input type="hidden" name="event_instance" value="<?php echo (int) $_GET['date']; ?>"/>
 	<?php } ?>
@@ -1150,7 +1150,7 @@ function mc_form_fields( $data, $mode, $event_id ) {
 					if ( $mode == 'edit' ) {
 						?>
 						<input type='hidden' name='prev_event_status'
-						       value='<?php echo $data->event_approved; ?>' /><?php
+						       value='<?php esc_attr_e( $data->event_approved ); ?>' /><?php
 						if ( get_option( 'mc_event_approve' ) == 'true' ) {
 							if ( current_user_can( 'mc_approve_events' ) ) { // Added by Roland P. 
 								if ( $has_data && $data->event_approved == '1' ) {
@@ -1227,10 +1227,10 @@ function mc_form_fields( $data, $mode, $event_id ) {
 
 		<div class="inside">
 			<?php if ( is_object( $data ) ) { // information for rewriting recurring data ?>
-				<input type="hidden" name="prev_event_begin" value="<?php echo $data->event_begin; ?>"/>
-				<input type="hidden" name="prev_event_time" value="<?php echo $data->event_time; ?>"/>
-				<input type="hidden" name="prev_event_end" value="<?php echo $data->event_end; ?>"/>
-				<input type="hidden" name="prev_event_endtime" value="<?php echo $data->event_endtime; ?>"/>
+				<input type="hidden" name="prev_event_begin" value="<?php esc_attr_e( $data->event_begin ); ?>"/>
+				<input type="hidden" name="prev_event_time" value="<?php esc_attr_e( $data->event_time ); ?>"/>
+				<input type="hidden" name="prev_event_end" value="<?php esc_attr_e( $data->event_end ); ?>"/>
+				<input type="hidden" name="prev_event_endtime" value="<?php esc_attr_e( $data->event_endtime ); ?>"/>
 			<?php } ?>
 			<fieldset>
 				<legend class="screen-reader-text"><?php _e( 'Event Date and Time', 'my-calendar' ); ?></legend>
@@ -1394,12 +1394,8 @@ if ( mc_show_edit_block( 'event_specials' ) ) {
 } else {
 	?>
 	<div>
-	<input type="hidden" name="event_holiday" value="true"<?php if ( get_option( 'mc_skip_holidays' ) == 'true' ) {
-		echo " checked=\"checked\"";
-	} ?> />
-	<input type="hidden" name="event_fifth_week" value="true"<?php if ( get_option( 'mc_no_fifth_week' ) == 'true' ) {
-		echo " checked=\"checked\"";
-	} ?>/>
+	<input type="hidden" name="event_holiday" value="true" <?php checked( get_option( 'mc_skip_holidays' ), 'true' ); ?> />
+	<input type="hidden" name="event_fifth_week" value="true" <?php checked( get_option( 'mc_no_fifth_week' ), 'true' ); ?> />
 	</div><?php
 } ?>
 <p>
@@ -1428,13 +1424,13 @@ function mc_event_accessibility( $form, $data, $label ) {
 		if ( is_array( $events_access ) ) {
 			$checked = ( in_array( $k, $events_access ) || in_array( $a, $events_access ) ) ? " checked='checked'" : '';
 		}
-		$item = sprintf( '<li><input type="checkbox" id="%1$s" name="events_access[]" value="%4$s" class="checkbox" %2$s /> <label for="%1$s">%3$s</label></li>', $id, $checked, $label, $a );
+		$item = sprintf( '<li><input type="checkbox" id="%1$s" name="events_access[]" value="%4$s" class="checkbox" %2$s /> <label for="%1$s">%3$s</label></li>', esc_attr( $id ), $checked, esc_html( $label ), esc_attr( $a ) );
 		$form .= $item;
 	}
 	if ( isset( $events_access['notes'] ) ) {
 		$note_value = esc_attr( $events_access['notes'] );
 	}
-	$form .= '<li><label for="events_access_notes">' . __( 'Notes', 'my-calendar' ) . '</label> <input type="text" name="events_access[notes]" value="' . $note_value . '" /></li>';
+	$form .= '<li><label for="events_access_notes">' . __( 'Notes', 'my-calendar' ) . '</label> <input type="text" name="events_access[notes]" value="' . esc_attr( $note_value ) . '" /></li>';
 	$form .= "</ul>
 	</fieldset>";
 
@@ -1921,7 +1917,7 @@ function mc_check_data( $action, $post, $i ) {
 
 		$begin   = date( 'Y-m-d', strtotime( $begin ) );// regardless of entry format, convert.
 		$time    = ! empty( $post['event_time'][ $i ] ) ? trim( $post['event_time'][ $i ] ) : '';
-		$endtime = ! empty( $post['event_endtime'][ $i ] ) ? trim( $post['event_endtime'][ $i ] ) : date( 'H:i:s', strtotime( $time . '+1 hour' ) );
+		$endtime = ! empty( $post['event_endtime'][ $i ] ) ? trim( $post['event_endtime'][ $i ] ) : date( 'H:i:s', strtotime( $time . ' +1 hour' ) );
 		$endtime = ( $time == '' || $time == '00:00:00' ) ? '23:59:59' : $endtime; // set at 23:59:59 if all day.
 		$endtime = ( $endtime == '' ) ? '23:59:00' : date( 'H:i:00', strtotime( $endtime ) );
 		// prevent setting enddate to incorrect value on copy.
@@ -2133,6 +2129,7 @@ function mc_check_data( $action, $post, $i ) {
 		$event_access = ( is_array( $event_access ) ) ? serialize( $event_access ) : '';
 		// The form is going to be rejected due to field validation issues, so we preserve the users entries here
 		// all submitted data should be in this object, regardless of data destination.
+		$users_entries                     = ( !is_object( $users_entries ) ) ? new stdClass() : $users_entries;
 		$users_entries->event_id           = ( isset( $_GET['event_id'] ) && is_numeric( $_GET['event_id'] ) ) ? $_GET['event_id'] : false;
 		$users_entries->event_title        = $title;
 		$users_entries->event_desc         = $desc;
@@ -2391,18 +2388,18 @@ jQuery(document).ready(function($) {
 		$allday_label = get_option( 'mc_notime_text' );
 	}
 	$form .= '<p>
-		<label for="e_begin" id="eblabel">' . __( 'Date (YYYY-MM-DD)', 'my-calendar' ) . '</label> <input type="text" id="e_begin" name="event_begin[]" size="10" value="" data-value="' . $event_begin . '" />
+		<label for="e_begin" id="eblabel">' . __( 'Date (YYYY-MM-DD)', 'my-calendar' ) . '</label> <input type="text" id="e_begin" name="event_begin[]" size="10" value="" data-value="' . esc_attr( $event_begin ) . '" />
 		<label for="e_time">' . __( 'From', 'my-calendar' ) . '</label> 
-		<input type="text" id="e_time" name="event_time[]" size="8" value="' . $starttime . '" />	
+		<input type="text" id="e_time" name="event_time[]" size="8" value="' . esc_attr( $starttime ) . '" />	
 		<label for="e_endtime">' . __( 'To', 'my-calendar' ) . '</label> 
-		<input type="text" id="e_endtime" name="event_endtime[]" size="8" value="' . $endtime . '" />
+		<input type="text" id="e_endtime" name="event_endtime[]" size="8" value="' . esc_attr( $endtime ) . '" />
 	</p>
 	<ul>
 		<li><input type="checkbox" value="1" id="e_allday" name="event_allday"' . $allday . ' /> <label for="e_allday">' . __( 'All day event', 'my-calendar' ) . '</label> <span class="event_time_label"><label for="e_time_label">' . __( 'Time label:', 'my-calendar' ) . '</label> <input type="text" name="event_time_label" id="e_time_label" value="' . esc_attr( $allday_label ) . '" /> </li>
 		<li><input type="checkbox" value="1" id="e_hide_end" name="event_hide_end"' . $hide . ' /> <label for="e_hide_end">' . __( 'Hide end time', 'my-calendar' ) . '</label></li>
 	</ul>
 	<p>
-		<label for="e_end" id="eelabel"><em>' . __( 'End Date (YYYY-MM-DD, optional)', 'my-calendar' ) . '</em></label> <input type="text" name="event_end[]" id="e_end" size="10" value="" data-value="' . $event_end . '" /> 
+		<label for="e_end" id="eelabel"><em>' . __( 'End Date (YYYY-MM-DD, optional)', 'my-calendar' ) . '</em></label> <input type="text" name="event_end[]" id="e_end" size="10" value="" data-value="' . esc_attr( $event_end ) . '" /> 
 	</p>';
 
 	return $form;

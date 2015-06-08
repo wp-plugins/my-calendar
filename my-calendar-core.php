@@ -1562,7 +1562,7 @@ $plugins_string
 			<input type='checkbox' name='has_purchased' id='has_purchased' value='on' /> <label for='has_purchased'>" . __( 'I have <a href="http://www.joedolson.com/my-calendar/users-guide/">purchased the User\'s Guide</a>, but could not find an answer to this question.', 'my-calendar' ) . "</label>
 		</p>
 		<p>
-			<label for='support_request'>Support Request:</label><br /><textarea name='support_request' id='support_request' required aria-required='true' cols='80' rows='10'>" . stripslashes( $request ) . "</textarea>
+			<label for='support_request'>Support Request:</label><br /><textarea name='support_request' id='support_request' required aria-required='true' cols='80' rows='10' class='widefat'>" . stripslashes( $request ) . "</textarea>
 		</p>
 		<p>
 			<input type='submit' value='" . __( 'Send Support Request', 'my-calendar' ) . "' name='mc_support' class='button-primary' />

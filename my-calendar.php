@@ -116,9 +116,37 @@ add_action( 'init', 'mc_export_vcal', 200 );
 add_filter( 'widget_text', 'do_shortcode', 9 );
 add_filter( 'plugin_action_links', 'mc_plugin_action', - 10, 2 );
 add_filter( 'wp_title', 'mc_event_filter', 10, 3 );
+// Customize canonical URL
+add_action( 'init', 'mc_custom_canonical' );
+function mc_custom_canonical() {
+	add_action( 'wp_head', 'mc_canonical' );
+	remove_action( 'wp_head', 'rel_canonical' );
+}
+
+function mc_canonical() {
+	// original code
+	if ( !is_singular() ) {
+		return;
+	}
+	global $wp_the_query;
+	if ( !$id = $wp_the_query->get_queried_object_id() ) {
+		return;
+	}
+
+	// original code
+	$link = get_permalink( $id );
+	if ( $page = get_query_var('cpage') ) {
+		$link = get_comments_pagenum_link( $page );
+	}
+	if ( isset( $_GET['mc_id'] ) ) { 
+		$mc_id = ( is_numeric( $_GET['mc_id'] ) ) ? $_GET['mc_id'] : false;
+		$link = add_query_arg( 'mc_id', $mc_id, $link );
+	}
+	echo "<link rel='canonical' href='$link' />\n";	
+}
 
 function mc_event_filter( $title, $sep = ' | ', $seplocation = 'right' ) {
-	if ( isset( $_GET['mc_id'] ) ) {
+	if ( isset( $_GET['mc_id'] ) && is_numeric( $_GET['mc_id'] ) ) {
 		$id        = (int) $_GET['mc_id'];
 		$event     = mc_get_event( $id );
 		$array     = mc_create_tags( $event );

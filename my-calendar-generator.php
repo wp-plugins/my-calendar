@@ -5,6 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function mc_generate() {
 	if ( isset( $_POST['generator'] ) ) {
+		$nonce = $_POST['_wpnonce'];
+		if ( ! wp_verify_nonce( $nonce, 'my-calendar-generator' ) ) {
+			wp_die( "Invalid nonce" );
+		}		
 		$string = '';
 		$output = apply_filters( 'mc_shortcode_generator', false, $_POST );
 		if ( !$output ) {
@@ -22,7 +26,7 @@ function mc_generate() {
 					$shortcode = 'my_calendar';
 			}
 			foreach ( $_POST as $key => $value ) {
-				if ( $key != 'generator' && $key != 'shortcode' ) {
+				if ( $key != 'generator' && $key != 'shortcode' && $key != '_wpnonce' ) {
 					if ( is_array( $value ) ) {		
 						if ( in_array( 'all', $value ) ) {
 							unset( $value[0] );
@@ -36,7 +40,7 @@ function mc_generate() {
 					}
 				}
 			}
-			$output = $shortcode . $string;	
+			$output = esc_html( $shortcode . $string );	
 		}
 		$return = "<div class='updated'><textarea readonly='readonly'>[$output]</textarea></div>";
 		echo $return;
@@ -50,7 +54,8 @@ function mc_generator( $type ) {
 		<legend><strong><?php echo ucfirst( $type ); ?></strong>: <?php _e( 'Shortcode Attributes', 'my-calendar' ); ?>
 		</legend>
 		<div id="mc-generator" class="generator">
-			<input type='hidden' name='shortcode' value='<?php echo $type; ?>'/>
+			<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'my-calendar-generator' ); ?>"/></div>		
+			<input type='hidden' name='shortcode' value='<?php esc_attr_e( $type ); ?>'/>
 			<?php // Common Elements to all Shortcodes ?>
 			<p><?php echo my_calendar_categories_list( 'select', 'admin' ); ?></p>
 
@@ -68,7 +73,7 @@ function mc_generator( $type ) {
 			</p>
 			<p>
 				<label for="lvalue" id='lval'><?php _e( 'Location filter value:', 'my-calendar' ); ?></label>
-				<input type="text" name="lvalue" id="lvalue" aria-labelledby='lval location-info'/>
+				<input type="text" name="lvalue" id="lvalue" aria-labelledby='lval location-info' />
 			</p>
 
 			<p id='location-info'>
@@ -79,7 +84,7 @@ function mc_generator( $type ) {
 			$users   = my_calendar_getUsers();
 			$options = '';
 			foreach ( $users as $u ) {
-				$options = '<option value="' . $u->ID . '">' . $u->display_name . "</option>\n";
+				$options = '<option value="' . $u->ID . '">' . esc_html( $u->display_name ) . "</option>\n";
 			} ?>
 			<p>
 				<label for="author"><?php _e( 'Limit by Author', 'my-calendar' ); ?></label>
@@ -123,12 +128,12 @@ function mc_generator( $type ) {
 				<p>
 					<label for="above" id='labove'><?php _e( 'Navigation above calendar', 'my-calendar' ); ?></label>
 					<input type="text" name="above" id="above" value="nav,toggle,jump,print,timeframe"
-					       aria-labelledby='labove navigation-info'/><br/>
+					       aria-labelledby='labove navigation-info' /><br/>
 				</p>
 				<p>
 					<label for="below" id='lbelow'><?php _e( 'Navigation below calendar', 'my-calendar' ); ?></label>
 					<input type="text" name="below" id="below" value="key,feeds"
-					       aria-labelledby='lbelow navigation-info'/><br/>
+					       aria-labelledby='lbelow navigation-info' /><br/>
 				</p>
 			<?php
 			}
@@ -137,7 +142,7 @@ function mc_generator( $type ) {
 				?>
 				<p>
 					<label for="fallback"><?php _e( 'Fallback Text', 'my-calendar' ); ?></label>
-					<input type="text" name="fallback" id="fallback" value=""/>
+					<input type="text" name="fallback" id="fallback" value="" />
 				</p>
 				<p>
 					<label for="template"><?php _e( 'Template', 'my-calendar' ); ?></label>
@@ -151,15 +156,15 @@ function mc_generator( $type ) {
 				?>
 				<p>
 					<label for="before"><?php _e( 'Events/Days Before Current Day', 'my-calendar' ); ?></label>
-					<input type="number" name="before" id="before" value=""/>
+					<input type="number" name="before" id="before" value="" />
 				</p>
 				<p>
 					<label for="after"><?php _e( 'Events/Days After Current Day', 'my-calendar' ); ?></label>
-					<input type="number" name="after" id="after" value=""/>
+					<input type="number" name="after" id="after" value="" />
 				</p>
 				<p>
 					<label for="skip"><?php _e( 'Events/Days to Skip', 'my-calendar' ); ?></label>
-					<input type="number" name="skip" id="skip" value=""/>
+					<input type="number" name="skip" id="skip" value="" />
 				</p>
 				<p>
 					<label for="show_today"><?php _e( 'Fallback', 'my-calendar' ); ?></label>

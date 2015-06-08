@@ -22,7 +22,7 @@ function mc_settings_field( $name, $label, $default = '', $note = '', $atts = ar
 			} else {
 				$note = $aria = '';
 			}
-			echo "<label for='$name'>$label</label> <input type='$type' id='$name' name='$name' value='$value'$aria$attributes /> $note";
+			echo "<label for='$name'>$label</label> <input type='$type' id='$name' name='$name' value='" . esc_attr( $value ) . "'$aria$attributes /> $note";
 			break;
 		case 'textarea':
 			if ( $note ) {
@@ -32,7 +32,7 @@ function mc_settings_field( $name, $label, $default = '', $note = '', $atts = ar
 			} else {
 				$note = $aria = '';
 			}
-			echo "<label for='$name'>$label</label><br /><textarea id='$name' name='$name'$aria$attributes>$value</textarea>$note";
+			echo "<label for='$name'>$label</label><br /><textarea id='$name' name='$name'$aria$attributes>" . esc_attr( $value ) . "</textarea>$note";
 			break;
 		case 'checkbox-single':
 			$checked = mc_is_checked( $name, 'true', '', true );
@@ -54,7 +54,7 @@ function mc_settings_field( $name, $label, $default = '', $note = '', $atts = ar
 			}
 			foreach ( $label as $k => $v ) {
 				$checked = ( $k == $value ) ? ' checked="checked"' : '';
-				$options .= "<li><input type='radio' id='$name-$k' value='$k' name='$name'$aria$attributes$checked /> <label for='$name-$k'>$v</label></li>";
+				$options .= "<li><input type='radio' id='$name-$k' value='" . esc_attr( $k ) . "' name='$name'$aria$attributes$checked /> <label for='$name-$k'>$v</label></li>";
 			}
 			echo "$options $note";
 			break;
@@ -69,7 +69,7 @@ function mc_settings_field( $name, $label, $default = '', $note = '', $atts = ar
 			if ( is_array( $default ) ) {
 				foreach ( $default as $k => $v ) {
 					$checked = ( $k == $value ) ? ' selected="selected"' : '';
-					$options .= "<option value='$k'$checked>$v</option>";
+					$options .= "<option value='" . esc_attr( $k ) . "'$checked>$v</option>";
 				}
 			}
 			echo "
@@ -547,7 +547,7 @@ function edit_my_calendar_config() {
 					<fieldset>
 						<legend><?php _e( 'Calendar Link Targets', 'my-calendar' ); ?></legend>
 						<ul>
-							<?php /* <li><?php mc_settings_field( 'mc_use_permalinks', __( 'Use Pretty Permalinks for Events','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li> This just isn't ready; add in a point release. */ ?>
+							<li><?php mc_settings_field( 'mc_use_permalinks', __( 'Use Pretty Permalinks for Events','my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 							<?php $guess = mc_guess_calendar(); ?>
 							<li><?php mc_settings_field( 'mc_uri', __( 'Where is your main calendar page?', 'my-calendar' ), '', "<br /><small>" . __( 'Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.', 'my-calendar' ) . " $guess[message]</small>", array( 'size' => '60' ), 'url' ); ?></li>
 							<li><?php mc_settings_field( 'mc_mini_uri', __( 'Target <abbr title="Uniform resource locator">URL</abbr> for mini calendar date links:', 'my-calendar' ), '', "<br /><small>" . __( 'Can be any Page or Post which includes the <code>[my_calendar]</code> shortcode.', 'my-calendar' ) . "</small>", array( 'size' => '60' ), 'url' ); ?></li>

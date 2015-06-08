@@ -125,21 +125,23 @@ function mc_time_html( $event, $type, $current_date ) {
 }
 
 function mc_category_icon( $event, $html = 'html' ) {
-	$url   = plugin_dir_url( __FILE__ );
-	$image = '';
-	if ( get_option( 'mc_hide_icons' ) != 'true' ) {
-		if ( $event->category_icon != '' ) {
-			$path = ( is_custom_icon() ) ? str_replace( 'my-calendar', 'my-calendar-custom', $url ) : plugins_url( 'images/icons', __FILE__ ) . '/';
-			$hex  = ( strpos( $event->category_color, '#' ) !== 0 ) ? '#' : '';
-			if ( $html == 'html' ) {
-				$image = '<img src="' . $path . $event->category_icon . '" alt="' . __( 'Category', 'my-calendar' ) . ': ' . esc_attr( $event->category_name ) . '" class="category-icon" style="background:' . $hex . $event->category_color . '" />';
-			} else {
-				$image = $path . $event->category_icon;
+	if ( is_object( $event ) ) {
+		$url   = plugin_dir_url( __FILE__ );
+		$image = '';
+		if ( get_option( 'mc_hide_icons' ) != 'true' ) {
+			if ( $event->category_icon != '' ) {
+				$path = ( is_custom_icon() ) ? str_replace( 'my-calendar', 'my-calendar-custom', $url ) : plugins_url( 'images/icons', __FILE__ ) . '/';
+				$hex  = ( strpos( $event->category_color, '#' ) !== 0 ) ? '#' : '';
+				if ( $html == 'html' ) {
+					$image = '<img src="' . $path . $event->category_icon . '" alt="' . __( 'Category', 'my-calendar' ) . ': ' . esc_attr( $event->category_name ) . '" class="category-icon" style="background:' . $hex . $event->category_color . '" />';
+				} else {
+					$image = $path . $event->category_icon;
+				}
 			}
 		}
-	}
 
-	return $image;
+		return $image;
+	}
 }
 
 add_filter( 'the_title', 'mc_category_icon_title', 10, 2 );
@@ -340,7 +342,7 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 			}
 
 			if ( get_option( 'mc_gmap' ) == 'true' ) {
-				$map = ( is_singular( 'mc-event' ) || $type == 'single' ) ? mc_generate_map( $event ) : '';
+				$map = ( is_singular( 'mc-events' ) || $type == 'single' ) ? mc_generate_map( $event ) : '';
 			} else {
 				$map = '';
 			}
@@ -435,7 +437,7 @@ function mc_build_date_switcher( $type = 'calendar', $cid = 'all' ) {
 	$qsa = array();
 	parse_str( $_SERVER['QUERY_STRING'], $qsa );
 	if ( ! isset( $_GET['cid'] ) ) {
-		$date_switcher .= '<input type="hidden" name="cid" value="' . $cid . '" />';
+		$date_switcher .= '<input type="hidden" name="cid" value="' . esc_attr( $cid ) . '" />';
 	}
 	foreach ( $qsa as $name => $argument ) {
 		$name     = esc_attr( strip_tags( $name ) );
@@ -495,13 +497,13 @@ function my_calendar_print() {
 	header( 'Content-Type: ' . get_bloginfo( 'html_type' ) . '; charset=' . get_bloginfo( 'charset' ) );
 	echo '<!DOCTYPE html>
 <!--[if IE 7]>
-<html id="ie7" dir="' . get_bloginfo( 'text_direction' ) . '" lang="' . get_bloginfo( 'language' ) . '">
+<html id="ie7" dir="' . ( is_rtl() ) ? 'rtl' : 'ltr' . '" lang="' . get_bloginfo( 'language' ) . '">
 <![endif]-->
 <!--[if IE 8]>
-<html id="ie8" dir="' . get_bloginfo( 'text_direction' ) . '" lang="' . get_bloginfo( 'language' ) . '">
+<html id="ie8" dir="' . ( is_rtl() ) ? 'rtl' : 'ltr' . '" lang="' . get_bloginfo( 'language' ) . '">
 <![endif]-->
 <!--[if !(IE 6) | !(IE 7) | !(IE 8) ]><!-->
-<html dir="' . get_bloginfo( 'text_direction' ) . '" lang="' . get_bloginfo( 'language' ) . '">
+<html dir="' . ( is_rtl() ) ? 'rtl' : 'ltr' . '" lang="' . get_bloginfo( 'language' ) . '">
 <!--<![endif]-->
 <head>
 <meta charset="' . get_bloginfo( 'charset' ) . '" />
@@ -793,12 +795,15 @@ function mc_show_search_results( $content ) {
 add_filter( 'the_content', 'mc_show_event_template', 100 );
 function mc_show_event_template( $content ) {
 	global $post;
-	$new_content = $content;
-	if ( $post->post_type == 'mc-events' ) {
-		$new_content = do_shortcode( get_post_meta( $post->ID, '_mc_event_shortcode', true ) ); // -> triggers an infinite loop when shortcode filters enabled in settings. If you're using this view, you have no reason to allow the_content filters.
-	}
+	if ( is_object( $post ) && in_the_loop() ) {
+		$new_content = $content;
+		if ( $post->post_type == 'mc-events' ) {
+			$new_content = do_shortcode( get_post_meta( $post->ID, '_mc_event_shortcode', true ) ); // -> triggers an infinite loop when shortcode filters enabled in settings. If you're using this view, you have no reason to allow the_content filters.
+		}
 
-	return apply_filters( 'mc_event_content', $new_content, $content, $post );
+		$content = apply_filters( 'mc_event_content', $new_content, $content, $post );
+	}
+	return $content;
 }
 
 // Actually do the printing of the calendar
@@ -872,8 +877,10 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 
 	if ( isset( $_GET['mc_id'] ) && $format != 'mini' ) {
 		// single event, main calendar only.
-		$mc_id = (int) $_GET['mc_id'];
-		$my_calendar_body .= mc_get_event( $mc_id, 'html' );
+		$mc_id = ( is_numeric( $_GET['mc_id'] ) ) ? $_GET['mc_id'] : false;
+		if ( $mc_id ) {
+			$my_calendar_body .= mc_get_event( $mc_id, 'html' );
+		}
 	} else {
 		if ( $category == "" ) {
 			$category = 'all';
@@ -1723,7 +1730,7 @@ function mc_access_list( $show = 'list', $group = 'single' ) {
 				$output .= "			<li$selected><a rel='nofollow' href='$this_url'>$access_name</a></li>";
 			} else {
 				$selected = ( $this_access == $key ) ? ' selected="selected"' : '';
-				$output .= "			<option$selected value='$key'>$access_name</option>\n";
+				$output .= "			<option$selected value='" . esc_attr( $key ) . "'>" . esc_html( $access_name ) . "</option>\n";
 			}
 		}
 		$output .= ( $show == 'list' ) ? '</ul>' : '</select>';
@@ -1856,7 +1863,7 @@ function my_calendar_show_locations( $datatype = 'name', $template = '' ) {
 }
 
 function my_calendar_searchform( $type, $url ) {
-	$query = ( isset( $_GET['mcs'] ) ) ? esc_attr( $_GET['mcs'] ) : '';
+	$query = ( isset( $_GET['mcs'] ) ) ? $_GET['mcs'] : '';
 	if ( $type == 'simple' ) {
 		if ( !$url || $url == '' ) {
 			$url = ( get_option( 'mc_uri' ) != '' ) ? get_option( 'mc_uri' ) : home_url();
@@ -1865,7 +1872,7 @@ function my_calendar_searchform( $type, $url ) {
 		<form role="search" method="get" action="' . apply_filters( 'mc_search_page', esc_url( $url ) ) . '" >
 		<div class="mc-search">
 			<label class="screen-reader-text" for="mcs">' . __( 'Search Events', 'my-calendar' ) . '</label>
-			<input type="text" value="' . stripslashes( $query ) . '" name="mcs" id="mcs" />
+			<input type="text" value="' . esc_attr( stripslashes( $query ) ) . '" name="mcs" id="mcs" />
 			<input type="submit" id="searchsubmit" value="' . __( 'Search Events', 'my-calendar' ) . '" />
 		</div>
 		</form>';
@@ -1931,7 +1938,7 @@ function my_calendar_locations_list( $show = 'list', $type = 'saved', $datatype 
 			$output .= ( $group == 'single' ) ? "
 		<form action='" . $current_url . "' method='get'>
 		<div>" : '';
-			$output .= "<input type='hidden' name='ltype' value='$ltype' />";
+			$output .= "<input type='hidden' name='ltype' value='" . esc_attr( $ltype ) . "' />";
 			if ( $group == 'single' ) {
 				$qsa = array();
 				parse_str( $_SERVER['QUERY_STRING'], $qsa );
@@ -1971,7 +1978,7 @@ function my_calendar_locations_list( $show = 'list', $type = 'saved', $datatype 
 					} else {
 						$selected = ( $vt == $loc ) ? " selected='selected'" : '';
 						if ( $value != '' ) {
-							$output .= "			<option value='$vt'$selected>$value</option>\n";
+							$output .= "			<option value='" . esc_attr( $vt ) . "'$selected>$value</option>\n";
 						}
 					}
 				}
@@ -1987,7 +1994,7 @@ function my_calendar_locations_list( $show = 'list', $type = 'saved', $datatype 
 					$output .= "			<li$selected><a rel='nofollow' href='$this_url'>$location</a></li>\n";
 				} else {
 					$selected = ( $vk == $_GET['loc'] ) ? " selected='selected'" : '';
-					$output .= "			<option value='$vk'$selected>$location</option>\n";
+					$output .= "			<option value='" . esc_attr( $vk ) . "'$selected>$location</option>\n";
 				}
 			}
 		}
