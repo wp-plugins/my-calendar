@@ -281,7 +281,12 @@ class my_calendar_upcoming_widget extends WP_Widget {
 					value="month+12" <?php echo ( $type == 'month+12' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show 12th month out', 'my-calendar' ) ?></option>
 				<option
 					value="year" <?php echo ( $type == 'year' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Show current year', 'my-calendar' ) ?></option>
-			</select>
+				<option
+					value="custom" <?php echo ( $type == 'custom' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Custom Dates', 'my-calendar' ) ?></option>
+				</select>
+		</p>
+		<p>
+			Enter Custom Dates Here JCD TODO
 		</p>
 		<p>
 			<label
@@ -361,13 +366,13 @@ class my_calendar_upcoming_widget extends WP_Widget {
 }
 
 // Widget upcoming events
-function my_calendar_upcoming_events( $before = 'default', $after = 'default', $type = 'default', $category = 'default', $template = 'default', $substitute = '', $order = 'asc', $skip = 0, $show_today = 'yes', $author = 'default', $host = 'default', $ltype = '', $lvalue = '' ) {
+function my_calendar_upcoming_events( $before = 'default', $after = 'default', $type = 'default', $category = 'default', $template = 'default', $substitute = '', $order = 'asc', $skip = 0, $show_today = 'yes', $author = 'default', $host = 'default', $ltype = '', $lvalue = '', $from = '', $to = '' ) {
 	global $default_template;
 	$args                  = array( 'before'=>$before, 'after'=>$after, 'type'=>$type, 'category'=>$category, 'template'=>$template, 'fallback'=> $substitute, 'order' => $asc, 'skip' => $skip, 'show_today'=> $show_today, 'author'=> $author, 'host'=>$host, 'ltype'=>$ltype, 'lvalue'=>$lvalue );
 	$output                = '';
 	$widget_defaults       = ( array ) get_option( 'mc_widget_defaults' );
 	$display_upcoming_type = ( $type == 'default' ) ? $widget_defaults['upcoming']['type'] : $type;
-	$display_upcoming_type = ( $display_upcoming_type == '' ) ? 'event' : $display_upcoming_type;
+	$display_upcoming_type = ( $display_upcoming_type == '' ) ? 'events' : $display_upcoming_type;
 	// Get number of units we should go into the future
 	$after = ( $after == 'default' ) ? $widget_defaults['upcoming']['after'] : $after;
 	$after = ( $after == '' ) ? 10 : $after;
@@ -384,7 +389,7 @@ function my_calendar_upcoming_events( $before = 'default', $after = 'default', $
 	$no_event_text = ( $substitute == '' ) ? $widget_defaults['upcoming']['text'] : $substitute;
 	$header        = "<ul id='upcoming-events'>";
 	$footer        = "</ul>";
-	if ( $display_upcoming_type == "days" || $display_upcoming_type == "month" || $display_upcoming_type == 'month+1' || $display_upcoming_type == "year" ) {
+	if ( $display_upcoming_type != 'events' ) {
 		$temp_array = array();
 		if ( $display_upcoming_type == "days" ) {
 			$from = date( 'Y-m-d', strtotime( "-$before days" ) );
@@ -393,6 +398,10 @@ function my_calendar_upcoming_events( $before = 'default', $after = 'default', $
 		if ( $display_upcoming_type == "month" ) {
 			$from = date( 'Y-m-1' );
 			$to   = date( 'Y-m-t' );
+		}
+		if ( $display_upcoming_type == 'custom' ) {
+			$from = date( 'Y-m-d', strtotime( $from ) );
+			$to = date( 'Y-m-d', strtotime( $to ) );
 		}
 		/* Yes, this is crude. But sometimes simplicity works best. There are only 12 possibilities, after all. */
 		if ( $display_upcoming_type == 'month+1' ) {

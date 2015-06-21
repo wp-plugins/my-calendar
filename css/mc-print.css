@@ -1,3 +1,5 @@
+/* If copying this stylesheet, place in your theme directory in a /css subdirectory. /wp-content/yourtheme/css/mc-print.css */
+
 .my-calendar-header, h3 img, .mc-toggle, .mc_edit_links, #mc-export, .longdesc, .shortdesc, .mc-print, form {
     display: none;
 }

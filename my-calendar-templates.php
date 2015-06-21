@@ -208,7 +208,7 @@ function mc_hcard( $event, $address = 'true', $map = 'true', $source = 'event', 
 	}
 	$hcard .= "</div>";
 
-	return apply_filters( 'mt_hcard', $hcard, $event, $address, $map, $source, $context );
+	return apply_filters( 'mc_hcard', $hcard, $event, $address, $map, $source, $context );
 }
 
 // Produces the array of event details used for drawing templates
