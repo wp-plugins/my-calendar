@@ -44,7 +44,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 = Translations =
 
 Available translations (in order of completeness):
-Polish, Spanish (Spain), Portuguese (Portugal), French, Danish, Czech, Japanese, German, Russian, Dutch, Swedish, Italian, Hebrew, Galician, Portuguese (Brazil), Hindi, Turkish, Slovak, Finnish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Catalan, Afrikaans, Icelandic, Hungarian
+Polish, Spanish (Spain), Portuguese (Portugal), French, Danish, Czech, Japanese, German, Russian, Dutch, Swedish, Italian, Hebrew, Galician, Portuguese (Brazil), Hindi, Turkish, Slovak, Finnish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Catalan, Hungarian, Afrikaans, Icelandic
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -76,49 +76,37 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 == Changelog ==
 
-= 2.4.0 = [todo]
+= Future =
 
-FEATURES [2.4.0]
-* Add author limit tool [What is this?]
-* Create advanced search [PRO]
-* Option to post new events as blog posts [PRO]
-* Option to post new events while creating a page/post [PRO]
-* Feature: allow limiting of categories to specific member groups [PRO]
-* Import from RSS/iCal [PRO]
-* Create selectable event details templates [PRO]
-* Make only portions of events private (e.g., time and location for children's events, etc.) [PRO]
-* Add option to set event alarm or notification in .ics outputs [PRO]
-* Provide notifications of new events by category (to specific users or to lists of users; set up as user meta option?) [PRO]
-* Responsive mode [PRO]
-
-* Option to set default sort direction 
 * Refactor options storage
-* Add [day] select field to jumpbox; only visible if in 'day' time mode.
-* Create a template tag to show the date range for event groups; add support for this type of event set to {daterange}
-* Add filters to search query parameters
-* Update event taxonomies if category changed/source event taxonomy data from post?
+* Update event taxonomies if category changed/source event taxonomy data from post
 * Custom link targets using mc_customize_details_link & template_redirect filter as pointer.
 * Handle stylesheet editing as additive (child styles), rather than editing the original stylesheet.
-* Update pickadate to version 3.6, if it's out. 
-* Remove display of event management options if user does not have privileges to perform those actions
-* Add option to customize permalink slug on permalink page
-* Bug fix: when adding a location and creating multiple occurrences, multiple locations are added in manager.
-
-https://wordpress.org/support/topic/widget-showing-current-events-when-set-to-next-month-on-mobile?replies=2#post-6792046
+* Update pickadate to version 3.6, when it's out. 3.5.6 has a regression that makes it useless for me.
 
 = 2.4.0 =
 
 New features:
 * Set upcoming event class based on time, rather than date.
-* Add past/present class to today's events widget [todo]
+* Add past/present classes to today's events widget
 * Assign Custom All Day label for each event.
-* Support hiding 'Host' field as option. [needs testing; must update settings before will work]
+* Support hiding 'Host' field as option.
 * Made primary sort order of events filterable filter: 'mc_primary_sort'
 * Added action to location saving handling updated locations
 * Added arguments to from/to filters in Upcoming Events
 * Enabled option to turn on permalinks
 * Custom canonical URL for event pages
-* Custom dates for upcoming events list [to finish]
+* Added 'date' parameter to today's events list & shortcode accepting any string usable in strtotime()
+* Added 'from' and 'to' parameter to upcoming events list & shortcode accepting any string usable in strtotime()
+* Make BCC field filterable
+* Add filters to search query parameters
+* New option: switch to mini calendar on mobile devices instead of list view.
+* Add [day] select field to date switcher if in 'day' view.
+* Option to set default sort direction
+* Ability to set three separate event title templates: grid, list, and single. 
+* Added admin-bar link to view calendar.
+* Added option to customize permalink slug on permalink page
+* Single event pages as permalinks use the same template as main if custom template isn't enabled.
 
 Bug fixes:
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
@@ -129,15 +117,22 @@ Bug fixes:
 * Prevent an invalid mc_id value from returning errors.
 * Prevent deprecation notice when getting text_direction
 * Default to not showing navigation options in print view.
+* Better loading of text domain.
+* Prevent mini calendar from switching to list format.
+* Change class construction to PHP 5 syntax
+* Close button is now a button rather than a link.
+* Fixed display of text diff for stylesheet comparisons
 
 Important Changes:
-* Removed references to #jd_calendar and generate custom IDs. [breaking change]
+* Removed references to #jd_calendar and generate custom IDs. [breaking change
+* Revision of settings page [reorganize settings into tabs]
+* Reorganized settings pages.
 
 Other:
 * Moved changelog for versions prior to 2.3.0 into changelog.txt
 
 Translations:
-* Updated Polish, Portuguese (Portugal), Dutch, Turkish, Slovak, Norwegian
+* Updated Polish, Portuguese (Portugal), Dutch, Turkish, Slovak, Norwegian, Hungarian, German
 
 = 2.3.32 =
 

@@ -3,6 +3,10 @@
     font-size: 1em
 }
 
+#my-calendar #wp-content-editor-tools {
+	background: #fff;
+}
+
 .mcbuy, .mcsbuy {
     font-size: 1.1em;
     line-height: 1.5
@@ -86,8 +90,8 @@ ul.links li {
     background: #eee
 }
 
-.jd-my-calendar .pending td {
-    color: #666
+.jd-my-calendar .pending td, .jd-my-calendar .row-actions {
+    color: #666;
 }
 
 .jd-my-calendar fieldset fieldset {
@@ -178,9 +182,16 @@ ul.links li {
     margin: 10px 10px 0 0
 }
 
+.jd-my-calendar .postbox.wptab {
+	margin: 0 10px 0 0!important;
+	border: 1px solid #e5e5e5;
+}
+
 .jd-my-calendar .postbox .inside {
     overflow: visible !important
 }
+
+
 
 /* some plugins change this, but I need it at WP default. */
 .jd-my-calendar .meta-box-sortables {
@@ -305,9 +316,16 @@ strong.label {
     background: #f3f3f3;
 }
 
+.mc-tabs.settings .tabs a {
+	padding: 8px;
+	font-size: 1.2em;
+}
+
 .mc-tabs .tabs a.active {
     border-bottom: 1px solid #fefefe;
     background: #fefefe;
+	text-decoration: none;
+	cursor: text;
 }
 
 .mc-tabs .wptab {
@@ -325,6 +343,11 @@ strong.label {
     margin: 1px 0;
 }
 
+#mc-sortable .mc-buttons {
+	display: inline-block;
+	width: 7em;
+}
+
 .jd-my-calendar .ui-accordion-header.ui-state-hover, .ui-accordion-header.ui-state-focus, .mc-settings-page #mc-sortable li:hover {
     background: #f6f6f6;
     box-shadow: 0 0 2px #ddd;
@@ -339,16 +362,19 @@ strong.label {
 }
 
 #mc-sortable .mc-calendar {
-    background: #ffc;
+    background-color: #ffa!important;
     border: 1px solid #cc8;
 }
 
 #mc-sortable li.mc-stop {
-    margin: 1px -1em;
     border-radius: none;
-    border-left: none;
-    border-right: none;
-    padding: 2px 2em;
+	background-color: #222;
+	color: #eee;
+}
+
+#mc-sortable li.mc-stop:hover {
+	background-color: #000;
+	color: #bbb;
 }
 
 #mc-sortable div.dashicons {
@@ -372,11 +398,23 @@ strong.label {
     margin-bottom: 1em;
 }
 
+.mc_permissions {
+	padding: .5em;
+}
+
+.mc_permissions:nth-of-type(odd) {
+	background: rgba( 0,0,0, .05 );
+}
+
 .jd-my-calendar .checkboxes li {
     display: inline-block;
     padding: 5px;
     background: rgba(0, 0, 0, .05);
     margin: 2px;
+}
+
+.jd-my-calendar .mc_permissions:nth-of-type(odd) .checkboxes li {
+	background: transparent;
 }
 
 .jd-my-calendar .checkboxes li:hover {
@@ -434,13 +472,6 @@ strong.label {
 
 .req {
     color: red;
-}
-
-.jd-my-calendar textarea[readonly="readonly"] {
-    color: #333;
-    border: none;
-    box-shadow: none;
-    font-size: 1.4em;
 }
 
 .mc-locations label {

@@ -12,25 +12,6 @@ function my_calendar_help() {
 	<div class="postbox-container jcd-wide">
 	<div class="metabox-holder">
 
-	<div class="ui-sortable meta-box-sortables">
-		<div class="postbox">
-			<h3><?php _e( 'My Calendar Help', 'my-calendar' ); ?></h3>
-
-			<div class="inside">
-				<?php do_action( 'mc_before_help' ); ?>
-				<ul class="mc-settings checkboxes">
-					<li><a href="#mc-generator"><?php _e( 'Shortcode Generator', 'my-calendar' ); ?></a></li>
-					<li><a href="#mc-shortcodes"><?php _e( 'Shortcodes', 'my-calendar' ); ?></a></li>
-					<li><a href="#icons"><?php _e( 'Icons', 'my-calendar' ); ?></a></li>
-					<li><a href="#mc-styles"><?php _e( 'Styles', 'my-calendar' ); ?></a></li>
-					<li><a href="#templates"><?php _e( 'Templating', 'my-calendar' ); ?></a></li>
-					<li><a href="#get-support"><?php _e( 'Support Form', 'my-calendar' ); ?></a></li>
-					<li><a href="#notes"><?php _e( 'Helpful Information', 'my-calendar' ); ?></a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-
 	<div class="ui-sortable meta-box-sortables" id="get-started">
 		<div class="postbox">
 			<h3 id="help"><?php _e( 'Getting Started', 'my-calendar' ); ?></h3>
@@ -44,6 +25,16 @@ function my_calendar_help() {
 				<p>
 					<?php printf( __( 'Read more help documentation below or <a href="%s">purchase the My Calendar User\'s Guide</a> to learn more -- but the above is all that you need to do to begin using the calendar.', 'my-calendar' ), 'https://www.joedolson.com/my-calendar/users-guide/' ); ?>
 				</p>
+				<?php do_action( 'mc_before_help' ); ?>
+				<ul class="mc-settings checkboxes">
+					<li><a href="#mc-generator"><?php _e( 'Shortcode Generator', 'my-calendar' ); ?></a></li>
+					<li><a href="#mc-shortcodes"><?php _e( 'Shortcodes', 'my-calendar' ); ?></a></li>
+					<li><a href="#icons"><?php _e( 'Icons', 'my-calendar' ); ?></a></li>
+					<li><a href="#mc-styles"><?php _e( 'Styles', 'my-calendar' ); ?></a></li>
+					<li><a href="#templates"><?php _e( 'Templating', 'my-calendar' ); ?></a></li>
+					<li><a href="#get-support"><?php _e( 'Support Form', 'my-calendar' ); ?></a></li>
+					<li><a href="#notes"><?php _e( 'Helpful Information', 'my-calendar' ); ?></a></li>
+				</ul>				
 			</div>
 		</div>
 	</div>
@@ -124,13 +115,13 @@ function my_calendar_help() {
 			</p>
 			<h4><?php _e( 'Additional Views (Upcoming events, today\'s events)', 'my-calendar' ); ?></h4>
 
-			<textarea readonly='readonly'>[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" author="1" host="1" template="{title} {date}" order="asc" show_today="yes" skip="0" ltype="" lvalue=""]</textarea>
+			<textarea readonly='readonly' class="large-text readonly">[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" author="1" host="1" template="{title} {date}" order="asc" show_today="yes" skip="0" ltype="" lvalue=""]</textarea>
 
 			<p>
 				<?php _e( 'Displays the output of the Upcoming Events widget. <code>before</code> and <code>after</code> are numbers; <code>type</code> is either "event" or "days", and <code>category</code> and <code>author</code> work the same as in the main calendar shortcode. Templates use the template codes listed below. <code>fallback</code> provides text if no events meet your criteria. Order sets sort order for the list &ndash; ascending (<code>asc</code>) or descending (<code>desc</code>). <code>show_today</code> indicates whether to include today\'s events in the list. <code>Skip</code> is how many events to skip in the list.', 'my-calendar' ); ?>
 			</p>
 
-			<textarea readonly='readonly'>[my_calendar_today category="" author="1" host="1" fallback="Nothing today!" template="{title} {date}"]</textarea>
+			<textarea readonly='readonly' class="large-text readonly">[my_calendar_today category="" author="1" host="1" fallback="Nothing today!" template="{title} {date}"]</textarea>
 
 			<p>
 				<?php _e( 'Displays the output of the Today\'s Events widget, with four configurable attributes: category, author, template and fallback text.', 'my-calendar' ); ?>
@@ -140,7 +131,7 @@ function my_calendar_help() {
 				<em><?php _e( 'Upcoming Events and Today\'s Events can also be configured as widgets.', 'my-calendar' ); ?></em>
 			</p>
 
-			<textarea readonly='readonly'>[my_calendar_event event="" template="&lt;h3&gt;{title}&lt;/h3&gt;{description}" list="&lt;li&gt;{date}, {time}&lt;/li&gt;" before="&lt;ul&gt;" after="&lt;/ul&gt;"]</textarea>
+			<textarea readonly='readonly' class="large-text readonly">[my_calendar_event event="" template="&lt;h3&gt;{title}&lt;/h3&gt;{description}" list="&lt;li&gt;{date}, {time}&lt;/li&gt;" before="&lt;ul&gt;" after="&lt;/ul&gt;"]</textarea>
 
 			<p>
 				<?php _e( 'Displays a single event and/or all dates for that event. If template is set to a blank value, will only display the list of occurrences. If the list attribute is set blank, will only show the event template', 'my-calendar' ); ?>
@@ -149,44 +140,44 @@ function my_calendar_help() {
 
 			<h4><?php _e( 'Calendar Filter Shortcodes', 'my-calendar' ); ?></h4>
 
-			<textarea readonly='readonly'>[mc_filters show="categories,locations"]</textarea>
+			<textarea readonly='readonly' class="large-text readonly">[mc_filters show="categories,locations"]</textarea>
 
 			<p>
 				<?php _e( 'Displays all available filters as a single form. The <code>show</code> attribute takes three keywords: categories, locations, and access, to indicate which filters to show and in what order.', 'my-calendar' ); ?>
 			</p>
 
-			<textarea readonly='readonly'>[my_calendar_locations show="list" type="saved" datatype="name"]</textarea>
+			<textarea readonly='readonly' class="large-text readonly">[my_calendar_locations show="list" type="saved" datatype="name"]</textarea>
 
 			<p>
 				<?php _e( 'List of event locations, as a list of links or as a select form. <code>show</code> is either <code>list</code> or <code>form</code>, <code>type</code> is <code>saved</code> (to show items from stored locations), or <code>custom</code> (to show options configured in location settings). <code>datatype</code> must be the type of data your limits are using: <code>name</code> (business name), <code>city</code>, <code>state</code>, <code>country</code>, <code>zip</code> (postal code), or <code>region</code>.', 'my-calendar' ); ?>
 			</p>
 
-			<textarea readonly='readonly'>[my_calendar_categories show="list"]</textarea>
+			<textarea readonly='readonly' class="large-text readonly">[my_calendar_categories show="list"]</textarea>
 
 			<p>
 				<?php _e( 'List of event categories, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>.', 'my-calendar' ); ?>
 			</p>
 
-			<textarea readonly='readonly'>[my_calendar_search]</textarea>
+			<textarea readonly='readonly' class="large-text readonly">[my_calendar_search]</textarea>
 
 			<p>
 				<?php _e( 'Simple search form to search all events. <code>url</code> attribute to pass a custom search results page, otherwise your My Calendar URL.', 'my-calendar' ); ?>
 			</p>
 			
-			<textarea readonly='readonly'>[my_calendar_now category='default' template='']</textarea>
+			<textarea readonly='readonly' class="large-text readonly">[my_calendar_now category='default' template='']</textarea>
 
 			<p>
 				<?php _e( 'Show an event happening right now. Will only ever show one event, which will be the first event returned by checking which events are happening at the moment. Pass a category ID or name to limit by category.', 'my-calendar' ); ?>
 			</p>			
 
-			<textarea readonly='readonly'>[my_calendar_access show="list"]</textarea>
+			<textarea readonly='readonly' class="large-text readonly">[my_calendar_access show="list"]</textarea>
 
 			<p>
 				<?php _e( 'List of filterable accessibility services, either as a list of links or as a select dropdown form. The <code>show</code> attribute can either be <code>list</code> or <code>form</code>.', 'my-calendar' ); ?>
 			</p>
 			<h4><?php _e( 'Information Listing Shortcodes', 'my-calendar' ); ?></h4>
 
-			<textarea readonly='readonly'>[my_calendar_show_locations datatype="" template=""]</textarea>
+			<textarea readonly='readonly' class="large-text readonly">[my_calendar_show_locations datatype="" template=""]</textarea>
 
 			<p>
 				<?php _e( 'List of locations. <code>datatype</code> is the type of data displayed; all lists include a link to the map to that location. In addition to basic location information as in the above shortcode, you can also use "hcard" to display all available location information.', 'my-calendar' ); ?>
@@ -374,17 +365,17 @@ function my_calendar_help() {
 
 		<dt><code>{details}</code></dt>
 		<dd><?php _e( 'Provides a link to an auto-generated page containing all information on the given event.', 'my-calendar' ); ?>
-			<strong><?php _e( 'Requires that the site URL has been provided on the Settings page', 'my-calendar' ); ?></strong>
+			<strong><?php _e( 'Requires that the site URL has been provided on the Settings page', 'my-calendar' ); ?></strong></dd>
 
 		<dt><code>{details_link}</code></dt>
-		<dd><?php _e( 'Raw URL for the details link; empty if target URL not defined.', 'my-calendar' ); ?>
+		<dd><?php _e( 'Raw URL for the details link; empty if target URL not defined.', 'my-calendar' ); ?></dd>
 
 		<dt><code>{linking}</code></dt>
 		<dd><?php _e( 'Provides a link to the defined event URL when present, otherwise the {details} link.', 'my-calendar' ); ?>
-			<strong><?php _e( 'Requires that the site URL has been provided on the Settings page', 'my-calendar' ); ?></strong>
+			<strong><?php _e( 'Requires that the site URL has been provided on the Settings page', 'my-calendar' ); ?></strong></dd>
 
 		<dt><code>{linking_title}</code></dt>
-		<dd><?php _e( 'Like {link_title}, but uses {linking} instead of {link}.', 'my-calendar' ); ?>
+		<dd><?php _e( 'Like {link_title}, but uses {linking} instead of {link}.', 'my-calendar' ); ?></dd>
 
 		<dt><code>{event_open}</code></dt>
 		<dd><?php _e( 'Displays text indicating whether registration for the event is currently open or closed; displays nothing if that choice is selected in the event.', 'my-calendar' ); ?></dd>

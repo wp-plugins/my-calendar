@@ -1121,9 +1121,10 @@ function mc_form_fields( $data, $mode, $event_id ) {
 			$text_link = '';
 		}
 		?>
-		<h3><?php echo $text; ?> <span class="alignright"><a
-					href="<?php echo admin_url( 'admin.php?page=my-calendar-manage' ); ?>"><?php _e( 'Manage events', 'my-calendar' ); ?></a><?php echo $delete;
-				echo $text_link; ?></span>
+		<h3><?php echo $text; ?> 
+					<span class="alignright">
+						<a href="<?php echo admin_url( 'admin.php?page=my-calendar-manage' ); ?>"><?php echo ( current_user_can( 'mc_manage_events' ) ) ? __( 'Manage events', 'my-calendar' ) : __( 'Manage your events', 'my-calendar' ); ?></a>
+						<?php echo $delete;	echo $text_link; ?></span>
 		</h3>
 
 		<div class="inside">
@@ -1446,10 +1447,11 @@ function mc_list_events() {
 
 		if ( isset( $_GET['order'] ) ) {
 			$sortdir = ( isset( $_GET['order'] ) && $_GET['order'] == 'ASC' ) ? 'ASC' : 'default';
+			$sortdir = ( isset( $_GET['order'] ) && $_GET['order'] == 'DESC' ) ? 'DESC' : $sortdir;
 		} else {
 			$sortdir = 'default';
 		}
-		$sortbydirection = ( $sortdir == 'default' ) ? 'DESC' : $sortdir;
+		$sortbydirection = ( $sortdir == 'default' ) ? get_option( 'mc_default_direction' ) : $sortdir;
 		if ( empty( $sortby ) ) {
 			$sortbyvalue = 'event_begin';
 		} else {
@@ -1557,7 +1559,7 @@ function mc_list_events() {
 			$limit .= " AND MATCH(event_title,event_desc,event_short,event_label,event_city) AGAINST ('$query' IN BOOLEAN MODE) ";
 		}
 		$limit .= ( $restrict != 'archived' ) ? " AND event_status = 1" : ' AND event_status = 0';
-		$events     = $mcdb->get_results( "SELECT SQL_CALC_FOUND_ROWS * FROM " . my_calendar_table() . " $limit ORDER BY $sortbyvalue $sortbydirection LIMIT " . ( ( $current - 1 ) * $items_per_page ) . ", " . $items_per_page );
+		$events     = $mcdb->get_results( esc_sql( "SELECT SQL_CALC_FOUND_ROWS * FROM " . my_calendar_table() . " $limit ORDER BY $sortbyvalue $sortbydirection LIMIT " . ( ( $current - 1 ) * $items_per_page ) . ", " . $items_per_page ) );
 		$found_rows = $wpdb->get_col( "SELECT FOUND_ROWS();" );
 		$items      = $found_rows[0];
 		if ( ( function_exists( 'akismet_http_post' ) || function_exists( 'bs_checker' ) ) && $allow_filters ) {
@@ -1875,13 +1877,14 @@ function mc_check_data( $action, $post, $i ) {
 	$submit = array();
 	$errors = '';
 	$every  = $recur = $events_access = $begin = $end = $short = $time = $endtime = $event_label = $event_street = $event_street2 = $event_city = $event_state = $event_postcode = $event_region = $event_country = $event_url = $event_image = $event_phone = $event_phone2 = $event_access = $event_tickets = $event_registration = $event_author = $category = $expires = $event_zoom = $event_open = $event_group = $approved = $host = $event_fifth_week = $event_holiday = $event_group_id = $event_span = $event_hide_end = $event_longitude = $event_latitude = '';
+		
 	if ( get_magic_quotes_gpc() ) {
 		$post = array_map( 'stripslashes_deep', $post );
 	}
 	if ( ! wp_verify_nonce( $post['event_nonce_name'], 'event_nonce' ) ) {
 		return array();
 	}
-
+	
 	if ( $action == 'add' || $action == 'edit' || $action == 'copy' ) {
 		$title = ! empty( $post['event_title'] ) ? trim( $post['event_title'] ) : '';
 		$desc  = ! empty( $post['content'] ) ? trim( $post['content'] ) : '';
@@ -2076,6 +2079,7 @@ function mc_check_data( $action, $post, $i ) {
 	if ( $spam == 1 && $begin == '1970-01-01' ) {
 		die;
 	}
+		
 	if ( $errors == '' ) {
 		$ok     = true;
 		$submit = array(
@@ -2364,42 +2368,24 @@ function mc_standard_datetime_input( $form, $has_data, $data, $instance, $contex
 	if ( $has_data && $data->event_hide_end == '1' ) {
 		$hide = " checked=\"checked\"";
 	}
-	$scripting = '
-<script type="text/javascript">
-//<![CDATA[
-jQuery(document).ready(function($) {
-	$("#e_time").pickatime({
-		interval: 15,
-		format: "' . apply_filters( 'mc_time_format', 'h:i A' ) . '",
-		editable: true
-	});
-	$("#e_endtime").pickatime({
-		interval: 15,
-		format: "' . apply_filters( 'mc_time_format', 'h:i A' ) . '",
-		editable: true		
-	});
-});
-//]]>
-</script>';
-	$form .= $scripting;
 	if ( $has_data ) {
 		$allday_label = mc_notime_label( $data );
 	} else {
 		$allday_label = get_option( 'mc_notime_text' );
 	}
 	$form .= '<p>
-		<label for="e_begin" id="eblabel">' . __( 'Date (YYYY-MM-DD)', 'my-calendar' ) . '</label> <input type="text" id="e_begin" name="event_begin[]" size="10" value="" data-value="' . esc_attr( $event_begin ) . '" />
+		<label for="e_begin" id="eblabel">' . __( 'Date (YYYY-MM-DD)', 'my-calendar' ) . '</label> <input type="text" id="e_begin" class="mc-datepicker" name="event_begin[]" size="10" value="" data-value="' . esc_attr( $event_begin ) . '" />
 		<label for="e_time">' . __( 'From', 'my-calendar' ) . '</label> 
-		<input type="text" id="e_time" name="event_time[]" size="8" value="' . esc_attr( $starttime ) . '" />	
+		<input type="text" id="e_time" class="mc-timepicker" name="event_time[]" size="8" value="' . esc_attr( $starttime ) . '" />	
 		<label for="e_endtime">' . __( 'To', 'my-calendar' ) . '</label> 
-		<input type="text" id="e_endtime" name="event_endtime[]" size="8" value="' . esc_attr( $endtime ) . '" />
+		<input type="text" id="e_endtime" class="mc-timepicker" name="event_endtime[]" size="8" value="' . esc_attr( $endtime ) . '" />
 	</p>
 	<ul>
 		<li><input type="checkbox" value="1" id="e_allday" name="event_allday"' . $allday . ' /> <label for="e_allday">' . __( 'All day event', 'my-calendar' ) . '</label> <span class="event_time_label"><label for="e_time_label">' . __( 'Time label:', 'my-calendar' ) . '</label> <input type="text" name="event_time_label" id="e_time_label" value="' . esc_attr( $allday_label ) . '" /> </li>
 		<li><input type="checkbox" value="1" id="e_hide_end" name="event_hide_end"' . $hide . ' /> <label for="e_hide_end">' . __( 'Hide end time', 'my-calendar' ) . '</label></li>
 	</ul>
 	<p>
-		<label for="e_end" id="eelabel"><em>' . __( 'End Date (YYYY-MM-DD, optional)', 'my-calendar' ) . '</em></label> <input type="text" name="event_end[]" id="e_end" size="10" value="" data-value="' . esc_attr( $event_end ) . '" /> 
+		<label for="e_end" id="eelabel"><em>' . __( 'End Date (YYYY-MM-DD, optional)', 'my-calendar' ) . '</em></label> <input type="text" name="event_end[]" id="e_end" class="mc-datepicker" size="10" value="" data-value="' . esc_attr( $event_end ) . '" /> 
 	</p>';
 
 	return $form;

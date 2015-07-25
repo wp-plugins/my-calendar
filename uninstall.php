@@ -110,5 +110,6 @@ if ( ! defined( 'ABSPATH' ) && ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	delete_option( 'mc_api_enabled' );
 	delete_option( 'mc_use_custom_js' );
 	delete_option( 'mc_update_notice' );
+	delete_option( 'mc_default_direction' );	
 	add_option( 'mc_uninstalled', 'true' );
 }

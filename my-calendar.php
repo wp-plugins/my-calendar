@@ -91,7 +91,10 @@ include( dirname( __FILE__ ) . '/my-calendar-api.php' );
 include( dirname( __FILE__ ) . '/my-calendar-generator.php' );
 
 // Enable internationalisation
-load_plugin_textdomain( 'my-calendar', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );
+add_action( 'plugins_loaded', 'mc_load_textdomain' );
+function mc_load_textdomain() {
+	load_plugin_textdomain( 'my-calendar', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );
+}
 
 if ( version_compare( get_bloginfo( 'version' ), '3.0', '<' ) && is_ssl() ) {
 	$wp_content_url = str_replace( 'http://', 'https://', get_option( 'siteurl' ) );

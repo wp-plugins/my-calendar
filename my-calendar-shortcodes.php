@@ -48,7 +48,9 @@ function my_calendar_insert_upcoming( $atts ) {
 		'author'     => 'default',
 		'host'       => 'default',
 		'ltype'      => '',
-		'lvalue'     => ''
+		'lvalue'     => '',
+		'from'       => false,
+		'to'         => false
 	), $atts, 'my_calendar_upcoming' ) );
 	global $user_ID;
 	if ( $author == 'current' ) {
@@ -58,7 +60,7 @@ function my_calendar_insert_upcoming( $atts ) {
 		$host = apply_filters( 'mc_display_host', $user_ID, 'upcoming' );
 	}
 
-	return my_calendar_upcoming_events( $before, $after, $type, $category, $template, $fallback, $order, $skip, $show_today, $author, $host, $ltype, $lvalue );
+	return my_calendar_upcoming_events( $before, $after, $type, $category, $template, $fallback, $order, $skip, $show_today, $author, $host, $ltype, $lvalue, $from, $to );
 }
 
 function my_calendar_insert_today( $atts ) {
@@ -67,7 +69,8 @@ function my_calendar_insert_today( $atts ) {
 		'author'   => 'default',
 		'host'     => 'default',
 		'template' => 'default',
-		'fallback' => ''
+		'fallback' => '', 
+		'date'     => false
 	), $atts, 'my_calendar_today' ) );
 	global $user_ID;
 	if ( $author == 'current' ) {
@@ -77,7 +80,7 @@ function my_calendar_insert_today( $atts ) {
 		$host = apply_filters( 'mc_display_host', $user_ID, 'today' );
 	}
 
-	return my_calendar_todays_events( $category, $template, $fallback, $author, $host );
+	return my_calendar_todays_events( $category, $template, $fallback, $author, $host, $date );
 }
 
 function my_calendar_locations( $atts ) {

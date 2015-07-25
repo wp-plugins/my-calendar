@@ -1,5 +1,4 @@
 /* New theme for 2015 */
-@import url(../css/reset.css);
 .my-calendar-header *, .mc_bottomnav * {
 	line-height: 1.5;
 }
@@ -194,7 +193,7 @@
 }
 
 .mc-main .close:hover, .mc-main .close:focus {
-	background: rgba( 255, 255, 255, .8 );
+	background: rgba( 240, 240, 240, .8 );
 }
 
 .mc-main .details img {

@@ -4,8 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 } // Exit if accessed directly
 
 class my_calendar_simple_search extends WP_Widget {
-	function my_calendar_simple_search() {
-		parent::WP_Widget( false, $name = __( 'My Calendar: Simple Event Search', 'my-calendar' ) );
+	function __construct() {
+		parent::__construct( false, $name = __( 'My Calendar: Simple Event Search', 'my-calendar' ) );
 	}
 
 	function widget( $args, $instance ) {
@@ -50,8 +50,8 @@ class my_calendar_simple_search extends WP_Widget {
 
 class my_calendar_today_widget extends WP_Widget {
 
-	function my_calendar_today_widget() {
-		parent::WP_Widget( false, $name = __( 'My Calendar: Today\'s Events', 'my-calendar' ) );
+	function __construct() {
+		parent::__construct( false, $name = __( 'My Calendar: Today\'s Events', 'my-calendar' ) );
 	}
 
 	function widget( $args, $instance ) {
@@ -66,13 +66,14 @@ class my_calendar_today_widget extends WP_Widget {
 		$widget_link    = ( ! empty( $instance['my_calendar_today_linked'] ) && $instance['my_calendar_today_linked'] == 'yes' ) ? $default_link : '';
 		$widget_link    = ( ! empty( $instance['mc_link'] ) ) ? esc_url( $instance['mc_link'] ) : $widget_link;
 		$widget_title   = empty( $the_title ) ? '' : $the_title;
+		$date           = ( ! empty( $instance['mc_date'] ) ) ? $instance['mc_date'] : false;
 		$offset         = ( 60 * 60 * get_option( 'gmt_offset' ) );
 		if ( strpos( $widget_title, '{date}' ) !== false ) {
 			$widget_title = str_replace( '{date}', date_i18n( get_option( 'mc_date_format' ), time() + $offset ), $widget_title );
 		}
 		$widget_title = ( $widget_link == '' ) ? $widget_title : "<a href='$widget_link'>$widget_title</a>";
 		$widget_title = ( $widget_title != '' ) ? $before_title . $widget_title . $after_title : '';
-		$the_events   = my_calendar_todays_events( $the_category, $the_template, $the_substitute, $author, $host );
+		$the_events   = my_calendar_todays_events( $the_category, $the_template, $the_substitute, $author, $host, $date );
 		if ( $the_events != '' ) {
 			echo $before_widget;
 			echo $widget_title;
@@ -91,6 +92,7 @@ class my_calendar_today_widget extends WP_Widget {
 		$widget_text     = ( isset( $instance['my_calendar_no_events_text'] ) ) ? esc_attr( $instance['my_calendar_no_events_text'] ) : '';
 		$widget_category = ( isset( $instance['my_calendar_today_category'] ) ) ? esc_attr( $instance['my_calendar_today_category'] ) : '';
 		$widget_linked   = ( isset( $instance['my_calendar_today_linked'] ) ) ? esc_attr( $instance['my_calendar_today_linked'] ) : '';
+		$date            = ( isset( $instance['mc_date'] ) ) ? esc_attr( $instance['mc_date'] ) : '';
 		if ( $widget_linked == 'yes' ) {
 			$default_link = ( is_numeric( get_option( 'mc_uri' ) ) ) ? get_permalink( get_option( 'mc_uri' ) ) : get_option( 'mc_uri' );
 		} else {
@@ -131,6 +133,13 @@ class my_calendar_today_widget extends WP_Widget {
 		</p>
 		<p>
 			<label
+				for="<?php echo $this->get_field_id( 'mc_date' ); ?>"><?php _e( 'Custom date', 'my-calendar' ); ?></label><br/>
+			<input class="widefat" type="text" id="<?php echo $this->get_field_id( 'mc_date' ); ?>"
+			       name="<?php echo $this->get_field_name( 'mc_date' ); ?>"
+			       value="<?php echo $date; ?>"/>
+		</p>		
+		<p>
+			<label
 				for="<?php echo $this->get_field_id( 'my_calendar_today_category' ); ?>"><?php _e( 'Category or categories to display:', 'my-calendar' ); ?></label><br/>
 			<input class="widefat" type="text" id="<?php echo $this->get_field_id( 'my_calendar_today_category' ); ?>"
 			       name="<?php echo $this->get_field_name( 'my_calendar_today_category' ); ?>"
@@ -161,8 +170,8 @@ class my_calendar_today_widget extends WP_Widget {
 
 class my_calendar_upcoming_widget extends WP_Widget {
 
-	function my_calendar_upcoming_widget() {
-		parent::WP_Widget( false, $name = __( 'My Calendar: Upcoming Events', 'my-calendar' ) );
+	function __construct() {
+		parent::__construct( false, $name = __( 'My Calendar: Upcoming Events', 'my-calendar' ) );
 	}
 
 	function widget( $args, $instance ) {
@@ -184,9 +193,12 @@ class my_calendar_upcoming_widget extends WP_Widget {
 		$widget_title   = empty( $the_title ) ? '' : $the_title;
 		$widget_title   = ( $widget_link == '' ) ? $widget_title : "<a href='$widget_link'>$widget_title</a>";
 		$widget_title   = ( $widget_title != '' ) ? $before_title . $widget_title . $after_title : '';
-		$month          = ( $type == 'month+1' ) ? date_i18n( 'F', strtotime( '+1 month' ) ) : date_i18n( 'F', current_time( 'timestamp' ) );
+		$month          = ( strpos( $type, 'month+' ) === 0 ) ? date_i18n( 'F', strtotime( $type ) ) : date_i18n( 'F', current_time( 'timestamp' ) );
 		$widget_title   = str_replace( '{month}', $month, $widget_title );
-		$the_events     = my_calendar_upcoming_events( $before, $after, $type, $the_category, $the_template, $the_substitute, $order, $skip, $show_today, $author, $host );
+		$from           = ( isset( $instance['mc_from'] ) ) ? $instance['mc_from'] : false;
+		$to             = ( isset( $instance['mc_to'] ) ) ? $instance['mc_to'] : false;
+		
+		$the_events     = my_calendar_upcoming_events( $before, $after, $type, $the_category, $the_template, $the_substitute, $order, $skip, $show_today, $author, $host, false, false, $from, $to );
 		if ( $the_events != '' ) {
 			echo $before_widget;
 			echo $widget_title;
@@ -212,6 +224,9 @@ class my_calendar_upcoming_widget extends WP_Widget {
 		$type       = ( isset( $instance['my_calendar_upcoming_type'] ) ) ? esc_attr( $instance['my_calendar_upcoming_type'] ) : 'events';
 		$order      = ( isset( $instance['my_calendar_upcoming_order'] ) ) ? esc_attr( $instance['my_calendar_upcoming_order'] ) : 'asc';
 		$linked     = ( isset( $instance['my_calendar_upcoming_linked'] ) ) ? esc_attr( $instance['my_calendar_upcoming_linked'] ) : '';
+		$from       = ( isset( $instance['mc_from'] ) ) ? esc_attr( $instance['mc_from'] ) : '';
+		$to         = ( isset( $instance['mc_to'] ) ) ? esc_attr( $instance['mc_to'] ) : '';
+		
 		if ( $linked == 'yes' ) {
 			$default_link = ( is_numeric( get_option( 'mc_uri' ) ) ) ? get_permalink( get_option( 'mc_uri' ) ) : get_option( 'mc_uri' );
 		} else {
@@ -285,9 +300,22 @@ class my_calendar_upcoming_widget extends WP_Widget {
 					value="custom" <?php echo ( $type == 'custom' ) ? 'selected="selected"' : ''; ?>><?php _e( 'Custom Dates', 'my-calendar' ) ?></option>
 				</select>
 		</p>
+		<?php if ( $type == 'custom' ) { ?>
 		<p>
-			Enter Custom Dates Here JCD TODO
+			<label
+				for="<?php echo $this->get_field_id( 'mc_from' ); ?>"><?php _e( 'Start date', 'my-calendar' ); ?>:</label>
+			<input type="text" id="<?php echo $this->get_field_id( 'mc_from' ); ?>"
+			       name="<?php echo $this->get_field_name( 'mc_from' ); ?>"
+			       value="<?php echo $from; ?>"/>
 		</p>
+		<p>
+			<label
+				for="<?php echo $this->get_field_id( 'mc_to' ); ?>"><?php _e( 'End date', 'my-calendar' ); ?>:</label>
+			<input type="text" id="<?php echo $this->get_field_id( 'mc_to' ); ?>"
+			       name="<?php echo $this->get_field_name( 'mc_to' ); ?>"
+			       value="<?php echo $to; ?>"/>				   
+	   </p>
+		<?php } ?>
 		<p>
 			<label
 				for="<?php echo $this->get_field_id( 'my_calendar_upcoming_skip' ); ?>"><?php _e( 'Skip the first <em>n</em> events', 'my-calendar' ); ?></label>
@@ -368,7 +396,7 @@ class my_calendar_upcoming_widget extends WP_Widget {
 // Widget upcoming events
 function my_calendar_upcoming_events( $before = 'default', $after = 'default', $type = 'default', $category = 'default', $template = 'default', $substitute = '', $order = 'asc', $skip = 0, $show_today = 'yes', $author = 'default', $host = 'default', $ltype = '', $lvalue = '', $from = '', $to = '' ) {
 	global $default_template;
-	$args                  = array( 'before'=>$before, 'after'=>$after, 'type'=>$type, 'category'=>$category, 'template'=>$template, 'fallback'=> $substitute, 'order' => $asc, 'skip' => $skip, 'show_today'=> $show_today, 'author'=> $author, 'host'=>$host, 'ltype'=>$ltype, 'lvalue'=>$lvalue );
+	$args                  = array( 'before'=>$before, 'after'=>$after, 'type'=>$type, 'category'=>$category, 'template'=>$template, 'fallback'=> $substitute, 'order' => $order, 'skip' => $skip, 'show_today'=> $show_today, 'author'=> $author, 'host'=>$host, 'ltype'=>$ltype, 'lvalue'=>$lvalue );
 	$output                = '';
 	$widget_defaults       = ( array ) get_option( 'mc_widget_defaults' );
 	$display_upcoming_type = ( $type == 'default' ) ? $widget_defaults['upcoming']['type'] : $type;
@@ -399,7 +427,7 @@ function my_calendar_upcoming_events( $before = 'default', $after = 'default', $
 			$from = date( 'Y-m-1' );
 			$to   = date( 'Y-m-t' );
 		}
-		if ( $display_upcoming_type == 'custom' ) {
+		if ( $display_upcoming_type == 'custom'  && $from != '' && $to != '' ) {
 			$from = date( 'Y-m-d', strtotime( $from ) );
 			$to = date( 'Y-m-d', strtotime( $to ) );
 		}
@@ -722,7 +750,7 @@ function mc_produce_upcoming_events( $events, $template, $type = 'list', $order 
 }
 
 // Widget todays events
-function my_calendar_todays_events( $category = 'default', $template = 'default', $substitute = '', $author = 'all', $host = 'all' ) {
+function my_calendar_todays_events( $category = 'default', $template = 'default', $substitute = '', $author = 'all', $host = 'all', $date = false ) {
 	$caching      = apply_filters( 'mc_cache_enabled', false );
 	$todays_cache = ( $caching ) ? get_transient( 'mc_todays_cache' ) : '';
 	if ( $caching && is_array( $todays_cache ) && @$todays_cache[ $category ] ) {
@@ -740,7 +768,11 @@ function my_calendar_todays_events( $category = 'default', $template = 'default'
 	$category      = ( $category == 'default' ) ? $defaults['today']['category'] : $category;
 	$no_event_text = ( $substitute == '' ) ? $defaults['today']['text'] : $substitute;
 
-	$from   = $to = date( 'Y-m-d', current_time( 'timestamp' ) );
+	if ( $date ) {
+		$from   = $to = date( 'Y-m-d', strtotime( $date ) );
+	} else {
+		$from   = $to = date( 'Y-m-d', current_time( 'timestamp' ) );
+	}
 	$events = my_calendar_events( $from, $to, $category, '', '', 'upcoming', $author, $host );
 	$today  = ( isset( $events[ $from ] ) ) ? $events[ $from ] : false;
 	$header = "<ul id='todays-events'>";
@@ -754,12 +786,21 @@ function my_calendar_todays_events( $category = 'default', $template = 'default'
 				if ( ! in_array( $e->event_group_id, $groups ) ) {
 					$event_details = mc_create_tags( $e );
 					$ts            = $e->ts_occur_begin;
+					$end           = $e->ts_occur_end;
+					$now           = current_time( 'timestamp' );
+					if ( $ts < $now && $end > $now ) {
+						$class = 'on-now';
+					} else if ( $now < $ts ) {
+						$class = 'future-event';
+					} else if ( $now > $ts ) {
+						$class = 'past-event';
+					}
 					if ( get_option( 'mc_event_approve' ) == 'true' ) {
 						if ( $e->event_approved != 0 ) {
-							$todays_events[ $ts ][] = "<li>" . jd_draw_template( $event_details, $template ) . "</li>";
+							$todays_events[ $ts ][] = "<li class='$class'>" . jd_draw_template( $event_details, $template ) . "</li>";
 						}
 					} else {
-						$todays_events[ $ts ][] = "<li>" . jd_draw_template( $event_details, $template ) . "</li>";
+						$todays_events[ $ts ][] = "<li class='$class'>" . jd_draw_template( $event_details, $template ) . "</li>";
 					}
 				}
 			}
@@ -790,8 +831,8 @@ function my_calendar_todays_events( $category = 'default', $template = 'default'
 
 class my_calendar_mini_widget extends WP_Widget {
 
-	function my_calendar_mini_widget() {
-		parent::WP_Widget( false, $name = __( 'My Calendar: Mini Calendar', 'my-calendar' ) );
+	function __construct() {
+		parent::__construct( false, $name = __( 'My Calendar: Mini Calendar', 'my-calendar' ) );
 	}
 
 	function widget( $args, $instance ) {

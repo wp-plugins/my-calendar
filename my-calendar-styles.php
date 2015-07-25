@@ -240,7 +240,7 @@ function edit_my_calendar_styles() {
 									       name="reset_styles" <?php if ( mc_is_custom_style( get_option( 'mc_css_file' ) ) ) {
 										echo "disabled='disabled'";
 									} ?> /> <label
-										for="reset_styles"><?php _e( 'Restore My Calendar stylesheet', 'my-calendar' ); ?></label>
+										for="reset_styles"><?php _e( 'Reset to default', 'my-calendar' ); ?></label>
 									<input type="checkbox" id="use_styles"
 									       name="use_styles" <?php mc_is_checked( 'mc_use_styles', 'true' ); ?> />
 									<label
@@ -248,7 +248,7 @@ function edit_my_calendar_styles() {
 								</p>
 								<p>						
 								<?php if ( mc_is_custom_style( get_option( 'mc_css_file' ) ) ) {
-									_e( 'The editor is not available for custom CSS files. You should edit your custom CSS locally, then upload your changes.', 'my-calendar' );
+									_e( 'The editor is not available for custom CSS files. Edit your custom CSS locally, then upload your changes.', 'my-calendar' );
 								} else {
 								?>
 									<label
@@ -272,9 +272,10 @@ function edit_my_calendar_styles() {
 						if ( $right_string ) { // if right string is blank, there is no default
 							if ( isset( $_GET['diff'] ) ) {
 								echo '<div class="wrap jd-my-calendar" id="diff">';
-								echo wp_text_diff( $left_string, $right_string, array( 'title'       => __( 'Comparing Your Style with latest installed version of My Calendar', 'my-calendar' ),
-								                                                       'title_right' => __( 'Latest (from plugin)', 'my-calendar' ),
-								                                                       'title_left'  => __( 'Current (in use)', 'my-calendar' )
+								echo mc_text_diff( $left_string, $right_string, array( 
+										'title'       => __( 'Comparing Your Style with latest installed version of My Calendar', 'my-calendar' ),
+										'title_right' => __( 'Latest (from plugin)', 'my-calendar' ),
+										'title_left'  => __( 'Current (in use)', 'my-calendar' )
 									) );
 								echo '</div>';
 							} else if ( trim( $left_string ) != trim( $right_string ) ) {
@@ -296,4 +297,50 @@ function edit_my_calendar_styles() {
 	</div>
 	<?php mc_show_sidebar(); ?>
 	</div><?php
+}
+ 
+	// fixed wp_text_diff
+function mc_text_diff( $left_string, $right_string, $args = null ) {
+	$defaults = array( 'title' => '', 'title_left' => '', 'title_right' => '' );
+	$args = wp_parse_args( $args, $defaults );
+
+	if ( !class_exists( 'WP_Text_Diff_Renderer_Table' ) )
+		require( ABSPATH . WPINC . '/wp-diff.php' );
+
+	$left_string  = normalize_whitespace($left_string);
+	$right_string = normalize_whitespace($right_string);
+
+	$left_lines  = explode("\n", $left_string);
+	$right_lines = explode("\n", $right_string);
+	$text_diff = new Text_Diff($left_lines, $right_lines);
+	$renderer  = new WP_Text_Diff_Renderer_Table( $args );
+	$diff = $renderer->render($text_diff);
+	$r = '';
+	
+	if ( !$diff )
+		return '';
+	if ( $args['title'] ) {
+		$r .= "<h3>$args[title]</h3>\n";
+	}
+	
+	$r  .= "<table class='diff'>\n";
+	$r  .= "<col class='content diffsplit left' /><col class='content diffsplit middle' /><col class='content diffsplit right' />";
+
+
+	if ( $args['title'] || $args['title_left'] || $args['title_right'] )
+		$r .= "<thead>";
+
+	if ( $args['title_left'] || $args['title_right'] ) {
+		$r .= "<tr class='diff-sub-title'>\n";
+		$r .= "\t<th scope='col'>$args[title_left]</th><td></td>\n";
+		$r .= "\t<th scope='col'>$args[title_right]</th>\n";
+		$r .= "</tr>\n";
+	}
+	if ( $args['title'] || $args['title_left'] || $args['title_right'] )
+		$r .= "</thead>\n";
+
+	$r .= "<tbody>\n$diff\n</tbody>\n";
+	$r .= "</table>";
+
+	return $r;
 }

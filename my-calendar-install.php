@@ -253,14 +253,16 @@ function mc_default_settings() {
 	add_option( 'mc_date_format', get_option( 'date_format' ) );
 	// This option *must* be complete, if it's partial we get errors. So use update instead of add.
 	update_option( 'mc_templates', array(
-		'title'   => '{title}',
-		'link'    => '{title}',
-		'grid'    => $grid_template,
-		'list'    => $list_template,
-		'mini'    => $mini_template,
-		'rss'     => $rss_template,
-		'details' => $single_template,
-		'label'   => addslashes( 'More<span class="screen-reader-text"> about {title}</span>' )
+		'title'      => '{time}: {title}',
+		'title_list' => '{title}',
+		'title_solo' => '{title}',
+		'link'       => '{title}',
+		'grid'       => $grid_template,
+		'list'       => $list_template,
+		'mini'       => $mini_template,
+		'rss'        => $rss_template,
+		'details'    => $single_template,
+		'label'      => addslashes( 'More<span class="screen-reader-text"> about {title}</span>' )
 	) );
 	add_option( 'mc_skip_holidays', 'false' );
 	add_option( 'mc_css_file', 'twentyfifteen.css' );
@@ -274,6 +276,7 @@ function mc_default_settings() {
 	add_option( 'mc_event_link', 'true' );
 	add_option( 'mc_topnav', 'toggle,timeframe,jump,nav' );
 	add_option( 'mc_bottomnav', 'key,category,feeds' );	
+	add_option( 'mc_default_direction', 'DESC' );	
 	update_option( 'mc_update_notice', 1 );
 	mc_add_roles();
 	$has_uri = mc_guess_calendar();

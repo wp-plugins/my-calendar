@@ -146,7 +146,8 @@ add_action( 'wp_enqueue_scripts', 'mc_register_styles' );
 function mc_register_styles() {
 	global $wp_query;
 	$stylesheet = mc_get_style_path( get_option( 'mc_css_file' ), 'url' );
-	wp_register_style( 'my-calendar-style', $stylesheet, array( 'dashicons' ) );
+	wp_register_style( 'my-calendar-reset', plugins_url( 'css/reset.css', __FILE__ ) );
+	wp_register_style( 'my-calendar-style', $stylesheet, array( 'dashicons', 'my-calendar-reset' ) );
 	$admin_stylesheet = plugins_url( 'css/mc-admin.css', __FILE__ );
 	wp_register_style( 'my-calendar-admin-style', $admin_stylesheet );
 	if ( current_user_can( 'mc_manage_events' ) ) {
@@ -253,8 +254,8 @@ function mc_deal_with_deleted_user( $id ) {
 	$mcdb = $wpdb;
 	// Do the queries
 	// This may not work quite right in multi-site. Need to explore further when I have time.
-	$mcdb->get_results( "UPDATE " . my_calendar_table() . " SET event_author=" . apply_filters( 'mc_deleted_author', $mcdb->get_var( "SELECT MIN(ID) FROM " . $mcdb->prefix . "users", 0, 0 ) ) . " WHERE event_author=" . $id );
-	$mcdb->get_results( "UPDATE " . my_calendar_table() . " SET event_host=" . apply_filters( 'mc_deleted_host', $mcdb->get_var( "SELECT MIN(ID) FROM " . $mcdb->prefix . "users", 0, 0 ) ) . " WHERE event_host=" . $id );
+	$mcdb->get_results( esc_sql( "UPDATE " . my_calendar_table() . " SET event_author=" . apply_filters( 'mc_deleted_author', $mcdb->get_var( "SELECT MIN(ID) FROM " . $mcdb->prefix . "users", 0, 0 ) ) . " WHERE event_author=" . $id ) );
+	$mcdb->get_results( esc_sql( "UPDATE " . my_calendar_table() . " SET event_host=" . apply_filters( 'mc_deleted_host', $mcdb->get_var( "SELECT MIN(ID) FROM " . $mcdb->prefix . "users", 0, 0 ) ) . " WHERE event_host=" . $id ) );
 }
 
 // Function to add the javascript to the admin header
@@ -294,6 +295,7 @@ function my_calendar_add_javascript() {
 			date_i18n( 'D', strtotime( 'Friday' ) ),
 			date_i18n( 'D', strtotime( 'Saturday' ) )
 		) );
+		wp_localize_script( 'pickadate.time', 'mc_time_format', apply_filters( 'mc_time_format', 'h:i A' ) );
 
 		wp_enqueue_script( 'jquery.addfields', plugins_url( 'js/jquery.addfields.js', __FILE__ ), array( 'jquery' ) );
 		if ( function_exists( 'wp_enqueue_media' ) && ! did_action( 'wp_enqueue_media' ) ) {
@@ -305,8 +307,8 @@ function my_calendar_add_javascript() {
 	if ( isset( $_GET['page'] ) && ( $_GET['page'] == 'my-calendar-config' || $_GET['page'] == 'my-calendar-help' ) ) {
 		wp_enqueue_script( 'mc.tabs' );
 		wp_enqueue_script( 'mc.sortable' );
-		$firstItem = ( $_GET['page'] == 'my-calendar-config' ) ? 'mc_editor' : 'mc_main';
-		wp_localize_script( 'mc.tabs', 'firstItem', $firstItem );
+		//$firstItem = ( $_GET['page'] == 'my-calendar-config' ) ? 'my-calendar-manage' : 'mc_main';
+		//wp_localize_script( 'mc.tabs', 'firstItem', $firstItem );
 	}
 	if ( isset( $_GET['page'] ) && ( $_GET['page'] == 'my-calendar-groups' || $_GET['page'] == 'my-calendar-manage' ) ) {
 		wp_enqueue_script( 'jquery.checkall', plugins_url( 'js/jquery.checkall.js', __FILE__ ), array( 'jquery' ) );
@@ -319,7 +321,7 @@ function my_calendar_write_js() {
 		<script type="text/javascript">
 			//<![CDATA[
 			jQuery(document).ready(function ($) {
-				$('#e_begin,' + '#e_end').pickadate({
+				$( '.mc-datepicker' ).pickadate({
 					monthsFull: mc_months,
 					weekdaysShort: mc_days,
 					format: 'yyyy-mm-dd',
@@ -327,7 +329,11 @@ function my_calendar_write_js() {
 					selectMonths: true,
 					editable: true
 				});
-
+				$( '.mc-timepicker' ).pickatime({
+					interval: 15,
+					format: mc_time_format,
+					editable: true		
+				});
 				$('#mc-accordion').accordion({collapsible: true, active: false});
 				<?php 
 	if ( function_exists( 'jd_doTwitterAPIPost' ) ) { ?>
@@ -688,6 +694,7 @@ function mc_do_upgrades( $upgrade_path ) {
 				$input_options = get_option( 'mc_input_options' );
 				$input_options['event_host'] = 'on';
 				update_option( 'mc_input_options', $input_options );
+				add_option( 'mc_default_direction', 'DESC' );
 				mc_upgrade_db();
 				break;
 			case '2.3.15':
@@ -940,6 +947,19 @@ function mc_month_comparison( $month ) {
 	return '';
 }
 
+function mc_day_comparison( $day ) {
+	$current_day = date( "j", current_time( 'timestamp' ) );
+	if ( isset( $_GET['yr'] ) && isset( $_GET['month'] ) && isset( $_GET['dy'] ) ) {
+		if ( $day == $_GET['dy'] ) {
+			return ' selected="selected"';
+		}
+	} else if ( $day == $current_day ) {
+		return ' selected="selected"';
+	}
+
+	return '';
+}
+
 function mc_year_comparison( $year ) {
 	$current_year = date( "Y", current_time( 'timestamp' ) );
 	if ( isset( $_GET['yr'] ) && isset( $_GET['month'] ) ) {
@@ -1042,6 +1062,15 @@ function my_calendar_admin_bar() {
 		$url  = apply_filters( 'mc_add_events_url', admin_url( 'admin.php?page=my-calendar' ) );
 		$args = array( 'id' => 'mc-add-event', 'title' => __( 'Add Event', 'my-calendar' ), 'href' => $url );
 		$wp_admin_bar->add_node( $args );
+	}
+	if ( mc_is_url( get_option( 'mc_uri' ) ) ) {
+		$url  = esc_url( apply_filters( 'mc_adminbar_uri', get_option( 'mc_uri' ) ) );
+		$args = array( 'id' => 'mc-my-calendar', 'title' => __( 'View Calendar', 'my-calendar' ), 'href' => $url );
+		$wp_admin_bar->add_node( $args );
+	} else {
+		$url  = admin_url( 'admin.php?page=my-calendar-config#mc-output' );
+		$args = array( 'id' => 'mc-my-calendar', 'title' => __( 'Set Calendar URL', 'my-calendar' ), 'href' => $url );
+		$wp_admin_bar->add_node( $args );		
 	}
 	if ( current_user_can( 'mc_manage_events' ) && current_user_can( 'mc_add_events' ) ) {
 		$url  = admin_url( 'admin.php?page=my-calendar-manage' );
@@ -1163,7 +1192,7 @@ function my_calendar_send_email( $event ) {
 		$from      = ( get_option( 'mc_event_mail_from' ) == '' ) ? get_bloginfo( 'admin_email' ) : get_option( 'mc_event_mail_from' );
 		$from      = apply_filters( 'mc_event_mail_from', $from, $details );
 		$headers[] = "From: " . __( 'Event Notifications', 'my-calendar' ) . " <$from>";
-		$bcc       = get_option( 'mc_event_mail_bcc' );
+		$bcc       = apply_filters( 'mc_event_mail_bcc', get_option( 'mc_event_mail_bcc' ), $details );
 		if ( $bcc ) {
 			$bcc = explode( PHP_EOL, $bcc );
 			foreach ( $bcc as $b ) {
@@ -1173,7 +1202,7 @@ function my_calendar_send_email( $event ) {
 				}
 			}
 		}
-		$headers = apply_filters( 'mc_customize_email_headers', $headers );
+		$headers = apply_filters( 'mc_customize_email_headers', $headers, $event );
 		$subject = jd_draw_template( $details, get_option( 'mc_event_mail_subject' ) );
 		$message = jd_draw_template( $details, get_option( 'mc_event_mail_message' ) );
 		wp_mail( $to, $subject, $message, $headers );
@@ -1638,7 +1667,7 @@ function _mc_increment_values( $recur ) {
 function mc_change_instances( $id, $repeats, $begin = false ) {
 	global $wpdb;
 	$mcdb   = $wpdb;
-	$events = $mcdb->get_results( "SELECT * FROM " . my_calendar_event_table() . " WHERE occur_event_id = $id ORDER BY occur_begin DESC" );
+	$events = $mcdb->get_results( $mcdb->prepare( "SELECT * FROM " . my_calendar_event_table() . " WHERE occur_event_id = %d ORDER BY occur_begin DESC", $id ) );
 	$count  = count( $events );
 	$last   = $count - 1;
 	if ( $begin == false ) {
@@ -1880,8 +1909,6 @@ function mc_increment_event( $id, $post = array(), $test = false ) {
 			'occur_end'      => date( 'Y-m-d H:i:s', $end ),
 			'occur_group_id' => $group_id
 		);
-		// Logic shift -- should not have any need to verify occurrences.
-		//$occurs = $wpdb->get_results("SELECT * FROM ".my_calendar_event_table()." WHERE occur_event_id = $id ORDER BY occur_begin DESC");
 		if ( ! $test ) {
 			$wpdb->insert( my_calendar_event_table(), $data, $format );
 		}
@@ -1937,6 +1964,21 @@ add_filter( 'post_updated_messages', 'mc_posttypes_messages' );
 add_action( 'init', 'mc_taxonomies', 0 );
 add_action( 'init', 'mc_posttypes' );
 
+
+add_action( 'load-options-permalink.php', 'mc_load_permalinks' );
+function mc_load_permalinks() {
+	if( isset( $_POST['mc_cpt_base'] ) )	{
+		update_option( 'mc_cpt_base', sanitize_title_with_dashes( $_POST['mc_cpt_base'] ) );
+	}
+	
+	// Add a settings field to the permalink page
+	add_settings_field( 'mc_cpt_base', __( 'My Calendar Events base' ), 'mc_field_callback', 'permalink', 'optional', array( 'label_for'=>'mc_cpt_base' ) );
+}
+function mc_field_callback() {
+	$value = ( get_option( 'mc_cpt_base' ) != '' ) ? get_option( 'mc_cpt_base' ) : 'mc-events';	
+	echo '<input type="text" value="' . esc_attr( $value ) . '" name="mc_cpt_base" id="mc_cpt_base" class="regular-text" />';
+}
+
 function mc_posttypes() {
 	$arguments = array(
 		'public'              => apply_filters( 'mc_event_posts_public', true ),
@@ -1958,6 +2000,7 @@ function mc_posttypes() {
 		),
 	);
 	$enabled = array( 'mc-events' );
+	$slug = ( get_option( 'mc_cpt_base' ) != '' ) ? get_option( 'mc_cpt_base' ) : 'mc-events';
 	if ( is_array( $enabled ) ) {
 		foreach ( $enabled as $key ) {
 			$value  =& $types[ $key ];
@@ -1986,7 +2029,7 @@ function mc_posttypes() {
 				'query_var'           => true,
 				'rewrite'             => array(
 					'with_front' => false,
-					'slug'       => apply_filters( 'mc_event_slug', 'mc-events' )
+					'slug'       => apply_filters( 'mc_event_slug', $slug )
 				),
 				'hierarchical'        => false,
 				'menu_position'       => 20,

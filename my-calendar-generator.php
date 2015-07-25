@@ -42,7 +42,7 @@ function mc_generate() {
 			}
 			$output = esc_html( $shortcode . $string );	
 		}
-		$return = "<div class='updated'><textarea readonly='readonly'>[$output]</textarea></div>";
+		$return = "<div class='updated'><textarea readonly='readonly' class='large-text readonly'>[$output]</textarea></div>";
 		echo $return;
 	}
 }
