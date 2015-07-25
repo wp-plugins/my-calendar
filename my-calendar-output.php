@@ -396,7 +396,10 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 		$details .= "</div><!--ends .details--></div>";
 		$details = apply_filters( 'mc_event_content', $details, $event, $type, $time );
 	} else {
-		$details = $header . "</div>";
+		$details = apply_filters( 'mc_before_event', $container, $event, $type, $time ) 
+				   . $header 
+				   . apply_filters( 'mc_after_event', '', $event, $type, $time )
+				   . "</div>";
 	}
 
 	return $details;
@@ -814,24 +817,30 @@ add_filter( 'the_content', 'mc_show_event_template', 100, 1 );
 function mc_show_event_template( $content ) {
 	global $post;
 	if ( is_object( $post ) && in_the_loop() ) {
+		// some early versions of this placed the shortcode into the post content. Strip that out.
 		$new_content = $content;
 		if ( $post->post_type == 'mc-events' ) {
-			if ( get_option( 'mc_use_details_template' ) == 1 ) {
-				$new_content = do_shortcode( apply_filters( 'mc_single_event_shortcode', get_post_meta( $post->ID, '_mc_event_shortcode', true ) ) ); 
+			if ( isset( $_GET['mc_id'] ) ) {
+				$mc_id = intval( $_GET['mc_id'] );
+				$event = mc_get_event( $mc_id, 'object' );
+				$date = date( 'Y-m-d', strtotime( $event->occur_begin ) );
+				$time = date( 'H:i:00', strtotime( $event->occur_begin ) );
 			} else {
-				if ( isset( $_GET['mc_id'] ) ) {
-					$mc_id = intval( $_GET['mc_id'] );
-					$event = mc_get_event( $mc_id, 'object' );
-					$new_content = my_calendar_draw_event( $event, 'single', date( 'Y-m-d', strtotime( $event->occur_begin ) ), date( 'H:i:00', strtotime( $event->occur_begin ) ), '' );
-				} else {
-					$event_id = get_post_meta( $post->ID, '_mc_event_id', true );
-					$event = mc_get_first_event( $event_id );
-					$new_content = my_calendar_draw_event( $event, 'single', $event->event_begin, $event->event_time, '' );
-				}
+				$event_id = get_post_meta( $post->ID, '_mc_event_id', true );
+				$event = mc_get_first_event( $event_id );
+				$date = $event->event_begin;
+				$time = $event->event_time;
+			}			
+			if ( get_option( 'mc_use_details_template' ) == 1 ) {
+				$new_content .= apply_filters( 'mc_before_event', '', $event, 'single', $time );				
+				$new_content .= do_shortcode( apply_filters( 'mc_single_event_shortcode', get_post_meta( $post->ID, '_mc_event_shortcode', true ) ) );
+				$new_content .= apply_filters( 'mc_after_event', '', $event, 'single', $time );
+			} else {
+				$new_content .= my_calendar_draw_event( $event, 'single', $date, $time, '' );
 			}
 		}
 
-		$content = apply_filters( 'mc_event_content', $new_content, $content, $post );
+		$content = apply_filters( 'mc_event_post_content', $new_content, $content, $post );
 	}
 	return do_shortcode( $content );
 }

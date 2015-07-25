@@ -122,6 +122,8 @@ Bug fixes:
 * Change class construction to PHP 5 syntax
 * Close button is now a button rather than a link.
 * Fixed display of text diff for stylesheet comparisons
+* Two different filters with different names.
+* mc_after_event filter not running with custom templates.
 
 Important Changes:
 * Removed references to #jd_calendar and generate custom IDs. [breaking change

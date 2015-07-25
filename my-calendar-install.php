@@ -29,21 +29,21 @@ $grid_template = addslashes( '<span class="event-time dtstart value-title" title
 <div class="sub-details">
 {hcard}
 {details before="<p class=\'mc_details\'>" after="</p>"}
-<p><a href="{linking}" class="event-link external">{title}</a></p></div>' );
+<p><a href="{linking}" class="event-link external"><span class="screen-reader-text">More information about </span>{title}</a></p></div>' );
 
 $list_template = addslashes( '<span class="event-time dtstart value-title" title="{dtstart}">{time}<span class="time-separator"> - </span>{endtime before="<span class=\'end-time dtend value-title\' title=\'{dtend}\'>" after="</span>"}</span>
 
 <div class="sub-details">
 {hcard}
 {details before="<p class=\'mc_details\'>" after="</p>"}
-<p><a href="{linking}" class="event-link external">{title}</a></p></div>' );
+<p><a href="{linking}" class="event-link external"><span class="screen-reader-text">More information about </span>{title}</a></p></div>' );
 
 $mini_template = addslashes( '<span class="event-time dtstart value-title" title="{dtstart}">{time}<span class="time-separator"> - </span>{endtime before="<span class=\'end-time dtend value-title\' title=\'{dtend}\'>" after="</span>"}</span>
 
 <div class="sub-details">
 {excerpt before="<div class=\'excerpt\'>" after="</div>"}
 {hcard}
-<p><a href="{linking}" class="event-link external">{title}</a></p></div>' );
+<p><a href="{linking}" class="event-link external"><span class="screen-reader-text">More information about </span>{title}</a></p></div>' );
 
 $single_template = addslashes( '<span class="event-time dtstart value-title" title="{dtstart}">{time}<span class="time-separator"> - </span><span class="end-time dtend value-title" title="{dtend}">{endtime}</span></span>
 
@@ -52,7 +52,7 @@ $single_template = addslashes( '<span class="event-time dtstart value-title" tit
 <div class="mc-description">{image}{description}</div>
 <p>{ical_html} &bull; {gcal_link}</p>
 {map}
-<p><a href="{linking}" class="event-link external">{title}</a></p></div>' );
+<p><a href="{linking}" class="event-link external"><span class="screen-reader-text">More information about </span>{title}</a></p></div>' );
 
 $rss_template = addslashes( "\n<item>
     <title>{rss_title}: {date}, {time}</title>

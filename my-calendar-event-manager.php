@@ -672,7 +672,8 @@ function my_calendar_save( $action, $output, $event_id = false ) {
 				$message = "<div class='error'><p><strong>" . __( 'Error', 'my-calendar' ) . ":</strong>" . __( 'Your event was not updated.', 'my-calendar' ) . "$url</p></div>";
 			} else {
 				// do an action using the $action and processed event data
-				do_action( 'mc_transition_event', (int) $_POST['prev_event_status'], (int) $_POST['event_approved'] );
+				$event_approved = ( isset( $_POST['event_approved'] ) ) ? intval( $_POST['event_approved'] ) : 0;
+				do_action( 'mc_transition_event', (int) $_POST['prev_event_status'], $event_approved );
 				$message = "<div class='updated'><p>" . __( 'Event updated successfully', 'my-calendar' ) . ".$url</p></div>";
 				mc_delete_cache();
 			}
@@ -2424,4 +2425,20 @@ function mc_standard_event_registration( $form, $has_data, $data, $context = 'ad
 			</p>";
 
 	return apply_filters( 'mc_event_registration_form', $form, $has_data, $data, 'admin' );
+}
+
+
+add_action( 'save_post', 'mc_post_update_event' );
+/**
+ * Re-run a test cycle when updating post.
+ */
+function mc_post_update_event( $id ) {
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE || wp_is_post_revision( $id ) || !( get_post_type( $id ) == 'mc-events' ) ) {
+		return;
+	}
+	$post = get_post( $id );
+	$featured_image = wp_get_attachment_url( get_post_thumbnail_id( $post->ID ) );
+	$event_id = get_post_meta( $post->ID, '_mc_event_id', true );
+	mc_update_data( $event_id, 'event_image', $featured_image, '%s' );
+	
 }
