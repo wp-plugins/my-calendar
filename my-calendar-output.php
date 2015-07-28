@@ -838,11 +838,12 @@ function mc_show_event_template( $content ) {
 			} else {
 				$new_content .= my_calendar_draw_event( $event, 'single', $date, $time, '' );
 			}
+			
+			$content = do_shortcode( apply_filters( 'mc_event_post_content', $new_content, $content, $post ) );
 		}
-
-		$content = apply_filters( 'mc_event_post_content', $new_content, $content, $post );
 	}
-	return do_shortcode( $content );
+	
+	return $content;
 }
 
 // Actually do the printing of the calendar
