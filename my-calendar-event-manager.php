@@ -1122,13 +1122,12 @@ function mc_form_fields( $data, $mode, $event_id ) {
 			$text_link = '';
 		}
 		?>
-		<h3><?php echo $text; ?> 
-					<span class="alignright">
-						<a href="<?php echo admin_url( 'admin.php?page=my-calendar-manage' ); ?>"><?php echo ( current_user_can( 'mc_manage_events' ) ) ? __( 'Manage events', 'my-calendar' ) : __( 'Manage your events', 'my-calendar' ); ?></a>
-						<?php echo $delete;	echo $text_link; ?></span>
-		</h3>
-
+		<h3><?php echo $text; ?></h3>
 		<div class="inside">
+		<p class='mc-controls'>
+			<a href="<?php echo admin_url( 'admin.php?page=my-calendar-manage' ); ?>"><?php echo ( current_user_can( 'mc_manage_events' ) ) ? __( 'Manage events', 'my-calendar' ) : __( 'Manage your events', 'my-calendar' ); ?></a>
+			<?php echo $delete;	echo $text_link; ?>	<input type="submit" name="save" class="button-primary" value="<?php _e( 'Save Event', 'my-calendar' ); ?>"/>
+		</p>		
 			<?php
 			if ( ! empty( $_GET['date'] ) && $data->event_recur != 'S' ) {
 				$event   = mc_get_event( $instance );

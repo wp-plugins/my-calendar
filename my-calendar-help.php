@@ -345,7 +345,7 @@ function my_calendar_help() {
 		<dt><code>{link}</code></dt>
 		<dd><?php _e( 'Displays the URL provided for the event.', 'my-calendar' ); ?></dd>
 
-		<dt><code>{ical_link}</code></dt>
+		<dt><code>{ical}</code></dt>
 		<dd><?php _e( 'Produces the URL to download an iCal formatted record for the event.', 'my-calendar' ); ?></dd>
 
 		<dt><code>{ical_html}</code></dt>

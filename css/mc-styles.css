@@ -474,6 +474,12 @@ strong.label {
     color: red;
 }
 
+.mc-controls {
+	font-weight: 700;
+	text-align: right;
+	margin: -3em 0 0;
+}
+
 .mc-locations label {
     display: block;
 }

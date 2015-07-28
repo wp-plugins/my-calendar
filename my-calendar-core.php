@@ -1063,7 +1063,7 @@ function my_calendar_admin_bar() {
 		$args = array( 'id' => 'mc-add-event', 'title' => __( 'Add Event', 'my-calendar' ), 'href' => $url );
 		$wp_admin_bar->add_node( $args );
 	}
-	if ( mc_is_url( get_option( 'mc_uri' ) ) ) {
+	if ( _mc_is_url( get_option( 'mc_uri' ) ) ) {
 		$url  = esc_url( apply_filters( 'mc_adminbar_uri', get_option( 'mc_uri' ) ) );
 		$args = array( 'id' => 'mc-my-calendar', 'title' => __( 'View Calendar', 'my-calendar' ), 'href' => $url );
 		$wp_admin_bar->add_node( $args );

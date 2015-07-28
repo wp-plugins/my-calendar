@@ -255,7 +255,7 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 	$title       = apply_filters( 'mc_event_title', $title, $event, $event_title, $image );
 	$header .= $title;
 	$close_image = apply_filters( 'mc_close_button', "<img src=\"" . plugin_dir_url( __FILE__ ) . "images/event-close.png\" alt='" . __( 'Close', 'my-calendar' ) . "' />" );
-	$close_button = "<button aria-controls='$uid-$day_id-$type-details' class='mc-toggle mc-close close'>$close_image</button>";
+	$close_button = "<button aria-controls='$uid-$day_id-$type-details' class='mc-toggle close'>$close_image</button>";
 	
 	if ( mc_show_details( $time, $type ) ) {
 		$close = ( $type == 'calendar' || $type == 'mini' ) ? $close_button : '';
@@ -1198,7 +1198,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			$heading_level = apply_filters( 'mc_heading_level', 'h3', $format, $time, $template );
 			$my_calendar_body .= "
 				<$heading_level class='mc-single'>" . date_i18n( apply_filters( 'mc_date_format', $date_format, 'grid' ), strtotime( "$c_year-$c_month-$c_day" ) ) . "</$heading_level>" . '
-				<div id="mc-day" class="' . $dayclass . ' ' . $dateclass . ' ' . $events_class . '">' . "$mc_events\n</div>
+				<div id="mc-day" class="' . esc_attr( $dayclass . ' ' . $dateclass . ' ' . $events_class ) . '">' . "$mc_events\n</div>
 			</div>";
 		} else {
 			// if showing multiple months, figure out how far we're going.
@@ -1358,7 +1358,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 										//if ( $monthclass != 'nextmonth' ) { // only show current month in list view.
 										if ( $event_output != '' ) {
 											$my_calendar_body .= "
-												<li id='$format-$date' class='mc-events $dayclass $dateclass $events_class $odd'>
+												<li id='$format-$date' class='mc-events " . esc_attr( "$dayclass $dateclass $events_class $odd" ) . "'>
 													<strong class=\"event-date\">$is_anchor" . date_i18n( apply_filters( 'mc_date_format', $date_format, 'list' ), $start ) . "$is_close_anchor" . "$title</strong>" .
 											                     $event_output . "
 												</li>";
@@ -1367,7 +1367,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 										//}
 									} else {
 										$my_calendar_body .= "
-												<td id='$format-$date' class='$dayclass $dateclass $weekend_class $monthclass $events_class day-with-date'>" . "
+												<td id='$format-$date' class='" . esc_attr( "$dayclass $dateclass $weekend_class $monthclass $events_class" ) . " day-with-date'>" . "
 													<$element class='mc-date $trigger'>$thisday_heading</$close>" .
 										                     $event_output . "
 												</td>\n";
