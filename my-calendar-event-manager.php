@@ -2320,7 +2320,7 @@ function mc_instance_list( $id, $occur = false, $template = '<h3>{title}</h3>{de
 		$output = $details . $before . $output . $after;
 	}
 
-	return $output;
+	return ( get_option( 'mc_process_shortcodes' ) == 'true' ) ? do_shortcode( $output ) : $output;
 }
 
 function mc_event_is_grouped( $group_id ) {

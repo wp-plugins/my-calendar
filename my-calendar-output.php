@@ -315,11 +315,11 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 				$image = ( $event->event_image != '' ) ? "<img src='$event->event_image' alt='' class='mc-image photo' />" : '';
 			}
 			if ( get_option( 'mc_desc' ) == 'true' || $type == 'single' ) {
-				$description = ( get_option( 'mc_process_shortcodes' ) == 'true' ) ? apply_filters( 'the_content', stripcslashes( $event->event_desc ) ) : wpautop( stripcslashes( $event->event_desc ), 1 );
+				$description = wpautop( stripcslashes( $event->event_desc ), 1 );
 				$description = "<div class='longdesc'>$description</div>";
 			}
 			if ( get_option( 'mc_short' ) == 'true' && $type != 'single' ) {
-				$short = ( get_option( 'mc_process_shortcodes' ) == 'true' ) ? apply_filters( 'the_content', stripcslashes( $event->event_short ) ) : wpautop( stripcslashes( $event->event_short ), 1 );
+				$short = wpautop( stripcslashes( $event->event_short ), 1 );
 				$short = "<div class='shortdesc'>$short</div>";
 			}
 
@@ -1126,9 +1126,12 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 				</div>';
 		}
 		// set up rss feeds
-		if ( $format != 'mini' ) {
+		if ( in_array( 'feeds', $used ) && $format != 'mini' ) {
 			$ical_m = ( isset( $_GET['month'] ) ) ? (int) $_GET['month'] : date( 'n' );
 			$ical_y = ( isset( $_GET['yr'] ) ) ? (int) $_GET['yr'] : date( 'Y' );
+			if ( !isset( $nLink ) ) { 
+				$nLink = my_calendar_next_link( $c_year, $c_month, $c_day, $format, $time, $mc_show_months );
+			}
 			$feeds  = mc_rss_links( $ical_y, $ical_m, $nLink, $add, $subtract );
 		}
 		// set up date switcher
@@ -1415,6 +1418,15 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 	$my_calendar_body .= apply_filters( 'mc_after_calendar', '', $args );
 
 	return $mc_wrapper . apply_filters( 'my_calendar_body', $my_calendar_body ) . $mc_closer;
+}
+
+add_filter( 'my_calendar_body', 'mc_run_shortcodes', 10, 1 );
+// Process shortcodes on the final rendered calendar instead of each individual case. 
+// Means this runs once instead of potentially hundreds of times.
+function mc_run_shortcodes( $content ) {
+	$content = ( get_option( 'mc_process_shortcodes' ) == 'true' ) ? do_shortcode( $content ) : $content;
+	
+	return $content;
 }
 
 function my_category_key( $category ) {

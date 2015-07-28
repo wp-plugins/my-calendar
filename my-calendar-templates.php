@@ -274,10 +274,10 @@ function mc_create_tags( $event, $context = 'filters' ) {
 
 	// general text fields
 	$e['title']                = stripslashes( $event->event_title );
-	$e['description']          = ( get_option( 'mc_process_shortcodes' ) == 'true' && $context == 'filters' ) ? apply_filters( 'the_content', $event->event_desc ) : wpautop( stripslashes( $event->event_desc ) );
+	$e['description']          = wpautop( stripslashes( $event->event_desc ) );
 	$e['description_raw']      = stripslashes( $event->event_desc );
 	$e['description_stripped'] = strip_tags( stripslashes( $event->event_desc ) );
-	$e['shortdesc']            = ( get_option( 'mc_process_shortcodes' ) == 'true' && $context == 'filters' ) ? apply_filters( 'the_content', $event->event_short ) : wpautop( stripslashes( $event->event_short ) );
+	$e['shortdesc']            = wpautop( stripslashes( $event->event_short ) );
 	$e['shortdesc_raw']        = stripslashes( $event->event_short );
 	$e['shortdesc_stripped']   = strip_tags( stripslashes( $event->event_short ) );
 

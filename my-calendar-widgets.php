@@ -564,7 +564,7 @@ function my_calendar_upcoming_events( $before = 'default', $after = 'default', $
 	if ( $output != '' ) {
 		$output = $header . $output . $footer;
 
-		return $output;
+		return ( get_option( 'mc_process_shortcodes' ) == 'true' ) ? do_shortcode( $output ) : $output;
 	} else {
 		return stripcslashes( $no_event_text );
 	}
@@ -826,7 +826,8 @@ function my_calendar_todays_events( $category = 'default', $template = 'default'
 		$return = stripcslashes( $no_event_text );
 	}
 
-	return $return;
+	return ( get_option( 'mc_process_shortcodes' ) == 'true' ) ? do_shortcode( $return ) : $return;
+
 }
 
 class my_calendar_mini_widget extends WP_Widget {

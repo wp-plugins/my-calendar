@@ -337,7 +337,8 @@ function my_calendar_events_now( $category = 'default', $template = '<strong>{li
 	if ( !empty( $arr_events ) ) {
 		$event = mc_create_tags( $arr_events[0] );
 		
-		return jd_draw_template( $event, apply_filters( 'mc_happening_now_template', $template, $event ) );
+		$output = jd_draw_template( $event, apply_filters( 'mc_happening_now_template', $template, $event ) );
+		return ( get_option( 'mc_process_shortcodes' ) == 'true' ) ? do_shortcode( $output ) : $output;
 	} else {
 		return '';
 	}
