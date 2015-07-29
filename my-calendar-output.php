@@ -847,7 +847,7 @@ function mc_show_event_template( $content ) {
 }
 
 // Actually do the printing of the calendar
-function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $lvalue = '', $id = '', $template = '', $content = '', $author = null, $host = null, $above = '', $below = '' ) {
+function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $lvalue = '', $id = '', $template = '', $content = '', $author = null, $host = null, $above = '', $below = '', $syear = false, $smonth = false, $sday = false ) {
 	check_my_calendar();
 	// category key needs to receive the original category settings.
 	$original_category = $category;
@@ -897,10 +897,17 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 		'ltype'    => $ltype,
 		'lvalue'   => $lvalue,
 		'author'   => $author,
-		'id'       => $id
+		'id'       => $id,
+		'above'    => $above,
+		'below'    => $below,
+		'host'     => $host,
+		'syear'    => $syear,
+		'smonth'   => $smonth,
+		'sday'     => $sday 
 	);
+	$hash = md5( implode( ',', $args ) );
 	$my_calendar_body .= apply_filters( 'mc_before_calendar', '', $args );
-	$id = ( !$id ) ? "mc-$format" : $id;
+	$id = ( !$id ) ? "mc-$hash" : $id;
 
 	$main_class = ( $id != '' ) ? sanitize_title( $id ) : 'all';
 	$cid        = ( isset( $_GET['cid'] ) ) ? esc_attr( strip_tags( $_GET['cid'] ) ) : $main_class;
@@ -1012,9 +1019,14 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			$c_day   = date( "d", time() + ( $offset ) );
 		}
 		if ( ! ( isset( $_GET['yr'] ) || isset( $_GET['month'] ) || isset( $_GET['dy'] ) ) ) {
-			$c_year  = apply_filters( 'mc_filter_year', $c_year, $args );
-			$c_month = apply_filters( 'mc_filter_month', $c_month, $args );
-			$c_day   = apply_filters( 'mc_filter_day', $c_day, $args );
+			// month/year based on shortcode
+			$shortcode_month = ( $smonth != false ) ? $smonth : $c_month;
+			$shortcode_year = ( $syear != false ) ? $syear : $c_year;
+			$shortcode_day = ( $sday != false ) ? $sday : $c_day;
+			// override with filters
+			$c_year  = apply_filters( 'mc_filter_year', $shortcode_year, $args );
+			$c_month = apply_filters( 'mc_filter_month', $shortcode_month, $args );
+			$c_day   = apply_filters( 'mc_filter_day', $shortcode_day, $args );
 		}
 		$c_day          = ( $c_day == 0 ) ? 1 : $c_day; // c_day can't equal 0.
 		$current_date   = mktime( 0, 0, 0, $c_month, $c_day, $c_year );

@@ -122,6 +122,66 @@ function mc_generator( $type ) {
 						<option value="day"><?php _e( 'Day', 'my-calendar' ); ?></option>
 					</select>
 				</p>
+				<p>
+					<label for="year"><?php _e( 'Year', 'my-calendar' ); ?></label>
+					<select name="year" id="year">
+						<option value=''><?php _e( 'Default', 'my-calendar' ); ?></option>					
+						<?php
+						global $wpdb;
+						$mcdb = $wpdb;
+						$query  = "SELECT event_begin FROM " . MY_CALENDAR_TABLE . " WHERE event_approved = 1 AND event_flagged <> 1 ORDER BY event_begin ASC LIMIT 0 , 1";
+						$year1  = date( 'Y', strtotime( $mcdb->get_var( $query ) ) );
+						$diff1  = date( 'Y' ) - $year1;
+						$past   = $diff1;
+						$future = apply_filters( 'mc_jumpbox_future_years', 5, false );
+						$fut    = 1;
+						$f      = '';
+						$p      = '';
+						$offset = ( 60 * 60 * get_option( 'gmt_offset' ) );
+						while ( $past > 0 ) {
+							$p .= '<option value="';
+							$p .= date( "Y", time() + ( $offset ) ) - $past;
+							$p .= '">';
+							$p .= date( "Y", time() + ( $offset ) ) - $past . "</option>\n";
+							$past = $past - 1;
+						}
+						while ( $fut < $future ) {
+							$f .= '<option value="';
+							$f .= date( "Y", time() + ( $offset ) ) + $fut;
+							$f .= '">';
+							$f .= date( "Y", time() + ( $offset ) ) + $fut . "</option>\n";
+							$fut = $fut + 1;
+						}
+						echo $p . '<option value="' . date( "Y" ) . '">' . date( "Y" ) . "</option>\n" . $f;
+						?>
+					</select>
+					</p>
+					<p>
+					<label for="month"><?php _e( 'Month', 'my-calendar' ); ?></label>
+					<select name="month" id="month">
+						<option value=''><?php _e( 'Default', 'my-calendar' ); ?></option>					
+						<?php
+							$months = '';
+							for ( $i = 1; $i <= 12; $i ++ ) {
+								$months .= "<option value='$i'>" . date_i18n( 'F', mktime( 0, 0, 0, $i, 1 ) ) . '</option>' . "\n";
+							}
+							echo $months;
+						?>
+					</select>
+					</p>
+					<p>
+					<label for="day"><?php _e( 'Day', 'my-calendar' ); ?></label>
+					<select name="day" id="day">
+						<option value=''><?php _e( 'Default', 'my-calendar' ); ?></option>
+						<?php
+							$days = '';
+							for ( $i = 1; $i <= 31; $i++ ) {
+								$days .= "<option value='$i'>" . $i . '</option>' . "\n";
+							}
+							echo $days;
+						?>
+					</select>
+				</p>				
 				<p id='navigation-info'>
 					<?php _e( "For navigational fields above and below the calendar: the defaults specified in your settings will be used if the attribute is left blank. Use <code>none</code> to hide all navigation elements.", 'my-calendar' ); ?>
 				</p>

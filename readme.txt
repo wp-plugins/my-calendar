@@ -97,7 +97,8 @@ New features:
 * Enabled option to turn on permalinks
 * Custom canonical URL for event pages
 * Added 'date' parameter to today's events list & shortcode accepting any string usable in strtotime()
-* Added 'from' and 'to' parameter to upcoming events list & shortcode accepting any string usable in strtotime()
+* Added 'from' and 'to' parameter to upcoming events list & shortcode accepting any string usable in strtotime
+* Added year/month/day parameter to main shortcode to target specific months for initial display.
 * Make BCC field filterable
 * Add filters to search query parameters
 * New option: switch to mini calendar on mobile devices instead of list view.

@@ -16,7 +16,10 @@ function my_calendar_insert( $atts, $content = null ) {
 		'id'       => '',
 		'template' => '',
 		'above'    => '',
-		'below'    => ''
+		'below'    => '',
+		'year'     => false,
+		'month'    => false,
+		'day'      => false
 	), $atts, 'my_calendar' ) );
 	if ( $format != 'mini' ) {
 		if ( isset( $_GET['format'] ) ) {
@@ -31,7 +34,7 @@ function my_calendar_insert( $atts, $content = null ) {
 		$host = apply_filters( 'mc_display_host', $user_ID, 'main' );
 	}
 
-	return my_calendar( $name, $format, $category, $time, $ltype, $lvalue, $id, $template, $content, $author, $host, $above, $below );
+	return my_calendar( $name, $format, $category, $time, $ltype, $lvalue, $id, $template, $content, $author, $host, $above, $below, $year, $month, $day );
 }
 
 function my_calendar_insert_upcoming( $atts ) {
