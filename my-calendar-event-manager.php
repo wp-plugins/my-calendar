@@ -648,7 +648,7 @@ function my_calendar_save( $action, $output, $event_id = false ) {
 					} else {
 						$result = mc_update_instance( $event_instance, $event_id, $update );
 						// Only dates were changed
-						$message = "<div class='updated notice'><p>" . __( 'Date/time information for this event has been updated.', 'my-calendar' ) . "$url</p></div>";
+						$message = "<div class='updated notice'><p>" . __( 'Date/time information for this event has been updated.', 'my-calendar' ) . " $url</p></div>";
 						mc_delete_cache();
 					}
 				}
@@ -669,12 +669,12 @@ function my_calendar_save( $action, $output, $event_id = false ) {
 			$data = $update;
 			do_action( 'mc_save_event', $action, $data, $event_id, $result );
 			if ( $result === false ) {
-				$message = "<div class='error'><p><strong>" . __( 'Error', 'my-calendar' ) . ":</strong>" . __( 'Your event was not updated.', 'my-calendar' ) . "$url</p></div>";
+				$message = "<div class='error'><p><strong>" . __( 'Error', 'my-calendar' ) . ":</strong>" . __( 'Your event was not updated.', 'my-calendar' ) . " $url</p></div>";
 			} else {
 				// do an action using the $action and processed event data
 				$event_approved = ( isset( $_POST['event_approved'] ) ) ? intval( $_POST['event_approved'] ) : 0;
 				do_action( 'mc_transition_event', (int) $_POST['prev_event_status'], $event_approved );
-				$message = "<div class='updated'><p>" . __( 'Event updated successfully', 'my-calendar' ) . ".$url</p></div>";
+				$message = "<div class='updated'><p>" . __( 'Event updated successfully', 'my-calendar' ) . ". $url</p></div>";
 				mc_delete_cache();
 			}
 		} else {

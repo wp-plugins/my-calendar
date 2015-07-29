@@ -832,11 +832,11 @@ function mc_show_event_template( $content ) {
 				$time = $event->event_time;
 			}			
 			if ( get_option( 'mc_use_details_template' ) == 1 ) {
-				$new_content .= apply_filters( 'mc_before_event', '', $event, 'single', $time );				
+				$new_content = apply_filters( 'mc_before_event', '', $event, 'single', $time );				
 				$new_content .= do_shortcode( apply_filters( 'mc_single_event_shortcode', get_post_meta( $post->ID, '_mc_event_shortcode', true ) ) );
 				$new_content .= apply_filters( 'mc_after_event', '', $event, 'single', $time );
 			} else {
-				$new_content .= my_calendar_draw_event( $event, 'single', $date, $time, '' );
+				$new_content = my_calendar_draw_event( $event, 'single', $date, $time, '' );
 			}
 			
 			$content = do_shortcode( apply_filters( 'mc_event_post_content', $new_content, $content, $post ) );

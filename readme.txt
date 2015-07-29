@@ -126,6 +126,7 @@ Bug fixes:
 * mc_after_event filter not running with custom templates.
 * With My Tickets active, enter key did not submit Add/Edit event form
 * Fixed documentation error with ical template tags.
+* Improved efficiency of WP shortcode processing in templates.
 
 Important Changes:
 * Removed references to #jd_calendar and generate custom IDs. [breaking change

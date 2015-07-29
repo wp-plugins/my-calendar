@@ -269,6 +269,11 @@ strong.label {
     top: .7em;
 }
 
+.wp-picker-holder {
+	position: absolute;
+	z-index: 10;
+}
+
 .jd-my-calendar .counter {
     padding-right: 6px;
     border-right: 16px solid green;
@@ -341,6 +346,10 @@ strong.label {
     background: rgba(0, 0, 0, .05);
     padding: 1px 1em;
     margin: 1px 0;
+}
+
+.mc-settings-page #mc-sortable .mc-updated {
+	background-color: #ffa;
 }
 
 #mc-sortable .mc-buttons {
