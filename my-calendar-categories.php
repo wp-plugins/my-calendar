@@ -306,6 +306,7 @@ function mc_edit_category_form( $view = 'edit', $catID = '' ) {
 									       id="mc_shc"<?php echo $holiday_checked; ?> /> <label
 										for="mc_shc"><?php _e( 'Holiday Category', 'my-calendar' ); ?></label>
 								</li>
+								<?php echo apply_filters( 'mc_category_fields', '', $cur_cat ); ?>
 							</ul>
 							</fieldset>
 							<p>

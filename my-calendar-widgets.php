@@ -641,10 +641,14 @@ function mc_produce_upcoming_events( $events, $template, $type = 'list', $order 
 									$same_event = ( in_array( $e->occur_id, $last_events ) ) ? true : false;
 									$same_group = ( in_array( $e->occur_group_id, $last_group ) ) ? true : false;
 									if ( $show_today == 'yes' && my_calendar_date_equal( $beginning, $current ) ) {
-										$in_total = 'yes'; // count todays events in total
+										$in_total = apply_filters( 'mc_include_today_in_total', 'yes' ); // count todays events in total
 										if ( $in_total != 'no' ) {
 											$near_events[] = $e;
-											$future ++;
+											if ( $before > $after ) {
+												$future ++;
+											} else {
+												$past ++;
+											}
 										} else {
 											$near_events[] = $e;
 										}

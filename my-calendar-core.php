@@ -184,14 +184,6 @@ function mc_register_styles() {
 		wp_register_style( 'my-calendar-mobile-style', $mobile );
 		wp_enqueue_style( 'my-calendar-mobile-style' );
 	}
-	if ( function_exists( 'mcs_submissions' ) ) {
-		$mcs    = plugins_url( '/my-calendar-submissions/mcs-styles.css' );
-		$mcs_ui = plugins_url( '/my-calendar-submissions/css/smoothness/jquery-ui-1.8.23.custom.css' );
-		wp_register_style( 'my-calendar-submissions-ui-style', $mcs_ui );
-		wp_enqueue_style( 'my-calendar-submissions-ui-style' );
-		wp_register_style( 'my-calendar-submissions-style', $mcs );
-		wp_enqueue_style( 'my-calendar-submissions-style' );
-	}
 }
 
 // Function to add the calendar style into the header
@@ -1918,6 +1910,9 @@ function mc_increment_event( $id, $post = array(), $test = false ) {
 }
 
 function mc_get_details_link( $event ) {
+	if ( is_numeric( $event ) ) {
+		$event = mc_get_event( $event );
+	}
 	// if available, and not querying remotely, use permalink.
 	$permalinks   = apply_filters( 'mc_use_permalinks', get_option( 'mc_use_permalinks' ) );
 	$permalinks   = ( $permalinks === 1 || $permalinks === true || $permalinks === 'true' ) ? true : false;
@@ -1938,7 +1933,8 @@ function mc_get_details_link( $event ) {
 					'page_id',
 					'p',
 					'mcs',
-					'time'
+					'time',
+					'page'
 				), get_option( 'mc_uri' ) );
 		}
 	}

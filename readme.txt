@@ -44,7 +44,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 = Translations =
 
 Available translations (in order of completeness):
-Polish, Spanish (Spain), Portuguese (Portugal), French, Danish, Czech, Japanese, German, Russian, Dutch, Swedish, Italian, Hebrew, Galician, Portuguese (Brazil), Hindi, Turkish, Slovak, Finnish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Catalan, Hungarian, Afrikaans, Icelandic
+Czech, Polish, Spanish (Spain), Portuguese (Portugal), French, Danish, Japanese, German, Russian, Dutch, Swedish, Italian, Hebrew, Galician, Portuguese (Brazil), Hindi, Turkish, Slovak, Finnish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Catalan, Hungarian, Afrikaans, Persian, Icelandic
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -58,9 +58,10 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 2. Activate the plugin on your WordPress plugins page 
 
-3. Configure My Calendar using the following pages in the admin panel:
+3. Configure My Calendar using the settings pages in the admin panel:
 
-   My Calendar -> Add/Manage Events
+   My Calendar -> Manage Events
+   My Calendar -> Add New Event
    My Calendar -> Manage Categories
    My Calendar -> Manage Locations
    My Calendar -> Manage Event Groups
@@ -128,6 +129,8 @@ Bug fixes:
 * With My Tickets active, enter key did not submit Add/Edit event form
 * Fixed documentation error with ical template tags.
 * Improved efficiency of WP shortcode processing in templates.
+* A multi-day event crossing the current day was counted as a future event in upcoming events
+* If event instance was split from recurring event, showed same recurring settings as original event.
 
 Important Changes:
 * Removed references to #jd_calendar and generate custom IDs. [breaking change
@@ -138,7 +141,7 @@ Other:
 * Moved changelog for versions prior to 2.3.0 into changelog.txt
 
 Translations:
-* Updated Polish, Portuguese (Portugal), Dutch, Turkish, Slovak, Norwegian, Hungarian, German
+* Updated Polish, Portuguese (Portugal), Dutch, Turkish, Slovak, Norwegian, Hungarian, German, Spanish, Persian, Czech
 
 = 2.3.32 =
 

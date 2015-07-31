@@ -232,6 +232,7 @@ function mc_get_occurrences( $id ) {
 	if ( $id === 0 ) {
 		return array();
 	}
+
 	$sql     = "SELECT * FROM " . my_calendar_event_table() . " WHERE occur_event_id=$id";
 	$results = $wpdb->get_results( $sql );
 

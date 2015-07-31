@@ -706,15 +706,7 @@ function mc_search_results( $query ) {
 		$fields          = esc_sql( apply_filters( 'mc_search_fields', 'event_title,event_desc,event_short,event_label,event_city,event_postcode,event_registration' ) );
 		$search          = " MATCH( $fields ) AGAINST ('$query' IN BOOLEAN MODE) AND ";
 	} else {
-		/*
-		extract( $query );
-		$select_category = ( $category != 'default' ) ? mc_select_category( $category ) : '';
-		$limit_string    = mc_limit_string();
-		$select_author   = ( $author != 'default' ) ? mc_select_author( $author ) : '';
-		$select_host     = ( $host != 'default' ) ? mc_select_host( $host ) : '';
-		$prefix          = ( $select_category . $limit_string . $select_author . $select_host != '' ) ? ' AND' : '';
-		$search          = "$prefix MATCH(event_title,event_desc,event_short,event_label,event_city,event_postcode,event_registration) AGAINST ('$query' IN BOOLEAN MODE) AND ";
-		*/
+		$search = apply_filters( 'mc_advanced_search', '', $query );
 	}
 	global $wpdb;
 	$mcdb = $wpdb;

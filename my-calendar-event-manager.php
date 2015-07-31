@@ -598,7 +598,9 @@ function my_calendar_save( $action, $output, $event_id = false ) {
 				}
 				if ( get_option( 'mc_uri' ) != '' ) {
 					$event_ids  = mc_get_occurrences( $event_id );
-					$event_link = mc_build_url( array( 'mc_id' => $event_ids[0]->occur_id ), array( 'page' ), get_option( 'mc_uri' ) );
+					//$event_link = mc_build_url( array( 'mc_id' => $event_ids[0]->occur_id ), array( 'page' ), get_option( 'mc_uri' ) );
+					//$event_link = add_query_arg( 'mc_id', $event_ids[0]->occur_id, get_option( 'mc_uri' ) );
+					$event_link = mc_get_details_link( $event_ids[0]->occur_id );
 				} else {
 					$event_link = false;
 				}
@@ -630,6 +632,8 @@ function my_calendar_save( $action, $output, $event_id = false ) {
 				if ( $is_changed ) {
 					// if changed, create new event, match group id, update instance to reflect event connection, same group id.
 					// if group ID == 0, need to add group ID to both records.
+					// if a single instance is edited, it should *not* inherit the recurring settings from parent.
+					$update['event_recur'] = 'S1';
 					if ( $update['event_group_id'] == 0 ) {
 						$update['event_group_id'] = $event_id;
 						mc_update_data( $event_id, 'event_group_id', $event_id );
@@ -2219,7 +2223,11 @@ function mc_compare( $update, $id ) {
 	}
 }
 
-// args: instance ID, event ID, array containing updated dates.
+/**
+ * Update a single event instance.
+ *
+ * args: instance ID, event ID, array containing new dates.
+*/
 function mc_update_instance( $event_instance, $event_id, $update = array() ) {
 	global $wpdb;
 	$mcdb = $wpdb;
