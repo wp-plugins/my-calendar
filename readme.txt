@@ -131,6 +131,7 @@ Bug fixes:
 * Improved efficiency of WP shortcode processing in templates.
 * A multi-day event crossing the current day was counted as a future event in upcoming events
 * If event instance was split from recurring event, showed same recurring settings as original event.
+* If events were mass deleted, the corresponding event post was not also deleted.
 
 Important Changes:
 * Removed references to #jd_calendar and generate custom IDs. [breaking change

@@ -1950,6 +1950,7 @@ function mc_register_actions() {
 	add_action( 'mc_transition_event', 'mc_tweet_approval', 10, 2 );
 	add_action( 'mc_save_event', 'mc_event_post', 10, 3 );
 	add_action( 'mc_delete_event', 'mc_event_delete_post', 10, 2 );
+	add_action( 'mc_mass_delete_events', 'mc_event_delete_posts', 10, 2 );
 	add_action( 'parse_request', 'my_calendar_api' );
 }
 
@@ -1960,6 +1961,17 @@ add_filter( 'post_updated_messages', 'mc_posttypes_messages' );
 add_action( 'init', 'mc_taxonomies', 0 );
 add_action( 'init', 'mc_posttypes' );
 
+function mc_event_delete_posts( $deleted ) {
+	foreach ( $deleted as $delete ) {
+		$posts = get_posts( array(
+				'post_type'  => 'mc-events',
+				'meta_key'   => '_mc_event_id',
+				'meta_value' => $delete
+		) );
+		$post_id = $posts[0]->ID;
+		wp_delete_post( $post_id, true );
+	}
+}
 
 add_action( 'load-options-permalink.php', 'mc_load_permalinks' );
 function mc_load_permalinks() {
@@ -1970,6 +1982,7 @@ function mc_load_permalinks() {
 	// Add a settings field to the permalink page
 	add_settings_field( 'mc_cpt_base', __( 'My Calendar Events base' ), 'mc_field_callback', 'permalink', 'optional', array( 'label_for'=>'mc_cpt_base' ) );
 }
+
 function mc_field_callback() {
 	$value = ( get_option( 'mc_cpt_base' ) != '' ) ? get_option( 'mc_cpt_base' ) : 'mc-events';	
 	echo '<input type="text" value="' . esc_attr( $value ) . '" name="mc_cpt_base" id="mc_cpt_base" class="regular-text" />';
