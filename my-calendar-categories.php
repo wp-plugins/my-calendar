@@ -366,7 +366,7 @@ function mc_manage_categories() {
 			$cat_order = 'category_id';
 	}
 	// We pull the categories from the database
-	$categories = $mcdb->get_results( esc_sql( "SELECT * FROM " . my_calendar_categories_table() . " ORDER BY $cat_order ASC" ) );
+	$categories = $mcdb->get_results( "SELECT * FROM " . my_calendar_categories_table() . " ORDER BY $cat_order ASC" );
 	if ( ! empty( $categories ) ) {
 		?>
 		<table class="widefat page fixed mc-categories" id="my-calendar-admin-table">

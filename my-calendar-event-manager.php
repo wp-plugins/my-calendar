@@ -799,7 +799,7 @@ function mc_show_edit_block( $field ) {
 	}
 }
 
-function mc_show_block( $field, $has_data, $data ) {
+function mc_show_block( $field, $has_data, $data, $echo = true ) {
 	global $user_ID;
 	$return     = $checked = $value = '';
 	$show_block = mc_show_edit_block( $field );
@@ -821,7 +821,7 @@ function mc_show_block( $field, $has_data, $data ) {
 					}
 					$select .= "<option value='$u->ID'$selected>$display_name</option>\n";
 				}
-				echo '
+				$return = '
 					<p>
 					<label for="e_host">' . __( 'Host', 'my-calendar' ) . '</label>
 					<select id="e_host" name="event_host">' .
@@ -829,19 +829,28 @@ function mc_show_block( $field, $has_data, $data ) {
 					. '</select>
 				</p>';
 			}
+			break;
 		case 'event_desc' :
 			if ( $show_block ) {
+				global $current_screen;
 				// because wp_editor cannot return a value, event_desc fields cannot be filtered if its enabled.
 				$value = ( $has_data ) ? stripslashes( $data->event_desc ) : '';
-				echo '
-				<div class="event_description">
-				<label for="content">' . __( 'Event Description', 'my-calendar' ) . '</label><br />';
-				if ( user_can_richedit() ) {
-					wp_editor( $value, 'content', array( 'textarea_rows' => 10 ) );
+				if ( $current_screen->base == 'post' ) {
+					$return = '<div class="event_description">
+									<label for="content">' . __( 'Event Description', 'my-calendar' ) . '</label><br />
+									<textarea id="content" name="content" class="event_desc" rows="8" cols="80">' . stripslashes( esc_attr( $value ) ) . '</textarea>
+								</div>';
 				} else {
-					echo '<textarea id="content" name="content" class="event_desc" rows="8" cols="80">' . stripslashes( esc_attr( $value ) ) . '</textarea>';
+					echo '
+					<div class="event_description">
+					<label for="content">' . __( 'Event Description', 'my-calendar' ) . '</label><br />';
+					if ( user_can_richedit() ) {
+						wp_editor( $value, 'content', array( 'textarea_rows' => 10 ) );
+					} else {
+						echo '<textarea id="content" name="content" class="event_desc" rows="8" cols="80">' . stripslashes( esc_attr( $value ) ) . '</textarea>';
+					}
+					echo '</div>';
 				}
-				echo '</div>';
 			}
 			break;
 		case 'event_short' :
@@ -1013,7 +1022,12 @@ function mc_show_block( $field, $has_data, $data ) {
 		default:
 			return;
 	}
-	echo apply_filters( 'mc_show_block', $return, $data, $field );
+	$return = apply_filters( 'mc_show_block', $return, $data, $field );
+	if ( $echo == true ) {
+		echo $return;
+	} else {
+		return $return;
+	}
 }
 
 
@@ -1146,8 +1160,7 @@ function mc_form_fields( $data, $mode, $event_id ) {
 			<fieldset>
 				<legend class="screen-reader-text"><?php _e( 'Event Details', 'my-calendar' ); ?></legend>
 				<p>
-					<label for="e_title"><?php _e( 'Event Title', 'my-calendar' ); ?> <span
-							class='required'><?php _e( '(required)', 'my-calendar' ); ?></span></label><br/><input
+					<label for="e_title"><?php _e( 'Event Title', 'my-calendar' ); ?></label><br/><input
 						type="text" id="e_title" name="event_title" size="50" maxlength="255"
 						value="<?php if ( $has_data ) {
 							echo apply_filters( 'mc_manage_event_title', stripslashes( esc_attr( $data->event_title ) ), $data );
@@ -1563,7 +1576,7 @@ function mc_list_events() {
 			$limit .= " AND MATCH(event_title,event_desc,event_short,event_label,event_city) AGAINST ('$query' IN BOOLEAN MODE) ";
 		}
 		$limit .= ( $restrict != 'archived' ) ? " AND event_status = 1" : ' AND event_status = 0';
-		$events     = $mcdb->get_results( esc_sql( "SELECT SQL_CALC_FOUND_ROWS * FROM " . my_calendar_table() . " $limit ORDER BY $sortbyvalue $sortbydirection LIMIT " . ( ( $current - 1 ) * $items_per_page ) . ", " . $items_per_page ) );
+		$events     = $mcdb->get_results( "SELECT SQL_CALC_FOUND_ROWS * FROM " . my_calendar_table() . " $limit ORDER BY $sortbyvalue $sortbydirection LIMIT " . ( ( $current - 1 ) * $items_per_page ) . ", " . $items_per_page );
 		$found_rows = $wpdb->get_col( "SELECT FOUND_ROWS();" );
 		$items      = $found_rows[0];
 		if ( ( function_exists( 'akismet_http_post' ) || function_exists( 'bs_checker' ) ) && $allow_filters ) {

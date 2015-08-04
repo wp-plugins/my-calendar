@@ -453,8 +453,8 @@ function my_calendar_menu() {
 		$permission = apply_filters( 'mcs_submission_permissions', 'manage_options' );
 		add_action( "admin_head", 'my_calendar_sub_js' );
 		add_action( "admin_head", 'my_calendar_sub_styles' );
-		add_submenu_page( 'my-calendar', __( 'Event Submissions', 'my-calendar' ), __( 'Event Submissions', 'my-calendar' ), $permission, 'my-calendar-submissions', 'mcs_settings' );
-		add_submenu_page( 'my-calendar', __( 'Payments', 'my-calendar' ), __( 'Payments', 'my-calendar' ), $permission, 'my-calendar-payments', 'mcs_sales_page' );
+		add_submenu_page( 'my-calendar', __( 'My Calendar Pro Settings', 'my-calendar' ), __( 'My Calendar Pro', 'my-calendar' ), $permission, 'my-calendar-submissions', 'mcs_settings' );
+		add_submenu_page( 'my-calendar', __( 'Payments Received', 'my-calendar' ), __( 'Payments', 'my-calendar' ), $permission, 'my-calendar-payments', 'mcs_sales_page' );
 	}
 }
 

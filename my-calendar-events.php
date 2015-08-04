@@ -286,8 +286,8 @@ function mc_related_events( $id, $return = false ) {
 * @param int $author Author ID to filter to.
 * @return array Array of events with dates as keys.
 */
-function my_calendar_events( $from, $to, $category, $ltype, $lvalue, $source, $author, $host ) {
-	$events = my_calendar_grab_events( $from, $to, $category, $ltype, $lvalue, $source, $author, $host );
+function my_calendar_events( $from, $to, $category, $ltype, $lvalue, $source, $author, $host, $search = '' ) {
+	$events = my_calendar_grab_events( $from, $to, $category, $ltype, $lvalue, $source, $author, $host, null, $search );
 	if ( ! get_option( 'mc_skip_holidays_category' ) || get_option( 'mc_skip_holidays_category' ) == '' ) {
 		$holidays = array();
 	} else {
@@ -328,7 +328,7 @@ function my_calendar_events_now( $category = 'default', $template = '<strong>{li
 					WHERE $select_category $select_location $select_author $select_host $limit_string  
 					AND ( CAST('$now' AS DATETIME) BETWEEN occur_begin AND occur_end ) 
 						ORDER BY " . apply_filters( 'occur_begin', 'mc_primary_sort' ) . ", " . apply_filters( 'mc_secondary_sort', 'event_title ASC' );
-	$events      = $mcdb->get_results( esc_sql( $event_query ) );
+	$events      = $mcdb->get_results( $event_query );
 	if ( ! empty( $events ) ) {
 		foreach ( array_keys( $events ) as $key ) {
 			$event        =& $events[ $key ];
@@ -346,7 +346,7 @@ function my_calendar_events_now( $category = 'default', $template = '<strong>{li
 }
 
 // Grab all events for the requested date from calendar
-function my_calendar_grab_events( $from, $to, $category = null, $ltype = '', $lvalue = '', $source = 'calendar', $author = null, $host = null, $holidays = null ) {
+function my_calendar_grab_events( $from, $to, $category = null, $ltype = '', $lvalue = '', $source = 'calendar', $author = null, $host = null, $holidays = null, $search = '' ) {
 	global $wpdb;
 	$mcdb = $wpdb;
 	if ( get_option( 'mc_remote' ) == 'true' && function_exists( 'mc_remote_db' ) ) {
@@ -433,14 +433,14 @@ function my_calendar_grab_events( $from, $to, $category = null, $ltype = '', $lv
 
 	$arr_events   = array();
 	$limit_string = "event_flagged <> 1 AND event_approved = 1";
-
+	$search = ( $search != '' ) ? " MATCH(event_title,event_desc,event_short,event_label,event_city,event_postcode,event_registration) AGAINST ('" . esc_sql( $term ) . "' IN BOOLEAN MODE) AND " : '';
 	$event_query = "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end
 					FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 					JOIN " . MY_CALENDAR_TABLE . "
 					ON (event_id=occur_event_id) 					
 					JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
 					ON (event_category=category_id) 
-					WHERE $select_category $select_location $select_author $select_host $limit_string  
+					WHERE $select_category $select_location $select_author $select_host $limit_string $search 
 					AND ( DATE(occur_begin) BETWEEN '$from 00:00:00' AND '$to 23:59:59' 
 						OR DATE(occur_end) BETWEEN '$from 00:00:00' and '$to 23:59:59' 
 						OR ( DATE('$from') BETWEEN DATE(occur_begin) AND DATE(occur_end) ) 

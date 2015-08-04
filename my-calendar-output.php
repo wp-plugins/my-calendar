@@ -700,70 +700,16 @@ function mc_list_title( $events ) {
 
 function mc_search_results( $query ) {
 	$before = apply_filters( 'mc_past_search_results', 0 );
-	$after  = apply_filters( 'mc_future_search_results', 10 ); // return only future events, nearest 10
+	$after  = apply_filters( 'mc_future_search_results', 10 ); // return only future events, nearest 10	
 	if ( is_string( $query ) ) {
-		$select_category = $limit_string = $select_author = $select_host = '';
-		$fields          = esc_sql( apply_filters( 'mc_search_fields', 'event_title,event_desc,event_short,event_label,event_city,event_postcode,event_registration' ) );
+		$fields          = apply_filters( 'mc_search_fields', 'event_title,event_desc,event_short,event_label,event_city,event_postcode,event_registration' );
 		$search          = " MATCH( $fields ) AGAINST ('$query' IN BOOLEAN MODE) AND ";
 	} else {
 		$search = apply_filters( 'mc_advanced_search', '', $query );
 	}
-	global $wpdb;
-	$mcdb = $wpdb;
-	if ( get_option( 'mc_remote' ) == 'true' && function_exists( 'mc_remote_db' ) ) {
-		$mcdb = mc_remote_db();
-	}
-
-	$date = date( 'Y', current_time( 'timestamp' ) ) . '-' . date( 'm', current_time( 'timestamp' ) ) . '-' . date( 'd', current_time( 'timestamp' ) );
-	// if a value is non-zero, I'll grab a handful of extra events so I can throw out holidays and others like that.
-	if ( $before > 0 ) {
-		$before  = $before + 5;
-		$events1 = $mcdb->get_results( "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
-		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
-		JOIN " . MY_CALENDAR_TABLE . " 
-		ON (event_id=occur_event_id) 
-		JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
-		ON (event_category=category_id) WHERE $select_category $select_author $select_host $limit_string $search event_approved = 1 AND event_flagged <> 1 
-		AND DATE(occur_begin) < '$date' ORDER BY occur_begin DESC LIMIT 0,$before" );
-	} else {
-		$events1 = array();
-	}
-	$events3 = $mcdb->get_results( "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
-		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
-		JOIN " . MY_CALENDAR_TABLE . " 
-		ON (event_id=occur_event_id) 
-		JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
-		ON (event_category=category_id) WHERE $select_category $select_author $select_host $limit_string $search event_approved = 1 AND event_flagged <> 1 
-		AND DATE(occur_begin) = '$date'" );
-	if ( $after > 0 ) {
-		$after   = $after + 5;
-		$events2 = $mcdb->get_results( "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
-		FROM " . MY_CALENDAR_EVENTS_TABLE . " 
-		JOIN " . MY_CALENDAR_TABLE . " 
-		ON (event_id=occur_event_id) 
-		JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
-		ON (event_category=category_id) WHERE $select_category $select_author $select_host $limit_string $search event_approved = 1 AND event_flagged <> 1 
-		AND DATE(occur_begin) > '$date' ORDER BY occur_begin ASC LIMIT 0,$after" );
-	} else {
-		$events2 = array();
-	}
-	$arr_events = array();
-	if ( ! empty( $events1 ) || ! empty( $events2 ) || ! empty( $events3 ) ) {
-		$arr_events = array_merge( $events1, $events3, $events2 );
-	}
-	if ( ! get_option( 'mc_skip_holidays_category' ) || get_option( 'mc_skip_holidays_category' ) == '' ) {
-		$holidays = array();
-	} else {
-		$holidays      = mc_get_all_holidays( $before, $after, 'yes' );
-		$holiday_array = mc_set_date_array( $holidays );
-	}
-	if ( is_array( $arr_events ) && ! empty( $arr_events ) ) {
-		$no_events   = false;
-		$event_array = mc_set_date_array( $arr_events );
-		if ( is_array( $holidays ) && count( $holidays ) > 0 ) {
-			$event_array = mc_holiday_limit( $event_array, $holiday_array ); // if there are holidays, rejigger.
-		}
-	}
+	
+	$event_array = mc_get_search_results( $search );
+	
 	if ( ! empty( $event_array ) ) {
 		$template = '<strong>{date}</strong> {title} {details}';
 		$template = apply_filters( 'mc_search_template', $template );
@@ -776,11 +722,88 @@ function mc_search_results( $query ) {
 	return "<ol class='mc-search-results'>$output</ol>";
 }
 
+function mc_get_search_results( $search ) {
+	global $wpdb;
+	$mcdb = $wpdb;
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists( 'mc_remote_db' ) ) {
+		$mcdb = mc_remote_db();
+	}
+	$before = apply_filters( 'mc_past_search_results', 0 );
+	$after  = apply_filters( 'mc_future_search_results', 10 ); // return only future events, nearest 10	
+	if ( is_array( $search ) ) {
+		// if from & to are set, we need to use an alternate search query
+		$from = $search['from'];
+		$to = $search['to'];
+		$category = ( isset( $search['category'] ) ) ? $search['category'] : null;
+		$ltype = ( isset( $search['ltype'] ) ) ? $search['ltype'] : null;
+		$lvalue = ( isset( $search['lvalue'] ) ) ? $search['lvalue'] : null;
+		$source = 'search';
+		$author = ( isset( $search['author'] ) ) ? $search['author'] : null;
+		$host = ( isset( $search['host'] ) ) ? $search['host'] : null;
+		$search = ( isset( $search['search'] ) ) ? $search['search'] : '';
+		
+		$event_array = my_calendar_events( $from, $to, $category, $ltype, $lvalue, $source, $author, $host, $search = '' );
+	} else {
+		$date = date( 'Y', current_time( 'timestamp' ) ) . '-' . date( 'm', current_time( 'timestamp' ) ) . '-' . date( 'd', current_time( 'timestamp' ) );
+		// if a value is non-zero, I'll grab a handful of extra events so I can throw out holidays and others like that.
+		if ( $before > 0 ) {
+			$before  = $before + 5;
+			$events1 = $mcdb->get_results( "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
+			FROM " . MY_CALENDAR_EVENTS_TABLE . " 
+			JOIN " . MY_CALENDAR_TABLE . " 
+			ON (event_id=occur_event_id) 
+			JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
+			ON (event_category=category_id) WHERE $search event_approved = 1 AND event_flagged <> 1 
+			AND DATE(occur_begin) < '$date' ORDER BY occur_begin DESC LIMIT 0,$before" );
+		} else {
+			$events1 = array();
+		}
+		$events3 = $mcdb->get_results( "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
+			FROM " . MY_CALENDAR_EVENTS_TABLE . " 
+			JOIN " . MY_CALENDAR_TABLE . " 
+			ON (event_id=occur_event_id) 
+			JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
+			ON (event_category=category_id) WHERE $search event_approved = 1 AND event_flagged <> 1 
+			AND DATE(occur_begin) = '$date'" );
+		if ( $after > 0 ) {
+			$after   = $after + 5;
+			$events2 = $mcdb->get_results( "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end 
+			FROM " . MY_CALENDAR_EVENTS_TABLE . " 
+			JOIN " . MY_CALENDAR_TABLE . " 
+			ON (event_id=occur_event_id) 
+			JOIN " . MY_CALENDAR_CATEGORIES_TABLE . " 
+			ON (event_category=category_id) WHERE $search event_approved = 1 AND event_flagged <> 1 
+			AND DATE(occur_begin) > '$date' ORDER BY occur_begin ASC LIMIT 0,$after" );
+		} else {
+			$events2 = array();
+		}
+		$arr_events = array();
+		if ( ! empty( $events1 ) || ! empty( $events2 ) || ! empty( $events3 ) ) {
+			$arr_events = array_merge( $events1, $events3, $events2 );
+		}
+		if ( ! get_option( 'mc_skip_holidays_category' ) || get_option( 'mc_skip_holidays_category' ) == '' ) {
+			$holidays = array();
+		} else {
+			$holidays      = mc_get_all_holidays( $before, $after, 'yes' );
+			$holiday_array = mc_set_date_array( $holidays );
+		}
+		if ( is_array( $arr_events ) && ! empty( $arr_events ) ) {
+			$no_events   = false;
+			$event_array = mc_set_date_array( $arr_events );
+			if ( is_array( $holidays ) && count( $holidays ) > 0 ) {
+				$event_array = mc_holiday_limit( $event_array, $holiday_array ); // if there are holidays, rejigger.
+			}
+		}
+	}
+	
+	return $event_array;
+}
+
 add_filter( 'the_title', 'mc_search_results_title', 10, 2 );
 function mc_search_results_title( $title, $id = false ) {
-	if ( isset( $_GET['mcs'] ) && ( is_page( $id ) || is_single( $id ) ) && in_the_loop() ) {
-		$query = esc_html( $_GET['mcs'] );
-		$title = sprintf( __( 'Events Search for &ldquo;%s&rdquo;', 'my-calendar' ), $query );
+	if ( ( isset( $_GET['mcs'] ) || isset( $_POST['mcs'] ) ) && ( is_page( $id ) || is_single( $id ) ) && in_the_loop() ) {
+		$query = ( isset( $_GET['mcs'] ) ) ? $_GET['mcs'] : $_POST['mcs'];
+		$title = sprintf( __( 'Events Search for &ldquo;%s&rdquo;', 'my-calendar' ), esc_html( $query ) );
 	}
 
 	return $title;

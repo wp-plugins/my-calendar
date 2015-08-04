@@ -246,8 +246,8 @@ function mc_deal_with_deleted_user( $id ) {
 	$mcdb = $wpdb;
 	// Do the queries
 	// This may not work quite right in multi-site. Need to explore further when I have time.
-	$mcdb->get_results( esc_sql( "UPDATE " . my_calendar_table() . " SET event_author=" . apply_filters( 'mc_deleted_author', $mcdb->get_var( "SELECT MIN(ID) FROM " . $mcdb->prefix . "users", 0, 0 ) ) . " WHERE event_author=" . $id ) );
-	$mcdb->get_results( esc_sql( "UPDATE " . my_calendar_table() . " SET event_host=" . apply_filters( 'mc_deleted_host', $mcdb->get_var( "SELECT MIN(ID) FROM " . $mcdb->prefix . "users", 0, 0 ) ) . " WHERE event_host=" . $id ) );
+	$mcdb->get_results( "UPDATE " . my_calendar_table() . " SET event_author=" . esc_sql( apply_filters( 'mc_deleted_author', $mcdb->get_var( "SELECT MIN(ID) FROM " . $mcdb->prefix . "users", 0, 0 ) ) ) . " WHERE event_author=" . $id );
+	$mcdb->get_results( "UPDATE " . my_calendar_table() . " SET event_host=" . esc_sql( apply_filters( 'mc_deleted_host', $mcdb->get_var( "SELECT MIN(ID) FROM " . $mcdb->prefix . "users", 0, 0 ) ) ) . " WHERE event_host=" . $id );
 }
 
 // Function to add the javascript to the admin header
@@ -446,12 +446,12 @@ function my_calendar_add_styles() {
 			'my-calendar-templates'
 		);
 		if ( in_array( $_GET['page'], $pages ) ) {
-			echo '<link type="text/css" rel="stylesheet" href="' . plugins_url( 'css/mc-styles.css', __FILE__ ) . '" />';
+			wp_enqueue_style( 'mc-styles', plugins_url( 'css/mc-styles.css', __FILE__ ) );
 		}
 		if ( $_GET['page'] == 'my-calendar' ) {
-			echo '<link type="text/css" rel="stylesheet" href="' . plugins_url( 'js/pickadate/themes/default.css', __FILE__ ) . '" />';
-			echo '<link type="text/css" rel="stylesheet" href="' . plugins_url( 'js/pickadate/themes/default.date.css', __FILE__ ) . '" />';
-			echo '<link type="text/css" rel="stylesheet" href="' . plugins_url( 'js/pickadate/themes/default.time.css', __FILE__ ) . '" />';
+			wp_enqueue_style( 'mc-pickadate-default', plugins_url( 'js/pickadate/themes/default.css', __FILE__ ) );
+			wp_enqueue_style( 'mc-pickadate-date', plugins_url( 'js/pickadate/themes/default.date.css', __FILE__ ) );
+			wp_enqueue_style( 'mc-pickadate-time', plugins_url( 'js/pickadate/themes/default.time.css', __FILE__ ) );
 		}
 	}
 }
