@@ -699,17 +699,20 @@ function mc_list_title( $events ) {
 }
 
 function mc_search_results( $query ) {
-	$before = apply_filters( 'mc_past_search_results', 0 );
-	$after  = apply_filters( 'mc_future_search_results', 10 ); // return only future events, nearest 10	
+	$before = apply_filters( 'mc_past_search_results', 0, 'basic' );
+	$after  = apply_filters( 'mc_future_search_results', 10, 'basic' ); // return only future events, nearest 10
 	if ( is_string( $query ) ) {
 		$fields          = apply_filters( 'mc_search_fields', 'event_title,event_desc,event_short,event_label,event_city,event_postcode,event_registration' );
 		$search          = " MATCH( $fields ) AGAINST ('$query' IN BOOLEAN MODE) AND ";
 	} else {
 		$search = apply_filters( 'mc_advanced_search', '', $query );
+		$before = apply_filters( 'mc_past_search_results', 10, 'advanced' );
+		$after  = apply_filters( 'mc_future_search_results', 10, 'advanced' );	
 	}
 	
 	$event_array = mc_get_search_results( $search );
-	
+	//$event_array = mc_flatten_array( $event_array );
+
 	if ( ! empty( $event_array ) ) {
 		$template = '<strong>{date}</strong> {title} {details}';
 		$template = apply_filters( 'mc_search_template', $template );
@@ -720,6 +723,19 @@ function mc_search_results( $query ) {
 	}
 
 	return "<ol class='mc-search-results'>$output</ol>";
+}
+
+function mc_flatten_array( $events ) {
+	$new_array = array();
+	if ( is_array( $events ) ) {
+		foreach( $events as $event ) {
+			foreach( $event as $e ) {
+				$new_array[] = $e;
+			}
+		}
+	}
+	
+	return $new_array;
 }
 
 function mc_get_search_results( $search ) {
@@ -737,12 +753,11 @@ function mc_get_search_results( $search ) {
 		$category = ( isset( $search['category'] ) ) ? $search['category'] : null;
 		$ltype = ( isset( $search['ltype'] ) ) ? $search['ltype'] : null;
 		$lvalue = ( isset( $search['lvalue'] ) ) ? $search['lvalue'] : null;
-		$source = 'search';
 		$author = ( isset( $search['author'] ) ) ? $search['author'] : null;
 		$host = ( isset( $search['host'] ) ) ? $search['host'] : null;
 		$search = ( isset( $search['search'] ) ) ? $search['search'] : '';
 		
-		$event_array = my_calendar_events( $from, $to, $category, $ltype, $lvalue, $source, $author, $host, $search = '' );
+		$event_array = my_calendar_events( $from, $to, $category, $ltype, $lvalue, 'search', $author, $host, $search );
 	} else {
 		$date = date( 'Y', current_time( 'timestamp' ) ) . '-' . date( 'm', current_time( 'timestamp' ) ) . '-' . date( 'd', current_time( 'timestamp' ) );
 		// if a value is non-zero, I'll grab a handful of extra events so I can throw out holidays and others like that.
@@ -1213,7 +1228,6 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			} else {
 				$holidays = my_calendar_grab_events( $from, $to, get_option( 'mc_skip_holidays_category' ), $ltype, $lvalue, 'calendar', $author, $host, 'holidays' );
 			}
-			//echo "<pre>".print_r($events,1)."</pre>";
 			$events_class = mc_events_class( $events, $from );
 			$dateclass    = mc_dateclass( time() + $offset, mktime( 0, 0, 0, $c_month, $c_day, $c_year ) );
 			$mc_events    = '';

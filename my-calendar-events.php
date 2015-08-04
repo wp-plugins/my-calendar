@@ -433,7 +433,7 @@ function my_calendar_grab_events( $from, $to, $category = null, $ltype = '', $lv
 
 	$arr_events   = array();
 	$limit_string = "event_flagged <> 1 AND event_approved = 1";
-	$search = ( $search != '' ) ? " MATCH(event_title,event_desc,event_short,event_label,event_city,event_postcode,event_registration) AGAINST ('" . esc_sql( $term ) . "' IN BOOLEAN MODE) AND " : '';
+	$search = ( $search != '' ) ? " AND MATCH(event_title,event_desc,event_short,event_label,event_city,event_postcode,event_registration) AGAINST ('" . esc_sql( $search ) . "' IN BOOLEAN MODE) " : '';
 	$event_query = "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end
 					FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 					JOIN " . MY_CALENDAR_TABLE . "
@@ -442,7 +442,7 @@ function my_calendar_grab_events( $from, $to, $category = null, $ltype = '', $lv
 					ON (event_category=category_id) 
 					WHERE $select_category $select_location $select_author $select_host $limit_string $search 
 					AND ( DATE(occur_begin) BETWEEN '$from 00:00:00' AND '$to 23:59:59' 
-						OR DATE(occur_end) BETWEEN '$from 00:00:00' and '$to 23:59:59' 
+						OR DATE(occur_end) BETWEEN '$from 00:00:00' AND '$to 23:59:59' 
 						OR ( DATE('$from') BETWEEN DATE(occur_begin) AND DATE(occur_end) ) 
 						OR ( DATE('$to') BETWEEN DATE(occur_begin) AND DATE(occur_end) ) ) 
 						ORDER BY occur_begin, " . apply_filters( 'mc_secondary_sort', 'event_title ASC' );
