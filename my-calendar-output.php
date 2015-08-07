@@ -860,7 +860,10 @@ function mc_show_event_template( $content ) {
 				$event = mc_get_first_event( $event_id );
 				$date = $event->event_begin;
 				$time = $event->event_time;
-			}			
+			}
+			if ( mc_event_is_hidden( $event ) ) {
+				return $content;
+			}
 			if ( get_option( 'mc_use_details_template' ) == 1 ) {
 				$new_content = apply_filters( 'mc_before_event', '', $event, 'single', $time );				
 				$new_content .= do_shortcode( apply_filters( 'mc_single_event_shortcode', get_post_meta( $post->ID, '_mc_event_shortcode', true ) ) );
@@ -874,6 +877,16 @@ function mc_show_event_template( $content ) {
 	}
 	
 	return $content;
+}
+
+function mc_event_is_hidden( $event ) {
+	$category = $event->event_category;
+	$private = mc_private_categories( 'results' );
+	if ( in_array( $category, $private ) && !is_user_logged_in() ) {
+		return true;
+	}
+	
+	return false;
 }
 
 // Actually do the printing of the calendar

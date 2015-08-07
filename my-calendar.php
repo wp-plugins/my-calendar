@@ -151,6 +151,9 @@ function mc_event_filter( $title, $sep = ' | ', $seplocation = 'right' ) {
 	if ( isset( $_GET['mc_id'] ) && is_numeric( $_GET['mc_id'] ) ) {
 		$id        = (int) $_GET['mc_id'];
 		$event     = mc_get_event( $id );
+		if ( mc_event_is_hidden( $event ) ) {
+			return $title;
+		}
 		$array     = mc_create_tags( $event );
 		$left_sep  = ( $seplocation != 'right' ? ' ' . $sep . ' ' : '' );
 		$right_sep = ( $seplocation != 'right' ? '' : ' ' . $sep . ' ' );

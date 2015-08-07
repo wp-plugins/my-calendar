@@ -87,6 +87,8 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 = 2.4.0 =
 
+Todo: add filter on template_redirect that redirects single event pages to mc_uri if event is hidden
+
 New features:
 * Set upcoming event class based on time, rather than date.
 * Add past/present classes to today's events widget
@@ -132,6 +134,7 @@ Bug fixes:
 * A multi-day event crossing the current day was counted as a future event in upcoming events
 * If event instance was split from recurring event, showed same recurring settings as original event.
 * If events were mass deleted, the corresponding event post was not also deleted.
+* Prevent single event pages from displaying content if the event is in a private category.
 
 Important Changes:
 * Removed references to #jd_calendar and generate custom IDs. [breaking change

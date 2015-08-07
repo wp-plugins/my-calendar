@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-function mc_private_categories() {
+function mc_private_categories( $return = 'query' ) {
 	$cats = '';
 	if ( ! is_user_logged_in() ) {
 		global $wpdb;
@@ -17,6 +17,9 @@ function mc_private_categories() {
 		foreach ( $results as $result ) {
 			$categories[] = $result->category_id;
 		}
+		if ( $return == 'results' ) {
+			return $categories;
+		}		
 		$cats = implode( ',', $categories );
 		if ( $cats != '' ) {
 			$cats = " AND category_id NOT IN ($cats)";
