@@ -262,11 +262,13 @@ function mc_create_tags( $event, $context = 'filters' ) {
 	$e['repeats']   = $event->event_repeats;
 
 	// category fields
-	$e['cat_id']    = $event->event_category;
-	$e['category']  = stripslashes( $event->category_name );
-	$e['icon']      = mc_category_icon( $event, 'img' );
-	$e['icon_html'] = "<img src='$e[icon]' class='mc-category-icon' alt='" . __( 'Category', 'my-calendar' ) . ": " . esc_attr( $event->category_name ) . "' />";
-	$e['color']     = $event->category_color;
+	$e['cat_id']          = $event->event_category;
+	$e['category']        = stripslashes( $event->category_name );
+	$e['icon']            = mc_category_icon( $event, 'img' );
+	$e['icon_html']       = "<img src='$e[icon]' class='mc-category-icon' alt='" . __( 'Category', 'my-calendar' ) . ": " . esc_attr( $event->category_name ) . "' />";
+	$e['color']           = $event->category_color;
+	$e['color_css']       = "<span style='background-color: $event->category_color'>"; // this is because widgets now strip out style attributes.
+	$e['close_color_css'] = "</span>";
 
 	// special
 	$e['skip_holiday'] = ( $event->event_holiday == 0 ) ? 'false' : 'true';

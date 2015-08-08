@@ -711,6 +711,7 @@ function mc_produce_upcoming_events( $events, $template, $type = 'list', $order 
 			if ( ! in_array( $details['group'], $groups ) ) {
 				$date  = date( 'Y-m-d H:i:s', strtotime( $details['dtstart'] ) );
 				$class = ( my_calendar_date_comp( $date, $today . date( 'H:i', current_time( 'timestamp' ) ) ) === true ) ? "past-event" : "future-event";
+				$category = 'mc_' . sanitize_title( $details['category'] );
 				if ( my_calendar_date_equal( $date, $today ) ) {
 					$class = "today";
 				}
@@ -718,7 +719,7 @@ function mc_produce_upcoming_events( $events, $template, $type = 'list', $order 
 					$class = "multiday";
 				}
 				if ( $type == 'list' ) {
-					$prepend = "\n<li class=\"$class\">";
+					$prepend = "\n<li class=\"$class $category\">";
 					$append  = "</li>\n";
 				} else {
 					$prepend = $append = '';
@@ -792,6 +793,7 @@ function my_calendar_todays_events( $category = 'default', $template = 'default'
 					$ts            = $e->ts_occur_begin;
 					$end           = $e->ts_occur_end;
 					$now           = current_time( 'timestamp' );
+					$category      = 'mc_' . sanitize_title( $e->category_name );
 					if ( $ts < $now && $end > $now ) {
 						$class = 'on-now';
 					} else if ( $now < $ts ) {
@@ -801,10 +803,10 @@ function my_calendar_todays_events( $category = 'default', $template = 'default'
 					}
 					if ( get_option( 'mc_event_approve' ) == 'true' ) {
 						if ( $e->event_approved != 0 ) {
-							$todays_events[ $ts ][] = "<li class='$class'>" . jd_draw_template( $event_details, $template ) . "</li>";
+							$todays_events[ $ts ][] = "<li class='$class $category'>" . jd_draw_template( $event_details, $template ) . "</li>";
 						}
 					} else {
-						$todays_events[ $ts ][] = "<li class='$class'>" . jd_draw_template( $event_details, $template ) . "</li>";
+						$todays_events[ $ts ][] = "<li class='$class $category'>" . jd_draw_template( $event_details, $template ) . "</li>";
 					}
 				}
 			}

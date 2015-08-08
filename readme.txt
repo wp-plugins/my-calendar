@@ -16,7 +16,7 @@ My Calendar does WordPress event management with richly customizable ways to dis
 Easy to use for anybody, My Calendar provides enormous flexibility for designers and developers needing a custom calendar.
 
 * 	[Buy the User's Guide](http://www.joedolson.com/my-calendar/users-guide/) for extensive help with set up and use.
-*   [Buy My Calendar: Submissions](https://www.joedolson.com/my-calendar/submissions/), the PRO extension for front-end event submissions
+*   [Buy My Calendar Pro](https://www.joedolson.com/my-calendar/pro/), the premium extension for My Calendar
 *   [Use My Tickets](https://wordpress.org/plugins/my-tickets/) and sell tickets to your My Calendar events
 
 = Features: =
@@ -40,6 +40,14 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 * 	Integrated Help page to guide in use of shortcodes and template tags
 * 	Shortcode Generator to help create customized views of My Calendar
 *   [Developer Documentation](http://www.joedolson.com/doc-category/my-calendar-3/)
+
+= What's in My Calendar Pro? =
+
+* Let your site visitors submit events to your site (pay to post or free!).
+* Let logged-in users edit their events from the front-end.
+* Create events when you publish a blog post
+* Publish a blog post when you create an event
+* Advanced search features
 
 = Translations =
 
@@ -87,8 +95,6 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 = 2.4.0 =
 
-Todo: add filter on template_redirect that redirects single event pages to mc_uri if event is hidden
-
 New features:
 * Set upcoming event class based on time, rather than date.
 * Add past/present classes to today's events widget
@@ -111,6 +117,9 @@ New features:
 * Added admin-bar link to view calendar.
 * Added option to customize permalink slug on permalink page
 * Single event pages as permalinks use the same template as main if custom template isn't enabled.
+* New template tag: {color_css} and {close_color_css} to wrap a block with the category background color.
+* Add category classes to Upcoming & Today's events widgets
+* Redirect page to main calendar if event is private
 
 Bug fixes:
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output

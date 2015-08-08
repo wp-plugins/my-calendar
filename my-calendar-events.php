@@ -6,20 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function mc_private_categories( $return = 'query' ) {
 	$cats = '';
 	if ( ! is_user_logged_in() ) {
-		global $wpdb;
-		$mcdb = $wpdb;
-		if ( get_option( 'mc_remote' ) == 'true' && function_exists( 'mc_remote_db' ) ) {
-			$mcdb = mc_remote_db();
-		}
-		$query   = "SELECT category_id FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_private = 1";
-		$results = $mcdb->get_results( $query );
-		$categories = array();
-		foreach ( $results as $result ) {
-			$categories[] = $result->category_id;
-		}
-		if ( $return == 'results' ) {
-			return $categories;
-		}		
+		$categories = mc_get_private_categories();
 		$cats = implode( ',', $categories );
 		if ( $cats != '' ) {
 			$cats = " AND category_id NOT IN ($cats)";
@@ -29,6 +16,22 @@ function mc_private_categories( $return = 'query' ) {
 	}
 
 	return $cats;
+}
+
+function mc_get_private_categories() {
+	global $wpdb;
+	$mcdb = $wpdb;
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists( 'mc_remote_db' ) ) {
+		$mcdb = mc_remote_db();
+	}
+	$query   = "SELECT category_id FROM " . MY_CALENDAR_CATEGORIES_TABLE . " WHERE category_private = 1";
+	$results = $mcdb->get_results( $query );
+	$categories = array();
+	foreach ( $results as $result ) {
+		$categories[] = $result->category_id;
+	}
+	
+	return $categories;
 }
 
 // used to generate upcoming events lists

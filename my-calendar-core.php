@@ -2049,6 +2049,25 @@ function mc_posttypes() {
 	}
 }
 
+/**
+ * Most people don't want comments open on events. This will automatically close them. 
+ */
+function mc_close_comments( $posts ) {
+	if ( !is_single() || empty( $posts ) ) { return $posts; }
+	
+	if ( 'mc-events' == get_post_type($posts[0]->ID) ) {
+		if ( apply_filters( 'mc_autoclose_comments', true ) && $posts[0]->comment_status != 'closed' ) {
+			$posts[0]->comment_status = 'closed';
+			$posts[0]->ping_status    = 'closed';
+			wp_update_post( $posts[0] );
+		}
+	}
+	
+	return $posts;
+}
+add_filter( 'the_posts', 'mc_close_comments' );
+
+
 function mc_taxonomies() {
 	global $mc_types;
 	$types   = $mc_types;

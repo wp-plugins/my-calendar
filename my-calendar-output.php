@@ -843,6 +843,42 @@ function mc_show_search_results( $content ) {
 	}
 }
 
+add_action( 'template_redirect', 'mc_hidden_event' );
+function mc_hidden_event() {
+	$do_redirect = false;
+	if ( isset( $_GET['mc_id'] ) ) {
+		$mc_id = intval( $_GET['mc_id'] );
+		$event = mc_get_event( $mc_id, 'object' );
+		if ( mc_event_is_hidden( $event ) ) {
+			$do_redirect = true;
+		}
+	} else {
+		global $wp_query;
+		$slug = $wp_query->query_vars['name'];
+		$status = get_page_by_path( $slug, OBJECT, 'mc-events' );
+		if ( $status ) {
+			$post = $status;
+		} else {
+			return;
+		}
+		if ( is_object( $post ) && $post->post_type == 'mc-events' ) {
+			$event_id = get_post_meta( $post->ID, '_mc_event_id', true );
+			$event = mc_get_first_event( $event_id );
+			if ( mc_event_is_hidden( $event ) ) {
+				$do_redirect = true;
+			}		
+		}
+	}
+	if ( $do_redirect ) {
+		$id = get_option( 'mc_uri_id' );
+		$uri = get_option( 'mc_uri' );
+		if ( $id ) {
+			$uri = get_permalink( $id );
+		}
+		wp_safe_redirect( $uri );			
+	}
+}
+
 add_filter( 'the_content', 'mc_show_event_template', 100, 1 );
 function mc_show_event_template( $content ) {
 	global $post;
@@ -881,7 +917,7 @@ function mc_show_event_template( $content ) {
 
 function mc_event_is_hidden( $event ) {
 	$category = $event->event_category;
-	$private = mc_private_categories( 'results' );
+	$private = mc_get_private_categories();
 	if ( in_array( $category, $private ) && !is_user_logged_in() ) {
 		return true;
 	}
