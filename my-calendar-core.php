@@ -162,10 +162,8 @@ function mc_register_styles() {
 		if ( @in_array( $id, $js_array ) || get_option( 'mc_show_js' ) == '' ) {
 			wp_enqueue_script( 'jquery' );
 			if ( get_option( 'mc_gmap' ) == 'true' ) {
-				wp_register_script( 'gmaps', "//maps.google.com/maps/api/js?sensor=true" );
-				wp_register_script( 'gmap3', plugins_url( 'js/gmap3.min.js', __FILE__ ), array( 'jquery' ) );
-				wp_enqueue_script( 'gmaps' );
-				wp_enqueue_script( 'gmap3' );
+				wp_enqueue_script( 'gmaps', "https://maps.google.com/maps/api/js?sensor=true" );
+				wp_enqueue_script( 'gmap3', plugins_url( 'js/gmap3.min.js', __FILE__ ), array( 'jquery' ) );
 			}
 		}
 	}
@@ -227,7 +225,6 @@ function my_calendar_wp_head() {
 			$all_styles = "
 <style type=\"text/css\">
 <!--
-.mcjs .mc-main .details, .mcjs .mc-main .calendar-events { display: none; }
 /* Styles by My Calendar - Joseph C Dolson http://www.joedolson.com/ */
 $category_styles
 .mc-event-visible {
@@ -906,8 +903,8 @@ function my_calendar_fouc() {
 	$array = array();
 	if ( get_option( 'mc_calendar_javascript' ) != 1 || get_option( 'mc_list_javascript' ) != 1 || get_option( 'mc_mini_javascript' ) != 1 ) {
 		$scripting = "\n<script type='text/javascript'>\n";
-		$scripting .= "	jQuery('html').addClass('mcjs');\n";
-		$scripting .= "	jQuery(document).ready( function($) { \$('html').removeClass('mcjs') } );\n";
+		$scripting .= "	document.body.className += ' mcjs';\n";
+		$scripting .= "	document.body.className = document.body.className.replace('mcjs','js');\n";
 		$scripting .= "</script>\n";
 
 		if ( ! is_404() ) {

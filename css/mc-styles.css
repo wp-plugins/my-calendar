@@ -340,6 +340,10 @@ strong.label {
     border: 1px solid #ccc;
 }
 
+.js .wptab:not( :first-child ) {
+	display: none;
+}
+
 .jd-my-calendar .ui-accordion-header, .mc-settings-page #mc-sortable li {
     border: 1px solid #ccc;
     border-radius: 2px;

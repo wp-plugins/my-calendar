@@ -432,6 +432,10 @@
     font-weight: 600;
 }
 
+.mc-main .list-event {
+	margin-top: 1em;
+}
+
 .mc-main .list-event .details img {
     width: auto;
     max-width: 100%;

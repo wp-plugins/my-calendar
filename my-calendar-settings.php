@@ -535,7 +535,7 @@ function edit_my_calendar_config() {
 						</ul>
 					</fieldset>
 					<fieldset>
-						<legend><?php _e( 'Set default date/time formats', 'my-calendar' ); ?></legend>
+						<legend><?php _e( 'Date/Time formats', 'my-calendar' ); ?></legend>
 						<div><input type='hidden' name='mc_dates' value='true'/></div>
 						<ul>
 							<?php

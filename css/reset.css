@@ -73,3 +73,5 @@ button.mc-toggle {
   padding: 4px;
   background-color: transparent;
 }
+
+.mcjs .mc-main .details, .mcjs .mc-main .calendar-events { display: none; }

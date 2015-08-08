@@ -33,12 +33,16 @@ $grid_template = addslashes( '<span class="event-time dtstart value-title" title
 
 $list_template = addslashes( '<span class="event-time dtstart value-title" title="{dtstart}">{time}<span class="time-separator"> - </span>{endtime before="<span class=\'end-time dtend value-title\' title=\'{dtend}\'>" after="</span>"}</span>
 
+<h3 class="event-title">{title}</h3>
+
 <div class="sub-details">
 {hcard}
 {details before="<p class=\'mc_details\'>" after="</p>"}
 <p><a href="{linking}" class="event-link external"><span class="screen-reader-text">More information about </span>{title}</a></p></div>' );
 
 $mini_template = addslashes( '<span class="event-time dtstart value-title" title="{dtstart}">{time}<span class="time-separator"> - </span>{endtime before="<span class=\'end-time dtend value-title\' title=\'{dtend}\'>" after="</span>"}</span>
+
+<h3 class="event-title">{title}</h3>
 
 <div class="sub-details">
 {excerpt before="<div class=\'excerpt\'>" after="</div>"}

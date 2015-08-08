@@ -19,6 +19,29 @@ function mc_switch_sites() {
 	return false;
 }
 
+add_action( 'admin_menu', 'mc_add_outer_box' );
+
+// begin add boxes
+function mc_add_outer_box() {
+	add_meta_box( 'mcs_add_event', __('My Calendar Event', 'my-calendar'), 'mc_add_inner_box', 'mc-events', 'side','high' );
+}
+
+function mc_add_inner_box() {
+	global $post;
+	$event_id = get_post_meta( $post->ID, '_mc_event_id', true );
+	if ( $event_id ) {
+		$url = admin_url( 'admin.php?page=my-calendar&mode=edit&event_id='.$event_id );
+		$event = mc_get_event_core( $event_id );
+		$content = "<p><strong>" . $event->event_title . '</strong><br />' . $event->event_begin . ' @ ' . $event->event_time . "</p>";
+		if ( $event->event_label != '' ) {
+			$content .= "<p>" . sprintf( __( '<strong>Location:</strong> %s', 'my-calendar' ), $event->event_label ) . "</p>";
+		}
+		$content .= "<p>" . sprintf( __( '<a href="%s">Edit event</a>.', 'my-calendar' ), $url ) . "</p>";
+		
+		echo $content;
+	} 
+}
+
 function mc_event_post( $action, $data, $event_id ) {
 	// if the event save was successful.
 	if ( $action == 'add' || $action == 'copy' ) {
