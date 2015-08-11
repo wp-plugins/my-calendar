@@ -517,7 +517,8 @@ function my_calendar_help() {
 						<li><?php _e( 'Update to My Calendar: Submissions version 1.2.9', 'my-calendar' ); ?></li>
 						<li><?php _e( 'Deactivate and delete My Calendar: Submissions', 'my-calendar' ); ?></li>
 						<li><?php printf( __( 'Log-in to your account at <a href="%s">Joe Dolson Accessible Web Design</a> and download My Calendar Pro', 'my-calendar' ), 'https://www.joedolson.com/account/' ); ?></li>
-						<li><?php _e( 'Upload My Calendar Pro and activate. All settings should be retained.', 'my-calendar' ); ?></li>
+						<li><?php _e( 'Upload My Calendar Pro and activate.', 'my-calendar' ); ?></li>
+						<li><?php _e( 'Input your My Calendar: Submissions license key into My Calendar Pro', 'my-calendar' ); ?></li>
 					</ol>
 				</div>
 			</div>
