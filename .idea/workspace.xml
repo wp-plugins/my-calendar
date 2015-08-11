@@ -1,0 +1,1106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" readonly="true" id="e14be3c5-8f07-4aed-8134-4fc298bda403" name="Default" comment="" />
+    <ignored path="trunk.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <ignored path=".idea/dataSources.local.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="trunk" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="my-calendar-output.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/my-calendar-output.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="5118" max-vertical-offset="40320">
+              <caret line="265" column="33" selection-start-line="265" selection-start-column="33" selection-end-line="265" selection-end-column="33" />
+              <folding>
+                <marker date="1414173358295" expanded="true" signature="18329:18396" placeholder="..." />
+                <marker date="1414173358295" expanded="true" signature="19534:19668" placeholder="SELECT event..MY_CALENDAR_TABLE..." />
+                <marker date="1414173358295" expanded="true" signature="29450:29920" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+                <marker date="1414173358295" expanded="true" signature="30000:30435" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+                <marker date="1414173358295" expanded="true" signature="30520:30989" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+                <marker date="1414173358295" expanded="true" signature="44309:44395" placeholder="..." />
+                <marker date="1414173358295" expanded="true" signature="44319:44384" placeholder="..." />
+                <marker date="1414173358295" expanded="true" signature="55676:55920" placeholder="..." />
+                <marker date="1414173358295" expanded="true" signature="56173:56322" placeholder="..." />
+                <marker date="1414173358295" expanded="true" signature="56615:56702" placeholder="..." />
+                <marker date="1414173358295" expanded="true" signature="56885:57008" placeholder="..." />
+                <marker date="1414173358295" expanded="true" signature="58715:58803" placeholder="SELECT * FRO..MY_CALENDAR_CATEGORIES_TABLE..." />
+                <marker date="1414173358295" expanded="true" signature="58884:58944" placeholder="..." />
+                <marker date="1414173358295" expanded="true" signature="61006:61033" placeholder="..." />
+                <marker date="1414173358295" expanded="true" signature="65544:65598" placeholder="..." />
+                <marker date="1414173358295" expanded="true" signature="68138:68213" placeholder="SELECT * FRO..MY_CALENDAR_CATEGORIES_TABLE..." />
+                <marker date="1414173358295" expanded="true" signature="68427:68504" placeholder="..." />
+                <marker date="1414173358295" expanded="true" signature="70994:71079" placeholder="..." />
+                <marker date="1414173358295" expanded="true" signature="74491:74568" placeholder="SELECT DISTI..MY_CALENDAR_LOCATIONS_TABLE..." />
+                <marker date="1414173358295" expanded="true" signature="77599:77680" placeholder="SELECT DISTI..." />
+                <marker date="1414173358295" expanded="true" signature="78204:78277" placeholder="..." />
+                <marker date="1414173358295" expanded="true" signature="79249:79323" placeholder="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="my-calendar-events.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/my-calendar-events.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2520" max-vertical-offset="11340">
+              <caret line="151" column="13" selection-start-line="151" selection-start-column="13" selection-end-line="151" selection-end-column="13" />
+              <folding>
+                <marker date="1412198853787" expanded="true" signature="319:406" placeholder="SELECT categ..MY_CALENDAR_CATEGORIES_TABLE..." />
+                <marker date="1412198853787" expanded="true" signature="1752:2242" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+                <marker date="1412198853787" expanded="true" signature="2317:2838" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+                <marker date="1412198853787" expanded="true" signature="2957:3445" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+                <marker date="1412198853787" expanded="true" signature="4328:4670" placeholder="SELECT * FRO..MY_CALENDAR_EVENTS_TABLE..." />
+                <marker date="1412198853787" expanded="true" signature="4777:5084" placeholder="SELECT * FRO..MY_CALENDAR_EVENTS_TABLE..." />
+                <marker date="1412198853787" expanded="true" signature="5205:5547" placeholder="SELECT * FRO..MY_CALENDAR_EVENTS_TABLE..." />
+                <marker date="1412198853787" expanded="true" signature="6139:6451" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+                <marker date="1412198853787" expanded="true" signature="8048:8334" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="my-calendar-event-manager.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/my-calendar-event-manager.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="36318" max-vertical-offset="46960">
+              <caret line="1841" column="38" selection-start-line="1841" selection-start-column="38" selection-end-line="1841" selection-end-column="38" />
+              <folding>
+                <marker date="1414164524053" expanded="true" signature="6856:6937" placeholder="SELECT event..my_calendar_table_..." />
+                <marker date="1414164524053" expanded="true" signature="7175:7248" placeholder="SELECT occur..my_calendar_event_table_..." />
+                <marker date="1414164524053" expanded="true" signature="10102:10172" placeholder="SELECT event..my_calendar_table_..." />
+                <marker date="1414164524053" expanded="true" signature="10348:10417" placeholder="DELETE FROM ..." />
+                <marker date="1414164524053" expanded="true" signature="10596:10666" placeholder="DELETE FROM ..." />
+                <marker date="1414164524053" expanded="true" signature="25137:25217" placeholder="DELETE FROM ..." />
+                <marker date="1414164524053" expanded="true" signature="25247:25316" placeholder="DELETE FROM ..." />
+                <marker date="1414164524053" expanded="true" signature="25419:25508" placeholder="SELECT event..my_calendar_table_..." />
+                <marker date="1414164524053" expanded="true" signature="25580:25643" placeholder="DELETE FROM ..." />
+                <marker date="1414164524053" expanded="true" signature="26712:26801" placeholder="SELECT * FRO..my_calendar_table_..." />
+                <marker date="1414164524053" expanded="true" signature="27971:28036" placeholder="SELECT * FRO..my_calendar_event_table_..." />
+                <marker date="1414164524053" expanded="true" signature="29557:29645" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="30099:30283" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="30477:30873" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="31302:31501" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="31429:31492" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="32089:32447" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="34469:34627" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="35666:35907" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="36100:37587" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="50461:50565" placeholder="SELECT locat..my_calendar_locations_table_..." />
+                <marker date="1414164524053" expanded="true" signature="53699:53776" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="58843:59005" placeholder="SELECT SQL_C..my_calendar_table_..." />
+                <marker date="1414164524053" expanded="true" signature="64420:64434" placeholder="SELECT * FRO..my_calendar_categories_table_..." />
+                <marker date="1414164524053" expanded="true" signature="80167:80239" placeholder="SELECT * FRO..my_calendar_locations_table_..." />
+                <marker date="1414164524053" expanded="true" signature="91508:91782" placeholder="SELECT occur..MY_CALENDAR_EVENTS_TABLE..." />
+                <marker date="1414164524053" expanded="true" signature="94089:94115" placeholder="SELECT MAX(e..my_calendar_table_..." />
+                <marker date="1414164524053" expanded="true" signature="94454:94523" placeholder="SELECT * FRO..my_calendar_event_table_..." />
+                <marker date="1414164524053" expanded="true" signature="96474:96561" placeholder="SELECT count..my_calendar_table_..." />
+                <marker date="1414164524053" expanded="true" signature="97872:98202" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="97921:98185" placeholder="{...}" />
+                <marker date="1414164524053" expanded="true" signature="97947:98048" placeholder="{&quot;interval&quot;: 15...}" />
+                <marker date="1414164524053" expanded="true" signature="98078:98181" placeholder="{&quot;interval&quot;: 15...}" />
+                <marker date="1414164524053" expanded="true" signature="98241:98773" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="98779:99133" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="99138:99362" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="100042:100514" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="100522:100741" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="100837:101005" placeholder="..." />
+                <marker date="1414164524053" expanded="true" signature="101012:101222" placeholder="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="my-calendar-core.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/my-calendar-core.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="36218" max-vertical-offset="42640">
+              <caret line="1825" column="19" selection-start-line="1825" selection-start-column="19" selection-end-line="1825" selection-end-column="19" />
+              <folding>
+                <marker date="1414173358316" expanded="true" signature="7439:7514" placeholder="SELECT * FRO..MY_CALENDAR_CATEGORIES_TABLE..." />
+                <marker date="1414173358316" expanded="true" signature="8684:8915" placeholder="..." />
+                <marker date="1414173358316" expanded="true" signature="8874:8903" placeholder="{...}" />
+                <marker date="1414173358316" expanded="true" signature="9341:9387" placeholder="SELECT MIN(I..mcdb_prefixusers..." />
+                <marker date="1414173358316" expanded="true" signature="9560:9606" placeholder="SELECT MIN(I..mcdb_prefixusers..." />
+                <marker date="1414173358316" expanded="false" signature="13936:13947" placeholder="..." />
+                <marker date="1414173358316" expanded="true" signature="16020:16087" placeholder="..." />
+                <marker date="1414173358316" expanded="true" signature="16037:16068" placeholder="{...}" />
+                <marker date="1414173358316" expanded="true" signature="24247:24391" placeholder="INSERT INTO ..." />
+                <marker date="1414173358316" expanded="true" signature="29472:29551" placeholder="SELECT * FRO..my_calendar_categories_table_..." />
+                <marker date="1414173358316" expanded="true" signature="29680:29826" placeholder="INSERT INTO ..." />
+                <marker date="1414173358316" expanded="true" signature="31235:31340" placeholder="SELECT locat..my_calendar_locations_table_..." />
+                <marker date="1414173358316" expanded="true" signature="45483:45571" placeholder="SELECT id FR.._mcdb_posts WHERE..." />
+                <marker date="1414173358316" expanded="true" signature="54088:54188" placeholder="SELECT * FRO..my_calendar_event_table_..." />
+                <marker date="1414173358316" expanded="true" signature="54455:54518" placeholder="DELETE FROM ..." />
+                <marker date="1414173358316" expanded="true" signature="55085:55154" placeholder="DELETE FROM ..." />
+                <marker date="1414173358316" expanded="true" signature="55792:55861" placeholder="DELETE FROM ..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="my-calendar.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/my-calendar.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="3569" max-vertical-offset="10620">
+              <caret line="199" column="31" selection-start-line="199" selection-start-column="31" selection-end-line="199" selection-end-column="31" />
+              <folding>
+                <element signature="e#6#334#0#PHP" expanded="true" />
+                <marker date="1414172985102" expanded="true" signature="22105:22418" placeholder="..." />
+                <marker date="1414172985102" expanded="true" signature="22212:22405" placeholder="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mc-ajax.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/mc-ajax.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="340" max-vertical-offset="820">
+              <caret line="17" column="27" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="readme.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/readme.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.0" vertical-offset="1840" max-vertical-offset="27840">
+              <caret line="92" column="86" selection-start-line="92" selection-start-column="86" selection-end-line="92" selection-end-column="86" />
+              <folding />
+            </state>
+          </provider>
+          <provider editor-type-id="com.intellij.database.editor.CsvTableFileEditorProvider">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="my-calendar-locations.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/my-calendar-locations.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="5038" max-vertical-offset="11280">
+              <caret line="264" column="12" selection-start-line="264" selection-start-column="12" selection-end-line="264" selection-end-column="12" />
+              <folding>
+                <marker date="1411850824320" expanded="true" signature="1484:1567" placeholder="DELETE FROM ..." />
+                <marker date="1411850824320" expanded="true" signature="4619:4687" placeholder="DELETE FROM ..." />
+                <marker date="1411850824320" expanded="true" signature="7323:7393" placeholder="SELECT * FRO..my_calendar_locations_table_..." />
+                <marker date="1411850824320" expanded="true" signature="11080:11234" placeholder="SELECT SQL_C..my_calendar_locations_table_..." />
+                <marker date="1411850824320" expanded="true" signature="16678:16793" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="17397:17982" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="17429:17982" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="17441:17982" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="17512:17704" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="17709:17909" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="17916:17982" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="18807:18884" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="19742:19816" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="20751:21635" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="20876:21629" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="21660:22306" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="21741:21914" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="21919:22290" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="22348:23143" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="22360:23011" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="22443:22620" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="22625:22816" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="22822:22998" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="23023:23143" placeholder="..." />
+                <marker date="1411850824320" expanded="true" signature="24435:24514" placeholder="SELECT :_fie..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="my-calendar-templating.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/my-calendar-templating.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="974" max-vertical-offset="4680">
+              <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="my-calendar-templates.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/my-calendar-templates.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.3329098" vertical-offset="10178" max-vertical-offset="12400">
+              <caret line="522" column="28" selection-start-line="522" selection-start-column="16" selection-end-line="522" selection-end-column="28" />
+              <folding>
+                <marker date="1414166660374" expanded="true" signature="20596:21686" placeholder="..." />
+                <marker date="1414166660374" expanded="true" signature="20613:21667" placeholder="{...}" />
+                <marker date="1414166660374" expanded="true" signature="20645:21661" placeholder="{...}" />
+                <marker date="1414166660374" expanded="true" signature="20679:21654" placeholder="{...}" />
+                <marker date="1414166660374" expanded="true" signature="20693:21357" placeholder="{...}" />
+                <marker date="1414166660374" expanded="true" signature="20709:20884" placeholder="[...]" />
+                <marker date="1414166660374" expanded="true" signature="20710:20883" placeholder="{&quot;address&quot;: 'EXTERNAL_FRAGMENT'...}" />
+                <marker date="1414166660374" expanded="true" signature="20900:21350" placeholder="{...}" />
+                <marker date="1414166660374" expanded="true" signature="20951:21342" placeholder="{...}" />
+                <marker date="1414166660374" expanded="true" signature="21084:21179" placeholder="{...}" />
+                <marker date="1414166660374" expanded="true" signature="21185:21332" placeholder="{...}" />
+                <marker date="1414166660374" expanded="true" signature="21210:21321" placeholder="{...}" />
+                <marker date="1414166660374" expanded="true" signature="21231:21310" placeholder="{...}" />
+                <marker date="1414166660374" expanded="true" signature="21368:21648" placeholder="{...}" />
+                <marker date="1414166660374" expanded="true" signature="21384:21641" placeholder="{&quot;mapTypeControl&quot;: true...}" />
+                <marker date="1414166660374" expanded="true" signature="21468:21539" placeholder="{...}" />
+                <marker date="1414166660374" expanded="true" signature="22833:22959" placeholder="SELECT occur..my_calendar_event_table_..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="true" />
+    </FindUsagesManager>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/my-calendar-api.php" />
+        <option value="$PROJECT_DIR$/my-calendar-behaviors.php" />
+        <option value="$PROJECT_DIR$/my-calendar-group-manager.php" />
+        <option value="$PROJECT_DIR$/my-calendar-ical.php" />
+        <option value="$PROJECT_DIR$/my-calendar-limits.php" />
+        <option value="$PROJECT_DIR$/my-calendar-locations.php" />
+        <option value="$PROJECT_DIR$/../../wordpress/wp-content/plugins/my-calendar/my-calendar-output.php" />
+        <option value="$PROJECT_DIR$/my-calendar-upgrade-db.php" />
+        <option value="$PROJECT_DIR$/includes/date-utilities.php" />
+        <option value="$PROJECT_DIR$/my-calendar-settings.php" />
+        <option value="$PROJECT_DIR$/my-calendar-install.php" />
+        <option value="$PROJECT_DIR$/uninstall.php" />
+        <option value="$PROJECT_DIR$/my-calendar-styles.php" />
+        <option value="$PROJECT_DIR$/my-calendar-shortcodes.php" />
+        <option value="$PROJECT_DIR$/my-calendar-help.php" />
+        <option value="$PROJECT_DIR$/my-calendar-generator.php" />
+        <option value="$PROJECT_DIR$/css/mc-styles.css" />
+        <option value="$PROJECT_DIR$/my-calendar-categories.php" />
+        <option value="$PROJECT_DIR$/my-calendar-events.php" />
+        <option value="$PROJECT_DIR$/my-calendar-widgets.php" />
+        <option value="$PROJECT_DIR$/my-calendar-templating.php" />
+        <option value="$PROJECT_DIR$/css/reset.css" />
+        <option value="$PROJECT_DIR$/my-calendar-event-manager.php" />
+        <option value="$PROJECT_DIR$/my-calendar-templates.php" />
+        <option value="$PROJECT_DIR$/my-calendar.php" />
+        <option value="$PROJECT_DIR$/my-calendar-output.php" />
+        <option value="$PROJECT_DIR$/my-calendar-core.php" />
+        <option value="$PROJECT_DIR$/readme.txt" />
+      </list>
+    </option>
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true">
+    <include_path>
+      <path value="$PROJECT_DIR$/../../wordpress" />
+    </include_path>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="width" value="1920" />
+    <option name="height" value="1032" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>HTML</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>HtmlUnknownTarget</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="0" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="My Calendar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="My Calendar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="My Calendar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="My Calendar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="includes" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="My Calendar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="css" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="options.lastSelected" value="preferences.sourceCode.PHP" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../wordpress" />
+    <property name="FullScreen" value="false" />
+    <property name="LayoutCode.rearrangeEntriesPHP" value="false" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner />
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpBehatConfigurationType" factoryName="Behat">
+      <BehatRunner />
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpUnitRemoteRunConfigurationType" factoryName="PHPUnit on Server">
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <pass-parent-env-vars>false</pass-parent-env-vars>
+      <envs />
+      <method />
+    </configuration>
+    <list size="0" />
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\Joe Dolson\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e14be3c5-8f07-4aed-8134-4fc298bda403" name="Default" comment="" />
+      <created>1411674113556</created>
+      <option name="number" value="Default" />
+      <updated>1411674113556</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="0" width="1920" height="1032" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.181388" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32893288" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="myTodoPanelSettings">
+      <TodoPanelSettings />
+    </option>
+  </component>
+  <component name="WordPressConfiguration" enabled="true">
+    <wordpressPath>C:\Users\Joe Dolson\Documents\wp-subversion\wordpress</wordpressPath>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="2" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/uninstall.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2320">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/includes/date-utilities.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="4045" max-vertical-offset="5880">
+          <caret line="255" column="23" selection-start-line="255" selection-start-column="23" selection-end-line="255" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-behaviors.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="240" max-vertical-offset="1960">
+          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-categories.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="5076" max-vertical-offset="6580">
+          <caret line="277" column="20" selection-start-line="277" selection-start-column="20" selection-end-line="277" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-core.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="29150" max-vertical-offset="38520">
+          <caret line="1472" column="18" selection-start-line="1472" selection-start-column="18" selection-end-line="1472" selection-end-column="18" />
+          <folding>
+            <marker date="1414173358316" expanded="true" signature="7439:7514" placeholder="SELECT * FRO..MY_CALENDAR_CATEGORIES_TABLE..." />
+            <marker date="1414173358316" expanded="true" signature="8684:8915" placeholder="..." />
+            <marker date="1414173358316" expanded="true" signature="8874:8903" placeholder="{...}" />
+            <marker date="1414173358316" expanded="true" signature="9341:9387" placeholder="SELECT MIN(I..mcdb_prefixusers..." />
+            <marker date="1414173358316" expanded="true" signature="9560:9606" placeholder="SELECT MIN(I..mcdb_prefixusers..." />
+            <marker date="1414173358316" expanded="false" signature="13936:13947" placeholder="..." />
+            <marker date="1414173358316" expanded="true" signature="16020:16087" placeholder="..." />
+            <marker date="1414173358316" expanded="true" signature="16037:16068" placeholder="{...}" />
+            <marker date="1414173358316" expanded="true" signature="24247:24391" placeholder="INSERT INTO ..." />
+            <marker date="1414173358316" expanded="true" signature="29472:29551" placeholder="SELECT * FRO..my_calendar_categories_table_..." />
+            <marker date="1414173358316" expanded="true" signature="29680:29826" placeholder="INSERT INTO ..." />
+            <marker date="1414173358316" expanded="true" signature="31235:31340" placeholder="SELECT locat..my_calendar_locations_table_..." />
+            <marker date="1414173358316" expanded="true" signature="45483:45571" placeholder="SELECT id FR.._mcdb_posts WHERE..." />
+            <marker date="1414173358316" expanded="true" signature="54088:54188" placeholder="SELECT * FRO..my_calendar_event_table_..." />
+            <marker date="1414173358316" expanded="true" signature="54455:54518" placeholder="DELETE FROM ..." />
+            <marker date="1414173358316" expanded="true" signature="55085:55154" placeholder="DELETE FROM ..." />
+            <marker date="1414173358316" expanded="true" signature="55792:55861" placeholder="DELETE FROM ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-event-manager.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="38137" max-vertical-offset="38980">
+          <caret line="1921" column="23" selection-start-line="1921" selection-start-column="23" selection-end-line="1921" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-events.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="7879" max-vertical-offset="8960">
+          <caret line="416" column="5" selection-start-line="416" selection-start-column="5" selection-end-line="416" selection-end-column="5" />
+          <folding>
+            <marker date="1412198853787" expanded="true" signature="319:406" placeholder="SELECT categ..MY_CALENDAR_CATEGORIES_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="1752:2242" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="2317:2838" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="2957:3445" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="4328:4670" placeholder="SELECT * FRO..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="4777:5084" placeholder="SELECT * FRO..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="5205:5547" placeholder="SELECT * FRO..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="6139:6451" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="8048:8334" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-generator.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3440">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-group-manager.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="15809" max-vertical-offset="17040">
+          <caret line="819" column="30" selection-start-line="819" selection-start-column="30" selection-end-line="819" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-help.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="9360">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-ical.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1440">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-behaviors.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="240" max-vertical-offset="1960">
+          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-categories.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="5076" max-vertical-offset="6580">
+          <caret line="277" column="20" selection-start-line="277" selection-start-column="20" selection-end-line="277" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-core.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="29150" max-vertical-offset="38520">
+          <caret line="1472" column="18" selection-start-line="1472" selection-start-column="18" selection-end-line="1472" selection-end-column="18" />
+          <folding>
+            <marker date="1414173358316" expanded="true" signature="7439:7514" placeholder="SELECT * FRO..MY_CALENDAR_CATEGORIES_TABLE..." />
+            <marker date="1414173358316" expanded="true" signature="8684:8915" placeholder="..." />
+            <marker date="1414173358316" expanded="true" signature="8874:8903" placeholder="{...}" />
+            <marker date="1414173358316" expanded="true" signature="9341:9387" placeholder="SELECT MIN(I..mcdb_prefixusers..." />
+            <marker date="1414173358316" expanded="true" signature="9560:9606" placeholder="SELECT MIN(I..mcdb_prefixusers..." />
+            <marker date="1414173358316" expanded="false" signature="13936:13947" placeholder="..." />
+            <marker date="1414173358316" expanded="true" signature="16020:16087" placeholder="..." />
+            <marker date="1414173358316" expanded="true" signature="16037:16068" placeholder="{...}" />
+            <marker date="1414173358316" expanded="true" signature="24247:24391" placeholder="INSERT INTO ..." />
+            <marker date="1414173358316" expanded="true" signature="29472:29551" placeholder="SELECT * FRO..my_calendar_categories_table_..." />
+            <marker date="1414173358316" expanded="true" signature="29680:29826" placeholder="INSERT INTO ..." />
+            <marker date="1414173358316" expanded="true" signature="31235:31340" placeholder="SELECT locat..my_calendar_locations_table_..." />
+            <marker date="1414173358316" expanded="true" signature="45483:45571" placeholder="SELECT id FR.._mcdb_posts WHERE..." />
+            <marker date="1414173358316" expanded="true" signature="54088:54188" placeholder="SELECT * FRO..my_calendar_event_table_..." />
+            <marker date="1414173358316" expanded="true" signature="54455:54518" placeholder="DELETE FROM ..." />
+            <marker date="1414173358316" expanded="true" signature="55085:55154" placeholder="DELETE FROM ..." />
+            <marker date="1414173358316" expanded="true" signature="55792:55861" placeholder="DELETE FROM ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-event-manager.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="38137" max-vertical-offset="38980">
+          <caret line="1921" column="23" selection-start-line="1921" selection-start-column="23" selection-end-line="1921" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-events.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="7879" max-vertical-offset="8960">
+          <caret line="416" column="5" selection-start-line="416" selection-start-column="5" selection-end-line="416" selection-end-column="5" />
+          <folding>
+            <marker date="1412198853787" expanded="true" signature="319:406" placeholder="SELECT categ..MY_CALENDAR_CATEGORIES_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="1752:2242" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="2317:2838" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="2957:3445" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="4328:4670" placeholder="SELECT * FRO..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="4777:5084" placeholder="SELECT * FRO..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="5205:5547" placeholder="SELECT * FRO..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="6139:6451" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="8048:8334" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-generator.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3440">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-group-manager.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="15809" max-vertical-offset="17040">
+          <caret line="819" column="30" selection-start-line="819" selection-start-column="30" selection-end-line="819" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-help.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="9360">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-ical.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1440">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-api.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.016129" vertical-offset="247" max-vertical-offset="4620">
+          <caret line="31" column="25" selection-start-line="31" selection-start-column="25" selection-end-line="31" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-behaviors.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="240" max-vertical-offset="1960">
+          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-group-manager.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="15809" max-vertical-offset="17040">
+          <caret line="819" column="30" selection-start-line="819" selection-start-column="30" selection-end-line="819" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-limits.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="24.758621" vertical-offset="4558" max-vertical-offset="5380">
+          <caret line="192" column="51" selection-start-line="192" selection-start-column="51" selection-end-line="192" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../wordpress/wp-content/plugins/my-calendar/my-calendar-output.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.35203093" vertical-offset="24058" max-vertical-offset="28140">
+          <caret line="1212" column="67" selection-start-line="1212" selection-start-column="67" selection-end-line="1212" selection-end-column="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-upgrade-db.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="538" max-vertical-offset="1620">
+          <caret line="66" column="31" selection-start-line="66" selection-start-column="31" selection-end-line="66" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/includes/date-utilities.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="4045" max-vertical-offset="5880">
+          <caret line="255" column="23" selection-start-line="255" selection-start-column="23" selection-end-line="255" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-ical.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="3.4482758" vertical-offset="740" max-vertical-offset="1620">
+          <caret line="32" column="21" selection-start-line="32" selection-start-column="21" selection-end-line="32" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/uninstall.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1787" max-vertical-offset="2360">
+          <caret line="100" column="27" selection-start-line="100" selection-start-column="27" selection-end-line="100" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-styles.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="200" max-vertical-offset="5660">
+          <caret line="10" column="48" selection-start-line="10" selection-start-column="48" selection-end-line="10" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-generator.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1440" max-vertical-offset="3920">
+          <caret line="80" column="16" selection-start-line="80" selection-start-column="16" selection-end-line="80" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/sortable.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.21015762" vertical-offset="0" max-vertical-offset="571">
+          <caret line="6" column="7" selection-start-line="6" selection-start-column="7" selection-end-line="6" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/css/mc-styles.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="7100" max-vertical-offset="10140">
+          <caret line="370" column="16" selection-start-line="370" selection-start-column="16" selection-end-line="370" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-categories.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2956" max-vertical-offset="8260">
+          <caret line="164" column="54" selection-start-line="164" selection-start-column="54" selection-end-line="164" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-help.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="9655" max-vertical-offset="10580">
+          <caret line="493" column="26" selection-start-line="493" selection-start-column="26" selection-end-line="493" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-install.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="4072" max-vertical-offset="10660">
+          <caret line="217" column="23" selection-start-line="217" selection-start-column="17" selection-end-line="217" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-settings.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="6014" max-vertical-offset="19000">
+          <caret line="309" column="59" selection-start-line="309" selection-start-column="59" selection-end-line="309" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-widgets.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2714" max-vertical-offset="16760">
+          <caret line="142" column="0" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/css/mc-admin.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="400">
+          <caret line="5" column="31" selection-start-line="5" selection-start-column="31" selection-end-line="5" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-shortcodes.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2490" max-vertical-offset="3020">
+          <caret line="144" column="11" selection-start-line="144" selection-start-column="11" selection-end-line="144" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/css/reset.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1480">
+          <caret line="27" column="21" selection-start-line="27" selection-start-column="21" selection-end-line="27" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-templating.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="974" max-vertical-offset="4680">
+          <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/mc-ajax.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="820">
+          <caret line="17" column="27" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-events.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2520" max-vertical-offset="11340">
+          <caret line="151" column="13" selection-start-line="151" selection-start-column="13" selection-end-line="151" selection-end-column="13" />
+          <folding>
+            <marker date="1412198853787" expanded="true" signature="319:406" placeholder="SELECT categ..MY_CALENDAR_CATEGORIES_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="1752:2242" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="2317:2838" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="2957:3445" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="4328:4670" placeholder="SELECT * FRO..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="4777:5084" placeholder="SELECT * FRO..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="5205:5547" placeholder="SELECT * FRO..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="6139:6451" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1412198853787" expanded="true" signature="8048:8334" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-event-manager.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="36318" max-vertical-offset="46960">
+          <caret line="1841" column="38" selection-start-line="1841" selection-start-column="38" selection-end-line="1841" selection-end-column="38" />
+          <folding>
+            <marker date="1414164524053" expanded="true" signature="6856:6937" placeholder="SELECT event..my_calendar_table_..." />
+            <marker date="1414164524053" expanded="true" signature="7175:7248" placeholder="SELECT occur..my_calendar_event_table_..." />
+            <marker date="1414164524053" expanded="true" signature="10102:10172" placeholder="SELECT event..my_calendar_table_..." />
+            <marker date="1414164524053" expanded="true" signature="10348:10417" placeholder="DELETE FROM ..." />
+            <marker date="1414164524053" expanded="true" signature="10596:10666" placeholder="DELETE FROM ..." />
+            <marker date="1414164524053" expanded="true" signature="25137:25217" placeholder="DELETE FROM ..." />
+            <marker date="1414164524053" expanded="true" signature="25247:25316" placeholder="DELETE FROM ..." />
+            <marker date="1414164524053" expanded="true" signature="25419:25508" placeholder="SELECT event..my_calendar_table_..." />
+            <marker date="1414164524053" expanded="true" signature="25580:25643" placeholder="DELETE FROM ..." />
+            <marker date="1414164524053" expanded="true" signature="26712:26801" placeholder="SELECT * FRO..my_calendar_table_..." />
+            <marker date="1414164524053" expanded="true" signature="27971:28036" placeholder="SELECT * FRO..my_calendar_event_table_..." />
+            <marker date="1414164524053" expanded="true" signature="29557:29645" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="30099:30283" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="30477:30873" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="31302:31501" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="31429:31492" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="32089:32447" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="34469:34627" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="35666:35907" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="36100:37587" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="50461:50565" placeholder="SELECT locat..my_calendar_locations_table_..." />
+            <marker date="1414164524053" expanded="true" signature="53699:53776" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="58843:59005" placeholder="SELECT SQL_C..my_calendar_table_..." />
+            <marker date="1414164524053" expanded="true" signature="64420:64434" placeholder="SELECT * FRO..my_calendar_categories_table_..." />
+            <marker date="1414164524053" expanded="true" signature="80167:80239" placeholder="SELECT * FRO..my_calendar_locations_table_..." />
+            <marker date="1414164524053" expanded="true" signature="91508:91782" placeholder="SELECT occur..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1414164524053" expanded="true" signature="94089:94115" placeholder="SELECT MAX(e..my_calendar_table_..." />
+            <marker date="1414164524053" expanded="true" signature="94454:94523" placeholder="SELECT * FRO..my_calendar_event_table_..." />
+            <marker date="1414164524053" expanded="true" signature="96474:96561" placeholder="SELECT count..my_calendar_table_..." />
+            <marker date="1414164524053" expanded="true" signature="97872:98202" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="97921:98185" placeholder="{...}" />
+            <marker date="1414164524053" expanded="true" signature="97947:98048" placeholder="{&quot;interval&quot;: 15...}" />
+            <marker date="1414164524053" expanded="true" signature="98078:98181" placeholder="{&quot;interval&quot;: 15...}" />
+            <marker date="1414164524053" expanded="true" signature="98241:98773" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="98779:99133" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="99138:99362" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="100042:100514" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="100522:100741" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="100837:101005" placeholder="..." />
+            <marker date="1414164524053" expanded="true" signature="101012:101222" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3569" max-vertical-offset="10620">
+          <caret line="199" column="31" selection-start-line="199" selection-start-column="31" selection-end-line="199" selection-end-column="31" />
+          <folding>
+            <element signature="e#6#334#0#PHP" expanded="true" />
+            <marker date="1414172985102" expanded="true" signature="22105:22418" placeholder="..." />
+            <marker date="1414172985102" expanded="true" signature="22212:22405" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-output.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="5118" max-vertical-offset="40320">
+          <caret line="265" column="33" selection-start-line="265" selection-start-column="33" selection-end-line="265" selection-end-column="33" />
+          <folding>
+            <marker date="1414173358295" expanded="true" signature="18329:18396" placeholder="..." />
+            <marker date="1414173358295" expanded="true" signature="19534:19668" placeholder="SELECT event..MY_CALENDAR_TABLE..." />
+            <marker date="1414173358295" expanded="true" signature="29450:29920" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1414173358295" expanded="true" signature="30000:30435" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1414173358295" expanded="true" signature="30520:30989" placeholder="SELECT *, UN..MY_CALENDAR_EVENTS_TABLE..." />
+            <marker date="1414173358295" expanded="true" signature="44309:44395" placeholder="..." />
+            <marker date="1414173358295" expanded="true" signature="44319:44384" placeholder="..." />
+            <marker date="1414173358295" expanded="true" signature="55676:55920" placeholder="..." />
+            <marker date="1414173358295" expanded="true" signature="56173:56322" placeholder="..." />
+            <marker date="1414173358295" expanded="true" signature="56615:56702" placeholder="..." />
+            <marker date="1414173358295" expanded="true" signature="56885:57008" placeholder="..." />
+            <marker date="1414173358295" expanded="true" signature="58715:58803" placeholder="SELECT * FRO..MY_CALENDAR_CATEGORIES_TABLE..." />
+            <marker date="1414173358295" expanded="true" signature="58884:58944" placeholder="..." />
+            <marker date="1414173358295" expanded="true" signature="61006:61033" placeholder="..." />
+            <marker date="1414173358295" expanded="true" signature="65544:65598" placeholder="..." />
+            <marker date="1414173358295" expanded="true" signature="68138:68213" placeholder="SELECT * FRO..MY_CALENDAR_CATEGORIES_TABLE..." />
+            <marker date="1414173358295" expanded="true" signature="68427:68504" placeholder="..." />
+            <marker date="1414173358295" expanded="true" signature="70994:71079" placeholder="..." />
+            <marker date="1414173358295" expanded="true" signature="74491:74568" placeholder="SELECT DISTI..MY_CALENDAR_LOCATIONS_TABLE..." />
+            <marker date="1414173358295" expanded="true" signature="77599:77680" placeholder="SELECT DISTI..." />
+            <marker date="1414173358295" expanded="true" signature="78204:78277" placeholder="..." />
+            <marker date="1414173358295" expanded="true" signature="79249:79323" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-core.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="36218" max-vertical-offset="42640">
+          <caret line="1825" column="19" selection-start-line="1825" selection-start-column="19" selection-end-line="1825" selection-end-column="19" />
+          <folding>
+            <marker date="1414173358316" expanded="true" signature="7439:7514" placeholder="SELECT * FRO..MY_CALENDAR_CATEGORIES_TABLE..." />
+            <marker date="1414173358316" expanded="true" signature="8684:8915" placeholder="..." />
+            <marker date="1414173358316" expanded="true" signature="8874:8903" placeholder="{...}" />
+            <marker date="1414173358316" expanded="true" signature="9341:9387" placeholder="SELECT MIN(I..mcdb_prefixusers..." />
+            <marker date="1414173358316" expanded="true" signature="9560:9606" placeholder="SELECT MIN(I..mcdb_prefixusers..." />
+            <marker date="1414173358316" expanded="false" signature="13936:13947" placeholder="..." />
+            <marker date="1414173358316" expanded="true" signature="16020:16087" placeholder="..." />
+            <marker date="1414173358316" expanded="true" signature="16037:16068" placeholder="{...}" />
+            <marker date="1414173358316" expanded="true" signature="24247:24391" placeholder="INSERT INTO ..." />
+            <marker date="1414173358316" expanded="true" signature="29472:29551" placeholder="SELECT * FRO..my_calendar_categories_table_..." />
+            <marker date="1414173358316" expanded="true" signature="29680:29826" placeholder="INSERT INTO ..." />
+            <marker date="1414173358316" expanded="true" signature="31235:31340" placeholder="SELECT locat..my_calendar_locations_table_..." />
+            <marker date="1414173358316" expanded="true" signature="45483:45571" placeholder="SELECT id FR.._mcdb_posts WHERE..." />
+            <marker date="1414173358316" expanded="true" signature="54088:54188" placeholder="SELECT * FRO..my_calendar_event_table_..." />
+            <marker date="1414173358316" expanded="true" signature="54455:54518" placeholder="DELETE FROM ..." />
+            <marker date="1414173358316" expanded="true" signature="55085:55154" placeholder="DELETE FROM ..." />
+            <marker date="1414173358316" expanded="true" signature="55792:55861" placeholder="DELETE FROM ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-locations.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="5038" max-vertical-offset="11280">
+          <caret line="264" column="12" selection-start-line="264" selection-start-column="12" selection-end-line="264" selection-end-column="12" />
+          <folding>
+            <marker date="1411850824320" expanded="true" signature="1484:1567" placeholder="DELETE FROM ..." />
+            <marker date="1411850824320" expanded="true" signature="4619:4687" placeholder="DELETE FROM ..." />
+            <marker date="1411850824320" expanded="true" signature="7323:7393" placeholder="SELECT * FRO..my_calendar_locations_table_..." />
+            <marker date="1411850824320" expanded="true" signature="11080:11234" placeholder="SELECT SQL_C..my_calendar_locations_table_..." />
+            <marker date="1411850824320" expanded="true" signature="16678:16793" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="17397:17982" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="17429:17982" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="17441:17982" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="17512:17704" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="17709:17909" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="17916:17982" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="18807:18884" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="19742:19816" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="20751:21635" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="20876:21629" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="21660:22306" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="21741:21914" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="21919:22290" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="22348:23143" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="22360:23011" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="22443:22620" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="22625:22816" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="22822:22998" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="23023:23143" placeholder="..." />
+            <marker date="1411850824320" expanded="true" signature="24435:24514" placeholder="SELECT :_fie..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/readme.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1840" max-vertical-offset="27840">
+          <caret line="92" column="86" selection-start-line="92" selection-start-column="86" selection-end-line="92" selection-end-column="86" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="com.intellij.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my-calendar-templates.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3329098" vertical-offset="10178" max-vertical-offset="12400">
+          <caret line="522" column="28" selection-start-line="522" selection-start-column="16" selection-end-line="522" selection-end-column="28" />
+          <folding>
+            <marker date="1414166660374" expanded="true" signature="20596:21686" placeholder="..." />
+            <marker date="1414166660374" expanded="true" signature="20613:21667" placeholder="{...}" />
+            <marker date="1414166660374" expanded="true" signature="20645:21661" placeholder="{...}" />
+            <marker date="1414166660374" expanded="true" signature="20679:21654" placeholder="{...}" />
+            <marker date="1414166660374" expanded="true" signature="20693:21357" placeholder="{...}" />
+            <marker date="1414166660374" expanded="true" signature="20709:20884" placeholder="[...]" />
+            <marker date="1414166660374" expanded="true" signature="20710:20883" placeholder="{&quot;address&quot;: 'EXTERNAL_FRAGMENT'...}" />
+            <marker date="1414166660374" expanded="true" signature="20900:21350" placeholder="{...}" />
+            <marker date="1414166660374" expanded="true" signature="20951:21342" placeholder="{...}" />
+            <marker date="1414166660374" expanded="true" signature="21084:21179" placeholder="{...}" />
+            <marker date="1414166660374" expanded="true" signature="21185:21332" placeholder="{...}" />
+            <marker date="1414166660374" expanded="true" signature="21210:21321" placeholder="{...}" />
+            <marker date="1414166660374" expanded="true" signature="21231:21310" placeholder="{...}" />
+            <marker date="1414166660374" expanded="true" signature="21368:21648" placeholder="{...}" />
+            <marker date="1414166660374" expanded="true" signature="21384:21641" placeholder="{&quot;mapTypeControl&quot;: true...}" />
+            <marker date="1414166660374" expanded="true" signature="21468:21539" placeholder="{...}" />
+            <marker date="1414166660374" expanded="true" signature="22833:22959" placeholder="SELECT occur..my_calendar_event_table_..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
+
