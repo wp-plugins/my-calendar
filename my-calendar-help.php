@@ -108,6 +108,15 @@ function my_calendar_help() {
 				<li>
 					<code>host</code>: <?php _e( 'Host or comma-separated list (usernames or IDs) to show events from.', 'my-calendar' ); ?>
 				</li>
+				<li>
+					<code>year</code>: <?php _e( 'A specific year to start the calendar display at. (e.g. 2016)', 'my-calendar' ); ?>
+				</li>
+				<li>
+					<code>month</code>: <?php _e( 'A specific month to start the calendar display at. (e.g. 08)', 'my-calendar' ); ?>
+				</li>
+				<li>
+					<code>day</code>: <?php _e( 'A specific day to start the calendar display at. (e.g. 28)', 'my-calendar' ); ?>
+				</li>				
 				<li><code>id</code>: <?php _e( 'String to give shortcode a unique ID.', 'my-calendar' ); ?></li>
 			</ul>
 			<p>
@@ -115,16 +124,16 @@ function my_calendar_help() {
 			</p>
 			<h4><?php _e( 'Additional Views (Upcoming events, today\'s events)', 'my-calendar' ); ?></h4>
 
-			<textarea readonly='readonly' class="large-text readonly">[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" author="1" host="1" template="{title} {date}" order="asc" show_today="yes" skip="0" ltype="" lvalue=""]</textarea>
+			<textarea readonly='readonly' class="large-text readonly">[my_calendar_upcoming before="3" after="3" type="event" fallback="No events coming up!" category="General" author="1" host="1" template="{title} {date}" order="asc" show_today="yes" skip="0" ltype="" lvalue="" from="" to=""]</textarea>
 
 			<p>
-				<?php _e( 'Displays the output of the Upcoming Events widget. <code>before</code> and <code>after</code> are numbers; <code>type</code> is either "event" or "days", and <code>category</code> and <code>author</code> work the same as in the main calendar shortcode. Templates use the template codes listed below. <code>fallback</code> provides text if no events meet your criteria. Order sets sort order for the list &ndash; ascending (<code>asc</code>) or descending (<code>desc</code>). <code>show_today</code> indicates whether to include today\'s events in the list. <code>Skip</code> is how many events to skip in the list.', 'my-calendar' ); ?>
+				<?php _e( 'Displays the output of the Upcoming Events widget. <code>before</code> and <code>after</code> are numbers; <code>type</code> is either "event" or "days", and <code>category</code> and <code>author</code> work the same as in the main calendar shortcode. Templates use the template codes listed below. <code>fallback</code> provides text if no events meet your criteria. Order sets sort order for the list &ndash; ascending (<code>asc</code>) or descending (<code>desc</code>). <code>show_today</code> indicates whether to include today\'s events in the list. <code>Skip</code> is how many events to skip in the list.', 'my-calendar' ); ?> <?php _e( 'Use <code>from</code> and <code>to</code> to display events between two specific dates', 'my-calendar' ); ?>
 			</p>
 
-			<textarea readonly='readonly' class="large-text readonly">[my_calendar_today category="" author="1" host="1" fallback="Nothing today!" template="{title} {date}"]</textarea>
+			<textarea readonly='readonly' class="large-text readonly">[my_calendar_today category="" author="1" host="1" fallback="Nothing today!" template="{title} {date}" date=""]</textarea>
 
 			<p>
-				<?php _e( 'Displays the output of the Today\'s Events widget, with four configurable attributes: category, author, template and fallback text.', 'my-calendar' ); ?>
+				<?php _e( 'Displays the output of the Today\'s Events widget, with five configurable attributes: category, author, template, date, and fallback text.', 'my-calendar' ); ?>
 			</p>
 
 			<p>
@@ -499,8 +508,17 @@ function my_calendar_help() {
 					</p>
 
 					<p>
-						<?php _e( '<strong>Donations</strong>: I appreciate anything you can give. $2 may not seem like much, but it can really add up when thousands of people are using the software. Please note that I am not a non-profit organization, and your gifts are not tax deductible. Thank you!', 'my-calendar' ); ?>
+						<?php printf( __( '<strong>Donations</strong>: I appreciate anything you can give. %s may not seem like much, but it can really add up when thousands of people are using the software. Please note that I am not a non-profit organization, and your gifts are not tax deductible. Thank you!', 'my-calendar' ), '$5' ); ?>
 					</p>
+					<p>
+						<?php _e( '<strong>How to upgrade from My Calendar: Submissions to My Calendar Pro</strong>', 'my-calendar' ); ?>
+					</p>
+					<ol>
+						<li><?php _e( 'Update to My Calendar: Submissions version 1.2.9', 'my-calendar' ); ?></li>
+						<li><?php _e( 'Deactivate and delete My Calendar: Submissions', 'my-calendar' ); ?></li>
+						<li><?php printf( __( 'Log-in to your account at <a href="%s">Joe Dolson Accessible Web Design</a> and download My Calendar Pro', 'my-calendar' ), 'https://www.joedolson.com/account/' ); ?></li>
+						<li><?php _e( 'Upload My Calendar Pro and activate. All settings should be retained.', 'my-calendar' ); ?></li>
+					</ol>
 				</div>
 			</div>
 		</div>

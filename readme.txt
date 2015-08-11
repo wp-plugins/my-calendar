@@ -100,7 +100,7 @@ New features:
 * Add past/present classes to today's events widget
 * Assign Custom All Day label for each event.
 * Support hiding 'Host' field as option.
-* Made primary sort order of events filterable filter: 'mc_primary_sort'
+* Made primary sort order of events filterable: 'mc_primary_sort'
 * Added action to location saving handling updated locations
 * Added arguments to from/to filters in Upcoming Events
 * Enabled option to turn on permalinks
@@ -520,11 +520,15 @@ Because the majority of users end up on my web site asking for help anyway -- an
 
 = This plug-in is really complicated. Why can't you personally help me figure out how to use it? =
 
-I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/my-calendar/users-guide/) for $25. This helps defray the thousand plus hours I've spent in developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
+I can! Just not in person. I've written a User's Guide for My Calendar, which you can [purchase at my web site](https://www.joedolson.com/my-calendar/users-guide/) for $25. This helps defray the thousands of hours I've spent developing the plug-in and providing support. Please, consider buying the User's Guide or [making a donation](https://www.joedolson.com/donate.php) before asking for support!
 
 = Can my visitors or members submit events? =
 
-I've written a paid plug-in that adds this feature to My Calendar, called My Calendar: Submissions. [Buy it today](https://www.joedolson.com/my-calendar/submissions/)!
+I've written a paid plug-in that adds this feature to My Calendar, called My Calendar Pro. [Buy it today](https://www.joedolson.com/my-calendar/pro/)!
+
+= Is there an advanced search feature? =
+
+The search feature in My Calendar is pretty basic; but buying My Calendar Pro gives you a richer search feature, where you can narrow by dates, categories, authors, and more to refine your event search.
 
 == Screenshots ==
 

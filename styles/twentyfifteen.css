@@ -436,6 +436,11 @@
 	margin-top: 1em;
 }
 
+.mc-main .mc-list-extended {
+	font-size: .9em;
+	font-style: italic;
+}
+
 .mc-main .list-event .details img {
     width: auto;
     max-width: 100%;

@@ -903,8 +903,8 @@ function my_calendar_fouc() {
 	$array = array();
 	if ( get_option( 'mc_calendar_javascript' ) != 1 || get_option( 'mc_list_javascript' ) != 1 || get_option( 'mc_mini_javascript' ) != 1 ) {
 		$scripting = "\n<script type='text/javascript'>\n";
-		$scripting .= "	document.body.className += ' mcjs';\n";
-		$scripting .= "	document.body.className = document.body.className.replace('mcjs','js');\n";
+		$scripting .= "	jQuery('html').addClass('mcjs');\n";
+		$scripting .= "	jQuery(document).ready( function($) { \$('html').removeClass('mcjs') } );\n";
 		$scripting .= "</script>\n";
 
 		if ( ! is_404() ) {

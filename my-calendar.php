@@ -195,12 +195,12 @@ function mc_show_sidebar( $show = '', $add = false, $remove = false ) {
 			<?php if ( ! function_exists( 'mcs_submit_exists' ) ) { ?>
 				<div class="ui-sortable meta-box-sortables">
 					<div class="postbox support">
-						<h3 class='sales'><strong><?php _e( 'My Calendar: Submissions', 'my-calendar' ); ?></strong></h3>
+						<h3 class='sales'><strong><?php _e( 'My Calendar Pro', 'my-calendar' ); ?></strong></h3>
 
 						<div class="inside resources">
-							<p class="mcsbuy"><?php _e( "Buy the <a href='https://www.joedolson.com/my-calendar/submissions/' rel='external'>My Calendar Submissions add-on</a> &mdash; let your audience build your calendar.", 'my-calendar' ); ?></p>
+							<p class="mcsbuy"><?php _e( "Buy <a href='https://www.joedolson.com/my-calendar/pro/' rel='external'>My Calendar Pro</a> &mdash; a more powerful calendar for your site.", 'my-calendar' ); ?></p>
 
-							<p class="mc-button"><a href="http://www.joedolson.com/my-calendar/submissions/" rel="external"><?php _e( 'Learn more!', 'my-calendar' ); ?></a>
+							<p class="mc-button"><a href="http://www.joedolson.com/my-calendar/pro/" rel="external"><?php _e( 'Learn more!', 'my-calendar' ); ?></a>
 							</p>
 						</div>
 					</div>
@@ -434,7 +434,7 @@ function my_calendar_menu() {
 	}
 	if ( function_exists( 'add_submenu_page' ) ) {
 		add_action( "admin_head", 'my_calendar_write_js' );
-		add_action( "admin_head", 'my_calendar_add_styles' );
+		add_action( "admin_enqueue_scripts", 'my_calendar_add_styles' );
 		if ( get_option( 'mc_remote' ) == 'true' ) {
 		} else { // if we're accessing a remote page, remove these pages.
 			$edit = add_submenu_page( apply_filters( 'mc_locate_events_page', 'my-calendar' ), __( 'Add New Event', 'my-calendar' ), __( 'Add New Event', 'my-calendar' ), 'mc_add_events', 'my-calendar', 'edit_my_calendar' );

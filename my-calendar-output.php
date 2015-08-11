@@ -693,7 +693,7 @@ function mc_list_title( $events ) {
 	} else {
 		$cstate = sprintf( __( " and %d other events", 'my-calendar' ), $count );
 	}
-	$title = apply_filters( 'mc_list_event_title_hint', stripcslashes( $now->event_title ), $now ) . $cstate;
+	$title = apply_filters( 'mc_list_event_title_hint', stripcslashes( $now->event_title ), $now ) . "<span class='mc-list-extended'>$cstate</span>";
 
 	return $title;
 }
@@ -704,8 +704,10 @@ function mc_search_results( $query ) {
 	if ( is_string( $query ) ) {
 		$fields          = apply_filters( 'mc_search_fields', 'event_title,event_desc,event_short,event_label,event_city,event_postcode,event_registration' );
 		$search          = " MATCH( $fields ) AGAINST ('$query' IN BOOLEAN MODE) AND ";
+		$term            = $query;
 	} else {
 		$search = apply_filters( 'mc_advanced_search', '', $query );
+		$term   = $query['mcs'];
 		$before = apply_filters( 'mc_past_search_results', 10, 'advanced' );
 		$after  = apply_filters( 'mc_future_search_results', 10, 'advanced' );	
 	}
@@ -721,8 +723,11 @@ function mc_search_results( $query ) {
 	} else {
 		$output = "<li class='no-results'>" . __( 'Sorry, your search produced no results.', 'my-calendar' ) . "</li>";
 	}
+	
+	$before = apply_filters( 'mc_search_before', '', $term );
+	$after = apply_filters( 'mc_search_after', '', $term );
 
-	return "<ol class='mc-search-results'>$output</ol>";
+	return "$before<ol class='mc-search-results'>$output</ol>$after";
 }
 
 function mc_flatten_array( $events ) {
@@ -745,7 +750,7 @@ function mc_get_search_results( $search ) {
 		$mcdb = mc_remote_db();
 	}
 	$before = apply_filters( 'mc_past_search_results', 0 );
-	$after  = apply_filters( 'mc_future_search_results', 10 ); // return only future events, nearest 10	
+	$after  = apply_filters( 'mc_future_search_results', 15 ); // return only future events, nearest 10	
 	if ( is_array( $search ) ) {
 		// if from & to are set, we need to use an alternate search query
 		$from = $search['from'];
@@ -791,7 +796,7 @@ function mc_get_search_results( $search ) {
 			AND DATE(occur_begin) > '$date' ORDER BY occur_begin ASC LIMIT 0,$after" );
 		} else {
 			$events2 = array();
-		}
+		}		
 		$arr_events = array();
 		if ( ! empty( $events1 ) || ! empty( $events2 ) || ! empty( $events3 ) ) {
 			$arr_events = array_merge( $events1, $events3, $events2 );
@@ -1334,11 +1339,15 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 						'month+1'
 					) )
 			) {
+				$tr = apply_filters( 'mc_grid_week_wrapper', 'tr' );
+				$th = apply_filters( 'mc_grid_header_wrapper', 'th' );
+				$th .= ( $th == 'th' ) ? ' scope="col"' : '';
 				// If in a calendar format, print the headings of the days of the week
 				if ( $format == "list" ) {
 					$my_calendar_body .= "<ul id='$id' class='mc-list'>";
 				} else {
-					$my_calendar_body .= "<thead>\n<tr>\n";
+					$my_calendar_body .= ( $tr == 'tr' ) ? "<thead>\n" : '';
+					$my_calendar_body .= "<$tr>\n";
 					for ( $i = 0; $i <= 6; $i ++ ) {
 						if ( $start_of_week == 0 ) {
 							$class = ( $i < 6 && $i > 0 ) ? 'day-heading' : 'weekend-heading';
@@ -1347,10 +1356,11 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 						}
 						$dayclass = strtolower( strip_tags( $abbrevs[ $i ] ) );
 						if ( ( $class == 'weekend-heading' && get_option( 'mc_show_weekends' ) == 'true' ) || $class != 'weekend-heading' ) {
-							$my_calendar_body .= "<th scope='col' class='$class $dayclass'>" . $name_days[ $i ] . "</th>\n";
+							$my_calendar_body .= "<$th class='$class $dayclass'>" . $name_days[ $i ] . "</$th>\n";
 						}
 					}
-					$my_calendar_body .= "\n</tr>\n</thead>\n<tbody>";
+					$my_calendar_body .= "\n</$tr>\n";
+					$my_calendar_body .= ( $tr == 'tr' ) ? "</thead>\n<tbody>" : '';
 				}
 				$odd = 'odd';
 				// get and display all the events
@@ -1358,7 +1368,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 				if ( $no_events && $format == "list" && $show_all == false ) {
 					// if there are no events in list format, just display that info.
 					$no_events = ( $content == '' ) ? __( 'There are no events scheduled during this period.', 'my-calendar' ) : $content;
-					$my_calendar_body .= "<li class='no-events'>$no_events</li>";
+					$my_calendar_body .= "<li class='mc-events no-events'>$no_events</li>";
 				} else {
 					$start = strtotime( $from );
 					$end   = strtotime( $to );
@@ -1367,7 +1377,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 						$is_weekend = ( date( 'N', $start ) < 6 ) ? false : true;
 						if ( get_option( 'mc_show_weekends' ) == 'true' || ( get_option( 'mc_show_weekends' ) != 'true' && ! $is_weekend ) ) {
 							if ( date( 'N', $start ) == $start_of_week && $format != "list" ) {
-								$my_calendar_body .= "<tr>";
+								$my_calendar_body .= "<$tr>";
 							}
 							// date-based classes
 							$monthclass       = ( date( 'n', $start ) == $c_month || $time != 'month' ) ? '' : 'nextmonth';
@@ -1384,6 +1394,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 							} else {
 								$is_anchor = $is_close_anchor = "";
 							}
+							$td = apply_filters( 'mc_grid_day_wrapper', 'td' );
 							if ( ! empty( $events ) ) {
 								$event_output = my_calendar_draw_events( $events, $format, $date, $time, $template );
 								if ( $event_output === true ) {
@@ -1445,7 +1456,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 									$weekend_class = ( $is_weekend ) ? 'weekend' : '';
 									if ( $format == "list" ) {
 										if ( get_option( 'mc_show_list_info' ) == 'true' ) {
-											$title = ' - ' . $is_anchor . mc_list_title( $events ) . $is_close_anchor;
+											$title = ' - ' . $is_anchor . "<span class='mc-list-details'>" . mc_list_title( $events ) . "</span>" . $is_close_anchor;
 										} else {
 											$title = '';
 										}
@@ -1461,10 +1472,10 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 										//}
 									} else {
 										$my_calendar_body .= "
-												<td id='$format-$date' class='" . esc_attr( "$dayclass $dateclass $weekend_class $monthclass $events_class" ) . " day-with-date'>" . "
+												<$td id='$format-$date' class='" . esc_attr( "$dayclass $dateclass $weekend_class $monthclass $events_class" ) . " day-with-date'>" . "
 													<$element class='mc-date $trigger'>$thisday_heading</$close>" .
 										                     $event_output . "
-												</td>\n";
+												</$td>\n";
 									}
 								}
 							} else {
@@ -1472,9 +1483,9 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 								if ( $format != "list" ) {
 									$weekend_class = ( $is_weekend ) ? 'weekend' : '';
 									$my_calendar_body .= "
-												<td class='no-events $dayclass $dateclass $weekend_class $monthclass day-with-date'>
+												<$td class='no-events $dayclass $dateclass $weekend_class $monthclass day-with-date'>
 													<span class='mc-date no-events'>$thisday_heading</span>
-												</td>\n";
+												</$td>\n";
 								} else {
 									if ( $show_all == true ) {
 										$my_calendar_body .= "
@@ -1486,7 +1497,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 							}
 
 							if ( date( 'N', $start ) == $end_of_week && $format != "list" ) {
-								$my_calendar_body .= "</tr>\n"; // end of 'is beginning of week'
+								$my_calendar_body .= "</$tr>\n"; // end of 'is beginning of week'
 							}
 						}
 						$start = strtotime( "+1 day", $start );
