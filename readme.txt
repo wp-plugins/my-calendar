@@ -2,8 +2,8 @@
 Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, event, events, scheduling, schedule, event manager, event calendar, class, concert, conference, meeting, venue, location, box office, tickets, registration
-Requires at least: 3.8.5
-Tested up to: 4.2.2
+Requires at least: 3.9.8
+Tested up to: 4.3.0
 License: GPLv2 or later
 Stable tag: 2.3.32
 
@@ -120,6 +120,7 @@ New features:
 * New template tag: {color_css} and {close_color_css} to wrap a block with the category background color.
 * Add category classes to Upcoming & Today's events widgets
 * Redirect page to main calendar if event is private
+* Improved labeling of cell dates
 
 Bug fixes:
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
@@ -154,7 +155,7 @@ Other:
 * Moved changelog for versions prior to 2.3.0 into changelog.txt
 
 Translations:
-* Updated Polish, Portuguese (Portugal), Dutch, Turkish, Slovak, Norwegian, Hungarian, German, Spanish, Persian, Czech
+* Updated Polish, Portuguese (Portugal), Dutch, Turkish, Slovak, Norwegian, Hungarian, German, Spanish, Persian, Czech, Danish
 
 = 2.3.32 =
 

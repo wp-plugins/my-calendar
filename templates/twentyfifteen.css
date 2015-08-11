@@ -1,5 +1,4 @@
 /* New theme for 2015 */
-@import url(../css/reset.css);
 .my-calendar-header *, .mc_bottomnav * {
 	line-height: 1.5;
 }
@@ -194,7 +193,7 @@
 }
 
 .mc-main .close:hover, .mc-main .close:focus {
-	background: rgba( 255, 255, 255, .8 );
+	background: rgba( 240, 240, 240, .8 );
 }
 
 .mc-main .details img {
@@ -270,7 +269,7 @@
 	background: rgba( 255, 255, 255, .7 );
 	padding: 0 10px !important;
 }
-.mc-main .single-event .time-block p {
+.mc-main .single-event .time-block p, .mc-main.list .time-block p {
 	position: static;
 	padding: 0!important;
 }
@@ -431,6 +430,15 @@
 .mc-main .mc-list .event-date {
     font-size: 1.1em;
     font-weight: 600;
+}
+
+.mc-main .list-event {
+	margin-top: 1em;
+}
+
+.mc-main .mc-list-extended {
+	font-size: .9em;
+	font-style: italic;
 }
 
 .mc-main .list-event .details img {
