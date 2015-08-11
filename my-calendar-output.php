@@ -460,7 +460,7 @@ function mc_build_date_switcher( $type = 'calendar', $cid = 'all', $time = 'mont
 	$day_switcher = '';
 	if ( $time == 'day' ) {
 		$day_switcher = '
-          <label class="maybe-hide" for="mc-' . $type . '-day">' . __( 'Month', 'my-calendar' ) . ':</label> <select id="mc-' . $type . '-day" name="dy">' . "\n";
+          <label class="maybe-hide" for="' . $cid . '-day">' . __( 'Month', 'my-calendar' ) . ':</label> <select id="' . $cid . '-day" name="dy">' . "\n";
 		for ( $i = 1; $i <= 31; $i++ ) {
 			$day_switcher .= "<option value='$i'" . mc_day_comparison( $i ) . '>' . $i . '</option>' . "\n";
 		}
@@ -468,12 +468,12 @@ function mc_build_date_switcher( $type = 'calendar', $cid = 'all', $time = 'mont
 	}
 	// We build the months in the switcher
 	$date_switcher .= '
-            <label class="maybe-hide" for="mc-' . $type . '-month">' . __( 'Month', 'my-calendar' ) . ':</label> <select id="mc-' . $type . '-month" name="month">' . "\n";
+            <label class="maybe-hide" for="' . $cid . '-month">' . __( 'Month', 'my-calendar' ) . ':</label> <select id="' . $cid . '-month" name="month">' . "\n";
 	for ( $i = 1; $i <= 12; $i ++ ) {
 		$date_switcher .= "<option value='$i'" . mc_month_comparison( $i ) . '>' . date_i18n( 'F', mktime( 0, 0, 0, $i, 1 ) ) . '</option>' . "\n";
 	}
 	$date_switcher .= '</select>' . "\n" . '
-            <label class="maybe-hide" for="mc-' . $type . '-year">' . __( 'Year', 'my-calendar' ) . ':</label> <select id="mc-' . $type . '-year" name="yr">' . "\n";
+            <label class="maybe-hide" for="' . $cid . '-year">' . __( 'Year', 'my-calendar' ) . ':</label> <select id="' . $cid . '-year" name="yr">' . "\n";
 	// query to identify oldest start date in the database
 	$query  = "SELECT event_begin FROM " . MY_CALENDAR_TABLE . " WHERE event_approved = 1 AND event_flagged <> 1 ORDER BY event_begin ASC LIMIT 0 , 1";
 	$year1  = date( 'Y', strtotime( $mcdb->get_var( $query ) ) );
@@ -1021,24 +1021,25 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 		}
 		// Deal with the week not starting on a monday
 		$name_days = array(
-			__( '<abbr title="Sunday">Sun</abbr>', 'my-calendar' ),
-			__( '<abbr title="Monday">Mon</abbr>', 'my-calendar' ),
-			__( '<abbr title="Tuesday">Tues</abbr>', 'my-calendar' ),
-			__( '<abbr title="Wednesday">Wed</abbr>', 'my-calendar' ),
-			__( '<abbr title="Thursday">Thur</abbr>', 'my-calendar' ),
-			__( '<abbr title="Friday">Fri</abbr>', 'my-calendar' ),
-			__( '<abbr title="Saturday">Sat</abbr>', 'my-calendar' )
+			"<abbr title='" . date_i18n( 'l', strtotime( 'Sunday' ) ) . "' aria-hidden='true'>" . date_i18n( 'D', strtotime( 'Sunday' ) ) . "</abbr><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Sunday' ) ) . "</span>",
+			"<abbr title='" . date_i18n( 'l', strtotime( 'Monday' ) ) . "' aria-hidden='true'>" . date_i18n( 'D', strtotime( 'Monday' ) ) . "</abbr><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Monday' ) ) . "</span>",
+			"<abbr title='" . date_i18n( 'l', strtotime( 'Tuesday' ) ) . "' aria-hidden='true'>" . date_i18n( 'D', strtotime( 'Tuesday' ) ) . "</abbr><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Tuesday' ) ) . "</span>",
+			"<abbr title='" . date_i18n( 'l', strtotime( 'Wednesday' ) ) . "' aria-hidden='true'>" . date_i18n( 'D', strtotime( 'Wednesday' ) ) . "</abbr><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Wednesday' ) ) . "</span>",
+			"<abbr title='" . date_i18n( 'l', strtotime( 'Thursday' ) ) . "' aria-hidden='true'>" . date_i18n( 'D', strtotime( 'Thursday' ) ) . "</abbr><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Thursday' ) ) . "</span>",
+			"<abbr title='" . date_i18n( 'l', strtotime( 'Friday' ) ) . "' aria-hidden='true'>" . date_i18n( 'D', strtotime( 'Friday' ) ) . "</abbr><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Friday' ) ) . "</span>",
+			"<abbr title='" . date_i18n( 'l', strtotime( 'Saturday' ) ) . "' aria-hidden='true'>" . date_i18n( 'D', strtotime( 'Saturday' ) ) . "</abbr><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Saturday' ) ) . "</span>"
 		);
 		$abbrevs   = array( 'sun', 'mon', 'tues', 'wed', 'thur', 'fri', 'sat' );
 		if ( $format == 'mini' ) {
+			// PHP doesn't have a single letter abbreviation, so this has to be a translatable.
 			$name_days = array(
-				__( '<abbr title="Sunday">S</abbr>', 'my-calendar' ),
-				__( '<abbr title="Monday">M</abbr>', 'my-calendar' ),
-				__( '<abbr title="Tuesday">T</abbr>', 'my-calendar' ),
-				__( '<abbr title="Wednesday">W</abbr>', 'my-calendar' ),
-				__( '<abbr title="Thursday">T</abbr>', 'my-calendar' ),
-				__( '<abbr title="Friday">F</abbr>', 'my-calendar' ),
-				__( '<abbr title="Saturday">S</abbr>', 'my-calendar' )
+				"<span aria-hidden='true'>" . __( '<abbr title="Sunday">S</abbr>', 'my-calendar' ) . "</span><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Sunday' ) ) . "</span>",
+				"<span aria-hidden='true'>" . __( '<abbr title="Monday">M</abbr>', 'my-calendar' ) . "</span><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Monday' ) ) . "</span>",
+				"<span aria-hidden='true'>" . __( '<abbr title="Tuesday">T</abbr>', 'my-calendar' ) . "</span><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Tuesday' ) ) . "</span>",
+				"<span aria-hidden='true'>" . __( '<abbr title="Wednesday">W</abbr>', 'my-calendar' ) . "</span><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Wednesday' ) ) . "</span>",
+				"<span aria-hidden='true'>" . __( '<abbr title="Thursday">T</abbr>', 'my-calendar' ) . "</span><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Thursday' ) ) . "</span>",
+				"<span aria-hidden='true'>" . __( '<abbr title="Friday">F</abbr>', 'my-calendar' ) . "</span><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Friday' ) ) . "</span>",
+				"<span aria-hidden='true'>" . __( '<abbr title="Saturday">S</abbr>', 'my-calendar' ) . "</span><span class='screen-reader-text'>" . date_i18n( 'l', strtotime( 'Saturday' ) ) . "</span>"
 			);
 		}
 		$start_of_week = ( get_option( 'start_of_week' ) == 1 ) ? 1 : 7; // convert start of week to ISO 8601 (Monday/Sunday)
@@ -1316,11 +1317,13 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			$caption_text = ' ' . stripslashes( trim( get_option( 'mc_caption' ) ) ); // this option should be replaced JCD TODO
 			$my_calendar_body .= $mc_topnav;
 			if ( $format == "calendar" || $format == "mini" ) {
-				$my_calendar_body .= "\n<table class=\"my-calendar-table\">\n";
+				$table = apply_filters( 'mc_grid_wrapper', 'table' );
+				$my_calendar_body .= "\n<$table class=\"my-calendar-table\">\n";
 				$week_template   = ( get_option( 'mc_week_caption' ) != '' ) ? get_option( 'mc_week_caption' ) : 'Week of {date format="M jS"}';
 				$week_caption    = jd_draw_template( $values, stripslashes( $week_template ) );
 				$caption_heading = ( $time != 'week' ) ? $current_date_header . $caption_text : $week_caption . $caption_text;
-				$my_calendar_body .= "<caption class=\"heading my-calendar-$time\">" . $caption_heading . "</caption>\n";
+				$caption = apply_filters( 'mc_grid_caption', 'caption' );
+				$my_calendar_body .= "<$caption class=\"heading my-calendar-$time\">" . $caption_heading . "</$caption>\n";
 			} else {
 				// determine which header text to show depending on number of months displayed;
 				if ( $time != 'week' && $time != 'day' ) {
@@ -1473,7 +1476,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 									} else {
 										$my_calendar_body .= "
 												<$td id='$format-$date' class='" . esc_attr( "$dayclass $dateclass $weekend_class $monthclass $events_class" ) . " day-with-date'>" . "
-													<$element class='mc-date $trigger'>$thisday_heading</$close>" .
+													<$element class='mc-date $trigger'><span aria-hidden='true'>$thisday_heading</span><span class='screen-reader-text'><span class='screen-reader-text'>" . date_i18n( get_option( 'mc_date_format' ), strtotime( $date ) ) . "</span></span></$close>" .
 										                     $event_output . "
 												</$td>\n";
 									}
@@ -1484,7 +1487,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 									$weekend_class = ( $is_weekend ) ? 'weekend' : '';
 									$my_calendar_body .= "
 												<$td class='no-events $dayclass $dateclass $weekend_class $monthclass day-with-date'>
-													<span class='mc-date no-events'>$thisday_heading</span>
+													<span class='mc-date no-events'><span aria-hidden='true'>$thisday_heading</span><span class='screen-reader-text'>" . date_i18n( get_option( 'mc_date_format' ), strtotime( $date ) ) . "</span></span>
 												</$td>\n";
 								} else {
 									if ( $show_all == true ) {
@@ -1504,7 +1507,9 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 
 					} while ( $start <= $end );
 				}
-				$my_calendar_body .= ( $format == "list" ) ? "\n</ul>" : "\n</tbody>\n</table>";
+				$table = apply_filters( 'mc_grid_wrapper', 'table' );
+				$end = ( $table == 'table' ) ? "\n</tbody>\n</table>" : "</$table>";
+				$my_calendar_body .= ( $format == "list" ) ? "\n</ul>" : $end;
 			} else {
 				if ( ! in_array( $format, array( 'list', 'calendar', 'mini' ) ) ) {
 					$my_calendar_body .= "<p class='mc-error-format'>" . __( "Unrecognized calendar format. Please use one of 'list', 'calendar', or 'mini'.", 'my-calendar' ) . "</p>";
