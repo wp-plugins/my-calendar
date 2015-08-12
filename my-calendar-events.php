@@ -333,7 +333,7 @@ function my_calendar_events_now( $category = 'default', $template = '<strong>{li
 					ON (event_category=category_id) 
 					WHERE $select_category $select_location $select_author $select_host $limit_string  
 					AND ( CAST('$now' AS DATETIME) BETWEEN occur_begin AND occur_end ) 
-						ORDER BY " . apply_filters( 'occur_begin', 'mc_primary_sort' ) . ", " . apply_filters( 'mc_secondary_sort', 'event_title ASC' );
+						ORDER BY " . apply_filters( 'mc_primary_sort', 'occur_begin' ) . ", " . apply_filters( 'mc_secondary_sort', 'event_title ASC' );
 	$events      = $mcdb->get_results( $event_query );
 	if ( ! empty( $events ) ) {
 		foreach ( array_keys( $events ) as $key ) {

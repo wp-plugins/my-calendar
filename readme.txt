@@ -93,6 +93,10 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Handle stylesheet editing as additive (child styles), rather than editing the original stylesheet.
 * Update pickadate to version 3.6, when it's out. 3.5.6 has a regression that makes it useless for me.
 
+= 2.4.3 =
+
+* Bug fix: reversed filter name/value pairing in SQL query.
+
 = 2.4.2 =
 
 * Bug fix: in Upcoming Events shortcode (mismatch between documentation & reality).
