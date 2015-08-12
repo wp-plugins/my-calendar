@@ -102,6 +102,7 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 = 2.4.0 =
 
 New features:
+
 * Set upcoming event class based on time, rather than date.
 * Add past/present classes to today's events widget
 * Assign Custom All Day label for each event.
@@ -129,6 +130,7 @@ New features:
 * Improved labeling of cell dates
 
 Bug fixes:
+
 * Stop setting all day events to end at midnight; use 11:59:59 and filter output
 * Rewrite iCal output so that the iCal download eliminates Holiday cancellations [todo]
 * Bug fix: Prevent extraneous variables from leaking into the navigation output.
@@ -153,14 +155,17 @@ Bug fixes:
 * Prevent single event pages from displaying content if the event is in a private category.
 
 Important Changes:
+
 * Removed references to #jd_calendar and generate custom IDs. [breaking change
 * Revision of settings page [reorganize settings into tabs]
 * Reorganized settings pages.
 
 Other:
+
 * Moved changelog for versions prior to 2.3.0 into changelog.txt
 
 Translations:
+
 * Updated Polish, Portuguese (Portugal), Dutch, Turkish, Slovak, Norwegian, Hungarian, German, Spanish, Persian, Czech, Danish
 
 = 2.3.32 =
