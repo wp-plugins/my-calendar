@@ -515,35 +515,29 @@ function my_calendar_print() {
 	$ltype    = ( isset( $_GET['ltype'] ) ) ? $_GET['ltype'] : '';
 	$lvalue   = ( isset( $_GET['lvalue'] ) ) ? $_GET['lvalue'] : '';
 	header( 'Content-Type: ' . get_bloginfo( 'html_type' ) . '; charset=' . get_bloginfo( 'charset' ) );
-	echo '<!DOCTYPE html>
-<!--[if IE 7]>
-<html id="ie7" dir="' . ( is_rtl() ) ? 'rtl' : 'ltr' . '" lang="' . get_bloginfo( 'language' ) . '">
-<![endif]-->
-<!--[if IE 8]>
-<html id="ie8" dir="' . ( is_rtl() ) ? 'rtl' : 'ltr' . '" lang="' . get_bloginfo( 'language' ) . '">
-<![endif]-->
-<!--[if !(IE 6) | !(IE 7) | !(IE 8) ]><!-->
-<html dir="' . ( is_rtl() ) ? 'rtl' : 'ltr' . '" lang="' . get_bloginfo( 'language' ) . '">
+	if ( mc_file_exists( 'css/mc-print.css' ) ) {
+		$stylesheet = mc_get_file( 'css/mc-print.css', 'url' );
+	} else {
+		$stylesheet = $url . "css/mc-print.css";
+	}	
+	$rtl = ( is_rtl() ) ? 'rtl' : 'ltr';
+	$head = '<!DOCTYPE html>
+<html dir="' . $rtl . '" lang="' . get_bloginfo( 'language' ) . '">
 <!--<![endif]-->
 <head>
 <meta charset="' . get_bloginfo( 'charset' ) . '" />
 <meta name="viewport" content="width=device-width" />
 <title>' . get_bloginfo( 'name' ) . ' - ' . __( 'Calendar: Print View', 'my-calendar' ) . '</title>
 <meta name="generator" content="My Calendar for WordPress" />
-<meta name="robots" content="noindex,nofollow" />';
-	if ( mc_file_exists( 'css/mc-print.css' ) ) {
-		$stylesheet = mc_get_file( 'css/mc-print.css', 'url' );
-	} else {
-		$stylesheet = $url . "css/mc-print.css";
-	}
-	echo "
+<meta name="robots" content="noindex,nofollow" />
 <!-- Copy mc-print.css to your theme directory if you wish to replace the default print styles -->
-<link rel='stylesheet' href='$stylesheet' type='text/css' media='screen,print' />
+<link rel="stylesheet" href="' . $stylesheet. '" type="text/css" media="screen,print" />
 </head>
-<body>\n";
+<body>\n';
+echo $head;
 	echo my_calendar( 'print', 'calendar', $category, $time, $ltype, $lvalue, 'mc-print-view', '', '', null, null, 'none', 'none' );
 	$return_url = ( get_option( 'mc_uri' ) != '' && ! is_numeric( get_option( 'mc_uri' ) ) ) ? get_option( 'mc_uri' ) : home_url();
-	$add        = $_GET;
+	$add        = array_map( 'esc_sql', $_GET );
 	unset( $add['cid'] );
 	unset( $add['feed'] );
 	$return_url = mc_build_url( $add, array( 'feed', 'cid' ), $return_url );

@@ -93,6 +93,12 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Handle stylesheet editing as additive (child styles), rather than editing the original stylesheet.
 * Update pickadate to version 3.6, when it's out. 3.5.6 has a regression that makes it useless for me.
 
+
+= 2.4.1 =
+
+* Bug fix: Missing style in print.css
+* Bug fix: Broken <head> in print view.
+
 = 2.4.0 =
 
 New features:
