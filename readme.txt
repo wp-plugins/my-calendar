@@ -552,4 +552,4 @@ The search feature in My Calendar is pretty basic; but buying My Calendar Pro gi
 
 == Upgrade Notice ==
 
-* 2.3.30 - Important security update! Update now!
+* 2.4.1 - 2.4.0 is a major new release; lots of bug fixes and feature enhancements. 2.4.1 fixes a couple bugs in the print view.
