@@ -417,7 +417,8 @@ function my_calendar_upcoming_events( $before = 'default', $after = 'default', $
 	$no_event_text = ( $substitute == '' ) ? $widget_defaults['upcoming']['text'] : $substitute;
 	$header        = "<ul id='upcoming-events'>";
 	$footer        = "</ul>";
-	if ( $display_upcoming_type != 'events' ) {
+	$display_events = ( $display_upcoming_type == 'events' || $display_upcoming_type == 'event' ) ? true : false;
+	if ( ! $display_events ) {
 		$temp_array = array();
 		if ( $display_upcoming_type == "days" ) {
 			$from = date( 'Y-m-d', strtotime( "-$before days" ) );
