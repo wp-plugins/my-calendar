@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) && ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	delete_option( 'mc_show_months' );
 	delete_option( 'mc_show_map' );
 	delete_option( 'mc_show_address' );
+	delete_option( 'mc_display_more' );
 	delete_option( 'mc_today_template' );
 	delete_option( 'mc_upcoming_template' );
 	delete_option( 'mc_today_title' );

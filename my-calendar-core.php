@@ -6,7 +6,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 function my_calendar_add_feed() {
 	add_feed( 'my-calendar-rss', 'my_calendar_rss' );
 	add_feed( 'my-calendar-ics', 'my_calendar_ical' );
-	add_feed( 'my-calendar-print', 'my_calendar_print' );
+	//add_feed( 'my-calendar-print', 'my_calendar_print' );
+}
+
+add_action( 'template_redirect', 'my_calendar_print_view' );
+function my_calendar_print_view() {
+	if ( isset( $_GET['cid'] ) && $_GET['cid'] == 'mc-print-view' ) {
+		echo my_calendar_print();
+		exit;
+	}
 }
 
 if ( ! function_exists( 'is_ssl' ) ) {
@@ -643,7 +651,8 @@ function check_my_calendar() {
 			'2.2.10',
 			'2.3.0',
 			'2.3.11',
-			'2.3.15'
+			'2.3.15',
+			'2.4.4',
 		);
 		foreach ( $valid_upgrades as $upgrade ) {
 			if ( version_compare( $current_version, $upgrade, "<" ) ) {
@@ -679,12 +688,13 @@ function mc_do_upgrades( $upgrade_path ) {
 	foreach ( $upgrade_path as $upgrade ) {
 		switch ( $upgrade ) {
 			// only upgrade db on most recent version
-			case '2.4.0':
+			case '2.4.4':
+				add_option( 'mc_display_more', 'true' );
 				$input_options = get_option( 'mc_input_options' );
 				$input_options['event_host'] = 'on';
 				update_option( 'mc_input_options', $input_options );
 				add_option( 'mc_default_direction', 'DESC' );
-				mc_upgrade_db();
+				mc_upgrade_db();				
 				break;
 			case '2.3.15':
 				delete_option( 'mc_event_groups' );

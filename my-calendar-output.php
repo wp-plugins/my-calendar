@@ -216,6 +216,7 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 	$mc_display_author = get_option( 'mc_display_author' );
 	$display_map       = get_option( 'mc_show_map' );
 	$display_address   = get_option( 'mc_show_address' );
+	$mc_display_more   = get_option( 'mc_display_more' );
 	$uid               = 'mc_' . $event->occur_id;
 	$day_id            = date( 'd', strtotime( $process_date ) );
 
@@ -278,7 +279,7 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 				}
 			}
 
-			if ( ! isset( $_GET['mc_id'] ) ) {
+			if ( $mc_display_more && ! isset( $_GET['mc_id'] ) ) {
 				$details_label = mc_get_details_label( $event, $data );
 				$details_link  = mc_get_details_link( $event );
 				if ( _mc_is_url( $details_link ) ) {
@@ -533,7 +534,7 @@ function my_calendar_print() {
 <!-- Copy mc-print.css to your theme directory if you wish to replace the default print styles -->
 <link rel="stylesheet" href="' . $stylesheet. '" type="text/css" media="screen,print" />
 </head>
-<body>\n';
+<body>';
 echo $head;
 	echo my_calendar( 'print', 'calendar', $category, $time, $ltype, $lvalue, 'mc-print-view', '', '', null, null, 'none', 'none' );
 	$return_url = ( get_option( 'mc_uri' ) != '' && ! is_numeric( get_option( 'mc_uri' ) ) ) ? get_option( 'mc_uri' ) : home_url();
@@ -541,7 +542,7 @@ echo $head;
 	unset( $add['cid'] );
 	unset( $add['feed'] );
 	$return_url = mc_build_url( $add, array( 'feed', 'cid' ), $return_url );
-	echo "<p class='return'><a href='$return_url'>" . __( 'Return to site', 'my-calendar' ) . "</a></p>";
+	echo "<p class='return'><a href='$return_url'>" . __( 'Return to calendar', 'my-calendar' ) . "</a></p>";
 	echo '
 </body>
 </html>';
@@ -1114,6 +1115,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 		//echo "<p>Debug:<br />Day: $c_day<br />Month: $c_month<br />Year: $c_year<br />Date: ".date('Y-m-d',$current_date)."</p>";
 		$num = $mc_show_months - 1; // the value is total months to show; need additional months to show.
 
+		
 		if ( $format == "list" && $time != 'week' ) { // grid calendar can't show multiple months
 			if ( $num > 0 && $time != 'day' && $time != 'week' ) {
 				// grid calendar date calculation
@@ -1153,7 +1155,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			'yr'     => $c_year,
 			'month'  => $c_month,
 			'dy'     => $c_day,
-			'cid'    => 'print'
+			'cid'    => 'mc-print-view'
 		);
 		$subtract = array();
 		if ( $ltype == '' ) {
@@ -1168,7 +1170,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			$subtract[] = 'mcat';
 			unset( $add['mcat'] );
 		}
-		$mc_print_url = mc_build_url( $add, $subtract, mc_feed_base() . 'my-calendar-print' );
+		$mc_print_url = mc_build_url( $add, $subtract, home_url() );
 		$print        = "<div class='mc-print'><a href='$mc_print_url'>" . __( 'Print<span class="maybe-hide"> View</span>', 'my-calendar' ) . "</a></div>";
 		// set up format toggle
 		$toggle = ( in_array( 'toggle', $used ) ) ? mc_format_toggle( $format, 'yes', $time ) : '';

@@ -1483,7 +1483,6 @@ function mc_list_events() {
 	global $wpdb;
 	$mcdb = $wpdb;
 	if ( current_user_can( 'mc_approve_events' ) || current_user_can( 'mc_manage_events' ) || current_user_can( 'mc_add_events' ) ) {
-		$sortby = ( isset( $_GET['sort'] ) ) ? (int) $_GET['sort'] : get_option( 'mc_default_sort' );
 
 		if ( isset( $_GET['order'] ) ) {
 			$sortdir = ( isset( $_GET['order'] ) && $_GET['order'] == 'ASC' ) ? 'ASC' : 'default';
@@ -1491,7 +1490,11 @@ function mc_list_events() {
 		} else {
 			$sortdir = 'default';
 		}
-		$sortbydirection = ( $sortdir == 'default' ) ? get_option( 'mc_default_direction' ) : $sortdir;
+
+		$default_direction = ( get_option( 'mc_default_direction' ) == '' ) ? 'ASC' : get_option( 'mc_default_direction' );
+		$sortbydirection = ( $sortdir == 'default' ) ? $default_direction : $sortdir;
+				
+		$sortby = ( isset( $_GET['sort'] ) ) ? $_GET['sort'] : get_option( 'mc_default_sort' );
 		if ( empty( $sortby ) ) {
 			$sortbyvalue = 'event_begin';
 		} else {
@@ -1521,7 +1524,7 @@ function mc_list_events() {
 					$sortbyvalue = "event_begin $sortbydirection, event_time";
 			}
 		}
-		$sorting         = ( $sortbydirection == 'DESC' ) ? "&amp;order=ASC" : '';
+		$sorting         = ( $sortbydirection == 'DESC' ) ? "&amp;order=ASC" : '&amp;order=DESC';
 		$allow_filters   = true;
 		$status          = ( isset( $_GET['limit'] ) ) ? $_GET['limit'] : 'all';
 		$restrict        = ( isset( $_GET['restrict'] ) ) ? $_GET['restrict'] : 'all';
@@ -1971,7 +1974,7 @@ function mc_check_data( $action, $post, $i ) {
 			$time = '00:00:00'; $endtime = '23:59:59';
 		}
 		$end                = date( 'Y-m-d', strtotime( $end ) ); // regardless of entry format, convert.			
-		$repeats            = ( ! empty( $post['event_repeats'] ) || trim( $post['event_repeats'] ) == '' ) ? trim( $post['event_repeats'] ) : 0;
+		$repeats            = ( isset( $post['event_repeats'] ) ) ? trim( $post['event_repeats'] ) : 0;
 		$host               = ! empty( $post['event_host'] ) ? $post['event_host'] : $current_user->ID;
 		$category           = ! empty( $post['event_category'] ) ? $post['event_category'] : '';
 		$event_link         = ! empty( $post['event_link'] ) ? trim( $post['event_link'] ) : '';

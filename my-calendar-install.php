@@ -219,6 +219,7 @@ function mc_default_settings() {
 	add_option( 'mc_show_months', 1 );
 	add_option( 'mc_show_map', 'true' );
 	add_option( 'mc_show_address', 'false' );
+	add_option( 'mc_display_more', 'true' );
 	add_option( 'mc_calendar_javascript', 0 );
 	add_option( 'mc_list_javascript', 0 );
 	add_option( 'mc_mini_javascript', 0 );

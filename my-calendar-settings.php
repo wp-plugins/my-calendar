@@ -268,6 +268,7 @@ function edit_my_calendar_config() {
 		update_option( 'mc_show_map', ( ! empty( $_POST['mc_show_map'] ) && $_POST['mc_show_map'] == 'on' ) ? 'true' : 'false' );
 		update_option( 'mc_gmap', ( ! empty( $_POST['mc_gmap'] ) && $_POST['mc_gmap'] == 'on' ) ? 'true' : 'false' );
 		update_option( 'mc_show_address', ( ! empty( $_POST['mc_show_address'] ) && $_POST['mc_show_address'] == 'on' ) ? 'true' : 'false' );
+		update_option( 'mc_display_more', ( ! empty( $_POST['mc_display_more'] ) && $_POST['mc_display_more'] == 'on' ) ? 'true' : 'false' );
 		update_option( 'mc_hide_icons', ( ! empty( $_POST['mc_hide_icons'] ) && $_POST['mc_hide_icons'] == 'on' ) ? 'true' : 'false' );
 		update_option( 'mc_apply_color', $_POST['mc_apply_color'] );
 		update_option( 'mc_event_registration', ( ! empty( $_POST['mc_event_registration'] ) && $_POST['mc_event_registration'] == 'on' ) ? 'true' : 'false' );
@@ -689,6 +690,7 @@ function edit_my_calendar_config() {
 							<li><?php mc_settings_field( 'mc_desc', __( 'Full description', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 							<li><?php mc_settings_field( 'mc_process_shortcodes', __( 'Process WordPress shortcodes in descriptions', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 							<li><?php mc_settings_field( 'mc_event_link', __( 'External link', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
+							<li><?php mc_settings_field( 'mc_display_more', __( 'More details link', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 							<li><?php mc_settings_field( 'mc_event_registration', __( 'Registration info', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 						</ul>
 					</fieldset>
