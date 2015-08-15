@@ -5,7 +5,7 @@ Tags: calendar, dates, times, event, events, scheduling, schedule, event manager
 Requires at least: 3.9.8
 Tested up to: 4.3.0
 License: GPLv2 or later
-Stable tag: 2.4.3
+Stable tag: 2.4.4
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
 
@@ -572,4 +572,4 @@ The search feature in My Calendar is pretty basic; but buying My Calendar Pro gi
 
 == Upgrade Notice ==
 
-* 2.4.0 is a major new release; lots of bug fixes and feature enhancements. 2.4.1 fixes a couple bugs in the print view; 2.4.2 a bug with upcoming events and 2.4.3 a SQL error relating to sorting
+* 2.4.0 is a major new release; lots of bug fixes and feature enhancements. 2.4.4: event manager default sort direction fixed, print view date selection, option to hide 'more' link in event view.
