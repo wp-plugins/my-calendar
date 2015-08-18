@@ -4,7 +4,7 @@ Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, event, events, scheduling, schedule, event manager, event calendar, class, concert, conference, meeting, venue, location, box office, tickets, registration
 Requires at least: 3.9.8
 Tested up to: 4.3.0
-Stable tag: 2.4.4
+Stable tag: 2.4.5
 License: GPLv2 or later
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
@@ -100,7 +100,7 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * New filters on navigation tools.
 * Bug fix: Print view loaded when iCal requested [broken in 2.4.4]
 * Bug fix: Changes to Upcoming Events widget to better limit upcoming events lists.
-* Language updates: Czech, Swedish
+* Language updates: Czech, Swedish, Finnish
 
 = 2.4.4 =
 
