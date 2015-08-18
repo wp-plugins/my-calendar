@@ -598,7 +598,8 @@ function edit_my_calendar_config() {
 							<li><?php mc_settings_field( 'mc_show_weekends', __( 'Show Weekends on Calendar', 'my-calendar' ), '', '', array(), 'checkbox-single' ); ?></li>
 							<li><?php mc_settings_field( 'mc_convert', array(
 											'true' => __( 'Switch to list view on mobile devices', 'my-calendar' ),
-											'mini' => __( 'Switch to mini calendar on mobile devices', 'my-calendar' )
+											'mini' => __( 'Switch to mini calendar on mobile devices', 'my-calendar' ),
+											'none' => __( 'Do not switch calendar mode', 'my-calendar' )
 										), 'false', '', array(), 'radio' ); ?></li>
 						</ul>
 					</fieldset>

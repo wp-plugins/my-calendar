@@ -396,7 +396,7 @@ class my_calendar_upcoming_widget extends WP_Widget {
 // Widget upcoming events
 function my_calendar_upcoming_events( $before = 'default', $after = 'default', $type = 'default', $category = 'default', $template = 'default', $substitute = '', $order = 'asc', $skip = 0, $show_today = 'yes', $author = 'default', $host = 'default', $ltype = '', $lvalue = '', $from = '', $to = '' ) {
 	global $default_template;
-	$args                  = array( 'before'=>$before, 'after'=>$after, 'type'=>$type, 'category'=>$category, 'template'=>$template, 'fallback'=> $substitute, 'order' => $order, 'skip' => $skip, 'show_today'=> $show_today, 'author'=> $author, 'host'=>$host, 'ltype'=>$ltype, 'lvalue'=>$lvalue );
+	$args                  = array( 'before'=>$before, 'after'=>$after, 'type'=>$type, 'category'=>$category, 'template'=>$template, 'fallback'=> $substitute, 'order' => $order, 'skip' => $skip, 'show_today'=> $show_today, 'author'=> $author, 'host'=>$host, 'ltype'=>$ltype, 'lvalue'=>$lvalue, 'from'=>$from, 'to'=>$to );
 	$output                = '';
 	$widget_defaults       = ( array ) get_option( 'mc_widget_defaults' );
 	$display_upcoming_type = ( $type == 'default' ) ? $widget_defaults['upcoming']['type'] : $type;
@@ -541,7 +541,7 @@ function my_calendar_upcoming_events( $before = 'default', $after = 'default', $
 				set_transient( 'mc_cache_upcoming', $cache, 60 * 30 );
 			}
 		} else {
-			$events = mc_get_all_events( $category, $before, $after, $show_today, $author, $host, $ltype, $lvalue );     // grab all events within reasonable proximity
+			$events = mc_get_all_events( $category, $before, $after, $show_today, $author, $host, $ltype, $lvalue );     // grab all events within reasonable proximity		
 		}
 		$holiday_array = array();
 		if ( ! get_option( 'mc_skip_holidays_category' ) || get_option( 'mc_skip_holidays_category' ) == '' ) {
@@ -602,6 +602,7 @@ function mc_produce_upcoming_events( $events, $template, $type = 'list', $order 
 	$count = count( $events );
 	$group = array();
 	$spans = array();
+	$occur = array();
 	$extra = 0;
 	$i     = 0;
 	// create near_events array
@@ -630,10 +631,11 @@ function mc_produce_upcoming_events( $events, $template, $type = 'list', $order 
 							$current = date( 'Y-m-d H:i:00', current_time( 'timestamp' ) );
 							if ( $e ) {
 								// if a multi-day event, show only once.
-								if ( $e->occur_group_id != 0 && $e->event_span == 1 && in_array( $e->occur_group_id, $group ) ) {
+							if ( $e->occur_group_id != 0 && $e->event_span == 1 && in_array( $e->occur_group_id, $group ) || in_array( $e->occur_id, $occur ) ) {
 									$md = true;
 								} else {
 									$group[] = $e->occur_group_id;
+									$occur[] = $e->occur_id;
 									$md      = false;
 								}
 								// end multi-day reduction
@@ -662,18 +664,19 @@ function mc_produce_upcoming_events( $events, $template, $type = 'list', $order 
 									}
 
 									if ( my_calendar_date_comp( $beginning, $current ) ) {
-										if ( ! $same_event && ! $same_group ) {
+										//if ( ! $same_event && ! $same_group ) {
 											$past ++;
-										}
+										//}
 									} else if ( my_calendar_date_equal( $beginning, $current ) ) {
 										if ( $show_today == 'yes' ) {
 											$extra ++;
 										}
 									} else if ( ! my_calendar_date_comp( $end, $current ) ) {
-										if ( ! $same_event && ! $same_group ) {
+										//if ( ! $same_event && ! $same_group ) {
 											$future ++;
-										}
+										//}
 									}
+									
 									$last_events[] = $e->occur_id;
 									$last_group[]  = $e->occur_group_id;
 									$last_date     = $beginning;

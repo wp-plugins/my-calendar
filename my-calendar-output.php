@@ -461,7 +461,7 @@ function mc_build_date_switcher( $type = 'calendar', $cid = 'all', $time = 'mont
 	$day_switcher = '';
 	if ( $time == 'day' ) {
 		$day_switcher = '
-          <label class="maybe-hide" for="' . $cid . '-day">' . __( 'Month', 'my-calendar' ) . ':</label> <select id="' . $cid . '-day" name="dy">' . "\n";
+          <label class="maybe-hide" for="' . $cid . '-day">' . __( 'Day', 'my-calendar' ) . ':</label> <select id="' . $cid . '-day" name="dy">' . "\n";
 		for ( $i = 1; $i <= 31; $i++ ) {
 			$day_switcher .= "<option value='$i'" . mc_day_comparison( $i ) . '>' . $i . '</option>' . "\n";
 		}
@@ -566,7 +566,7 @@ function mc_format_toggle( $format, $toggle, $time ) {
 		$toggle = '';
 	}
 
-	return $toggle;
+	return apply_filters( 'mc_format_toggle_html', $toggle, $format, $time );
 }
 
 function mc_time_toggle( $format, $time, $toggle, $day, $month, $year ) {
@@ -610,7 +610,7 @@ function mc_time_toggle( $format, $time, $toggle, $day, $month, $year ) {
 		$toggle = '';
 	}
 
-	return $toggle;
+	return apply_filters( 'mc_time_toggle_html', $toggle, $format, $time );
 }
 
 function mc_date_array( $timestamp, $period ) {
@@ -1154,8 +1154,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			'mcat'   => $category,
 			'yr'     => $c_year,
 			'month'  => $c_month,
-			'dy'     => $c_day,
-			'cid'    => 'mc-print-view'
+			'dy'     => $c_day
 		);
 		$subtract = array();
 		if ( $ltype == '' ) {
@@ -1170,7 +1169,8 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			$subtract[] = 'mcat';
 			unset( $add['mcat'] );
 		}
-		$mc_print_url = mc_build_url( $add, $subtract, home_url() );
+		$print_add = array_merge( $add, array( 'cid', 'mc-print-view' ) );
+		$mc_print_url = mc_build_url( $print_add, $subtract, home_url() );
 		$print        = "<div class='mc-print'><a href='$mc_print_url'>" . __( 'Print<span class="maybe-hide"> View</span>', 'my-calendar' ) . "</a></div>";
 		// set up format toggle
 		$toggle = ( in_array( 'toggle', $used ) ) ? mc_format_toggle( $format, 'yes', $time ) : '';
@@ -1345,8 +1345,8 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 				if ( $format == "list" ) {
 					$my_calendar_body .= "<ul id='$id' class='mc-list'>";
 				} else {
-					$my_calendar_body .= ( $tr == 'tr' ) ? "<thead>\n" : '';
-					$my_calendar_body .= "<$tr>\n";
+					$my_calendar_body .= ( $tr == 'tr' ) ? "<thead>\n" : '<div class="mc-table-body">';
+					$my_calendar_body .= "<$tr class='mc-row'>\n";
 					for ( $i = 0; $i <= 6; $i ++ ) {
 						if ( $start_of_week == 0 ) {
 							$class = ( $i < 6 && $i > 0 ) ? 'day-heading' : 'weekend-heading';
@@ -1376,7 +1376,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 						$is_weekend = ( date( 'N', $start ) < 6 ) ? false : true;
 						if ( get_option( 'mc_show_weekends' ) == 'true' || ( get_option( 'mc_show_weekends' ) != 'true' && ! $is_weekend ) ) {
 							if ( date( 'N', $start ) == $start_of_week && $format != "list" ) {
-								$my_calendar_body .= "<$tr>";
+								$my_calendar_body .= "<$tr class='mc-row'>";
 							}
 							// date-based classes
 							$monthclass       = ( date( 'n', $start ) == $c_month || $time != 'month' ) ? '' : 'nextmonth';
@@ -1504,7 +1504,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 					} while ( $start <= $end );
 				}
 				$table = apply_filters( 'mc_grid_wrapper', 'table' );
-				$end = ( $table == 'table' ) ? "\n</tbody>\n</table>" : "</$table>";
+				$end = ( $table == 'table' ) ? "\n</tbody>\n</table>" : "</div></$table>";
 				$my_calendar_body .= ( $format == "list" ) ? "\n</ul>" : $end;
 			} else {
 				if ( ! in_array( $format, array( 'list', 'calendar', 'mini' ) ) ) {

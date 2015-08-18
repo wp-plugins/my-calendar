@@ -139,6 +139,7 @@ function mc_get_file( $file, $type = 'path' ) {
 	$dir  = plugin_dir_path( __FILE__ );
 	$url  = plugin_dir_url( __FILE__ );
 	$base = basename( $dir );
+	$path = ( $type == 'path' ) ? $dir . $file : $url . $file;
 	if ( file_exists( get_stylesheet_directory() . '/' . $file ) ) {
 		$path = ( $type == 'path' ) ? get_stylesheet_directory() . '/' . $file : get_stylesheet_directory_uri() . '/' . $file;
 	}
@@ -153,7 +154,7 @@ function mc_get_file( $file, $type = 'path' ) {
 add_action( 'wp_enqueue_scripts', 'mc_register_styles' );
 function mc_register_styles() {
 	global $wp_query;
-	$stylesheet = mc_get_style_path( get_option( 'mc_css_file' ), 'url' );
+	$stylesheet = apply_filters( 'mc_registered_stylesheet', mc_get_style_path( get_option( 'mc_css_file' ), 'url' ) );
 	wp_register_style( 'my-calendar-reset', plugins_url( 'css/reset.css', __FILE__ ) );
 	wp_register_style( 'my-calendar-style', $stylesheet, array( 'dashicons', 'my-calendar-reset' ) );
 	$admin_stylesheet = plugins_url( 'css/mc-admin.css', __FILE__ );
