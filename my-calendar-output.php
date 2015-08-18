@@ -1169,7 +1169,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			$subtract[] = 'mcat';
 			unset( $add['mcat'] );
 		}
-		$print_add = array_merge( $add, array( 'cid', 'mc-print-view' ) );
+		$print_add = array_merge( $add, array( 'cid' => 'mc-print-view' ) );
 		$mc_print_url = mc_build_url( $print_add, $subtract, home_url() );
 		$print        = "<div class='mc-print'><a href='$mc_print_url'>" . __( 'Print<span class="maybe-hide"> View</span>', 'my-calendar' ) . "</a></div>";
 		// set up format toggle
@@ -1313,12 +1313,12 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			$caption_text = ' ' . stripslashes( trim( get_option( 'mc_caption' ) ) ); // this option should be replaced JCD TODO
 			$my_calendar_body .= $mc_topnav;
 			if ( $format == "calendar" || $format == "mini" ) {
-				$table = apply_filters( 'mc_grid_wrapper', 'table' );
+				$table = apply_filters( 'mc_grid_wrapper', 'table', $format );
 				$my_calendar_body .= "\n<$table class=\"my-calendar-table\">\n";
 				$week_template   = ( get_option( 'mc_week_caption' ) != '' ) ? get_option( 'mc_week_caption' ) : 'Week of {date format="M jS"}';
 				$week_caption    = jd_draw_template( $values, stripslashes( $week_template ) );
 				$caption_heading = ( $time != 'week' ) ? $current_date_header . $caption_text : $week_caption . $caption_text;
-				$caption = apply_filters( 'mc_grid_caption', 'caption' );
+				$caption = apply_filters( 'mc_grid_caption', 'caption', $format );
 				$my_calendar_body .= "<$caption class=\"heading my-calendar-$time\">" . $caption_heading . "</$caption>\n";
 			} else {
 				// determine which header text to show depending on number of months displayed;
@@ -1338,8 +1338,8 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 						'month+1'
 					) )
 			) {
-				$tr = apply_filters( 'mc_grid_week_wrapper', 'tr' );
-				$th = apply_filters( 'mc_grid_header_wrapper', 'th' );
+				$tr = apply_filters( 'mc_grid_week_wrapper', 'tr', $format );
+				$th = apply_filters( 'mc_grid_header_wrapper', 'th', $format );
 				$th .= ( $th == 'th' ) ? ' scope="col"' : '';
 				// If in a calendar format, print the headings of the days of the week
 				if ( $format == "list" ) {
@@ -1393,7 +1393,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 							} else {
 								$is_anchor = $is_close_anchor = "";
 							}
-							$td = apply_filters( 'mc_grid_day_wrapper', 'td' );
+							$td = apply_filters( 'mc_grid_day_wrapper', 'td', $format );
 							if ( ! empty( $events ) ) {
 								$event_output = my_calendar_draw_events( $events, $format, $date, $time, $template );
 								if ( $event_output === true ) {
@@ -1503,7 +1503,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 
 					} while ( $start <= $end );
 				}
-				$table = apply_filters( 'mc_grid_wrapper', 'table' );
+				$table = apply_filters( 'mc_grid_wrapper', 'table', $format );
 				$end = ( $table == 'table' ) ? "\n</tbody>\n</table>" : "</div></$table>";
 				$my_calendar_body .= ( $format == "list" ) ? "\n</ul>" : $end;
 			} else {
