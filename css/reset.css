@@ -74,4 +74,11 @@ button.mc-toggle {
   background-color: transparent;
 }
 
+/**
+ * This is focus passed to a div for the purpose of navigation; visible focus not required.
+ */
+.mc-main:focus {
+	outline: none;
+}
+
 .mcjs .mc-main .details, .mcjs .mc-main .calendar-events { display: none; }
