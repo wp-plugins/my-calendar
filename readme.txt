@@ -52,7 +52,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 = Translations =
 
 Available translations (in order of completeness):
-Czech, Polish, Spanish (Spain), Portuguese (Portugal), French, Danish, Japanese, German, Russian, Dutch, Swedish, Italian, Hebrew, Galician, Portuguese (Brazil), Hindi, Turkish, Slovak, Finnish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Catalan, Hungarian, Afrikaans, Persian, Icelandic
+Czech, Polish, Portuguese (Portugal), Spanish (Spain), French, Danish, Swedish, Japanese, Dutch, German, Slovak, Russian, Italian, Hebrew, Galician, Portuguese (Brazil), Hindi, Turkish, Finnish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Catalan, Hungarian, Afrikaans, Persian, Icelandic
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -92,6 +92,13 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Custom link targets using mc_customize_details_link & template_redirect filter as pointer.
 * Handle stylesheet editing as additive (child styles), rather than editing the original stylesheet.
 * Update pickadate to version 3.6, when it's out. 3.5.6 has a regression that makes it useless for me.
+
+
+= 2.4.7 =
+
+* Update Italian translation
+* Bug fix: Ensure that mini calendar widgets have unique IDs
+* Eliminate an obsolete variable.
 
 = 2.4.6 =
 

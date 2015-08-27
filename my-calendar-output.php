@@ -344,7 +344,7 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 
 			$status = ( $status != '' ) ? "<p>$status</p>" : '';
 			$status = apply_filters( 'mc_registration_state', $status, $event );
-			$return = ( $type == 'single' ) ? "<p><a href='" . get_option( 'mc_uri' ) . "'>" . __( 'View full calendar', 'my-calendar' ) . "</a></p>" : '';
+			$return = ( $type == 'single' ) ? "<p class='view-full'><a href='" . get_option( 'mc_uri' ) . "'>" . __( 'View full calendar', 'my-calendar' ) . "</a></p>" : '';
 
 			if ( ! mc_show_details( $time, $type ) ) {
 				$description = $short = $status = '';

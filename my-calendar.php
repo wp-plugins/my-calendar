@@ -95,12 +95,6 @@ function mc_load_textdomain() {
 	load_plugin_textdomain( 'my-calendar', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );
 }
 
-if ( version_compare( get_bloginfo( 'version' ), '3.0', '<' ) && is_ssl() ) {
-	$wp_content_url = str_replace( 'http://', 'https://', get_option( 'siteurl' ) );
-} else {
-	$wp_content_url = get_option( 'siteurl' );
-}
-
 // Add actions
 add_action( 'admin_menu', 'my_calendar_menu' );
 add_action( 'wp_head', 'my_calendar_wp_head' );
@@ -118,6 +112,7 @@ add_action( 'init', 'mc_export_vcal', 200 );
 add_filter( 'widget_text', 'do_shortcode', 9 );
 add_filter( 'plugin_action_links', 'mc_plugin_action', - 10, 2 );
 add_filter( 'wp_title', 'mc_event_filter', 10, 3 );
+
 // Customize canonical URL
 add_action( 'init', 'mc_custom_canonical' );
 function mc_custom_canonical() {
