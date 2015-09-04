@@ -87,12 +87,17 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 
 = Future =
 
+* Make annual view in list mode configurable on a calendar-specific basis rather than globally; effect date switcher; see https://www.joedolson.com/forums/topic/annual-calendar/#post-5427
 * Refactor options storage
 * Update event taxonomies if category changed/source event taxonomy data from post
 * Custom link targets using mc_customize_details_link & template_redirect filter as pointer.
 * Handle stylesheet editing as additive (child styles), rather than editing the original stylesheet.
 * Update pickadate to version 3.6, when it's out. 3.5.6 has a regression that makes it useless for me.
 
+= 2.4.8 =
+
+* Bug fix: Md5 hash on arguments includes format & timeframe, so switching between options broke CID references
+* Bug fix: clear undefined index notice occurring only under specific unusual server configurations
 
 = 2.4.7 =
 

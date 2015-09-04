@@ -447,7 +447,9 @@ function mc_build_date_switcher( $type = 'calendar', $cid = 'all', $time = 'mont
 	$date_switcher .= '<div class="my-calendar-date-switcher">
             <form action="' . $current_url . '" method="get"><div>';
 	$qsa = array();
-	parse_str( $_SERVER['QUERY_STRING'], $qsa );
+	if ( isset( $_SERVER['QUERY_STRING'] ) ) {
+		parse_str( $_SERVER['QUERY_STRING'], $qsa );
+	}
 	if ( ! isset( $_GET['cid'] ) ) {
 		$date_switcher .= '<input type="hidden" name="cid" value="' . esc_attr( $cid ) . '" />';
 	}
@@ -984,7 +986,24 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 		'smonth'   => $smonth,
 		'sday'     => $sday 
 	);
-	$hash = md5( implode( ',', $args ) );
+	// args used in Md5 hash cannot include 'time' or 'format', since those can be changed by navigation.
+	$hash_args = array(
+		'name'     => $name,
+		'category' => $category,
+		'above'    => $above,
+		'below'    => $below,
+		'ltype'    => $ltype,
+		'lvalue'   => $lvalue,
+		'author'   => $author,
+		'id'       => $id,
+		'above'    => $above,
+		'below'    => $below,
+		'host'     => $host,
+		'syear'    => $syear,
+		'smonth'   => $smonth,
+		'sday'     => $sday 
+	);
+	$hash = md5( implode( ',', $hash_args ) );
 	$my_calendar_body .= apply_filters( 'mc_before_calendar', '', $args );
 	$id = ( !$id ) ? "mc-$hash" : $id;
 
@@ -1733,7 +1752,9 @@ function mc_filters( $args ) {
 	<div id='mc_filters'>
 		<form action='" . $current_url . "' method='get'>\n";
 	$qsa         = array();
-	parse_str( $_SERVER['QUERY_STRING'], $qsa );
+	if ( isset( $_SERVER['QUERY_STRING'] ) ) {
+		parse_str( $_SERVER['QUERY_STRING'], $qsa );
+	}
 	if ( ! isset( $_GET['cid'] ) ) {
 		$form .= '<input type="hidden" name="cid" value="all" />';
 	}
@@ -1790,7 +1811,9 @@ function my_calendar_categories_list( $show = 'list', $context = 'public', $grou
 				<div>" : '';
 	if ( $group == 'single' ) {
 		$qsa = array();
-		parse_str( $_SERVER['QUERY_STRING'], $qsa );
+		if ( isset( $_SERVER['QUERY_STRING'] ) ) {
+			parse_str( $_SERVER['QUERY_STRING'], $qsa );
+		}
 		if ( ! isset( $_GET['cid'] ) ) {
 			$form .= '<input type="hidden" name="cid" value="all" />';
 		}
@@ -1852,7 +1875,9 @@ function mc_access_list( $show = 'list', $group = 'single' ) {
 				<div>" : '';
 	if ( $group == 'single' ) {
 		$qsa = array();
-		parse_str( $_SERVER['QUERY_STRING'], $qsa );
+		if ( isset( $_SERVER['QUERY_STRING'] ) ) {
+			parse_str( $_SERVER['QUERY_STRING'], $qsa );
+		}
 		if ( ! isset( $_GET['cid'] ) ) {
 			$form .= '<input type="hidden" name="cid" value="all" />';
 		}
@@ -2098,7 +2123,9 @@ function my_calendar_locations_list( $show = 'list', $type = 'saved', $datatype 
 			$output .= "<input type='hidden' name='ltype' value='" . esc_attr( $ltype ) . "' />";
 			if ( $group == 'single' ) {
 				$qsa = array();
-				parse_str( $_SERVER['QUERY_STRING'], $qsa );
+				if ( isset( $_SERVER['QUERY_STRING'] ) ) {
+					parse_str( $_SERVER['QUERY_STRING'], $qsa );
+				}
 				if ( ! isset( $_GET['cid'] ) ) {
 					$output .= '<input type="hidden" name="cid" value="all" />';
 				}
