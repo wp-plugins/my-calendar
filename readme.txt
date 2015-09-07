@@ -94,6 +94,10 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Handle stylesheet editing as additive (child styles), rather than editing the original stylesheet.
 * Update pickadate to version 3.6, when it's out. 3.5.6 has a regression that makes it useless for me.
 
+= 2.4.9 =
+
+* Bug fix: Make iCal support elimination of holiday collisions
+
 = 2.4.8 =
 
 * Bug fix: Md5 hash on arguments includes format & timeframe, so switching between options broke CID references
