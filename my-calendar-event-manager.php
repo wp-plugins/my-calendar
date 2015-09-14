@@ -2486,5 +2486,4 @@ function mc_post_update_event( $id ) {
 	$featured_image = wp_get_attachment_url( get_post_thumbnail_id( $post->ID ) );
 	$event_id = get_post_meta( $post->ID, '_mc_event_id', true );
 	mc_update_data( $event_id, 'event_image', $featured_image, '%s' );
-	
 }
