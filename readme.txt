@@ -52,7 +52,7 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 = Translations =
 
 Available translations (in order of completeness):
-Czech, Polish, Portuguese (Portugal), Spanish (Spain), French, Danish, Swedish, Japanese, Dutch, German, Slovak, Russian, Italian, Hebrew, Galician, Portuguese (Brazil), Hindi, Turkish, Finnish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Catalan, Hungarian, Afrikaans, Persian, Icelandic
+Czech, Polish, Portuguese (Portugal), Spanish (Spain), French, Danish, Swedish, Japanese, Dutch, German, Slovak, Russian, Italian, Portuguese (Brazil), Hebrew, Galician, Hindi, Turkish, Finnish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Catalan, Hungarian, Afrikaans, Persian, Icelandic
 
 Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
 
@@ -100,6 +100,7 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Bug fix: Compensate for other plug-ins defining their own tab styles on My Calendar's settings
 * Bug fix: Fallback to My Calendar DB images if featured images missing on post.
 * Add support: Search events without requiring MyISAM MySQL engine.
+* Language updates: Portuguese (Brazil), German
 
 = 2.4.8 =
 
