@@ -439,7 +439,7 @@ function my_calendar_grab_events( $from, $to, $category = null, $ltype = '', $lv
 
 	$arr_events   = array();
 	$limit_string = "event_flagged <> 1 AND event_approved = 1";
-	$search = ( $search != '' ) ? " AND MATCH(event_title,event_desc,event_short,event_label,event_city,event_postcode,event_registration) AGAINST ('" . esc_sql( $search ) . "' IN BOOLEAN MODE) " : '';
+	$search = mc_prepare_search_query( $search );
 	$event_query = "SELECT *, UNIX_TIMESTAMP(occur_begin) AS ts_occur_begin, UNIX_TIMESTAMP(occur_end) AS ts_occur_end
 					FROM " . MY_CALENDAR_EVENTS_TABLE . " 
 					JOIN " . MY_CALENDAR_TABLE . "
@@ -472,6 +472,23 @@ function my_calendar_grab_events( $from, $to, $category = null, $ltype = '', $lv
 	} else {
 		return $arr_events;
 	}
+}
+
+function mc_get_db_type() {
+	global $wpdb;
+	$mcdb = $wpdb;
+	$db_type = 'MyISAM';
+	if ( get_option( 'mc_remote' ) == 'true' && function_exists( 'mc_remote_db' ) ) {
+		$mcdb = mc_remote_db();
+	}	
+	$dbs = $mcdb->get_results( 'SHOW TABLE STATUS' );
+	foreach( $dbs as $db ) {
+		if ( $db->Name == MY_CALENDAR_TABLE ) {
+			$db_type = $db->Engine;
+		}
+	}
+
+	return $db_type;
 }
 
 function mc_check_cache( $category, $ltype, $lvalue, $author, $host, $hash ) {

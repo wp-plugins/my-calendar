@@ -97,6 +97,9 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 = 2.4.9 =
 
 * Bug fix: Make iCal support elimination of holiday collisions
+* Bug fix: Compensate for other plug-ins defining their own tab styles on My Calendar's settings
+* Bug fix: Fallback to My Calendar DB images if featured images missing on post.
+* Add support: Search events without requiring MyISAM MySQL engine.
 
 = 2.4.8 =
 

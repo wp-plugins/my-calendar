@@ -623,7 +623,7 @@ function mc_auto_excerpt( $e, $event ) {
 add_filter( 'mc_filter_image_data', 'mc_image_data', 10, 2 );
 function mc_image_data( $e, $event ) {
 	$atts      = apply_filters( 'mc_post_thumbnail_atts', array( 'class' => 'mc-image' ) );
-	if ( isset( $event->event_post ) && is_numeric( $event->event_post ) && get_post_status( $event->event_post ) ) {
+	if ( isset( $event->event_post ) && is_numeric( $event->event_post ) && get_post_status( $event->event_post ) && has_post_thumbnail( $event->event_post ) ) {
 		$e['full'] = get_the_post_thumbnail( $event->event_post );
 		$sizes     = get_intermediate_image_sizes();
 		$attach    = get_post_thumbnail_id( $event->event_post );

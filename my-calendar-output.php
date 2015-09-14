@@ -279,7 +279,7 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 				}
 			}
 
-			if ( $mc_display_more && ! isset( $_GET['mc_id'] ) ) {
+			if ( $mc_display_more != 'false' && ! isset( $_GET['mc_id'] ) ) {
 				$details_label = mc_get_details_label( $event, $data );
 				$details_link  = mc_get_details_link( $event );
 				if ( _mc_is_url( $details_link ) ) {
@@ -699,8 +699,7 @@ function mc_search_results( $query ) {
 	$before = apply_filters( 'mc_past_search_results', 0, 'basic' );
 	$after  = apply_filters( 'mc_future_search_results', 10, 'basic' ); // return only future events, nearest 10
 	if ( is_string( $query ) ) {
-		$fields          = apply_filters( 'mc_search_fields', 'event_title,event_desc,event_short,event_label,event_city,event_postcode,event_registration' );
-		$search          = " MATCH( $fields ) AGAINST ('$query' IN BOOLEAN MODE) AND ";
+		$search          = mc_prepare_search_query( $query );
 		$term            = $query;
 	} else {
 		$search = apply_filters( 'mc_advanced_search', '', $query );

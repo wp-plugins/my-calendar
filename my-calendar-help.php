@@ -490,6 +490,13 @@ function my_calendar_help() {
 			<h3 id="support"><?php _e( 'Get Plug-in Support', 'my-calendar' ); ?></h3>
 
 			<div class="inside">
+				<div class='mc-support-me'>
+					<p>
+						<?php printf(
+							__( 'Please, consider a <a href="%s">donation</a> or a <a href="%s">purchase</a> to support My Calendar!', 'my-calendar' )
+						, "https://www.joedolson.com/donate/", "https://www.joedolson.com/my-calendar/pro/" ); ?>
+					</p>
+				</div>				
 				<?php if ( current_user_can( 'administrator' ) ) { ?>
 					<?php jcd_get_support_form(); ?>
 				<?php } else { ?>

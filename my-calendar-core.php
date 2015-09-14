@@ -1577,7 +1577,7 @@ $plugins_string
 		<div><input type='hidden' name='_wpnonce' value='" . wp_create_nonce( 'my-calendar-nonce' ) . "' /></div>
 		<div>
 		<p>" .
-	     __( 'Please note: I do keep records of those who have donated, <strong>but if your donation came from somebody other than your account at this web site, please note this in your message.</strong>', 'my-calendar' )
+	     __( '<strong>Note</strong>: I keep records of donations, but if your donation came from <em>somebody other than your account at this web site</em>, please note this in your message.', 'my-calendar' )
 	     . "<p>
 		<code>" . __( 'From:', 'my-calendar' ) . " \"$current_user->display_name\" &lt;$current_user->user_email&gt;</code>
 		</p>

@@ -1598,8 +1598,8 @@ function mc_list_events() {
 			$limit .= ( $restrict != 'event_flagged' ) ? " AND event_flagged = 0" : '';
 		}
 		if ( isset( $_POST['mcs'] ) ) {
-			$query = esc_sql( $_POST['mcs'] );
-			$limit .= " AND MATCH(event_title,event_desc,event_short,event_label,event_city) AGAINST ('$query' IN BOOLEAN MODE) ";
+			$query = $_POST['mcs'];
+			$limit .= ' AND ' . mc_prepare_search_query( $query, 'admin' );			
 		}
 		$limit .= ( $restrict != 'archived' ) ? " AND event_status = 1" : ' AND event_status = 0';
 		$events     = $mcdb->get_results( "SELECT SQL_CALC_FOUND_ROWS * FROM " . my_calendar_table() . " $limit ORDER BY $sortbyvalue $sortbydirection LIMIT " . ( ( $current - 1 ) * $items_per_page ) . ", " . $items_per_page );
