@@ -179,6 +179,7 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 	$details     = '';
 	if ( mc_show_details( $time, $type ) ) {
 		$details = apply_filters( 'mc_custom_template', false, $data, $event, $type, $process_date, $time, $template );
+		$template = apply_filters( 'mc_use_custom_template', $template, $data, $event, $type, $process_date, $time );
 		if ( $details === false ) {
 			if ( $template != '' && mc_file_exists( sanitize_file_name( $template ) ) ) {
 				$template = @file_get_contents( mc_get_file( sanitize_file_name( $template ) ) );
@@ -889,6 +890,7 @@ function mc_show_event_template( $content ) {
 		if ( $post->post_type == 'mc-events' ) {
 			if ( isset( $_GET['mc_id'] ) ) {
 				$mc_id = intval( $_GET['mc_id'] );
+				$event_id = get_post_meta( $post->ID, '_mc_event_id', true );				
 				$event = mc_get_event( $mc_id, 'object' );
 				$date = date( 'Y-m-d', strtotime( $event->occur_begin ) );
 				$time = date( 'H:i:00', strtotime( $event->occur_begin ) );
@@ -902,8 +904,13 @@ function mc_show_event_template( $content ) {
 				return $content;
 			}
 			if ( get_option( 'mc_use_details_template' ) == 1 ) {
-				$new_content = apply_filters( 'mc_before_event', '', $event, 'single', $time );				
-				$new_content .= do_shortcode( apply_filters( 'mc_single_event_shortcode', get_post_meta( $post->ID, '_mc_event_shortcode', true ) ) );
+				$new_content = apply_filters( 'mc_before_event', '', $event, 'single', $time );	
+				if ( isset( $_GET['mc_id'] ) ) {
+					$shortcode = str_replace( "event='$event_id'", "event='$mc_id' instance='1'", get_post_meta( $post->ID, '_mc_event_shortcode', true ) );
+				} else {
+					$shortcode = get_post_meta( $post->ID, '_mc_event_shortcode', true );
+				}
+				$new_content .= do_shortcode( apply_filters( 'mc_single_event_shortcode', $shortcode ) );
 				$new_content .= apply_filters( 'mc_after_event', '', $event, 'single', $time );
 			} else {
 				$new_content = my_calendar_draw_event( $event, 'single', $date, $time, '' );
@@ -1936,7 +1943,7 @@ function mc_build_url( $add, $subtract, $root = '' ) {
 	}
 	if ( $home == '' ) {
 		if ( is_front_page() ) {
-			$home = get_bloginfo( 'url' ) . '/';
+			$home = home_url( '/' );
 		} else if ( is_home() ) {
 			$page = get_option( 'page_for_posts' );
 			$home = get_permalink( $page );
@@ -1962,7 +1969,11 @@ function mc_build_url( $add, $subtract, $root = '' ) {
 	} else {
 		$char = ( $wp_rewrite->using_permalinks() ) ? '?' : '&amp;'; // this doesn't work -- may *never* need to be &. Consider	
 	}
-
+	// escape this when you use it
+	if ( $wp_rewrite->using_index_permalinks() && strpos( $home, 'index.php' ) === false ) {
+		$home = str_replace( home_url(), home_url( '/' ) . 'index.php', $home );
+	}
+	
 	return $home . $char . http_build_query( $variables, '', '&amp;' );
 }
 

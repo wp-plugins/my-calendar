@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, event, events, scheduling, schedule, event manager, event calendar, class, concert, conference, meeting, venue, location, box office, tickets, registration
 Requires at least: 3.9.8
-Tested up to: 4.3.0
+Tested up to: 4.3.1
 Stable tag: 2.4.9
 License: GPLv2 or later
 
@@ -51,12 +51,12 @@ Easy to use for anybody, My Calendar provides enormous flexibility for designers
 
 = Translations =
 
-Available translations (in order of completeness):
+Available translations so far:
 Czech, Polish, Portuguese (Portugal), Spanish (Spain), French, Danish, Swedish, Japanese, Dutch, German, Slovak, Russian, Italian, Portuguese (Brazil), Hebrew, Galician, Hindi, Turkish, Finnish, Slovenian, Ukrainian, Romanian, Norwegian (Bokmal), Catalan, Hungarian, Afrikaans, Persian, Icelandic
 
-Visit the [My Calendar translations site](http://translate.joedolson.com/projects/my-calendar) to check the progress of a translation.
+Visit [Wordpress Translations](https://translate.wordpress.org/projects/wp-plugins/my-calendar) to check the progress of a translation.
 
-Translating my plug-ins is always appreciated. Visit <a href="http://translate.joedolson.com">my translations site</a> to start getting your language into shape!
+Translating my plug-ins is always appreciated. Visit <a href="https://translate.wordpress.org/projects/wp-plugins/my-calendar">WordPress translations</a> to start getting your language into shape!
 
 <a href="http://www.joedolson.com/translator-credits/">Translator Credits</a>
 
@@ -93,6 +93,17 @@ Translating my plug-ins is always appreciated. Visit <a href="http://translate.j
 * Custom link targets using mc_customize_details_link & template_redirect filter as pointer.
 * Handle stylesheet editing as additive (child styles), rather than editing the original stylesheet.
 * Update pickadate to version 3.6, when it's out. 3.5.6 has a regression that makes it useless for me.
+* Send admin notice when recurring event is about to end
+* Change all shortcode 'template' attributes to reference stored templates in settings by name or ID.
+
+= 2.4.10 =
+
+* Bug fix: Better detection of whether or not multisite support is available.
+* Bug fix: Stop disabling JS on mobile if format conversion is enabled.
+* Bug fix: Pretty permalinks display of event date/time broken on recurring events.
+* Bug fix: Handle use of using_index_permalinks() and produce correct URLs.
+* New filter: 'mc_use_custom_template': pass a file name or template name to use a custom template for a given event display.
+* Language updates: French, Russian, Catalan, Italian
 
 = 2.4.9 =
 

@@ -312,7 +312,7 @@ function edit_my_calendar_config() {
 		
 		echo "<div class=\"updated\"><p><strong>" . __( 'Input Settings saved', 'my-calendar' ) . ".</strong></p></div>";
 	}
-	if ( current_user_can( 'manage_network' ) ) {
+	if ( current_user_can( 'manage_network' ) && is_multisite() ) {
 		if ( isset( $_POST['mc_network'] ) ) {
 			$mc_multisite = (int) $_POST['mc_multisite'];
 			update_site_option( 'mc_multisite', $mc_multisite );
@@ -434,7 +434,7 @@ function edit_my_calendar_config() {
 			<li role="tab" id="tab_text" aria-controls="my-calendar-text"><a href="#my-calendar-text"><?php _e( 'Text', 'my-calendar' ); ?></a></li>
 			<li role="tab" id="tab_output" aria-controls="mc-output"><a href="#mc-output"><?php _e( 'Output', 'my-calendar' ); ?></a></li>
 			<li role="tab" id="tab_input" aria-controls="my-calendar-input"><a href="#my-calendar-input"><?php _e( 'Input', 'my-calendar' ); ?></a></li>
-			<?php if ( current_user_can( 'manage_network' ) ) { ?>
+			<?php if ( current_user_can( 'manage_network' ) && is_multisite() ) { ?>
 				<li role="tab" id="tab_multi" aria-controls="my-calendar-multisite"><a href="#my-calendar-multisite"><?php _e( 'Multi-site', 'my-calendar' ); ?></a></li>
 			<?php } ?>
 			<li role="tab" id="tab_permissions" aria-controls="my-calendar-permissions"><a href="#my-calendar-permissions"><?php _e( 'Permissions', 'my-calendar' ); ?></a></li>
@@ -491,7 +491,7 @@ function edit_my_calendar_config() {
 											'1' => __( 'Currently editing the network calendar', 'my-calendar' )
 										), '0', '', array(), 'radio' );
 								} else {
-									if ( get_option( 'mc_remote' ) != 'true' && current_user_can( 'manage_network' ) ) {
+									if ( get_option( 'mc_remote' ) != 'true' && current_user_can( 'manage_network' ) && is_multisite() ) {
 										?>
 										<li><?php _e( 'You are currently working in the primary site for this network; your local calendar is also the global table.', 'my-calendar' ); ?></li><?php
 									}
@@ -788,7 +788,7 @@ function edit_my_calendar_config() {
 			</div>
 		</div>
 
-	<?php if ( current_user_can( 'manage_network' ) ) { ?>
+	<?php if ( current_user_can( 'manage_network' ) && is_multisite() ) { ?>
 			<div class="wptab postbox" aria-labelledby="tab_multi" role="tabpanel" aria-live="assertive"  id="my-calendar-multisite">
 				<h3><?php _e( 'Multisite Settings (Network Administrators only)', 'my-calendar' ); ?></h3>
 

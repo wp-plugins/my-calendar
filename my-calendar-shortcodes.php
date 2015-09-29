@@ -136,10 +136,11 @@ function my_calendar_show_event( $atts ) {
 		'template' => '<h3>{title}</h3>{description}',
 		'list'     => '<li>{date}, {time}</li>',
 		'before'   => '<ul>',
-		'after'    => '</ul>'
+		'after'    => '</ul>',
+		'instance' => false
 	), $atts, 'my_calendar_event' ) );
 
-	return mc_instance_list( $event, false, $template, $list, $before, $after );
+	return mc_instance_list( $event, false, $template, $list, $before, $after, $instance );
 }
 
 function my_calendar_search( $atts ) {

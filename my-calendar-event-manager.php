@@ -2324,11 +2324,15 @@ function mc_group_id() {
 	return $next;
 }
 
-function mc_instance_list( $id, $occur = false, $template = '<h3>{title}</h3>{description}', $list = '<li>{date}, {time}</li>', $before = "<ul>", $after = "</ul>" ) {
+function mc_instance_list( $id, $occur = false, $template = '<h3>{title}</h3>{description}', $list = '<li>{date}, {time}</li>', $before = "<ul>", $after = "</ul>", $instance = false ) {
 	global $wpdb;
 	$id      = (int) $id;
 	$output  = '';
-	$sql     = "SELECT * FROM " . my_calendar_event_table() . " WHERE occur_event_id=$id";
+	if ( $instance == true ) {
+		$sql     = "SELECT * FROM " . my_calendar_event_table() . " WHERE occur_id=$id";		
+	} else {
+		$sql     = "SELECT * FROM " . my_calendar_event_table() . " WHERE occur_event_id=$id";
+	}
 	$results = $wpdb->get_results( $sql );
 	if ( is_array( $results ) && is_admin() ) {
 		foreach ( $results as $result ) {

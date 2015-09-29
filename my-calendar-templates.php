@@ -251,6 +251,7 @@ function mc_create_tags( $event, $context = 'filters' ) {
 	} else {
 		$dates = array();
 	}
+		
 	$e['date']      = ( $event->event_span != 1 ) ? $date : mc_format_date_span( $dates, 'simple', $date );
 	$e['enddate']   = $date_end;
 	$e['daterange'] = ( $date == $date_end ) ? $date : "<span class='mc_db'>$date</span> <span>&ndash;</span> <span class='mc_de'>$date_end</span>";

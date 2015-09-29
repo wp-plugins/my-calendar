@@ -362,7 +362,7 @@ function mc_plugin_update_message() {
 
 function mc_footer_js() {
 	global $wp_query;
-	if ( mc_is_mobile() && get_option( 'mc_convert' ) == 'true' ) {
+	if ( mc_is_mobile() && apply_filters( 'mc_disable_mobile_js', false ) ) {
 		return;
 	} else {
 		$pages = array();
@@ -463,14 +463,18 @@ function my_calendar_add_styles() {
 }
 
 function mc_get_current_url() {
-	global $wp;
+	global $wp, $wp_rewrite;
 	$args = array();
 	if ( isset( $_GET['page_id'] ) ) {
 		$args = array( 'page_id' => $_GET['page_id'] );
 	}
-	$current_url = esc_url( home_url( add_query_arg( $args, $wp->request ) ) );
-
-	return $current_url;
+	$current_url = home_url( add_query_arg( $args, $wp->request ) );
+		
+	if ( $wp_rewrite->using_index_permalinks() && strpos( $current_url, 'index.php' ) === false ) {
+		$current_url = str_replace( home_url(), home_url( '/' ) . 'index.php', $home );
+	}
+	
+	return esc_url( $current_url );
 }
 
 function mc_csv_to_array( $csv, $delimiter = ',', $enclosure = '"', $escape = '\\', $terminator = "\n" ) {
@@ -1106,74 +1110,90 @@ function my_calendar_admin_bar() {
 
 // functions to route db queries
 function my_calendar_table() {
-	$option = (int) get_site_option( 'mc_multisite' );
-	$choice = (int) get_option( 'mc_current_table' );
-	switch ( $option ) {
-		case 0:
-			return MY_CALENDAR_TABLE;
-			break;
-		case 1:
-			return MY_CALENDAR_GLOBAL_TABLE;
-			break;
-		case 2:
-			return ( $choice == 1 ) ? MY_CALENDAR_GLOBAL_TABLE : MY_CALENDAR_TABLE;
-			break;
-		default:
-			return MY_CALENDAR_TABLE;
+	if ( is_multisite() ) {
+		$option = (int) get_site_option( 'mc_multisite' );
+		$choice = (int) get_option( 'mc_current_table' );
+		switch ( $option ) {
+			case 0:
+				return MY_CALENDAR_TABLE;
+				break;
+			case 1:
+				return MY_CALENDAR_GLOBAL_TABLE;
+				break;
+			case 2:
+				return ( $choice == 1 ) ? MY_CALENDAR_GLOBAL_TABLE : MY_CALENDAR_TABLE;
+				break;
+			default:
+				return MY_CALENDAR_TABLE;
+		}
+	} else {
+		return MY_CALENDAR_TABLE;
 	}
 }
 
 function my_calendar_event_table() {
-	$option = (int) get_site_option( 'mc_multisite' );
-	$choice = (int) get_option( 'mc_current_table' );
-	switch ( $option ) {
-		case 0:
-			return MY_CALENDAR_EVENTS_TABLE;
-			break;
-		case 1:
-			return MY_CALENDAR_GLOBAL_EVENT_TABLE;
-			break;
-		case 2:
-			return ( $choice == 1 ) ? MY_CALENDAR_GLOBAL_EVENT_TABLE : MY_CALENDAR_EVENTS_TABLE;
-			break;
-		default:
-			return MY_CALENDAR_EVENTS_TABLE;
+	if ( is_multisite() ) {
+		$option = (int) get_site_option( 'mc_multisite' );
+		$choice = (int) get_option( 'mc_current_table' );
+		switch ( $option ) {
+			case 0:
+				return MY_CALENDAR_EVENTS_TABLE;
+				break;
+			case 1:
+				return MY_CALENDAR_GLOBAL_EVENT_TABLE;
+				break;
+			case 2:
+				return ( $choice == 1 ) ? MY_CALENDAR_GLOBAL_EVENT_TABLE : MY_CALENDAR_EVENTS_TABLE;
+				break;
+			default:
+				return MY_CALENDAR_EVENTS_TABLE;
+		}
+	} else {
+		return MY_CALENDAR_EVENTS_TABLE;
 	}
 }
 
 function my_calendar_categories_table() {
-	$option = (int) get_site_option( 'mc_multisite' );
-	$choice = (int) get_option( 'mc_current_table' );
-	switch ( $option ) {
-		case 0:
-			return MY_CALENDAR_CATEGORIES_TABLE;
-			break;
-		case 1:
-			return MY_CALENDAR_GLOBAL_CATEGORIES_TABLE;
-			break;
-		case 2:
-			return ( $choice == 1 ) ? MY_CALENDAR_GLOBAL_CATEGORIES_TABLE : MY_CALENDAR_CATEGORIES_TABLE;
-			break;
-		default:
-			return MY_CALENDAR_CATEGORIES_TABLE;
+	if ( is_multisite() ) {
+		$option = (int) get_site_option( 'mc_multisite' );
+		$choice = (int) get_option( 'mc_current_table' );
+		switch ( $option ) {
+			case 0:
+				return MY_CALENDAR_CATEGORIES_TABLE;
+				break;
+			case 1:
+				return MY_CALENDAR_GLOBAL_CATEGORIES_TABLE;
+				break;
+			case 2:
+				return ( $choice == 1 ) ? MY_CALENDAR_GLOBAL_CATEGORIES_TABLE : MY_CALENDAR_CATEGORIES_TABLE;
+				break;
+			default:
+				return MY_CALENDAR_CATEGORIES_TABLE;
+		}
+	} else {
+		return MY_CALENDAR_CATEGORIES_TABLE;
 	}
 }
 
 function my_calendar_locations_table() {
-	$option = (int) get_site_option( 'mc_multisite' );
-	$choice = (int) get_option( 'mc_current_table' );
-	switch ( $option ) {
-		case 0:
-			return MY_CALENDAR_LOCATIONS_TABLE;
-			break;
-		case 1:
-			return MY_CALENDAR_GLOBAL_LOCATIONS_TABLE;
-			break;
-		case 2:
-			return ( $choice == 1 ) ? MY_CALENDAR_GLOBAL_LOCATIONS_TABLE : MY_CALENDAR_LOCATIONS_TABLE;
-			break;
-		default:
-			return MY_CALENDAR_LOCATIONS_TABLE;
+	if ( is_multisite() ) {	
+		$option = (int) get_site_option( 'mc_multisite' );
+		$choice = (int) get_option( 'mc_current_table' );
+		switch ( $option ) {
+			case 0:
+				return MY_CALENDAR_LOCATIONS_TABLE;
+				break;
+			case 1:
+				return MY_CALENDAR_GLOBAL_LOCATIONS_TABLE;
+				break;
+			case 2:
+				return ( $choice == 1 ) ? MY_CALENDAR_GLOBAL_LOCATIONS_TABLE : MY_CALENDAR_LOCATIONS_TABLE;
+				break;
+			default:
+				return MY_CALENDAR_LOCATIONS_TABLE;
+		}
+	} else {
+		return MY_CALENDAR_LOCATIONS_TABLE;
 	}
 }
 
