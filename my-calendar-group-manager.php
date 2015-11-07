@@ -90,7 +90,6 @@ function edit_my_calendar_groups() {
 	my_calendar_check_db();
 	if ( $action == 'edit' ) {
 		?>
-		<div id="icon-edit" class="icon32"></div>
 		<h2><?php _e( 'Edit Event Group', 'my-calendar' ); ?></h2>
 		<?php
 		if ( empty( $event_id ) || empty( $group_id ) ) {
@@ -100,7 +99,6 @@ function edit_my_calendar_groups() {
 		}
 	} else {
 		?>
-		<div id="icon-edit" class="icon32"></div>
 		<h2><?php _e( 'Manage Event Groups', 'my-calendar' ); ?></h2>
 		<p>
 			<?php _e( 'Grouped events can be edited simultaneously. When you choose a group of events to edit, the form will be pre-filled with the content applicable to the member of the event group you started from. (e.g., if you click on the "Edit Group" link for the 3rd of a set of events, the boxes will use the content applicable to that event.). You will also receive a set of checkboxes which will indicate which events in the group should have these changes applied. (All grouped events can also be edited individually.)', 'my-calendar' ); ?>

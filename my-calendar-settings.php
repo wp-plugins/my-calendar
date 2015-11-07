@@ -393,7 +393,6 @@ function edit_my_calendar_config() {
 
 	<div class="wrap jd-my-calendar mc-settings-page" id="mc_settings">
 	<?php my_calendar_check_db(); ?>
-	<div id="icon-options-general" class="icon32"><br/></div>
 	<h2><?php _e( 'My Calendar Settings', 'my-calendar' ); ?></h2>
 
 	<div class="mc-tabs settings postbox-container jcd-wide">

@@ -728,7 +728,7 @@ function mc_do_upgrades( $upgrade_path ) {
 					'8'  => __( 'Bariatric Seating Available', 'my-calendar' ),
 					'9'  => __( 'Elevator to all public areas', 'my-calendar' ),
 					'10' => __( 'Braille Signage', 'my-calendar' ),
-					'11' => __( 'Fragrance-Free Policy', 'my-calendar' ),
+					'11' => __( 'Fragrance- Policy', 'my-calendar' ),
 					'12' => __( 'Other', 'my-calendar' )
 				) );
 				add_option( 'mc_event_access', array(
@@ -1430,7 +1430,7 @@ function mc_is_tablet() {
 function mc_guess_calendar() {
 	global $wpdb;
 	$mcdb = $wpdb;
-	/* If you're looking at this, and have suggestions for other slugs I could be looking at, feel free to let me know. I didn't feel a need to be overly thorough. */
+	/* If you're looking at this, and have suggestions for other slugs I could be looking at, feel  to let me know. I didn't feel a need to be overly thorough. */
 	$my_guesses = array(
 		'calendar',
 		'events',

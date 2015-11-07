@@ -418,6 +418,14 @@ function mc_event_link( $event ) {
 	return $link;
 }
 
+function mc_event_expired( $event ) {
+	if ( my_calendar_date_xcomp( $event->occur_end, date( 'Y-m-d', current_time( 'timestamp' ) ) ) ) {
+		return true;
+	}
+	
+	return false;
+}
+
 function mc_event_open( $event ) {
 	if ( $event->event_open == '1' ) {
 		$event_open = get_option( 'mc_event_open' );

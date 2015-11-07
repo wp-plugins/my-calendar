@@ -196,7 +196,7 @@ function mc_default_settings() {
 		'8'  => __( 'Bariatric Seating Available', 'my-calendar' ),
 		'9'  => __( 'Elevator to all public areas', 'my-calendar' ),
 		'10' => __( 'Braille Signage', 'my-calendar' ),
-		'11' => __( 'Fragrance-Free Policy', 'my-calendar' ),
+		'11' => __( 'Fragrance- Policy', 'my-calendar' ),
 		'12' => __( 'Other', 'my-calendar' )
 	) );
 	add_option( 'mc_event_access', array(

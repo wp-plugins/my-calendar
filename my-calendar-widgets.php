@@ -656,7 +656,7 @@ function mc_produce_upcoming_events( $events, $template, $type = 'list', $order 
 											$near_events[] = $e;
 										}
 									} else if ( ( $past <= $before && $future <= $after ) ) {
-										$near_events[] = $e; // if neither limit is reached, split off freely
+										$near_events[] = $e; // if neither limit is reached, split off ly
 									} else if ( $past <= $before && ( my_calendar_date_comp( $beginning, $current ) ) ) {
 										$near_events[] = $e; // split off another past event
 									} else if ( $future <= $after && ( ! my_calendar_date_comp( $end, $current ) ) ) {

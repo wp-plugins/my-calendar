@@ -81,4 +81,9 @@ button.mc-toggle {
 	outline: none;
 }
 
+/* Prevent missing background image */
+.mc-gmap-fupup {
+	max-width: none ! important; 
+}
+
 .mcjs .mc-main .details, .mcjs .mc-main .calendar-events { display: none; }
