@@ -1369,7 +1369,7 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 				$close_th = ( $th == 'th' ) ? 'th' : $th;
 				// If in a calendar format, print the headings of the days of the week
 				if ( $format == "list" ) {
-					$my_calendar_body .= "<ul id='$id' class='mc-list'>";
+					$my_calendar_body .= "<ul id='list-$id' class='mc-list'>";
 				} else {
 					$my_calendar_body .= ( $tr == 'tr' ) ? "<thead>\n" : '<div class="mc-table-body">';
 					$my_calendar_body .= "<$tr class='mc-row'>\n";
@@ -1414,8 +1414,8 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 							$events           = ( isset( $event_array[ $date ] ) ) ? $event_array[ $date ] : array();
 							$events_class     = mc_events_class( $events, $date );
 							if ( get_option( 'mc_list_javascript' ) != 1 ) {
-								$is_anchor       = "<a href='#'>";
-								$is_close_anchor = "</a>";
+								$is_anchor       = "<button type='button' class='mc-text-button'>";
+								$is_close_anchor = "</button>";
 							} else {
 								$is_anchor = $is_close_anchor = "";
 							}
@@ -1898,7 +1898,7 @@ function mc_access_list( $show = 'list', $group = 'single' ) {
 	}
 	$form .= ( $show == 'list' || $group == 'group' ) ? '' : '</div><p>';
 
-	$access_options = get_option( 'mc_event_access' );
+	$access_options = mc_event_access();
 	if ( ! empty( $access_options ) && count( $access_options ) >= 1 ) {
 		$output       = "<div id='mc_access'>\n";
 		$url          = mc_build_url( array( 'access' => 'all' ), array() );
@@ -2062,13 +2062,15 @@ function my_calendar_searchform( $type, $url ) {
 			$url = ( get_option( 'mc_uri' ) != '' ) ? get_option( 'mc_uri' ) : home_url();
 		}
 		return '
-		<form role="search" method="get" action="' . apply_filters( 'mc_search_page', esc_url( $url ) ) . '" >
-		<div class="mc-search">
-			<label class="screen-reader-text" for="mcs">' . __( 'Search Events', 'my-calendar' ) . '</label>
-			<input type="text" value="' . esc_attr( stripslashes( $query ) ) . '" name="mcs" id="mcs" />
-			<input type="submit" id="searchsubmit" value="' . __( 'Search Events', 'my-calendar' ) . '" />
-		</div>
-		</form>';
+		<div class="mc-search-container" role="search">
+			<form method="get" action="' . apply_filters( 'mc_search_page', esc_url( $url ) ) . '" >
+				<div class="mc-search">
+					<label class="screen-reader-text" for="mcs">' . __( 'Search Events', 'my-calendar' ) . '</label>
+					<input type="text" value="' . esc_attr( stripslashes( $query ) ) . '" name="mcs" id="mcs" />
+					<input type="submit" id="searchsubmit" value="' . __( 'Search Events', 'my-calendar' ) . '" />
+				</div>
+			</form>
+		</div>';
 	}
 
 	return '';

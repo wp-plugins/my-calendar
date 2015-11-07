@@ -319,7 +319,7 @@ function mc_limit_string( $type = '', $ltype = '', $lvalue = '' ) {
 }
 
 function mc_access_limit( $access ) {
-	$options      = get_option( 'mc_event_access' );
+	$options      = mc_event_access();
 	$format       = ( isset( $options[ $access ] ) ) ? esc_sql( $options[ $access ] ) : false;
 	$limit_string = ( $format ) ? " event_access LIKE '%$format%' AND" : '';
 

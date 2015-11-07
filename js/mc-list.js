@@ -3,7 +3,7 @@
     $(function () {
         $("li.mc-events").children().not(".event-date").hide();
         $("li.current-day").children().show();
-        $(document).on("click", ".event-date a",
+        $(document).on("click", ".event-date button",
             function (e) {
                 e.preventDefault();
                 $(this).closest( '.mc-events' ).find( '.vevent' ).toggle().attr("tabindex", "-1").focus();

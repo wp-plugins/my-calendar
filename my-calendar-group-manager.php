@@ -688,7 +688,7 @@ function my_calendar_print_group_fields( $data, $mode, $event_id, $group_id = ''
 							<legend><?php _e( 'Location Accessibility', 'my-calendar' ); ?></legend>
 							<ul class='checkboxes'>
 								<?php
-								$access      = apply_filters( 'mc_venue_accessibility', get_option( 'mc_location_access' ) );
+								$access      = apply_filters( 'mc_venue_accessibility', mc_location_access() );
 								$access_list = '';
 								if ( ! empty( $data ) ) {
 									$location_access = unserialize( $data->event_access );

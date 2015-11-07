@@ -74,6 +74,16 @@ button.mc-toggle {
   background-color: transparent;
 }
 
+button.mc-text-button {
+  border: 0;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+button.mc-text-button:hover, button .mc-text-button:focus {
+	text-decoration: underline;
+}
+
 /**
  * This is focus passed to a div for the purpose of navigation; visible focus not required.
  */

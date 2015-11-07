@@ -1449,6 +1449,26 @@ if ( mc_show_edit_block( 'event_specials' ) ) {
 	</div><?php
 }
 
+function mc_event_access() {
+	$event_access = apply_filters( 'mc_event_access_choices', array(
+			'1'  => __( 'Audio Description', 'my-calendar' ),
+			'2'  => __( 'ASL Interpretation', 'my-calendar' ),
+			'3'  => __( 'ASL Interpretation with voicing', 'my-calendar' ),
+			'4'  => __( 'Deaf-Blind ASL', 'my-calendar' ),
+			'5'  => __( 'Real-time Captioning', 'my-calendar' ),
+			'6'  => __( 'Scripted Captioning', 'my-calendar' ),
+			'7'  => __( 'Assisted Listening Devices', 'my-calendar' ),
+			'8'  => __( 'Tactile/Touch Tour', 'my-calendar' ),
+			'9'  => __( 'Braille Playbill', 'my-calendar' ),
+			'10' => __( 'Large Print Playbill', 'my-calendar' ),
+			'11' => __( 'Sensory Friendly', 'my-calendar' ),
+			'12' => __( 'Other', 'my-calendar' )
+		) 
+	);
+				
+	return $event_access;
+}
+
 function mc_event_accessibility( $form, $data, $label ) {
 	$note_value    = '';
 	$events_access = array();
@@ -1456,7 +1476,7 @@ function mc_event_accessibility( $form, $data, $label ) {
 		<fieldset>
 			<legend>$label</legend>
 			<ul class='accessibility-features checkboxes'>";
-	$access = apply_filters( 'mc_event_accessibility', get_option( 'mc_event_access' ) );
+	$access = apply_filters( 'mc_event_accessibility', mc_event_access() );
 	if ( ! empty( $data ) ) {
 		$events_access = get_post_meta( $data->event_post, '_mc_event_access', true );
 	}

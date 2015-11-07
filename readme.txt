@@ -96,10 +96,8 @@ Translating my plug-ins is always appreciated. Visit <a href="https://translate.
 * Send admin notice when recurring event is about to end
 * Change all shortcode 'template' attributes to reference stored templates in settings by name or ID.
 * Feature Request: make unqualified event permalinks display next occurrence rather than first (last?) (show list of occurrences?)
-* Fix accessibility strings so they are either editable or translatable without requiring filters
-* Create mechanism to get & display all events in a group (group-manager.php line 253)
-* Bug fix: if event deleted from manage, redirect to manage. [new function: mc_delete_event()] [todo]
-* MCS issue with SiteOrigin's Page Builder?
+* Create mechanism to get & display all events in a group (see group-manager.php line 253)
+* Bug fix: if event deleted from manage, redirect to manage.
 
 = 2.4.11 =
 
@@ -107,8 +105,9 @@ Translating my plug-ins is always appreciated. Visit <a href="https://translate.
 * Bug fix: Invalid closing </th> 
 * Bug fix: Update gmap3 to version 6.0
 * Bug fix: CSS conflict with max-width can cause Google Maps image to fail to render correctly.
-* Update: Rewrite mc-list.js
-* 
+* Bug fix: duplicate ID in list view breaking layout.
+* I18n fix: Make accessibility strings translatable without requiring filters
+* Update: Rewrote mc-list.js
 
 = 2.4.10 =
 
@@ -630,4 +629,4 @@ The search feature in My Calendar is pretty basic; but buying My Calendar Pro gi
 
 == Upgrade Notice ==
 
-* 2.4.0 is a major new release; lots of bug fixes and feature enhancements. 2.4.4: event manager default sort direction fixed, print view date selection, option to hide 'more' link in event view.
+* 2.4.0 is a major new release; lots of bug fixes and feature enhancements. 2.4.11: Various bug fixes. Event & Location access strings moved out of database so they will be translatable.

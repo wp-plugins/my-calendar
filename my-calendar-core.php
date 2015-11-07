@@ -717,34 +717,6 @@ function mc_do_upgrades( $upgrade_path ) {
 				add_option( 'mc_use_permalinks', false );
 				delete_option( 'mc_modified_feeds' );
 				add_option( 'mc_location_controls', $locations );
-				add_option( 'mc_location_access', array(
-					'1'  => __( 'Accessible Entrance', 'my-calendar' ),
-					'2'  => __( 'Accessible Parking Designated', 'my-calendar' ),
-					'3'  => __( 'Accessible Restrooms', 'my-calendar' ),
-					'4'  => __( 'Accessible Seating', 'my-calendar' ),
-					'5'  => __( 'Accessible Transportation Available', 'my-calendar' ),
-					'6'  => __( 'Wheelchair Accessible', 'my-calendar' ),
-					'7'  => __( 'Courtesy Wheelchairs', 'my-calendar' ),
-					'8'  => __( 'Bariatric Seating Available', 'my-calendar' ),
-					'9'  => __( 'Elevator to all public areas', 'my-calendar' ),
-					'10' => __( 'Braille Signage', 'my-calendar' ),
-					'11' => __( 'Fragrance- Policy', 'my-calendar' ),
-					'12' => __( 'Other', 'my-calendar' )
-				) );
-				add_option( 'mc_event_access', array(
-					'1'  => __( 'Audio Description', 'my-calendar' ),
-					'2'  => __( 'ASL Interpretation', 'my-calendar' ),
-					'3'  => __( 'ASL Interpretation with voicing', 'my-calendar' ),
-					'4'  => __( 'Deaf-Blind ASL', 'my-calendar' ),
-					'5'  => __( 'Real-time Captioning', 'my-calendar' ),
-					'6'  => __( 'Scripted Captioning', 'my-calendar' ),
-					'7'  => __( 'Assisted Listening Devices', 'my-calendar' ),
-					'8'  => __( 'Tactile/Touch Tour', 'my-calendar' ),
-					'9'  => __( 'Braille Playbill', 'my-calendar' ),
-					'10' => __( 'Large Print Playbill', 'my-calendar' ),
-					'11' => __( 'Sensory Friendly', 'my-calendar' ),
-					'12' => __( 'Other', 'my-calendar' )
-				) );
 				$mc_input_options                 = get_option( 'mc_input_options' );
 				$mc_input_options['event_access'] = 'on';
 				update_option( 'mc_input_options', $mc_input_options );

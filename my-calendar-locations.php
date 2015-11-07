@@ -514,7 +514,7 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	<fieldset>
 	<legend>' . __( 'Location Accessibility', 'my-calendar' ) . '</legend>
 	<ul class="accessibility-features checkboxes">';
-	$access      = apply_filters( 'mc_venue_accessibility', get_option( 'mc_location_access' ) );
+	$access      = apply_filters( 'mc_venue_accessibility', mc_location_access() );
 	$access_list = '';
 	if ( $has_data ) {
 		if ( $context == 'location' ) {
@@ -542,6 +542,26 @@ function mc_locations_fields( $has_data, $data, $context = 'location' ) {
 	</div>';
 
 	return $return;
+}
+
+function mc_location_access() {
+	$location_access = apply_filters( 'mc_location_access_choices', array(
+			'1'  => __( 'Accessible Entrance', 'my-calendar' ),
+			'2'  => __( 'Accessible Parking Designated', 'my-calendar' ),
+			'3'  => __( 'Accessible Restrooms', 'my-calendar' ),
+			'4'  => __( 'Accessible Seating', 'my-calendar' ),
+			'5'  => __( 'Accessible Transportation Available', 'my-calendar' ),
+			'6'  => __( 'Wheelchair Accessible', 'my-calendar' ),
+			'7'  => __( 'Courtesy Wheelchairs', 'my-calendar' ),
+			'8'  => __( 'Bariatric Seating Available', 'my-calendar' ),
+			'9'  => __( 'Elevator to all public areas', 'my-calendar' ),
+			'10' => __( 'Braille Signage', 'my-calendar' ),
+			'11' => __( 'Fragrance- Policy', 'my-calendar' ),
+			'12' => __( 'Other', 'my-calendar' )
+		) 
+	);
+	
+	return $location_access;
 }
 
 // get a specific field with an location ID
