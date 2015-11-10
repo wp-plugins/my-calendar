@@ -4,7 +4,7 @@ Donate link: http://www.joedolson.com/donate.php
 Tags: calendar, dates, times, event, events, scheduling, schedule, event manager, event calendar, class, concert, conference, meeting, venue, location, box office, tickets, registration
 Requires at least: 4.0
 Tested up to: 4.3.1
-Stable tag: 2.4.10
+Stable tag: 2.4.11
 License: GPLv2 or later
 
 Accessible WordPress event calendar plugin. Show events from multiple calendars on pages, in posts, or in widgets.
@@ -107,6 +107,7 @@ Translating my plug-ins is always appreciated. Visit <a href="https://translate.
 * Bug fix: CSS conflict with max-width can cause Google Maps image to fail to render correctly.
 * Bug fix: duplicate ID in list view breaking layout.
 * I18n fix: Make accessibility strings translatable without requiring filters
+* Change: Open list panels with a button.
 * Update: Rewrote mc-list.js
 
 = 2.4.10 =
