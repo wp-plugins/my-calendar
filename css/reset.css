@@ -76,12 +76,14 @@ button.mc-toggle {
 
 button.mc-text-button {
   border: 0;
+  color: inherit;
   background-color: transparent;
   text-decoration: none;
 }
 
 button.mc-text-button:hover, button .mc-text-button:focus {
 	text-decoration: underline;
+	background-color: transparent;
 }
 
 /**

@@ -398,9 +398,9 @@ function my_calendar_draw_event( $event, $type = "calendar", $process_date, $tim
 		$details .= "</div><!--ends .details--></div>";
 		$details = apply_filters( 'mc_event_content', $details, $event, $type, $time );
 	} else {
-		$details = apply_filters( 'mc_before_event', $container, $event, $type, $time ) 
+		$details = apply_filters( 'mc_before_event_no_details', $container, $event, $type, $time ) 
 				   . $header 
-				   . apply_filters( 'mc_after_event', '', $event, $type, $time )
+				   . apply_filters( 'mc_after_event_no_details', '', $event, $type, $time )
 				   . "</div>";
 	}
 
@@ -1316,9 +1316,10 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			} else {
 				$mc_events .= __( 'No events scheduled for today!', 'my-calendar' );
 			}
-			$heading_level = apply_filters( 'mc_heading_level', 'h3', $format, $time, $template );
+			$hl = apply_filters( 'mc_heading_level', 'h3', $format, $time, $template );
+			$datetime = date_i18n( apply_filters( 'mc_date_format', $date_format, $format, $time ), strtotime( "$c_year-$c_month-$c_day" ) );
 			$my_calendar_body .= "
-				<$heading_level class='mc-single'>" . date_i18n( apply_filters( 'mc_date_format', $date_format, 'grid' ), strtotime( "$c_year-$c_month-$c_day" ) ) . "</$heading_level>" . '
+				<$hl class='mc-single'>" . apply_filters( 'mc_heading', $datetime, $format, $time ) . "</$hl>" . '
 				<div id="mc-day" class="' . esc_attr( $dayclass . ' ' . $dateclass . ' ' . $events_class ) . '">' . "$mc_events\n</div>
 			</div>";
 		} else {
