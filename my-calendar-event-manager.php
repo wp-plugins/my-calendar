@@ -1937,7 +1937,7 @@ function mc_list_events() {
 		<?php
 		} else {
 			?>
-			<p><?php _e( "There are no events in the database meeting your current criteria.", 'my-calendar' ) ?></p><?php
+			<p class='mc-none'><?php _e( "There are no events in the database meeting your current criteria.", 'my-calendar' ) ?></p><?php
 		}
 	}
 }

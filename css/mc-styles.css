@@ -595,6 +595,10 @@ tr.problem .error {
     text-decoration: none;
 }
 
+.jd-my-calendar .mc-none {
+	clear: both;
+}
+
 @media (max-width: 1140px) {
     .mc-locations .locations-container input {
         max-width: 70%;
