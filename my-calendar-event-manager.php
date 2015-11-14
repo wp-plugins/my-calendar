@@ -473,6 +473,7 @@ function edit_my_calendar() {
 		if ( ! wp_verify_nonce( $nonce, 'my-calendar-nonce' ) ) {
 			die( "Security check failed" );
 		}
+		
 		global $mc_output;
 		$count = 0;
 
@@ -704,10 +705,7 @@ function my_calendar_save( $action, $output, $event_id = false ) {
 			$message = "<div class='error'><p><strong>" . __( 'You do not have sufficient permissions to edit that event.', 'my-calendar' ) . "</strong></p></div>";
 		}
 	}
-
-	if ( $action == 'delete' ) {
-		mc_delete_event( $event_id );
-	}
+	
 	$message = $message . "\n" . $output[3];
 
 	return array( 'event_id' => $event_id, 'message' => $message );
@@ -741,6 +739,8 @@ function mc_delete_event( $event_id ) {
 			$message = "<div class='error'><p><strong>" . __( 'Error', 'my-calendar' ) . ":</strong>" . __( 'Despite issuing a request to delete, the event still remains in the database. Please investigate.', 'my-calendar' ) . "</p></div>";
 		}
 	}	
+	
+	return $message;
 }
 
 function mc_form_data( $event_id = false ) {
@@ -1506,6 +1506,13 @@ function mc_list_events() {
 	$mcdb = $wpdb;
 	if ( current_user_can( 'mc_approve_events' ) || current_user_can( 'mc_manage_events' ) || current_user_can( 'mc_add_events' ) ) {
 
+		$action   = ! empty( $_POST['event_action'] ) ? $_POST['event_action'] : '';
+		$event_id = ! empty( $_POST['event_id'] ) ? $_POST['event_id'] : '';
+		if ( $action == 'delete' ) {
+			$message = mc_delete_event( $event_id );
+			echo $message;
+		}	
+	
 		if ( isset( $_GET['order'] ) ) {
 			$sortdir = ( isset( $_GET['order'] ) && $_GET['order'] == 'ASC' ) ? 'ASC' : 'default';
 			$sortdir = ( isset( $_GET['order'] ) && $_GET['order'] == 'DESC' ) ? 'DESC' : $sortdir;

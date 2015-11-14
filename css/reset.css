@@ -93,8 +93,8 @@ button.mc-text-button:hover, button .mc-text-button:focus {
 	outline: none;
 }
 
-/* Prevent missing background image */
-.mc-gmap-fupup {
+/* Prevent missing background image on google maps */
+.mc-gmap-fupup img {
 	max-width: none ! important; 
 }
 

@@ -1976,7 +1976,7 @@ function mc_event_delete_posts( $deleted ) {
 add_action( 'load-options-permalink.php', 'mc_load_permalinks' );
 function mc_load_permalinks() {
 	if( isset( $_POST['mc_cpt_base'] ) )	{
-		update_option( 'mc_cpt_base', sanitize_title_with_dashes( $_POST['mc_cpt_base'] ) );
+		update_option( 'mc_cpt_base', sanitize_text_field( $_POST['mc_cpt_base'] ) );
 	}
 	
 	// Add a settings field to the permalink page

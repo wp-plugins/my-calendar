@@ -97,7 +97,14 @@ Translating my plug-ins is always appreciated. Visit <a href="https://translate.
 * Change all shortcode 'template' attributes to reference stored templates in settings by name or ID.
 * Feature Request: make unqualified event permalinks display next occurrence rather than first (last?) (show list of occurrences?)
 * Create mechanism to get & display all events in a group (see group-manager.php line 253)
-* Bug fix: if event deleted from manage, redirect to manage.
+
+= 2.4.12 =
+
+* Bug fix: allow / character in permalink formats
+* Bug fix: missing reference in CSS for Google Maps images
+* Bug fix: Single event delete broken
+* Bug fix: if event deleted from Manage Events screen, stay on Manage Events instead of shifting to Add New.
+* Bug fix: Improper i18n in events list heading
 
 = 2.4.11 =
 

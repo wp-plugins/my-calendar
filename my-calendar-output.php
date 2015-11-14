@@ -1349,7 +1349,8 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			} else {
 				// determine which header text to show depending on number of months displayed;
 				if ( $time != 'week' && $time != 'day' ) {
-					$list_heading = ( $num_months <= 1 ) ? __( 'Events in', 'my-calendar' ) . ' ' . $current_date_header . $caption_text . "\n" : $current_month_header . '&ndash;' . $through_month_header . $caption_text;
+					$list_heading = ( $num_months <= 1 ) ? $current_date_header . $caption_text . "\n" : $current_month_header . '&ndash;' . $through_month_header . $caption_text;
+					$list_heading = sprintf( __( 'Events in %s', 'my-calendar' ), $list_heading );
 				} else {
 					$list_heading = jd_draw_template( $values, stripslashes( get_option( 'mc_week_caption' ) ) );
 				}
@@ -1366,8 +1367,8 @@ function my_calendar( $name, $format, $category, $time = 'month', $ltype = '', $
 			) {
 				$tr = apply_filters( 'mc_grid_week_wrapper', 'tr', $format );
 				$th = apply_filters( 'mc_grid_header_wrapper', 'th', $format );
+				$close_th = ( $th == 'th' ) ? 'th' : $th;			
 				$th .= ( $th == 'th' ) ? ' scope="col"' : '';
-				$close_th = ( $th == 'th' ) ? 'th' : $th;
 				// If in a calendar format, print the headings of the days of the week
 				if ( $format == "list" ) {
 					$my_calendar_body .= "<ul id='list-$id' class='mc-list'>";
